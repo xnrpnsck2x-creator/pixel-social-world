@@ -14,6 +14,8 @@ func _ready() -> void:
 	get_viewport().size_changed.connect(_refresh)
 	if App.has_signal("locale_changed"):
 		App.locale_changed.connect(_on_locale_changed)
+	if App.has_signal("initialized") and not App.is_initialized:
+		App.initialized.connect(_on_app_initialized, CONNECT_ONE_SHOT)
 	call_deferred("_refresh")
 
 func _input(_event: InputEvent) -> void:
@@ -64,4 +66,7 @@ func _refresh_text() -> void:
 	message_label.text = App.t_key("ui.orientation.landscape_required")
 
 func _on_locale_changed(_locale: String) -> void:
+	_refresh_text()
+
+func _on_app_initialized() -> void:
 	_refresh_text()
