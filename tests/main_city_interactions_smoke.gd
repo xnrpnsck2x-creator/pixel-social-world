@@ -35,6 +35,7 @@ func _run() -> void:
 	if instance.get_node_or_null("InteractionController") == null:
 		failures.append("Main city interactions were not split into InteractionController.")
 	_assert_image2_hotspot_art(instance, failures)
+	_assert_image2_terrain(instance, failures)
 	_assert_main_city_npcs(instance, failures)
 
 	var hud := instance.get_node("WorldHUD")
@@ -205,6 +206,27 @@ func _assert_image2_hotspot_art(instance: Node, failures: Array[String]) -> void
 		var sprite := marker as Sprite2D
 		if sprite.texture == null:
 			failures.append("%s is missing an Image 2 texture." % marker_path)
+
+func _assert_image2_terrain(instance: Node, failures: Array[String]) -> void:
+	var terrain := instance.get_node_or_null("MapRoot/TerrainPainter")
+	if terrain == null:
+		failures.append("Main city is missing the Image 2 terrain painter.")
+		return
+	for blockout_path in ["MapRoot/StonePlaza", "MapRoot/NorthPath", "MapRoot/SouthPath", "MapRoot/WaterEdge"]:
+		var blockout := instance.get_node_or_null(blockout_path) as CanvasItem
+		if blockout != null and blockout.visible:
+			failures.append("%s blockout shape must stay hidden behind Image 2 terrain." % blockout_path)
+	if terrain.get_child_count() < 120:
+		failures.append("Main city terrain painter did not create the first map tile field.")
+	for child in terrain.get_children():
+		if child is Sprite2D:
+			var sprite := child as Sprite2D
+			if sprite.texture == null:
+				failures.append("Main city terrain includes a sprite without an Image 2 texture.")
+			if sprite.texture_filter != CanvasItem.TEXTURE_FILTER_NEAREST:
+				failures.append("Main city terrain sprite filtering is not pixel-crisp.")
+			return
+	failures.append("Main city terrain painter did not create Sprite2D terrain nodes.")
 
 func _assert_main_city_npcs(instance: Node, failures: Array[String]) -> void:
 	var npc_root := instance.get_node("MapRoot/NPCRoot")

@@ -73,6 +73,62 @@
       "usage": "main_city_plaza_ambience"
     },
     {
+      "id": "map.terrain.grass",
+      "type": "terrain_tile",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_004.png",
+      "source_path": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "usage": "main_city_terrain"
+    },
+    {
+      "id": "map.terrain.grass_alt",
+      "type": "terrain_tile",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_005.png",
+      "source_path": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "usage": "main_city_terrain"
+    },
+    {
+      "id": "map.terrain.dirt_path",
+      "type": "terrain_tile",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_007.png",
+      "source_path": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "usage": "main_city_terrain"
+    },
+    {
+      "id": "map.terrain.stone_plaza",
+      "type": "terrain_tile",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_008.png",
+      "source_path": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "usage": "main_city_terrain"
+    },
+    {
+      "id": "map.terrain.water",
+      "type": "terrain_tile",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_070.png",
+      "source_path": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "usage": "main_city_terrain"
+    },
+    {
+      "id": "map.terrain.flower_patch",
+      "type": "terrain_decor",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_039.png",
+      "source_path": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "usage": "main_city_terrain"
+    },
+    {
+      "id": "map.terrain.bush",
+      "type": "terrain_decor",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_044.png",
+      "source_path": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "usage": "main_city_terrain"
+    },
+    {
+      "id": "map.terrain.tree",
+      "type": "terrain_decor",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_001.png",
+      "source_path": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "usage": "main_city_terrain"
+    },
+    {
       "id": "sprite.sheet.characters_npcs.v0",
       "type": "generated_sheet",
       "path": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",

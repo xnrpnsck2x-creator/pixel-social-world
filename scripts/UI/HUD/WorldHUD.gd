@@ -89,7 +89,10 @@ func _ready() -> void:
 		social_messages_panel,
 		player_profile_card
 	)
-	layout_controller.compact_changed.connect(func(_compact: bool) -> void: _refresh_player_label())
+	layout_controller.compact_changed.connect(func(_compact: bool) -> void:
+		_refresh_player_label()
+		_refresh_presence_pill()
+	)
 	mobile_input_controller = WorldHUDMobileInputControllerScript.new()
 	mobile_input_controller.bind(bottom_bar, _mobile_text_inputs(), [online_room_panel, social_messages_panel])
 	_emote_palette_controller = WorldHUDEmotePaletteScript.new()
@@ -200,7 +203,10 @@ func _refresh_player_label() -> void:
 	var display_name: String = player_name
 	if layout_controller != null:
 		display_name = layout_controller.trim_player_name(player_name)
-	player_label.text = App.format_key("world.player_format", {"name": display_name})
+	var player_format_key := "world.player_format"
+	if layout_controller != null and layout_controller.is_compact():
+		player_format_key = "world.player_compact_format"
+	player_label.text = App.format_key(player_format_key, {"name": display_name})
 	player_label.tooltip_text = App.format_key("world.player_format", {"name": player_name})
 
 func _refresh_presence_pill() -> void:
@@ -216,7 +222,10 @@ func _refresh_presence_pill() -> void:
 	var count: int = presence_service.get_members().size() if presence_service != null else 1
 	var state_key := "ui.status.stale" if online and stale else ("ui.status.online" if online else "ui.status.offline")
 	var room_id := str(presence_service.call("get_room_id")) if presence_service != null else "local"
-	presence_label.text = App.format_key("world.presence_format", {
+	var presence_format_key := "world.presence_format"
+	if layout_controller != null and layout_controller.is_compact():
+		presence_format_key = "world.presence_compact_format"
+	presence_label.text = App.format_key(presence_format_key, {
 		"state": App.t_key(state_key),
 		"seconds": max(0, seconds),
 		"count": count

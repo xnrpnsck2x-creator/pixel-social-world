@@ -14,6 +14,20 @@ Accelerated content execution now lives in `docs/AcceleratedContentRoute.md`.
 
 ## Progress
 
+### MVP Autopilot Slice 1 - Main City Visual Base
+
+Status: Implemented and locally verified on 2026-05-01.
+
+- Added an Image 2 driven terrain painter for the main city so the active camera view is built from sliced pixel grass, dirt, stone, water, flower, bush, and tree PNGs instead of flat blockout plaza/path shapes.
+- Kept the old Polygon2D ground shapes hidden as scene-reference scaffolding while the runtime art layer now draws through official Image 2 textures.
+- Tightened compact HUD presence formatting so mobile landscape keeps the top bar readable without hiding heartbeat state.
+- Compact HUD now uses a player-name-only label in the top bar, preventing mobile landscape from clipping the `Player:` prefix into unreadable fragments.
+- Extended main-city smoke coverage to fail if terrain rendering loses its Image 2 Sprite2D tile field.
+- Added `scripts/run_h5_matrix.sh`, which builds a temporary backend binary for the H5 screenshot matrix so test cleanup owns the actual listener process instead of a `go run` child.
+- Screenshot QA caught and fixed the first sparse tile pass: the final terrain layer uses denser Image 2 tile placement plus matched underlay colors so the main city no longer shows dark placeholder cracks.
+- Verified on 2026-05-01: content validation, main city interactions smoke, core Godot smoke, mobile input smoke, LiveOps smoke, Web export, full H5 screenshot matrix, Go test suite, and local port cleanup all pass.
+- Follow-up risk for the next 12% slice: mobile landscape remote avatars can spawn partly under the top HUD, so camera/member spawn safe-area rules need tightening.
+
 ### Room Member Private Entry V1
 
 Status: Implemented and locally verified on 2026-05-01.

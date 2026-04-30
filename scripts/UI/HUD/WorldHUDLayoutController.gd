@@ -68,11 +68,14 @@ func trim_player_name(display_name: String) -> String:
 		return display_name.substr(0, max_chars)
 	return display_name.substr(0, max_chars - 3) + "..."
 
+func is_compact() -> bool:
+	return _compact
+
 func _apply_top_bar_layout(compact: bool) -> void:
 	player_label.custom_minimum_size = Vector2(112.0 if compact else 176.0, 0)
 	player_label.size_flags_horizontal = Control.SIZE_SHRINK_END
 	coin_label.custom_minimum_size = Vector2(80.0 if compact else 104.0, 0)
-	presence_label.custom_minimum_size = Vector2(118.0 if compact else 190.0, 0)
+	presence_label.custom_minimum_size = Vector2(96.0 if compact else 190.0, 0)
 
 func _apply_compact_layout(panel: Control, compact: bool) -> void:
 	if panel != null and panel.has_method("set_compact_layout"):

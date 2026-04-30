@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3]
+[gd_scene load_steps=29 format=3]
 
 [ext_resource type="Script" path="res://scripts/main_city/MainCityScreen.gd" id="1_city"]
 [ext_resource type="Script" path="res://scripts/Entities/Player/PlayerAvatar.gd" id="2_player"]
@@ -19,6 +19,15 @@
 [ext_resource type="Texture2D" path="res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_057.png" id="17_signpost"]
 [ext_resource type="Texture2D" path="res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_097.png" id="18_flower_stand"]
 [ext_resource type="Texture2D" path="res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_055.png" id="19_lamp"]
+[ext_resource type="Script" path="res://scripts/main_city/MainCityTerrainPainter.gd" id="20_terrain"]
+[ext_resource type="Texture2D" path="res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_004.png" id="21_grass"]
+[ext_resource type="Texture2D" path="res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_005.png" id="22_grass_alt"]
+[ext_resource type="Texture2D" path="res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_007.png" id="23_dirt"]
+[ext_resource type="Texture2D" path="res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_008.png" id="24_stone"]
+[ext_resource type="Texture2D" path="res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_070.png" id="25_water"]
+[ext_resource type="Texture2D" path="res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_039.png" id="26_flower"]
+[ext_resource type="Texture2D" path="res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_044.png" id="27_bush"]
+[ext_resource type="Texture2D" path="res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_001.png" id="28_tree"]
 
 [node name="MainCity" type="Node2D"]
 script = ExtResource("1_city")
@@ -26,18 +35,33 @@ script = ExtResource("1_city")
 [node name="MapRoot" type="Node2D" parent="."]
 
 [node name="GroundBase" type="Polygon2D" parent="MapRoot"]
+z_index = -40
 color = Color(0.137255, 0.341176, 0.266667, 1)
 polygon = PackedVector2Array(-1400, -900, 1400, -900, 1400, 900, -1400, 900)
 
+[node name="TerrainPainter" type="Node2D" parent="MapRoot"]
+script = ExtResource("20_terrain")
+grass_texture = ExtResource("21_grass")
+grass_alt_texture = ExtResource("22_grass_alt")
+dirt_texture = ExtResource("23_dirt")
+stone_texture = ExtResource("24_stone")
+water_texture = ExtResource("25_water")
+flower_texture = ExtResource("26_flower")
+bush_texture = ExtResource("27_bush")
+tree_texture = ExtResource("28_tree")
+
 [node name="StonePlaza" type="Polygon2D" parent="MapRoot"]
+visible = false
 color = Color(0.498039, 0.478431, 0.396078, 1)
 polygon = PackedVector2Array(-320, -160, 320, -160, 320, 160, -320, 160)
 
 [node name="NorthPath" type="Polygon2D" parent="MapRoot"]
+visible = false
 color = Color(0.560784, 0.470588, 0.337255, 1)
 polygon = PackedVector2Array(-80, -520, 80, -520, 96, -160, -96, -160)
 
 [node name="SouthPath" type="Polygon2D" parent="MapRoot"]
+visible = false
 color = Color(0.560784, 0.470588, 0.337255, 1)
 polygon = PackedVector2Array(-96, 160, 96, 160, 80, 520, -80, 520)
 
@@ -72,6 +96,7 @@ scale = Vector2(0.72, 0.72)
 texture = ExtResource("12_fishing_pier")
 
 [node name="WaterEdge" type="Polygon2D" parent="MapRoot"]
+visible = false
 color = Color(0.180392, 0.470588, 0.564706, 1)
 polygon = PackedVector2Array(-1400, 320, 1400, 320, 1400, 900, -1400, 900)
 

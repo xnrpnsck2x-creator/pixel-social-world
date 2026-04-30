@@ -16,6 +16,7 @@ Current structure:
 ```text
 MainCity (Node2D)
 ├── MapRoot (Node2D)
+│   ├── TerrainPainter
 │   ├── TownProps
 │   ├── NPCRoot
 │   ├── Entrances/HomeGateHotspot
@@ -60,6 +61,7 @@ MainCity (Node2D)
 - `InteractionPoints/GamesHallHotspot` opens the online room/minigame panel.
 - `InteractionPoints/ShopHotspot` emits a localized system chat notice until the shop loop exists.
 - `Entrances/HomeGateHotspot` routes to `home_edit`.
+- `TerrainPainter` instantiates Image 2 sliced PNG grass, dirt, stone, water, and decoration sprites as the current MVP map base while the final TileMapLayer is pending.
 - `WorldHUD/ChannelPicker` selects the outgoing chat channel from `configs/chat_channels.json`.
 - `WorldHUD/MainCityNPCDialog` opens compact NPC service menus without covering the center playfield.
 - `NPCRoot` is populated from `configs/main_city_npcs.json`; NPCs use Image 2 sprites, localized names/dialogue, overhead emotes, and data-driven primary actions.
