@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "emotes": [
+    {
+      "id": "emote.exclamation",
+      "name_key": "emote.name.exclamation",
+      "shortcut": "Alt+1"
+    },
+    {
+      "id": "emote.question",
+      "name_key": "emote.name.question",
+      "shortcut": "Alt+2"
+    },
+    {
+      "id": "emote.music",
+      "name_key": "emote.name.music",
+      "shortcut": "Alt+3"
+    },
+    {
+      "id": "emote.heart",
+      "name_key": "emote.name.heart",
+      "shortcut": "Alt+4"
+    },
+    {
+      "id": "emote.big_heart",
+      "name_key": "emote.name.big_heart"
+    },
+    {
+      "id": "emote.sweat",
+      "name_key": "emote.name.sweat",
+      "shortcut": "Alt+5"
+    },
+    {
+      "id": "emote.idea",
+      "name_key": "emote.name.idea",
+      "shortcut": "Alt+6"
+    },
+    {
+      "id": "emote.angry",
+      "name_key": "emote.name.angry",
+      "shortcut": "Alt+7"
+    },
+    {
+      "id": "emote.gloom",
+      "name_key": "emote.name.gloom",
+      "shortcut": "Alt+8"
+    },
+    {
+      "id": "emote.coin",
+      "name_key": "emote.name.coin",
+      "shortcut": "Alt+9"
+    },
+    {
+      "id": "emote.thanks",
+      "name_key": "emote.name.thanks"
+    },
+    {
+      "id": "emote.silence",
+      "name_key": "emote.name.silence",
+      "shortcut": "Alt+0"
+    },
+    {
+      "id": "emote.nervous_sweat",
+      "name_key": "emote.name.nervous_sweat"
+    },
+    {
+      "id": "emote.sad",
+      "name_key": "emote.name.sad"
+    },
+    {
+      "id": "emote.sorry",
+      "name_key": "emote.name.sorry"
+    },
+    {
+      "id": "emote.laugh",
+      "name_key": "emote.name.laugh"
+    },
+    {
+      "id": "emote.confused",
+      "name_key": "emote.name.confused"
+    },
+    {
+      "id": "emote.thumbs_up",
+      "name_key": "emote.name.thumbs_up"
+    },
+    {
+      "id": "emote.search",
+      "name_key": "emote.name.search"
+    },
+    {
+      "id": "emote.surprise",
+      "name_key": "emote.name.surprise"
+    },
+    {
+      "id": "emote.no",
+      "name_key": "emote.name.no"
+    },
+    {
+      "id": "emote.help",
+      "name_key": "emote.name.help"
+    },
+    {
+      "id": "emote.yes",
+      "name_key": "emote.name.yes"
+    },
+    {
+      "id": "emote.go",
+      "name_key": "emote.name.go"
+    },
+    {
+      "id": "emote.cry",
+      "name_key": "emote.name.cry"
+    },
+    {
+      "id": "emote.sly",
+      "name_key": "emote.name.sly"
+    },
+    {
+      "id": "emote.kiss",
+      "name_key": "emote.name.kiss"
+    },
+    {
+      "id": "emote.pat",
+      "name_key": "emote.name.pat"
+    },
+    {
+      "id": "emote.puff",
+      "name_key": "emote.name.puff"
+    },
+    {
+      "id": "emote.nod",
+      "name_key": "emote.name.nod"
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "default_spot_id": "town_pier",
+  "daily_full_reward_count": 10,
+  "bite_timing": {
+    "cast_delay_seconds": 0.35,
+    "bite_delay_seconds": 0.55,
+    "reel_delay_seconds": 0.35
+  },
+  "rarities": [
+    {
+      "id": "common",
+      "name_key": "fishing.rarity.common",
+      "color": "#9b6a43"
+    },
+    {
+      "id": "uncommon",
+      "name_key": "fishing.rarity.uncommon",
+      "color": "#83d68b"
+    },
+    {
+      "id": "rare",
+      "name_key": "fishing.rarity.rare",
+      "color": "#84b8ff"
+    }
+  ],
+  "spots": [
+    {
+      "id": "town_pier",
+      "name_key": "fishing.spot.town_pier.name",
+      "required_route_id": "main_city",
+      "social_bonus_players": 3
+    }
+  ],
+  "fish": [
+    {
+      "id": "pond_minnow",
+      "name_key": "fishing.fish.pond_minnow.name",
+      "rarity": "common",
+      "weight": 60,
+      "sell_value": 3,
+      "icon_path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_018.png"
+    },
+    {
+      "id": "leaf_carp",
+      "name_key": "fishing.fish.leaf_carp.name",
+      "rarity": "uncommon",
+      "weight": 30,
+      "sell_value": 8,
+      "icon_path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_017.png"
+    },
+    {
+      "id": "moon_koi",
+      "name_key": "fishing.fish.moon_koi.name",
+      "rarity": "rare",
+      "weight": 10,
+      "sell_value": 25,
+      "icon_path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_014.png"
+    }
+  ]
+}

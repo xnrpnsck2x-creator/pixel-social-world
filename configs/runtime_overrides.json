@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "web_build": "local-dev",
+  "min_client_version": "0.1.0",
+  "maintenance": {
+    "enabled": false,
+    "message_key": ""
+  },
+  "network": {},
+  "feature_flags": {}
+}

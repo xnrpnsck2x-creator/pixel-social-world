@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/UI/Panels/ReviewerConsolePanel.gd" id="1_panel"]
+
+[node name="ReviewerConsolePanel" type="PanelContainer"]
+custom_minimum_size = Vector2(360, 230)
+script = ExtResource("1_panel")

@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "channels": [
+    {
+      "id": "global",
+      "name_key": "chat.global.name",
+      "description_key": "chat.global.description",
+      "scope": "server",
+      "persistence": "ephemeral",
+      "default_join": true,
+      "player_can_post": true,
+      "max_message_length": 180,
+      "history_limit": 40,
+      "moderation_profile": "standard"
+    },
+    {
+      "id": "nearby",
+      "name_key": "chat.nearby.name",
+      "description_key": "chat.nearby.description",
+      "scope": "proximity",
+      "persistence": "ephemeral",
+      "default_join": true,
+      "player_can_post": true,
+      "max_message_length": 120,
+      "history_limit": 30,
+      "moderation_profile": "standard"
+    },
+    {
+      "id": "house",
+      "name_key": "chat.house.name",
+      "description_key": "chat.house.description",
+      "scope": "home_instance",
+      "persistence": "ephemeral",
+      "default_join": false,
+      "player_can_post": true,
+      "max_message_length": 140,
+      "history_limit": 30,
+      "moderation_profile": "standard"
+    },
+    {
+      "id": "party",
+      "name_key": "chat.party.name",
+      "description_key": "chat.party.description",
+      "scope": "party",
+      "persistence": "ephemeral",
+      "default_join": false,
+      "player_can_post": true,
+      "max_message_length": 140,
+      "history_limit": 50,
+      "moderation_profile": "friends"
+    },
+    {
+      "id": "system",
+      "name_key": "chat.system.name",
+      "description_key": "chat.system.description",
+      "scope": "session",
+      "persistence": "ephemeral",
+      "default_join": true,
+      "player_can_post": false,
+      "max_message_length": 240,
+      "history_limit": 20,
+      "moderation_profile": "system"
+    }
+  ]
+}

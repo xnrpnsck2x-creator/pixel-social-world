@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "default_queue_timeout_seconds": 45,
+  "minigames": [
+    {
+      "id": "fishing",
+      "mode_id": "casual_activity",
+      "name_key": "minigame.fishing.name",
+      "description_key": "minigame.fishing.description",
+      "route_id": "minigame_fishing",
+      "game_path": "res://scenes/minigames/fishing/main.tscn",
+      "manifest_path": "res://scenes/minigames/fishing/meta.json",
+      "enabled": true,
+      "mvp_priority": 0,
+      "min_players": 1,
+      "max_players": 4,
+      "session_seconds": 60,
+      "matchmaking": {
+        "enabled": false,
+        "queue": "casual"
+      },
+      "rewards": {
+        "participation_coin": 3,
+        "winner_coin": 0
+      }
+    },
+    {
+      "id": "tile_dash",
+      "mode_id": "side_scroller_2d",
+      "name_key": "minigame.tile_dash.name",
+      "description_key": "minigame.tile_dash.description",
+      "route_id": "minigame_tile_dash",
+      "enabled": false,
+      "mvp_priority": 2,
+      "min_players": 1,
+      "max_players": 4,
+      "session_seconds": 90,
+      "matchmaking": {
+        "enabled": true,
+        "queue": "casual"
+      },
+      "rewards": {
+        "participation_coin": 5,
+        "winner_coin": 20
+      }
+    },
+    {
+      "id": "sprite_match",
+      "mode_id": "casual_activity",
+      "name_key": "minigame.sprite_match.name",
+      "description_key": "minigame.sprite_match.description",
+      "route_id": "minigame_sprite_match",
+      "enabled": false,
+      "mvp_priority": 2,
+      "min_players": 1,
+      "max_players": 2,
+      "session_seconds": 120,
+      "matchmaking": {
+        "enabled": true,
+        "queue": "casual"
+      },
+      "rewards": {
+        "participation_coin": 5,
+        "winner_coin": 15
+      }
+    }
+  ]
+}

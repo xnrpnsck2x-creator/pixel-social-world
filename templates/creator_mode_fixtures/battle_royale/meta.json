@@ -1,0 +1,19 @@
+{
+  "game_id": "fixture_battle_royale",
+  "version": "0.1.0",
+  "author": "internal_fixture",
+  "mode_id": "battle_royale",
+  "name": {"en": "Battle Royale Fixture", "ja": "Battle Royale Fixture", "zh": "Battle Royale Fixture"},
+  "min_players": 2,
+  "max_players": 16,
+  "tags": ["fixture", "battle_royale"],
+  "requires_network": true,
+  "runtime_contract": {
+    "camera": "top_down",
+    "input_profile": "survival_action",
+    "network_profile": "authoritative_realtime"
+  },
+  "entry_scene": "res://templates/creator_mode_fixtures/shared/main.tscn",
+  "main_script": "res://templates/creator_mode_fixtures/shared/game.gd",
+  "asset_budget_bytes": 5242880
+}

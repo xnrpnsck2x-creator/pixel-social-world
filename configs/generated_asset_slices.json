@@ -1,0 +1,3522 @@
+{
+  "schema_version": 1,
+  "generated_by": "scripts/Tools/AssetSlicer/slice_generated_sheets.py",
+  "slices": [
+    {
+      "id": "forest_main_city_tileset_v0.001",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_001.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1140,
+        21,
+        1240,
+        130
+      ],
+      "area": 7304
+    },
+    {
+      "id": "forest_main_city_tileset_v0.002",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_002.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1034,
+        22,
+        1127,
+        130
+      ],
+      "area": 6511
+    },
+    {
+      "id": "forest_main_city_tileset_v0.003",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_003.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1251,
+        22,
+        1320,
+        131
+      ],
+      "area": 4285
+    },
+    {
+      "id": "forest_main_city_tileset_v0.004",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_004.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        30,
+        26,
+        142,
+        139
+      ],
+      "area": 11575
+    },
+    {
+      "id": "forest_main_city_tileset_v0.005",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_005.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        153,
+        26,
+        266,
+        139
+      ],
+      "area": 11735
+    },
+    {
+      "id": "forest_main_city_tileset_v0.006",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_006.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        276,
+        26,
+        390,
+        139
+      ],
+      "area": 11818
+    },
+    {
+      "id": "forest_main_city_tileset_v0.007",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_007.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        400,
+        26,
+        515,
+        139
+      ],
+      "area": 12007
+    },
+    {
+      "id": "forest_main_city_tileset_v0.008",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_008.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        526,
+        26,
+        642,
+        139
+      ],
+      "area": 12067
+    },
+    {
+      "id": "forest_main_city_tileset_v0.009",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_009.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        654,
+        26,
+        770,
+        139
+      ],
+      "area": 12041
+    },
+    {
+      "id": "forest_main_city_tileset_v0.010",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_010.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        780,
+        26,
+        897,
+        139
+      ],
+      "area": 12015
+    },
+    {
+      "id": "forest_main_city_tileset_v0.011",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_011.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        924,
+        28,
+        1022,
+        130
+      ],
+      "area": 7365
+    },
+    {
+      "id": "forest_main_city_tileset_v0.012",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_012.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1342,
+        30,
+        1448,
+        131
+      ],
+      "area": 7439
+    },
+    {
+      "id": "forest_main_city_tileset_v0.013",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_013.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1020,
+        139,
+        1112,
+        247
+      ],
+      "area": 7101
+    },
+    {
+      "id": "forest_main_city_tileset_v0.014",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_014.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1126,
+        141,
+        1215,
+        247
+      ],
+      "area": 6873
+    },
+    {
+      "id": "forest_main_city_tileset_v0.015",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_015.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        920,
+        144,
+        1009,
+        247
+      ],
+      "area": 5937
+    },
+    {
+      "id": "forest_main_city_tileset_v0.016",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_016.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1229,
+        145,
+        1320,
+        247
+      ],
+      "area": 6165
+    },
+    {
+      "id": "forest_main_city_tileset_v0.017",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_017.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        30,
+        146,
+        142,
+        258
+      ],
+      "area": 11540
+    },
+    {
+      "id": "forest_main_city_tileset_v0.018",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_018.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        151,
+        146,
+        266,
+        258
+      ],
+      "area": 11746
+    },
+    {
+      "id": "forest_main_city_tileset_v0.019",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_019.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        274,
+        146,
+        390,
+        258
+      ],
+      "area": 11691
+    },
+    {
+      "id": "forest_main_city_tileset_v0.020",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_020.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        400,
+        146,
+        515,
+        259
+      ],
+      "area": 12016
+    },
+    {
+      "id": "forest_main_city_tileset_v0.021",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_021.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        526,
+        146,
+        642,
+        259
+      ],
+      "area": 12047
+    },
+    {
+      "id": "forest_main_city_tileset_v0.022",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_022.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        653,
+        146,
+        770,
+        259
+      ],
+      "area": 11910
+    },
+    {
+      "id": "forest_main_city_tileset_v0.023",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_023.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        780,
+        146,
+        897,
+        259
+      ],
+      "area": 10791
+    },
+    {
+      "id": "forest_main_city_tileset_v0.024",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_024.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1426,
+        146,
+        1504,
+        247
+      ],
+      "area": 4592
+    },
+    {
+      "id": "forest_main_city_tileset_v0.025",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_025.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1333,
+        150,
+        1414,
+        247
+      ],
+      "area": 4850
+    },
+    {
+      "id": "forest_main_city_tileset_v0.026",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_026.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        152,
+        265,
+        266,
+        345
+      ],
+      "area": 6807
+    },
+    {
+      "id": "forest_main_city_tileset_v0.027",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_027.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        276,
+        265,
+        390,
+        345
+      ],
+      "area": 6359
+    },
+    {
+      "id": "forest_main_city_tileset_v0.028",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_028.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1422,
+        265,
+        1507,
+        342
+      ],
+      "area": 4789
+    },
+    {
+      "id": "forest_main_city_tileset_v0.029",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_029.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        30,
+        267,
+        143,
+        345
+      ],
+      "area": 6412
+    },
+    {
+      "id": "forest_main_city_tileset_v0.030",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_030.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        400,
+        267,
+        515,
+        345
+      ],
+      "area": 6748
+    },
+    {
+      "id": "forest_main_city_tileset_v0.031",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_031.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        526,
+        267,
+        642,
+        345
+      ],
+      "area": 7113
+    },
+    {
+      "id": "forest_main_city_tileset_v0.032",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_032.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        654,
+        267,
+        769,
+        345
+      ],
+      "area": 6887
+    },
+    {
+      "id": "forest_main_city_tileset_v0.033",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_033.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        780,
+        267,
+        886,
+        345
+      ],
+      "area": 5769
+    },
+    {
+      "id": "forest_main_city_tileset_v0.034",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_034.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1134,
+        267,
+        1215,
+        345
+      ],
+      "area": 4978
+    },
+    {
+      "id": "forest_main_city_tileset_v0.035",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_035.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        913,
+        268,
+        1012,
+        345
+      ],
+      "area": 4828
+    },
+    {
+      "id": "forest_main_city_tileset_v0.036",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_036.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1229,
+        268,
+        1314,
+        345
+      ],
+      "area": 4782
+    },
+    {
+      "id": "forest_main_city_tileset_v0.037",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_037.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1327,
+        269,
+        1411,
+        345
+      ],
+      "area": 4558
+    },
+    {
+      "id": "forest_main_city_tileset_v0.038",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_038.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1026,
+        271,
+        1119,
+        345
+      ],
+      "area": 4759
+    },
+    {
+      "id": "forest_main_city_tileset_v0.039",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_039.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        45,
+        344,
+        184,
+        489
+      ],
+      "area": 12808
+    },
+    {
+      "id": "forest_main_city_tileset_v0.040",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_040.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        200,
+        344,
+        332,
+        490
+      ],
+      "area": 11786
+    },
+    {
+      "id": "forest_main_city_tileset_v0.041",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_041.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        348,
+        344,
+        470,
+        489
+      ],
+      "area": 10930
+    },
+    {
+      "id": "forest_main_city_tileset_v0.042",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_042.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        747,
+        354,
+        838,
+        489
+      ],
+      "area": 6279
+    },
+    {
+      "id": "forest_main_city_tileset_v0.043",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_043.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        486,
+        355,
+        609,
+        489
+      ],
+      "area": 10320
+    },
+    {
+      "id": "forest_main_city_tileset_v0.044",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_044.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        618,
+        357,
+        732,
+        489
+      ],
+      "area": 8991
+    },
+    {
+      "id": "forest_main_city_tileset_v0.045",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_045.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        858,
+        363,
+        940,
+        473
+      ],
+      "area": 4979
+    },
+    {
+      "id": "forest_main_city_tileset_v0.046",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_046.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1264,
+        364,
+        1371,
+        461
+      ],
+      "area": 7572
+    },
+    {
+      "id": "forest_main_city_tileset_v0.047",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_047.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1390,
+        364,
+        1480,
+        464
+      ],
+      "area": 7171
+    },
+    {
+      "id": "forest_main_city_tileset_v0.048",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_048.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1151,
+        370,
+        1247,
+        464
+      ],
+      "area": 7336
+    },
+    {
+      "id": "forest_main_city_tileset_v0.049",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_049.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1048,
+        371,
+        1136,
+        461
+      ],
+      "area": 6879
+    },
+    {
+      "id": "forest_main_city_tileset_v0.050",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_050.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        964,
+        390,
+        1022,
+        442
+      ],
+      "area": 1872
+    },
+    {
+      "id": "forest_main_city_tileset_v0.051",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_051.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1048,
+        480,
+        1199,
+        597
+      ],
+      "area": 16179
+    },
+    {
+      "id": "forest_main_city_tileset_v0.052",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_052.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1212,
+        480,
+        1372,
+        597
+      ],
+      "area": 16949
+    },
+    {
+      "id": "forest_main_city_tileset_v0.053",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_053.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1384,
+        480,
+        1507,
+        596
+      ],
+      "area": 12727
+    },
+    {
+      "id": "forest_main_city_tileset_v0.054",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_054.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        32,
+        498,
+        132,
+        584
+      ],
+      "area": 4924
+    },
+    {
+      "id": "forest_main_city_tileset_v0.055",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_055.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        899,
+        499,
+        951,
+        681
+      ],
+      "area": 4993
+    },
+    {
+      "id": "forest_main_city_tileset_v0.056",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_056.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        142,
+        500,
+        240,
+        588
+      ],
+      "area": 5151
+    },
+    {
+      "id": "forest_main_city_tileset_v0.057",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_057.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        350,
+        500,
+        415,
+        582
+      ],
+      "area": 2395
+    },
+    {
+      "id": "forest_main_city_tileset_v0.058",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_058.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        435,
+        504,
+        509,
+        586
+      ],
+      "area": 2725
+    },
+    {
+      "id": "forest_main_city_tileset_v0.059",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_059.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        257,
+        506,
+        323,
+        586
+      ],
+      "area": 3336
+    },
+    {
+      "id": "forest_main_city_tileset_v0.060",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_060.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        529,
+        510,
+        659,
+        584
+      ],
+      "area": 6498
+    },
+    {
+      "id": "forest_main_city_tileset_v0.061",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_061.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        682,
+        510,
+        828,
+        583
+      ],
+      "area": 6770
+    },
+    {
+      "id": "forest_main_city_tileset_v0.062",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_062.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        841,
+        510,
+        878,
+        584
+      ],
+      "area": 1482
+    },
+    {
+      "id": "forest_main_city_tileset_v0.063",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_063.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        968,
+        521,
+        1012,
+        663
+      ],
+      "area": 3170
+    },
+    {
+      "id": "forest_main_city_tileset_v0.064",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_064.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        360,
+        603,
+        448,
+        726
+      ],
+      "area": 9132
+    },
+    {
+      "id": "forest_main_city_tileset_v0.065",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_065.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        160,
+        605,
+        239,
+        733
+      ],
+      "area": 7850
+    },
+    {
+      "id": "forest_main_city_tileset_v0.066",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_066.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        45,
+        606,
+        142,
+        726
+      ],
+      "area": 9543
+    },
+    {
+      "id": "forest_main_city_tileset_v0.067",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_067.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1305,
+        606,
+        1372,
+        706
+      ],
+      "area": 5767
+    },
+    {
+      "id": "forest_main_city_tileset_v0.068",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_068.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1384,
+        606,
+        1507,
+        706
+      ],
+      "area": 10616
+    },
+    {
+      "id": "forest_main_city_tileset_v0.069",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_069.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1048,
+        607,
+        1200,
+        706
+      ],
+      "area": 13547
+    },
+    {
+      "id": "forest_main_city_tileset_v0.070",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_070.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1212,
+        607,
+        1298,
+        706
+      ],
+      "area": 7281
+    },
+    {
+      "id": "forest_main_city_tileset_v0.071",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_071.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        518,
+        610,
+        668,
+        731
+      ],
+      "area": 12829
+    },
+    {
+      "id": "forest_main_city_tileset_v0.072",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_072.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        778,
+        610,
+        844,
+        733
+      ],
+      "area": 6080
+    },
+    {
+      "id": "forest_main_city_tileset_v0.073",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_073.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        247,
+        613,
+        345,
+        712
+      ],
+      "area": 7153
+    },
+    {
+      "id": "forest_main_city_tileset_v0.074",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_074.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        690,
+        614,
+        756,
+        726
+      ],
+      "area": 5591
+    },
+    {
+      "id": "forest_main_city_tileset_v0.075",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_075.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        462,
+        619,
+        522,
+        701
+      ],
+      "area": 3637
+    },
+    {
+      "id": "forest_main_city_tileset_v0.076",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_076.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        899,
+        729,
+        1032,
+        899
+      ],
+      "area": 19204
+    },
+    {
+      "id": "forest_main_city_tileset_v0.077",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_077.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1041,
+        729,
+        1175,
+        899
+      ],
+      "area": 19194
+    },
+    {
+      "id": "forest_main_city_tileset_v0.078",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_078.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1183,
+        729,
+        1309,
+        898
+      ],
+      "area": 17608
+    },
+    {
+      "id": "forest_main_city_tileset_v0.079",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_079.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1316,
+        729,
+        1444,
+        898
+      ],
+      "area": 17786
+    },
+    {
+      "id": "forest_main_city_tileset_v0.080",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_080.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        172,
+        751,
+        277,
+        867
+      ],
+      "area": 7356
+    },
+    {
+      "id": "forest_main_city_tileset_v0.081",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_081.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        302,
+        751,
+        389,
+        866
+      ],
+      "area": 6187
+    },
+    {
+      "id": "forest_main_city_tileset_v0.082",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_082.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        762,
+        755,
+        875,
+        832
+      ],
+      "area": 6917
+    },
+    {
+      "id": "forest_main_city_tileset_v0.083",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_083.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        421,
+        759,
+        485,
+        851
+      ],
+      "area": 3066
+    },
+    {
+      "id": "forest_main_city_tileset_v0.084",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_084.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        515,
+        759,
+        662,
+        835
+      ],
+      "area": 7511
+    },
+    {
+      "id": "forest_main_city_tileset_v0.085",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_085.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        677,
+        765,
+        743,
+        835
+      ],
+      "area": 3994
+    },
+    {
+      "id": "forest_main_city_tileset_v0.086",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_086.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        28,
+        771,
+        144,
+        869
+      ],
+      "area": 7160
+    },
+    {
+      "id": "forest_main_city_tileset_v0.087",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_087.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        759,
+        851,
+        875,
+        972
+      ],
+      "area": 10747
+    },
+    {
+      "id": "forest_main_city_tileset_v0.088",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_088.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        529,
+        877,
+        631,
+        967
+      ],
+      "area": 8156
+    },
+    {
+      "id": "forest_main_city_tileset_v0.089",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_089.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        647,
+        877,
+        747,
+        967
+      ],
+      "area": 8036
+    },
+    {
+      "id": "forest_main_city_tileset_v0.090",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_090.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        424,
+        880,
+        454,
+        971
+      ],
+      "area": 1957
+    },
+    {
+      "id": "forest_main_city_tileset_v0.091",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_091.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        478,
+        880,
+        510,
+        971
+      ],
+      "area": 1992
+    },
+    {
+      "id": "forest_main_city_tileset_v0.092",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_092.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        208,
+        882,
+        286,
+        973
+      ],
+      "area": 4133
+    },
+    {
+      "id": "forest_main_city_tileset_v0.093",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_093.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        305,
+        885,
+        414,
+        973
+      ],
+      "area": 7250
+    },
+    {
+      "id": "forest_main_city_tileset_v0.094",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_094.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        899,
+        900,
+        995,
+        978
+      ],
+      "area": 5033
+    },
+    {
+      "id": "forest_main_city_tileset_v0.095",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_095.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        43,
+        903,
+        137,
+        971
+      ],
+      "area": 4951
+    },
+    {
+      "id": "forest_main_city_tileset_v0.096",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_096.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        145,
+        903,
+        193,
+        970
+      ],
+      "area": 2309
+    },
+    {
+      "id": "forest_main_city_tileset_v0.097",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_097.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1005,
+        905,
+        1106,
+        981
+      ],
+      "area": 5609
+    },
+    {
+      "id": "forest_main_city_tileset_v0.098",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_098.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1115,
+        905,
+        1228,
+        981
+      ],
+      "area": 6377
+    },
+    {
+      "id": "forest_main_city_tileset_v0.099",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_099.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1239,
+        905,
+        1346,
+        980
+      ],
+      "area": 5109
+    },
+    {
+      "id": "forest_main_city_tileset_v0.100",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_100.png",
+      "source_sheet": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "bbox": [
+        1357,
+        905,
+        1453,
+        977
+      ],
+      "area": 5003
+    },
+    {
+      "id": "ui_kit_v0.001",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_001.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        25,
+        8,
+        440,
+        376
+      ],
+      "area": 138249
+    },
+    {
+      "id": "ui_kit_v0.002",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_002.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        1259,
+        11,
+        1484,
+        353
+      ],
+      "area": 69201
+    },
+    {
+      "id": "ui_kit_v0.003",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_003.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        765,
+        37,
+        1219,
+        102
+      ],
+      "area": 25181
+    },
+    {
+      "id": "ui_kit_v0.004",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_004.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        463,
+        38,
+        749,
+        378
+      ],
+      "area": 93031
+    },
+    {
+      "id": "ui_kit_v0.005",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_005.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        765,
+        106,
+        1219,
+        172
+      ],
+      "area": 25188
+    },
+    {
+      "id": "ui_kit_v0.006",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_006.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        765,
+        176,
+        1219,
+        244
+      ],
+      "area": 26065
+    },
+    {
+      "id": "ui_kit_v0.007",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_007.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        843,
+        268,
+        908,
+        337
+      ],
+      "area": 3783
+    },
+    {
+      "id": "ui_kit_v0.008",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_008.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        920,
+        268,
+        986,
+        337
+      ],
+      "area": 3872
+    },
+    {
+      "id": "ui_kit_v0.009",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_009.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        1077,
+        268,
+        1144,
+        337
+      ],
+      "area": 3888
+    },
+    {
+      "id": "ui_kit_v0.010",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_010.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        1156,
+        268,
+        1221,
+        337
+      ],
+      "area": 3838
+    },
+    {
+      "id": "ui_kit_v0.011",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_011.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        767,
+        269,
+        832,
+        337
+      ],
+      "area": 3807
+    },
+    {
+      "id": "ui_kit_v0.012",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_012.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        998,
+        269,
+        1062,
+        337
+      ],
+      "area": 3760
+    },
+    {
+      "id": "ui_kit_v0.013",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_013.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        771,
+        362,
+        899,
+        463
+      ],
+      "area": 11927
+    },
+    {
+      "id": "ui_kit_v0.014",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_014.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        909,
+        362,
+        1039,
+        463
+      ],
+      "area": 12125
+    },
+    {
+      "id": "ui_kit_v0.015",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_015.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        1050,
+        362,
+        1178,
+        463
+      ],
+      "area": 11931
+    },
+    {
+      "id": "ui_kit_v0.016",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_016.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        1187,
+        362,
+        1316,
+        463
+      ],
+      "area": 12024
+    },
+    {
+      "id": "ui_kit_v0.017",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_017.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        1327,
+        362,
+        1480,
+        463
+      ],
+      "area": 14346
+    },
+    {
+      "id": "ui_kit_v0.018",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_018.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        25,
+        390,
+        371,
+        519
+      ],
+      "area": 35497
+    },
+    {
+      "id": "ui_kit_v0.019",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_019.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        383,
+        398,
+        749,
+        488
+      ],
+      "area": 30896
+    },
+    {
+      "id": "ui_kit_v0.020",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_020.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        752,
+        469,
+        919,
+        639
+      ],
+      "area": 15454
+    },
+    {
+      "id": "ui_kit_v0.021",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_021.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        918,
+        469,
+        1064,
+        552
+      ],
+      "area": 8457
+    },
+    {
+      "id": "ui_kit_v0.022",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_022.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        1062,
+        469,
+        1204,
+        552
+      ],
+      "area": 8267
+    },
+    {
+      "id": "ui_kit_v0.023",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_023.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        1201,
+        469,
+        1343,
+        552
+      ],
+      "area": 8218
+    },
+    {
+      "id": "ui_kit_v0.024",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_024.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        1341,
+        469,
+        1487,
+        552
+      ],
+      "area": 8461
+    },
+    {
+      "id": "ui_kit_v0.025",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_025.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        22,
+        526,
+        210,
+        600
+      ],
+      "area": 12651
+    },
+    {
+      "id": "ui_kit_v0.026",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_026.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        393,
+        530,
+        462,
+        595
+      ],
+      "area": 3830
+    },
+    {
+      "id": "ui_kit_v0.027",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_027.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        226,
+        531,
+        378,
+        594
+      ],
+      "area": 8454
+    },
+    {
+      "id": "ui_kit_v0.028",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_028.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        489,
+        549,
+        575,
+        639
+      ],
+      "area": 6834
+    },
+    {
+      "id": "ui_kit_v0.029",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_029.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        577,
+        549,
+        662,
+        639
+      ],
+      "area": 6838
+    },
+    {
+      "id": "ui_kit_v0.030",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_030.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        664,
+        549,
+        749,
+        639
+      ],
+      "area": 6825
+    },
+    {
+      "id": "ui_kit_v0.031",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_031.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        857,
+        570,
+        1236,
+        836
+      ],
+      "area": 93412
+    },
+    {
+      "id": "ui_kit_v0.032",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_032.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        1249,
+        570,
+        1501,
+        846
+      ],
+      "area": 64151
+    },
+    {
+      "id": "ui_kit_v0.033",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_033.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        22,
+        610,
+        210,
+        682
+      ],
+      "area": 12297
+    },
+    {
+      "id": "ui_kit_v0.034",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_034.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        393,
+        613,
+        462,
+        678
+      ],
+      "area": 3827
+    },
+    {
+      "id": "ui_kit_v0.035",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_035.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        226,
+        615,
+        378,
+        677
+      ],
+      "area": 8311
+    },
+    {
+      "id": "ui_kit_v0.036",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_036.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        489,
+        637,
+        575,
+        727
+      ],
+      "area": 6840
+    },
+    {
+      "id": "ui_kit_v0.037",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_037.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        577,
+        637,
+        662,
+        727
+      ],
+      "area": 6832
+    },
+    {
+      "id": "ui_kit_v0.038",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_038.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        664,
+        637,
+        749,
+        727
+      ],
+      "area": 6824
+    },
+    {
+      "id": "ui_kit_v0.039",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_039.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        752,
+        637,
+        837,
+        727
+      ],
+      "area": 6823
+    },
+    {
+      "id": "ui_kit_v0.040",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_040.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        22,
+        693,
+        210,
+        766
+      ],
+      "area": 12297
+    },
+    {
+      "id": "ui_kit_v0.041",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_041.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        393,
+        695,
+        462,
+        761
+      ],
+      "area": 3883
+    },
+    {
+      "id": "ui_kit_v0.042",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_042.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        226,
+        697,
+        378,
+        760
+      ],
+      "area": 8319
+    },
+    {
+      "id": "ui_kit_v0.043",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_043.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        664,
+        724,
+        749,
+        816
+      ],
+      "area": 6969
+    },
+    {
+      "id": "ui_kit_v0.044",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_044.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        489,
+        725,
+        574,
+        816
+      ],
+      "area": 6972
+    },
+    {
+      "id": "ui_kit_v0.045",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_045.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        577,
+        725,
+        662,
+        816
+      ],
+      "area": 6974
+    },
+    {
+      "id": "ui_kit_v0.046",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_046.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        752,
+        725,
+        837,
+        816
+      ],
+      "area": 6967
+    },
+    {
+      "id": "ui_kit_v0.047",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_047.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        22,
+        775,
+        210,
+        848
+      ],
+      "area": 12435
+    },
+    {
+      "id": "ui_kit_v0.048",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_048.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        393,
+        778,
+        462,
+        845
+      ],
+      "area": 3953
+    },
+    {
+      "id": "ui_kit_v0.049",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_049.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        226,
+        780,
+        378,
+        843
+      ],
+      "area": 8442
+    },
+    {
+      "id": "ui_kit_v0.050",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_050.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        265,
+        872,
+        357,
+        965
+      ],
+      "area": 6130
+    },
+    {
+      "id": "ui_kit_v0.051",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_051.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        500,
+        872,
+        605,
+        980
+      ],
+      "area": 8350
+    },
+    {
+      "id": "ui_kit_v0.052",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_052.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        626,
+        872,
+        731,
+        980
+      ],
+      "area": 8304
+    },
+    {
+      "id": "ui_kit_v0.053",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_053.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        755,
+        872,
+        860,
+        980
+      ],
+      "area": 8377
+    },
+    {
+      "id": "ui_kit_v0.054",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_054.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        891,
+        872,
+        996,
+        980
+      ],
+      "area": 8311
+    },
+    {
+      "id": "ui_kit_v0.055",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_055.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        1017,
+        872,
+        1123,
+        980
+      ],
+      "area": 8386
+    },
+    {
+      "id": "ui_kit_v0.056",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_056.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        1147,
+        872,
+        1252,
+        980
+      ],
+      "area": 8364
+    },
+    {
+      "id": "ui_kit_v0.057",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_057.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        1274,
+        872,
+        1379,
+        983
+      ],
+      "area": 8578
+    },
+    {
+      "id": "ui_kit_v0.058",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_058.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        1400,
+        872,
+        1505,
+        983
+      ],
+      "area": 8559
+    },
+    {
+      "id": "ui_kit_v0.059",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_059.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        27,
+        877,
+        116,
+        965
+      ],
+      "area": 6574
+    },
+    {
+      "id": "ui_kit_v0.060",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_060.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        145,
+        877,
+        234,
+        965
+      ],
+      "area": 6637
+    },
+    {
+      "id": "ui_kit_v0.061",
+      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_061.png",
+      "source_sheet": "res://assets/ui/generated/ui_kit_v0_alpha.png",
+      "bbox": [
+        378,
+        877,
+        467,
+        962
+      ],
+      "area": 6321
+    },
+    {
+      "id": "overhead_emotes_v1.001",
+      "path": "res://assets/ui/sliced/overhead_emotes_v1/overhead_emotes_v1_001.png",
+      "source_sheet": "res://assets/ui/generated/overhead_emotes_v1_alpha.png",
+      "bbox": [
+        46,
+        42,
+        227,
+        225
+      ],
+      "area": 23894
+    },
+    {
+      "id": "overhead_emotes_v1.002",
+      "path": "res://assets/ui/sliced/overhead_emotes_v1/overhead_emotes_v1_002.png",
+      "source_sheet": "res://assets/ui/generated/overhead_emotes_v1_alpha.png",
+      "bbox": [
+        272,
+        42,
+        452,
+        225
+      ],
+      "area": 23659
+    },
+    {
+      "id": "overhead_emotes_v1.003",
+      "path": "res://assets/ui/sliced/overhead_emotes_v1/overhead_emotes_v1_003.png",
+      "source_sheet": "res://assets/ui/generated/overhead_emotes_v1_alpha.png",
+      "bbox": [
+        491,
+        44,
+        674,
+        225
+      ],
+      "area": 23984
+    },
+    {
+      "id": "overhead_emotes_v1.004",
+      "path": "res://assets/ui/sliced/overhead_emotes_v1/overhead_emotes_v1_004.png",
+      "source_sheet": "res://assets/ui/generated/overhead_emotes_v1_alpha.png",
+      "bbox": [
+        710,
+        44,
+        895,
+        225
+      ],
+      "area": 24138
+    },
+    {
+      "id": "overhead_emotes_v1.005",
+      "path": "res://assets/ui/sliced/overhead_emotes_v1/overhead_emotes_v1_005.png",
+      "source_sheet": "res://assets/ui/generated/overhead_emotes_v1_alpha.png",
+      "bbox": [
+        932,
+        44,
+        1117,
+        225
+      ],
+      "area": 24241
+    },
+    {
+      "id": "overhead_emotes_v1.006",
+      "path": "res://assets/ui/sliced/overhead_emotes_v1/overhead_emotes_v1_006.png",
+      "source_sheet": "res://assets/ui/generated/overhead_emotes_v1_alpha.png",
+      "bbox": [
+        1152,
+        45,
+        1328,
+        225
+      ],
+      "area": 22758
+    },
+    {
+      "id": "overhead_emotes_v1.007",
+      "path": "res://assets/ui/sliced/overhead_emotes_v1/overhead_emotes_v1_007.png",
+      "source_sheet": "res://assets/ui/generated/overhead_emotes_v1_alpha.png",
+      "bbox": [
+        43,
+        252,
+        226,
+        435
+      ],
+      "area": 24221
+    },
+    {
+      "id": "overhead_emotes_v1.008",
+      "path": "res://assets/ui/sliced/overhead_emotes_v1/overhead_emotes_v1_008.png",
+      "source_sheet": "res://assets/ui/generated/overhead_emotes_v1_alpha.png",
+      "bbox": [
+        272,
+        252,
+        450,
+        435
+      ],
+      "area": 23533
+    },
+    {
+      "id": "overhead_emotes_v1.009",
+      "path": "res://assets/ui/sliced/overhead_emotes_v1/overhead_emotes_v1_009.png",
+      "source_sheet": "res://assets/ui/generated/overhead_emotes_v1_alpha.png",
+      "bbox": [
+        491,
+        252,
+        672,
+        435
+      ],
+      "area": 23847
+    },
+    {
+      "id": "overhead_emotes_v1.010",
+      "path": "res://assets/ui/sliced/overhead_emotes_v1/overhead_emotes_v1_010.png",
+      "source_sheet": "res://assets/ui/generated/overhead_emotes_v1_alpha.png",
+      "bbox": [
+        713,
+        252,
+        894,
+        435
+      ],
+      "area": 23895
+    },
+    {
+      "id": "overhead_emotes_v1.011",
+      "path": "res://assets/ui/sliced/overhead_emotes_v1/overhead_emotes_v1_011.png",
+      "source_sheet": "res://assets/ui/generated/overhead_emotes_v1_alpha.png",
+      "bbox": [
+        1150,
+        253,
+        1328,
+        435
+      ],
+      "area": 23361
+    },
+    {
+      "id": "overhead_emotes_v1.012",
+      "path": "res://assets/ui/sliced/overhead_emotes_v1/overhead_emotes_v1_012.png",
+      "source_sheet": "res://assets/ui/generated/overhead_emotes_v1_alpha.png",
+      "bbox": [
+        932,
+        254,
+        1117,
+        435
+      ],
+      "area": 24249
+    },
+    {
+      "id": "overhead_emotes_v1.013",
+      "path": "res://assets/ui/sliced/overhead_emotes_v1/overhead_emotes_v1_013.png",
+      "source_sheet": "res://assets/ui/generated/overhead_emotes_v1_alpha.png",
+      "bbox": [
+        710,
+        464,
+        892,
+        648
+      ],
+      "area": 24143
+    },
+    {
+      "id": "overhead_emotes_v1.014",
+      "path": "res://assets/ui/sliced/overhead_emotes_v1/overhead_emotes_v1_014.png",
+      "source_sheet": "res://assets/ui/generated/overhead_emotes_v1_alpha.png",
+      "bbox": [
+        41,
+        465,
+        225,
+        649
+      ],
+      "area": 24332
+    },
+    {
+      "id": "overhead_emotes_v1.015",
+      "path": "res://assets/ui/sliced/overhead_emotes_v1/overhead_emotes_v1_015.png",
+      "source_sheet": "res://assets/ui/generated/overhead_emotes_v1_alpha.png",
+      "bbox": [
+        266,
+        465,
+        448,
+        648
+      ],
+      "area": 24169
+    },
+    {
+      "id": "overhead_emotes_v1.016",
+      "path": "res://assets/ui/sliced/overhead_emotes_v1/overhead_emotes_v1_016.png",
+      "source_sheet": "res://assets/ui/generated/overhead_emotes_v1_alpha.png",
+      "bbox": [
+        487,
+        465,
+        671,
+        649
+      ],
+      "area": 24508
+    },
+    {
+      "id": "overhead_emotes_v1.017",
+      "path": "res://assets/ui/sliced/overhead_emotes_v1/overhead_emotes_v1_017.png",
+      "source_sheet": "res://assets/ui/generated/overhead_emotes_v1_alpha.png",
+      "bbox": [
+        932,
+        466,
+        1115,
+        649
+      ],
+      "area": 24369
+    },
+    {
+      "id": "overhead_emotes_v1.018",
+      "path": "res://assets/ui/sliced/overhead_emotes_v1/overhead_emotes_v1_018.png",
+      "source_sheet": "res://assets/ui/generated/overhead_emotes_v1_alpha.png",
+      "bbox": [
+        1150,
+        466,
+        1327,
+        649
+      ],
+      "area": 23539
+    },
+    {
+      "id": "overhead_emotes_v1.019",
+      "path": "res://assets/ui/sliced/overhead_emotes_v1/overhead_emotes_v1_019.png",
+      "source_sheet": "res://assets/ui/generated/overhead_emotes_v1_alpha.png",
+      "bbox": [
+        41,
+        677,
+        225,
+        864
+      ],
+      "area": 24825
+    },
+    {
+      "id": "overhead_emotes_v1.020",
+      "path": "res://assets/ui/sliced/overhead_emotes_v1/overhead_emotes_v1_020.png",
+      "source_sheet": "res://assets/ui/generated/overhead_emotes_v1_alpha.png",
+      "bbox": [
+        265,
+        677,
+        445,
+        863
+      ],
+      "area": 24172
+    },
+    {
+      "id": "overhead_emotes_v1.021",
+      "path": "res://assets/ui/sliced/overhead_emotes_v1/overhead_emotes_v1_021.png",
+      "source_sheet": "res://assets/ui/generated/overhead_emotes_v1_alpha.png",
+      "bbox": [
+        709,
+        677,
+        891,
+        863
+      ],
+      "area": 24499
+    },
+    {
+      "id": "overhead_emotes_v1.022",
+      "path": "res://assets/ui/sliced/overhead_emotes_v1/overhead_emotes_v1_022.png",
+      "source_sheet": "res://assets/ui/generated/overhead_emotes_v1_alpha.png",
+      "bbox": [
+        927,
+        677,
+        1111,
+        864
+      ],
+      "area": 24791
+    },
+    {
+      "id": "overhead_emotes_v1.023",
+      "path": "res://assets/ui/sliced/overhead_emotes_v1/overhead_emotes_v1_023.png",
+      "source_sheet": "res://assets/ui/generated/overhead_emotes_v1_alpha.png",
+      "bbox": [
+        486,
+        678,
+        669,
+        863
+      ],
+      "area": 24471
+    },
+    {
+      "id": "overhead_emotes_v1.024",
+      "path": "res://assets/ui/sliced/overhead_emotes_v1/overhead_emotes_v1_024.png",
+      "source_sheet": "res://assets/ui/generated/overhead_emotes_v1_alpha.png",
+      "bbox": [
+        1147,
+        678,
+        1330,
+        864
+      ],
+      "area": 24666
+    },
+    {
+      "id": "overhead_emotes_v1.025",
+      "path": "res://assets/ui/sliced/overhead_emotes_v1/overhead_emotes_v1_025.png",
+      "source_sheet": "res://assets/ui/generated/overhead_emotes_v1_alpha.png",
+      "bbox": [
+        37,
+        899,
+        222,
+        1088
+      ],
+      "area": 25458
+    },
+    {
+      "id": "overhead_emotes_v1.026",
+      "path": "res://assets/ui/sliced/overhead_emotes_v1/overhead_emotes_v1_026.png",
+      "source_sheet": "res://assets/ui/generated/overhead_emotes_v1_alpha.png",
+      "bbox": [
+        260,
+        899,
+        445,
+        1088
+      ],
+      "area": 25356
+    },
+    {
+      "id": "overhead_emotes_v1.027",
+      "path": "res://assets/ui/sliced/overhead_emotes_v1/overhead_emotes_v1_027.png",
+      "source_sheet": "res://assets/ui/generated/overhead_emotes_v1_alpha.png",
+      "bbox": [
+        486,
+        899,
+        668,
+        1087
+      ],
+      "area": 24915
+    },
+    {
+      "id": "overhead_emotes_v1.028",
+      "path": "res://assets/ui/sliced/overhead_emotes_v1/overhead_emotes_v1_028.png",
+      "source_sheet": "res://assets/ui/generated/overhead_emotes_v1_alpha.png",
+      "bbox": [
+        708,
+        900,
+        891,
+        1089
+      ],
+      "area": 25010
+    },
+    {
+      "id": "overhead_emotes_v1.029",
+      "path": "res://assets/ui/sliced/overhead_emotes_v1/overhead_emotes_v1_029.png",
+      "source_sheet": "res://assets/ui/generated/overhead_emotes_v1_alpha.png",
+      "bbox": [
+        929,
+        902,
+        1112,
+        1089
+      ],
+      "area": 24836
+    },
+    {
+      "id": "overhead_emotes_v1.030",
+      "path": "res://assets/ui/sliced/overhead_emotes_v1/overhead_emotes_v1_030.png",
+      "source_sheet": "res://assets/ui/generated/overhead_emotes_v1_alpha.png",
+      "bbox": [
+        1144,
+        902,
+        1329,
+        1088
+      ],
+      "area": 25073
+    },
+    {
+      "id": "hud_icons_v0.001",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_001.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        955,
+        35,
+        1124,
+        227
+      ],
+      "area": 24400
+    },
+    {
+      "id": "hud_icons_v0.002",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_002.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        213,
+        36,
+        384,
+        226
+      ],
+      "area": 24545
+    },
+    {
+      "id": "hud_icons_v0.003",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_003.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        1141,
+        36,
+        1312,
+        227
+      ],
+      "area": 24715
+    },
+    {
+      "id": "hud_icons_v0.004",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_004.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        1327,
+        36,
+        1496,
+        226
+      ],
+      "area": 24357
+    },
+    {
+      "id": "hud_icons_v0.005",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_005.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        25,
+        37,
+        195,
+        226
+      ],
+      "area": 24362
+    },
+    {
+      "id": "hud_icons_v0.006",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_006.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        398,
+        37,
+        566,
+        226
+      ],
+      "area": 24011
+    },
+    {
+      "id": "hud_icons_v0.007",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_007.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        578,
+        37,
+        746,
+        226
+      ],
+      "area": 24173
+    },
+    {
+      "id": "hud_icons_v0.008",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_008.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        769,
+        37,
+        939,
+        226
+      ],
+      "area": 24442
+    },
+    {
+      "id": "hud_icons_v0.009",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_009.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        62,
+        239,
+        157,
+        336
+      ],
+      "area": 7010
+    },
+    {
+      "id": "hud_icons_v0.010",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_010.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        244,
+        239,
+        343,
+        336
+      ],
+      "area": 7317
+    },
+    {
+      "id": "hud_icons_v0.011",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_011.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        612,
+        239,
+        709,
+        336
+      ],
+      "area": 7178
+    },
+    {
+      "id": "hud_icons_v0.012",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_012.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        802,
+        239,
+        899,
+        336
+      ],
+      "area": 7145
+    },
+    {
+      "id": "hud_icons_v0.013",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_013.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        1174,
+        239,
+        1272,
+        336
+      ],
+      "area": 7263
+    },
+    {
+      "id": "hud_icons_v0.014",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_014.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        1361,
+        239,
+        1457,
+        336
+      ],
+      "area": 7071
+    },
+    {
+      "id": "hud_icons_v0.015",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_015.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        431,
+        240,
+        526,
+        336
+      ],
+      "area": 6975
+    },
+    {
+      "id": "hud_icons_v0.016",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_016.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        990,
+        240,
+        1086,
+        336
+      ],
+      "area": 7094
+    },
+    {
+      "id": "hud_icons_v0.017",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_017.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        21,
+        369,
+        194,
+        561
+      ],
+      "area": 25239
+    },
+    {
+      "id": "hud_icons_v0.018",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_018.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        209,
+        369,
+        380,
+        560
+      ],
+      "area": 24874
+    },
+    {
+      "id": "hud_icons_v0.019",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_019.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        392,
+        369,
+        562,
+        560
+      ],
+      "area": 24817
+    },
+    {
+      "id": "hud_icons_v0.020",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_020.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        578,
+        369,
+        750,
+        560
+      ],
+      "area": 25070
+    },
+    {
+      "id": "hud_icons_v0.021",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_021.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        767,
+        369,
+        938,
+        560
+      ],
+      "area": 24980
+    },
+    {
+      "id": "hud_icons_v0.022",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_022.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        954,
+        369,
+        1124,
+        560
+      ],
+      "area": 24642
+    },
+    {
+      "id": "hud_icons_v0.023",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_023.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        1139,
+        369,
+        1310,
+        560
+      ],
+      "area": 24908
+    },
+    {
+      "id": "hud_icons_v0.024",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_024.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        1325,
+        369,
+        1496,
+        560
+      ],
+      "area": 24900
+    },
+    {
+      "id": "hud_icons_v0.025",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_025.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        429,
+        571,
+        525,
+        666
+      ],
+      "area": 6858
+    },
+    {
+      "id": "hud_icons_v0.026",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_026.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        60,
+        572,
+        156,
+        666
+      ],
+      "area": 6852
+    },
+    {
+      "id": "hud_icons_v0.027",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_027.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        243,
+        572,
+        340,
+        666
+      ],
+      "area": 6978
+    },
+    {
+      "id": "hud_icons_v0.028",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_028.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        612,
+        572,
+        708,
+        665
+      ],
+      "area": 6840
+    },
+    {
+      "id": "hud_icons_v0.029",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_029.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        801,
+        572,
+        897,
+        666
+      ],
+      "area": 6854
+    },
+    {
+      "id": "hud_icons_v0.030",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_030.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        988,
+        572,
+        1083,
+        665
+      ],
+      "area": 6767
+    },
+    {
+      "id": "hud_icons_v0.031",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_031.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        1173,
+        572,
+        1269,
+        666
+      ],
+      "area": 6872
+    },
+    {
+      "id": "hud_icons_v0.032",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_032.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        1360,
+        572,
+        1455,
+        665
+      ],
+      "area": 6744
+    },
+    {
+      "id": "hud_icons_v0.033",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_033.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        25,
+        693,
+        195,
+        882
+      ],
+      "area": 24437
+    },
+    {
+      "id": "hud_icons_v0.034",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_034.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        211,
+        693,
+        381,
+        882
+      ],
+      "area": 24282
+    },
+    {
+      "id": "hud_icons_v0.035",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_035.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        394,
+        693,
+        564,
+        882
+      ],
+      "area": 24467
+    },
+    {
+      "id": "hud_icons_v0.036",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_036.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        578,
+        693,
+        745,
+        882
+      ],
+      "area": 24002
+    },
+    {
+      "id": "hud_icons_v0.037",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_037.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        63,
+        894,
+        157,
+        987
+      ],
+      "area": 6692
+    },
+    {
+      "id": "hud_icons_v0.038",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_038.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        245,
+        894,
+        341,
+        987
+      ],
+      "area": 6819
+    },
+    {
+      "id": "hud_icons_v0.039",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_039.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        430,
+        894,
+        525,
+        987
+      ],
+      "area": 6746
+    },
+    {
+      "id": "hud_icons_v0.040",
+      "path": "res://assets/ui/sliced/hud_icons_v0/hud_icons_v0_040.png",
+      "source_sheet": "res://assets/ui/generated/hud_icons_v0_alpha.png",
+      "bbox": [
+        612,
+        894,
+        706,
+        987
+      ],
+      "area": 6685
+    },
+    {
+      "id": "characters_npcs_v0.001",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_001.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        69,
+        32,
+        157,
+        176
+      ],
+      "area": 8723
+    },
+    {
+      "id": "characters_npcs_v0.002",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_002.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        315,
+        32,
+        403,
+        176
+      ],
+      "area": 8612
+    },
+    {
+      "id": "characters_npcs_v0.003",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_003.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        198,
+        33,
+        286,
+        176
+      ],
+      "area": 8606
+    },
+    {
+      "id": "characters_npcs_v0.004",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_004.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        460,
+        33,
+        548,
+        176
+      ],
+      "area": 8796
+    },
+    {
+      "id": "characters_npcs_v0.005",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_005.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        590,
+        33,
+        679,
+        176
+      ],
+      "area": 8798
+    },
+    {
+      "id": "characters_npcs_v0.006",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_006.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        810,
+        33,
+        899,
+        176
+      ],
+      "area": 8684
+    },
+    {
+      "id": "characters_npcs_v0.007",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_007.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        943,
+        35,
+        1031,
+        176
+      ],
+      "area": 8430
+    },
+    {
+      "id": "characters_npcs_v0.008",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_008.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        1267,
+        37,
+        1352,
+        176
+      ],
+      "area": 8718
+    },
+    {
+      "id": "characters_npcs_v0.009",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_009.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        1138,
+        42,
+        1222,
+        176
+      ],
+      "area": 8536
+    },
+    {
+      "id": "characters_npcs_v0.010",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_010.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        68,
+        182,
+        154,
+        321
+      ],
+      "area": 7056
+    },
+    {
+      "id": "characters_npcs_v0.011",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_011.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        194,
+        182,
+        280,
+        321
+      ],
+      "area": 6962
+    },
+    {
+      "id": "characters_npcs_v0.012",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_012.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        313,
+        182,
+        398,
+        321
+      ],
+      "area": 7040
+    },
+    {
+      "id": "characters_npcs_v0.013",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_013.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        810,
+        183,
+        897,
+        321
+      ],
+      "area": 7163
+    },
+    {
+      "id": "characters_npcs_v0.014",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_014.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        942,
+        183,
+        1029,
+        321
+      ],
+      "area": 7230
+    },
+    {
+      "id": "characters_npcs_v0.015",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_015.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        461,
+        184,
+        548,
+        321
+      ],
+      "area": 7407
+    },
+    {
+      "id": "characters_npcs_v0.016",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_016.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        591,
+        184,
+        674,
+        321
+      ],
+      "area": 7297
+    },
+    {
+      "id": "characters_npcs_v0.017",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_017.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        1132,
+        186,
+        1222,
+        321
+      ],
+      "area": 7850
+    },
+    {
+      "id": "characters_npcs_v0.018",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_018.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        1260,
+        186,
+        1351,
+        321
+      ],
+      "area": 7939
+    },
+    {
+      "id": "characters_npcs_v0.019",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_019.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        460,
+        325,
+        542,
+        464
+      ],
+      "area": 8332
+    },
+    {
+      "id": "characters_npcs_v0.020",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_020.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        590,
+        325,
+        675,
+        464
+      ],
+      "area": 8449
+    },
+    {
+      "id": "characters_npcs_v0.021",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_021.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        811,
+        325,
+        897,
+        464
+      ],
+      "area": 8216
+    },
+    {
+      "id": "characters_npcs_v0.022",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_022.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        942,
+        325,
+        1027,
+        464
+      ],
+      "area": 8313
+    },
+    {
+      "id": "characters_npcs_v0.023",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_023.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        72,
+        327,
+        155,
+        464
+      ],
+      "area": 8064
+    },
+    {
+      "id": "characters_npcs_v0.024",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_024.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        198,
+        328,
+        281,
+        464
+      ],
+      "area": 8100
+    },
+    {
+      "id": "characters_npcs_v0.025",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_025.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        317,
+        328,
+        400,
+        464
+      ],
+      "area": 8084
+    },
+    {
+      "id": "characters_npcs_v0.026",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_026.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        1129,
+        329,
+        1215,
+        464
+      ],
+      "area": 8638
+    },
+    {
+      "id": "characters_npcs_v0.027",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_027.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        1259,
+        329,
+        1344,
+        464
+      ],
+      "area": 8672
+    },
+    {
+      "id": "characters_npcs_v0.028",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_028.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        793,
+        497,
+        952,
+        704
+      ],
+      "area": 21856
+    },
+    {
+      "id": "characters_npcs_v0.029",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_029.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        250,
+        505,
+        365,
+        704
+      ],
+      "area": 17472
+    },
+    {
+      "id": "characters_npcs_v0.030",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_030.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        529,
+        508,
+        649,
+        704
+      ],
+      "area": 18343
+    },
+    {
+      "id": "characters_npcs_v0.031",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_031.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        1079,
+        508,
+        1255,
+        704
+      ],
+      "area": 19968
+    },
+    {
+      "id": "characters_npcs_v0.032",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_032.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        738,
+        728,
+        887,
+        962
+      ],
+      "area": 19989
+    },
+    {
+      "id": "characters_npcs_v0.033",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_033.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        937,
+        745,
+        1099,
+        962
+      ],
+      "area": 17998
+    },
+    {
+      "id": "characters_npcs_v0.034",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_034.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        81,
+        757,
+        214,
+        957
+      ],
+      "area": 15901
+    },
+    {
+      "id": "characters_npcs_v0.035",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_035.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        1191,
+        767,
+        1255,
+        844
+      ],
+      "area": 1281
+    },
+    {
+      "id": "characters_npcs_v0.036",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_036.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        276,
+        772,
+        417,
+        957
+      ],
+      "area": 15992
+    },
+    {
+      "id": "characters_npcs_v0.037",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_037.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        1167,
+        776,
+        1409,
+        972
+      ],
+      "area": 19709
+    },
+    {
+      "id": "characters_npcs_v0.038",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_038.png",
+      "source_sheet": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "bbox": [
+        462,
+        783,
+        600,
+        963
+      ],
+      "area": 15205
+    },
+    {
+      "id": "housing_fishing_props_v0.001",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_001.png",
+      "source_sheet": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "bbox": [
+        1248,
+        50,
+        1459,
+        320
+      ],
+      "area": 50459
+    },
+    {
+      "id": "housing_fishing_props_v0.002",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_002.png",
+      "source_sheet": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "bbox": [
+        53,
+        60,
+        251,
+        299
+      ],
+      "area": 45516
+    },
+    {
+      "id": "housing_fishing_props_v0.003",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_003.png",
+      "source_sheet": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "bbox": [
+        272,
+        60,
+        466,
+        299
+      ],
+      "area": 44401
+    },
+    {
+      "id": "housing_fishing_props_v0.004",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_004.png",
+      "source_sheet": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "bbox": [
+        1038,
+        60,
+        1215,
+        314
+      ],
+      "area": 35591
+    },
+    {
+      "id": "housing_fishing_props_v0.005",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_005.png",
+      "source_sheet": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "bbox": [
+        495,
+        78,
+        608,
+        278
+      ],
+      "area": 14551
+    },
+    {
+      "id": "housing_fishing_props_v0.006",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_006.png",
+      "source_sheet": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "bbox": [
+        859,
+        97,
+        992,
+        282
+      ],
+      "area": 15756
+    },
+    {
+      "id": "housing_fishing_props_v0.007",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_007.png",
+      "source_sheet": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "bbox": [
+        658,
+        106,
+        832,
+        277
+      ],
+      "area": 20634
+    },
+    {
+      "id": "housing_fishing_props_v0.008",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_008.png",
+      "source_sheet": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "bbox": [
+        862,
+        324,
+        1028,
+        549
+      ],
+      "area": 31709
+    },
+    {
+      "id": "housing_fishing_props_v0.009",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_009.png",
+      "source_sheet": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "bbox": [
+        468,
+        327,
+        572,
+        538
+      ],
+      "area": 12767
+    },
+    {
+      "id": "housing_fishing_props_v0.010",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_010.png",
+      "source_sheet": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "bbox": [
+        653,
+        335,
+        818,
+        536
+      ],
+      "area": 25482
+    },
+    {
+      "id": "housing_fishing_props_v0.011",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_011.png",
+      "source_sheet": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "bbox": [
+        69,
+        340,
+        398,
+        521
+      ],
+      "area": 56869
+    },
+    {
+      "id": "housing_fishing_props_v0.012",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_012.png",
+      "source_sheet": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "bbox": [
+        63,
+        556,
+        285,
+        733
+      ],
+      "area": 10733
+    },
+    {
+      "id": "housing_fishing_props_v0.013",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_013.png",
+      "source_sheet": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "bbox": [
+        359,
+        577,
+        480,
+        716
+      ],
+      "area": 7580
+    },
+    {
+      "id": "housing_fishing_props_v0.014",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_014.png",
+      "source_sheet": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "bbox": [
+        1278,
+        585,
+        1469,
+        720
+      ],
+      "area": 13899
+    },
+    {
+      "id": "housing_fishing_props_v0.015",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_015.png",
+      "source_sheet": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "bbox": [
+        1063,
+        594,
+        1259,
+        720
+      ],
+      "area": 13962
+    },
+    {
+      "id": "housing_fishing_props_v0.016",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_016.png",
+      "source_sheet": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "bbox": [
+        885,
+        597,
+        1038,
+        707
+      ],
+      "area": 9276
+    },
+    {
+      "id": "housing_fishing_props_v0.017",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_017.png",
+      "source_sheet": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "bbox": [
+        710,
+        601,
+        865,
+        706
+      ],
+      "area": 9152
+    },
+    {
+      "id": "housing_fishing_props_v0.018",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_018.png",
+      "source_sheet": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "bbox": [
+        528,
+        605,
+        680,
+        706
+      ],
+      "area": 8503
+    },
+    {
+      "id": "housing_fishing_props_v0.019",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_019.png",
+      "source_sheet": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "bbox": [
+        1288,
+        757,
+        1466,
+        963
+      ],
+      "area": 21425
+    },
+    {
+      "id": "housing_fishing_props_v0.020",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_020.png",
+      "source_sheet": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "bbox": [
+        708,
+        762,
+        905,
+        951
+      ],
+      "area": 26048
+    },
+    {
+      "id": "housing_fishing_props_v0.021",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_021.png",
+      "source_sheet": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "bbox": [
+        294,
+        763,
+        441,
+        949
+      ],
+      "area": 16322
+    },
+    {
+      "id": "housing_fishing_props_v0.022",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_022.png",
+      "source_sheet": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "bbox": [
+        57,
+        769,
+        224,
+        951
+      ],
+      "area": 22945
+    },
+    {
+      "id": "housing_fishing_props_v0.023",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_023.png",
+      "source_sheet": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "bbox": [
+        953,
+        780,
+        1246,
+        955
+      ],
+      "area": 38653
+    },
+    {
+      "id": "housing_fishing_props_v0.024",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_024.png",
+      "source_sheet": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "bbox": [
+        509,
+        787,
+        654,
+        937
+      ],
+      "area": 16099
+    }
+  ]
+}

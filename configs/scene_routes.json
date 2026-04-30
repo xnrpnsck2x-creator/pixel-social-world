@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "routes": [
+    {
+      "id": "boot",
+      "path": "res://scenes/boot/Boot.tscn",
+      "type": "system",
+      "title_key": "scene.boot.title",
+      "requires_network": false,
+      "preload": true
+    },
+    {
+      "id": "login",
+      "path": "res://scenes/login/Login.tscn",
+      "type": "system",
+      "title_key": "login.title",
+      "requires_network": false,
+      "preload": true
+    },
+    {
+      "id": "main_city",
+      "path": "res://scenes/main_city/MainCity.tscn",
+      "type": "world",
+      "title_key": "scene.main_city.title",
+      "requires_network": false,
+      "preload": false
+    },
+    {
+      "id": "world",
+      "path": "res://scenes/world/World.tscn",
+      "type": "world",
+      "title_key": "scene.world.town_square.title",
+      "requires_network": false,
+      "preload": false
+    },
+    {
+      "id": "world_town_square",
+      "path": "res://scenes/world/World.tscn",
+      "type": "world",
+      "title_key": "scene.world.town_square.title",
+      "requires_network": false,
+      "preload": false
+    },
+    {
+      "id": "home_interior",
+      "path": "res://scenes/housing/HousingRoom.tscn",
+      "type": "housing",
+      "title_key": "scene.home.interior.title",
+      "requires_network": false,
+      "preload": false
+    },
+    {
+      "id": "home_edit",
+      "path": "res://scenes/housing/HousingRoom.tscn",
+      "type": "housing",
+      "title_key": "scene.home.edit.title",
+      "requires_network": false,
+      "preload": false
+    },
+    {
+      "id": "minigame_lobby",
+      "path": "res://scenes/minigames/MinigameHub.tscn",
+      "type": "minigame",
+      "title_key": "scene.minigame.lobby.title",
+      "requires_network": false,
+      "preload": false
+    },
+    {
+      "id": "minigame_fishing",
+      "path": "res://scenes/sandbox/MinigameSandbox.tscn",
+      "type": "minigame",
+      "title_key": "scene.minigame.fishing.title",
+      "requires_network": false,
+      "preload": false
+    },
+    {
+      "id": "minigame_tile_dash",
+      "path": "res://scenes/minigames/MinigameHub.tscn",
+      "type": "minigame",
+      "title_key": "scene.minigame.tile_dash.title",
+      "requires_network": false,
+      "preload": false
+    },
+    {
+      "id": "minigame_sprite_match",
+      "path": "res://scenes/minigames/MinigameHub.tscn",
+      "type": "minigame",
+      "title_key": "scene.minigame.sprite_match.title",
+      "requires_network": false,
+      "preload": false
+    },
+    {
+      "id": "settings",
+      "path": "res://scenes/ui/Settings.tscn",
+      "type": "ui",
+      "title_key": "scene.settings.title",
+      "requires_network": false,
+      "preload": false
+    },
+    {
+      "id": "liveops_console",
+      "path": "res://scenes/ui/LiveOpsConsolePanel.tscn",
+      "type": "ui",
+      "title_key": "liveops.console.title",
+      "requires_network": true,
+      "preload": false
+    }
+  ]
+}

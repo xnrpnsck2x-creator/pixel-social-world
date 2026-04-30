@@ -1,0 +1,252 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/UI/HUD/WorldHUD.gd" id="1_hud"]
+[ext_resource type="PackedScene" path="res://scenes/ui/OnlineRoomPanel.tscn" id="2_room_panel"]
+[ext_resource type="PackedScene" path="res://scenes/ui/MainCityNPCDialog.tscn" id="3_npc_dialog"]
+[ext_resource type="PackedScene" path="res://scenes/ui/WorldUtilityPanel.tscn" id="4_util_panel"]
+[ext_resource type="PackedScene" path="res://scenes/ui/SocialMessagesPanel.tscn" id="5_social_panel"]
+[ext_resource type="PackedScene" path="res://scenes/ui/PlayerProfileCard.tscn" id="6_profile_card"]
+
+[node name="WorldHUD" type="CanvasLayer"]
+script = ExtResource("1_hud")
+
+[node name="Root" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TopBar" type="PanelContainer" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 56.0
+grow_horizontal = 2
+
+[node name="TopMargin" type="MarginContainer" parent="Root/TopBar"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 8
+
+[node name="TopRow" type="HBoxContainer" parent="Root/TopBar/TopMargin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TitleLabel" type="Label" parent="Root/TopBar/TopMargin/TopRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PlayerLabel" type="Label" parent="Root/TopBar/TopMargin/TopRow"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="CoinLabel" type="Label" parent="Root/TopBar/TopMargin/TopRow"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="PresencePill" type="HBoxContainer" parent="Root/TopBar/TopMargin/TopRow"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="PresenceDot" type="ColorRect" parent="Root/TopBar/TopMargin/TopRow/PresencePill"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 2
+color = Color(0.54, 0.55, 0.55, 1)
+
+[node name="PresenceLabel" type="Label" parent="Root/TopBar/TopMargin/TopRow/PresencePill"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="SocialButton" type="Button" parent="Root/TopBar/TopMargin/TopRow"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(44, 44)
+
+[node name="MailUnreadBadge" type="Label" parent="Root/TopBar/TopMargin/TopRow/SocialButton"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -20.0
+offset_top = -5.0
+offset_right = 2.0
+offset_bottom = 17.0
+grow_horizontal = 0
+mouse_filter = 2
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BottomBar" type="PanelContainer" parent="Root"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -124.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="BottomMargin" type="MarginContainer" parent="Root/BottomBar"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 10
+
+[node name="BottomRows" type="VBoxContainer" parent="Root/BottomBar/BottomMargin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="StatusLabel" type="Label" parent="Root/BottomBar/BottomMargin/BottomRows"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ChatLog" type="Label" parent="Root/BottomBar/BottomMargin/BottomRows"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ChatInviteButton" type="Button" parent="Root/BottomBar/BottomMargin/BottomRows"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+custom_minimum_size = Vector2(0, 36)
+
+[node name="InputRow" type="HBoxContainer" parent="Root/BottomBar/BottomMargin/BottomRows"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ChannelPicker" type="OptionButton" parent="Root/BottomBar/BottomMargin/BottomRows/InputRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(112, 56)
+layout_mode = 2
+fit_to_longest_item = false
+
+[node name="ChatInput" type="LineEdit" parent="Root/BottomBar/BottomMargin/BottomRows/InputRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+max_length = 120
+
+[node name="EmoteButton" type="Button" parent="Root/BottomBar/BottomMargin/BottomRows/InputRow"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="SendButton" type="Button" parent="Root/BottomBar/BottomMargin/BottomRows/InputRow"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="FishingButton" type="Button" parent="Root/BottomBar/BottomMargin/BottomRows/InputRow"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HomeButton" type="Button" parent="Root/BottomBar/BottomMargin/BottomRows/InputRow"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="InventoryButton" type="Button" parent="Root/BottomBar/BottomMargin/BottomRows/InputRow"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="MinigamesButton" type="Button" parent="Root/BottomBar/BottomMargin/BottomRows/InputRow"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="EmotePalette" type="PanelContainer" parent="Root"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -390.0
+offset_right = 348.0
+offset_bottom = -140.0
+grow_vertical = 0
+
+[node name="EmotePaletteMargin" type="MarginContainer" parent="Root/EmotePalette"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="EmoteGrid" type="GridContainer" parent="Root/EmotePalette/EmotePaletteMargin"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 6
+theme_override_constants/v_separation = 6
+columns = 6
+
+[node name="MainCityNPCDialog" parent="Root" instance=ExtResource("3_npc_dialog")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -312.0
+offset_right = 392.0
+offset_bottom = -140.0
+grow_vertical = 0
+
+[node name="OnlineRoomPanel" parent="Root" instance=ExtResource("2_room_panel")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -360.0
+offset_top = 68.0
+offset_right = -16.0
+offset_bottom = -140.0
+
+[node name="WorldUtilityPanel" parent="Root" instance=ExtResource("4_util_panel")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -360.0
+offset_top = 68.0
+offset_right = -16.0
+offset_bottom = -140.0
+
+[node name="SocialMessagesPanel" parent="Root" instance=ExtResource("5_social_panel")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -360.0
+offset_top = 68.0
+offset_right = -16.0
+offset_bottom = -140.0
+
+[node name="PlayerProfileCard" parent="Root" instance=ExtResource("6_profile_card")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -316.0
+offset_top = 68.0
+offset_right = -16.0
+offset_bottom = 278.0

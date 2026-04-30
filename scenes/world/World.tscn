@@ -1,0 +1,64 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://scripts/UI/Panels/WorldScreen.gd" id="1_world"]
+[ext_resource type="Script" path="res://scripts/Entities/Player/PlayerAvatar.gd" id="2_player"]
+[ext_resource type="Script" path="res://scripts/Systems/Chat/ChatService.gd" id="3_chat"]
+[ext_resource type="Script" path="res://scripts/Systems/Housing/HousingService.gd" id="4_house"]
+[ext_resource type="Script" path="res://scripts/Systems/Minigames/MinigameRegistry.gd" id="5_games"]
+[ext_resource type="PackedScene" path="res://scenes/ui/WorldHUD.tscn" id="6_hud"]
+[ext_resource type="Script" path="res://scripts/UI/Emotes/OverheadEmoteBubble.gd" id="7_emote"]
+[ext_resource type="Script" path="res://scripts/Systems/Emotes/EmoteSync.gd" id="8_emote_sync"]
+
+[node name="World" type="Node2D"]
+script = ExtResource("1_world")
+
+[node name="Ground" type="Polygon2D" parent="."]
+color = Color(0.117647, 0.286275, 0.27451, 1)
+polygon = PackedVector2Array(-1200, -800, 1200, -800, 1200, 800, -1200, 800)
+
+[node name="Plaza" type="Polygon2D" parent="."]
+color = Color(0.364706, 0.376471, 0.337255, 1)
+polygon = PackedVector2Array(-260, -120, 260, -120, 260, 120, -260, 120)
+
+[node name="Player" type="CharacterBody2D" parent="."]
+unique_name_in_owner = true
+script = ExtResource("2_player")
+
+[node name="Body" type="Polygon2D" parent="Player"]
+color = Color(0.180392, 0.768627, 0.682353, 1)
+polygon = PackedVector2Array(-8, -12, 8, -12, 8, 12, -8, 12)
+
+[node name="NameLabel" type="Label" parent="Player"]
+unique_name_in_owner = true
+offset_left = -48.0
+offset_top = -38.0
+offset_right = 48.0
+offset_bottom = -14.0
+horizontal_alignment = 1
+
+[node name="EmoteBubble" type="Node2D" parent="Player"]
+position = Vector2(0, -52)
+script = ExtResource("7_emote")
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+current = true
+zoom = Vector2(3, 3)
+
+[node name="ChatService" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("3_chat")
+
+[node name="HousingService" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("4_house")
+
+[node name="MinigameRegistry" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("5_games")
+
+[node name="EmoteSync" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("8_emote_sync")
+
+[node name="WorldHUD" parent="." instance=ExtResource("6_hud")]
+unique_name_in_owner = true

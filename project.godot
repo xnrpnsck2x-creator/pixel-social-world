@@ -1,0 +1,34 @@
+config_version=5
+
+[application]
+
+config/name="Pixel Social World"
+run/main_scene="res://scenes/boot/Boot.tscn"
+config/features=PackedStringArray("4.3", "Mobile")
+
+[autoload]
+
+ConfigLoader="*res://scripts/Core/ConfigLoader.gd"
+SaveSystem="*res://scripts/Core/SaveSystem.gd"
+SceneRouter="*res://scripts/Core/SceneRouter.gd"
+RuntimeConfigService="*res://scripts/Core/RuntimeConfigService.gd"
+App="*res://scripts/Core/App.gd"
+OrientationGuard="*res://scripts/UI/Responsive/OrientationGuard.gd"
+SessionTokenStore="*res://scripts/Network/Client/SessionTokenStore.gd"
+OnlineClient="*res://scripts/Network/Client/OnlineClient.gd"
+RealtimeClient="*res://scripts/Network/Client/RealtimeClient.gd"
+RoomLifecycle="*res://scripts/Network/Sync/RoomLifecycle.gd"
+NetworkLifecycle="*res://scripts/Network/Client/NetworkLifecycle.gd"
+
+[display]
+
+window/size/viewport_width=960
+window/size/viewport_height=540
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
+renderer/rendering_method="mobile"
+renderer/rendering_method.mobile="mobile"

@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "default_avatar": "adventurer_v0",
+  "avatars": [
+    {
+      "id": "adventurer_v0",
+      "source_sheet": "res://assets/sprites/generated/player_adventurer_actions_v0_alpha.png",
+      "source_path": "res://assets/sprites/generated/player_adventurer_actions_v0_source.png",
+      "sprite_scale": 0.36,
+      "animations": {
+        "idle_down": {"fps": 1, "loop": true, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/idle_down.png"]},
+        "idle_right": {"fps": 1, "loop": true, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/idle_right.png"]},
+        "idle_up": {"fps": 1, "loop": true, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/idle_up.png"]},
+        "idle_left": {"fps": 1, "loop": true, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/idle_left.png"]},
+        "walk_down": {"fps": 7, "loop": true, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/walk_down_down_0.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/walk_down_down_1.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/walk_down_down_2.png"]},
+        "walk_right": {"fps": 7, "loop": true, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/walk_right_right_0.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/walk_right_right_1.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/walk_right_right_2.png"]},
+        "walk_up": {"fps": 7, "loop": true, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/walk_up_up_0.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/walk_up_up_1.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/walk_up_up_2.png"]},
+        "walk_left": {"fps": 7, "loop": true, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/walk_left_left_0.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/walk_left_left_1.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/walk_left_left_2.png"]},
+        "attack_down": {"fps": 10, "loop": false, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/attack_down_down_0.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/attack_down_down_1.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/attack_down_down_2.png"]},
+        "attack_right": {"fps": 10, "loop": false, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/attack_right_right_0.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/attack_right_right_1.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/attack_right_right_2.png"]},
+        "attack_up": {"fps": 10, "loop": false, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/attack_up_up_0.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/attack_up_up_1.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/attack_up_up_2.png"]},
+        "attack_left": {"fps": 10, "loop": false, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/attack_left_left_0.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/attack_left_left_1.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/attack_left_left_2.png"]},
+        "sit_down": {"fps": 1, "loop": true, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/sit_down.png"]},
+        "sit_right": {"fps": 1, "loop": true, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/sit_right.png"]},
+        "sit_up": {"fps": 1, "loop": true, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/sit_up.png"]},
+        "sit_left": {"fps": 1, "loop": true, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/sit_left.png"]}
+      }
+    }
+  ]
+}

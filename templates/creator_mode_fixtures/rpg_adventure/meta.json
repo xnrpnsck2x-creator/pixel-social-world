@@ -1,0 +1,19 @@
+{
+  "game_id": "fixture_rpg_adventure",
+  "version": "0.1.0",
+  "author": "internal_fixture",
+  "mode_id": "rpg_adventure",
+  "name": {"en": "RPG Fixture", "ja": "RPG Fixture", "zh": "RPG Fixture"},
+  "min_players": 1,
+  "max_players": 4,
+  "tags": ["fixture", "rpg"],
+  "requires_network": true,
+  "runtime_contract": {
+    "camera": "top_down",
+    "input_profile": "rpg_move_confirm",
+    "network_profile": "session_sync"
+  },
+  "entry_scene": "res://templates/creator_mode_fixtures/shared/main.tscn",
+  "main_script": "res://templates/creator_mode_fixtures/shared/game.gd",
+  "asset_budget_bytes": 5242880
+}

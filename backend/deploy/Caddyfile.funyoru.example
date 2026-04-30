@@ -1,0 +1,30 @@
+# Local-only web server for the first Cloudflare Free launch.
+# Cloudflare Tunnel should expose this as https://funyoru.com.
+
+127.0.0.1:8080 {
+	root * /opt/pixel-social-world/web
+	encode gzip zstd
+
+	@html {
+		path / /index.html
+	}
+	header @html Cache-Control "public, max-age=60"
+
+	@runtime_config {
+		path /runtime_config.json
+	}
+	header @runtime_config Cache-Control "public, max-age=60"
+
+	@immutable {
+		path *.js *.wasm *.pck *.png *.webp *.woff2
+	}
+	header @immutable Cache-Control "public, max-age=31536000, immutable"
+
+	header {
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+	}
+
+	try_files {path} /index.html
+	file_server
+}

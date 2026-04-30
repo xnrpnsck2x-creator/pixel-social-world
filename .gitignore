@@ -1,0 +1,15 @@
+.DS_Store
+.godot/
+.import/
+export_credentials.cfg
+*.tmp
+*.log
+.tools/
+backend/bin/
+backend/dist/
+backend/var/
+builds/*
+!builds/.gdignore
+backend/deploy/*.env
+!backend/deploy/*.env.example
+.env

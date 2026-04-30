@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "currency": "coin",
+  "starting_balance": 25,
+  "daily_soft_cap": 400,
+  "sources": [
+    {
+      "id": "fishing_catch",
+      "category": "minigame",
+      "daily_full_reward_count": 10,
+      "daily_reduced_reward_rate": 0.35
+    }
+  ],
+  "sinks": [
+    {
+      "id": "housing_catalog",
+      "category": "housing",
+      "target_first_session_spend": 60
+    }
+  ],
+  "housing": {
+    "sell_refund_rate": 0.5
+  }
+}

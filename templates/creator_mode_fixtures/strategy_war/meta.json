@@ -1,0 +1,19 @@
+{
+  "game_id": "fixture_strategy_war",
+  "version": "0.1.0",
+  "author": "internal_fixture",
+  "mode_id": "strategy_war",
+  "name": {"en": "Strategy Fixture", "ja": "Strategy Fixture", "zh": "Strategy Fixture"},
+  "min_players": 1,
+  "max_players": 4,
+  "tags": ["fixture", "strategy"],
+  "requires_network": true,
+  "runtime_contract": {
+    "camera": "isometric",
+    "input_profile": "strategy_pointer",
+    "network_profile": "turn_or_lockstep"
+  },
+  "entry_scene": "res://templates/creator_mode_fixtures/shared/main.tscn",
+  "main_script": "res://templates/creator_mode_fixtures/shared/game.gd",
+  "asset_budget_bytes": 5242880
+}

@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "web_build": "funyoru-free-launch",
+  "min_client_version": "0.1.0",
+  "maintenance": {
+    "enabled": false,
+    "message_key": ""
+  },
+  "network": {
+    "environment": "production",
+    "online_enabled": true,
+    "base_url": "https://api.funyoru.com",
+    "websocket_url": "wss://api.funyoru.com/ws/city",
+    "http_timeout_seconds": 4.0,
+    "presence_tick_seconds": 10,
+    "reconnect_attempts": 3
+  },
+  "feature_flags": {
+    "chat": true,
+    "housing": true,
+    "minigames": true
+  }
+}

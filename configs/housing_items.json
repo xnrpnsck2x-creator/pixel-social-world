@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "currency": "coin",
+  "items": [
+    {
+      "id": "starter_wallpaper",
+      "name_key": "housing.item.starter_wallpaper.name",
+      "description_key": "housing.item.starter_wallpaper.description",
+      "item_type": "surface",
+      "category": "wall",
+      "icon_path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_002.png",
+      "size": {
+        "width": 1,
+        "height": 1
+      },
+      "placement": "wall",
+      "rotatable": false,
+      "price": 8,
+      "tags": [
+        "starter"
+      ]
+    },
+    {
+      "id": "wooden_floor",
+      "name_key": "housing.item.wooden_floor.name",
+      "description_key": "housing.item.wooden_floor.description",
+      "item_type": "surface",
+      "category": "floor",
+      "icon_path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_003.png",
+      "size": {
+        "width": 1,
+        "height": 1
+      },
+      "placement": "floor",
+      "rotatable": false,
+      "price": 8,
+      "tags": [
+        "starter"
+      ]
+    },
+    {
+      "id": "simple_chair",
+      "name_key": "housing.item.simple_chair.name",
+      "description_key": "housing.item.simple_chair.description",
+      "item_type": "furniture",
+      "category": "seat",
+      "icon_path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_005.png",
+      "size": {
+        "width": 1,
+        "height": 1
+      },
+      "placement": "floor",
+      "rotatable": true,
+      "price": 25,
+      "tags": [
+        "starter",
+        "interactive"
+      ]
+    },
+    {
+      "id": "tiny_table",
+      "name_key": "housing.item.tiny_table.name",
+      "description_key": "housing.item.tiny_table.description",
+      "item_type": "furniture",
+      "category": "table",
+      "icon_path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_007.png",
+      "size": {
+        "width": 2,
+        "height": 1
+      },
+      "placement": "floor",
+      "rotatable": true,
+      "price": 35,
+      "tags": [
+        "starter"
+      ]
+    },
+    {
+      "id": "potted_plant",
+      "name_key": "housing.item.potted_plant.name",
+      "description_key": "housing.item.potted_plant.description",
+      "item_type": "decor",
+      "category": "plant",
+      "icon_path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_006.png",
+      "size": {
+        "width": 1,
+        "height": 1
+      },
+      "placement": "floor",
+      "rotatable": false,
+      "price": 45,
+      "tags": [
+        "decor"
+      ]
+    },
+    {
+      "id": "arcade_cabinet",
+      "name_key": "housing.item.arcade_cabinet.name",
+      "description_key": "housing.item.arcade_cabinet.description",
+      "item_type": "furniture",
+      "category": "activity",
+      "icon_path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_008.png",
+      "size": {
+        "width": 1,
+        "height": 2
+      },
+      "placement": "floor",
+      "rotatable": true,
+      "price": 120,
+      "tags": [
+        "interactive",
+        "minigame"
+      ],
+      "opens_minigame_id": "sprite_match"
+    }
+  ]
+}

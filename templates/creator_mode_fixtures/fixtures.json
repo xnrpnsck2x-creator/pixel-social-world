@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "fixtures": [
+    {
+      "mode_id": "casual_activity",
+      "meta_path": "res://templates/creator_mode_fixtures/casual_activity/meta.json"
+    },
+    {
+      "mode_id": "side_scroller_2d",
+      "meta_path": "res://templates/creator_mode_fixtures/side_scroller_2d/meta.json"
+    },
+    {
+      "mode_id": "2d_fighting",
+      "meta_path": "res://templates/creator_mode_fixtures/2d_fighting/meta.json"
+    },
+    {
+      "mode_id": "strategy_war",
+      "meta_path": "res://templates/creator_mode_fixtures/strategy_war/meta.json"
+    },
+    {
+      "mode_id": "rpg_adventure",
+      "meta_path": "res://templates/creator_mode_fixtures/rpg_adventure/meta.json"
+    },
+    {
+      "mode_id": "tower_defense",
+      "meta_path": "res://templates/creator_mode_fixtures/tower_defense/meta.json"
+    },
+    {
+      "mode_id": "battle_royale",
+      "meta_path": "res://templates/creator_mode_fixtures/battle_royale/meta.json"
+    }
+  ]
+}

@@ -1,0 +1,180 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/UI/Panels/OnlineRoomPanel.gd" id="1_panel"]
+
+[node name="OnlineRoomPanel" type="PanelContainer"]
+custom_minimum_size = Vector2(328, 328)
+script = ExtResource("1_panel")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="Rows" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="HeaderRow" type="HBoxContainer" parent="Margin/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="TitleLabel" type="Label" parent="Margin/Rows/HeaderRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RefreshButton" type="Button" parent="Margin/Rows/HeaderRow"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ReportButton" type="Button" parent="Margin/Rows/HeaderRow"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="CloseButton" type="Button" parent="Margin/Rows/HeaderRow"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="PresenceRow" type="HBoxContainer" parent="Margin/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="StatusDot" type="ColorRect" parent="Margin/Rows/PresenceRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 2
+color = Color(0.54, 0.55, 0.55, 1)
+
+[node name="MemberCountLabel" type="Label" parent="Margin/Rows/PresenceRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HeartbeatLabel" type="Label" parent="Margin/Rows/PresenceRow"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="QuickEmoteRow" type="HBoxContainer" parent="Margin/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="LaughEmoteButton" type="Button" parent="Margin/Rows/QuickEmoteRow"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HeartEmoteButton" type="Button" parent="Margin/Rows/QuickEmoteRow"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ExclamationEmoteButton" type="Button" parent="Margin/Rows/QuickEmoteRow"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="MembersTitleLabel" type="Label" parent="Margin/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="MembersLabel" type="Label" parent="Margin/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 0)
+
+[node name="MemberActionRow" type="HBoxContainer" parent="Margin/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="MembersList" type="ItemList" parent="Margin/Rows/MemberActionRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(0, 36)
+auto_height = true
+
+[node name="PrivateMemberButton" type="Button" parent="Margin/Rows/MemberActionRow"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(88, 36)
+disabled = true
+
+[node name="ChatTitleLabel" type="Label" parent="Margin/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ChatPreviewLabel" type="Label" parent="Margin/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 72)
+autowrap_mode = 3
+
+[node name="PanelInviteButton" type="Button" parent="Margin/Rows"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+custom_minimum_size = Vector2(0, 36)
+
+[node name="RoomChatRow" type="HBoxContainer" parent="Margin/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="RoomChatInput" type="LineEdit" parent="Margin/Rows/RoomChatRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="RoomSendButton" type="Button" parent="Margin/Rows/RoomChatRow"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="GamesTitleLabel" type="Label" parent="Margin/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="GameCatalogLabel" type="Label" parent="Margin/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 28)
+autowrap_mode = 3
+
+[node name="SessionsLabel" type="Label" parent="Margin/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(0, 70)
+autowrap_mode = 3
+
+[node name="ActionRow" type="HBoxContainer" parent="Margin/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="HostFishingButton" type="Button" parent="Margin/Rows/ActionRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="JoinSessionButton" type="Button" parent="Margin/Rows/ActionRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HomeTitleLabel" type="Label" parent="Margin/Rows"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HousingActionRow" type="HBoxContainer" parent="Margin/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="InviteHomeButton" type="Button" parent="Margin/Rows/HousingActionRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VisitHomeButton" type="Button" parent="Margin/Rows/HousingActionRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3

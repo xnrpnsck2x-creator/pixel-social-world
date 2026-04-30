@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "npcs": [
+    {
+      "id": "fisher",
+      "name_key": "npc.fisher.name",
+      "dialogue_key": "npc.fisher.dialogue",
+      "action_id": "npc_fishing",
+      "primary_action_id": "fishing",
+      "primary_action_key": "npc.action.go_fishing",
+      "primary_icon_id": "icon.fishing",
+      "sprite_path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_031.png",
+      "position": {"x": -360, "y": 210},
+      "sprite_scale": 0.24,
+      "emote_id": "emote.music"
+    },
+    {
+      "id": "merchant",
+      "name_key": "npc.merchant.name",
+      "dialogue_key": "npc.merchant.dialogue",
+      "action_id": "npc_shop",
+      "primary_action_id": "shop",
+      "primary_action_key": "npc.action.shop_soon",
+      "primary_icon_id": "icon.shop",
+      "sprite_path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_028.png",
+      "position": {"x": 330, "y": 42},
+      "sprite_scale": 0.24,
+      "emote_id": "emote.coin"
+    },
+    {
+      "id": "mail_courier",
+      "name_key": "npc.mail_courier.name",
+      "dialogue_key": "npc.mail_courier.dialogue",
+      "action_id": "npc_mail",
+      "primary_action_id": "mail",
+      "primary_action_key": "npc.action.mail_soon",
+      "primary_icon_id": "icon.mail",
+      "sprite_path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_034.png",
+      "position": {"x": -230, "y": -42},
+      "sprite_scale": 0.24,
+      "emote_id": "emote.exclamation"
+    },
+    {
+      "id": "game_host",
+      "name_key": "npc.game_host.name",
+      "dialogue_key": "npc.game_host.dialogue",
+      "action_id": "npc_games",
+      "primary_action_id": "games",
+      "primary_action_key": "npc.action.open_games",
+      "primary_icon_id": "icon.games",
+      "sprite_path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_036.png",
+      "position": {"x": 220, "y": -40},
+      "sprite_scale": 0.24,
+      "emote_id": "emote.go"
+    },
+    {
+      "id": "home_keeper",
+      "name_key": "npc.home_keeper.name",
+      "dialogue_key": "npc.home_keeper.dialogue",
+      "action_id": "npc_home",
+      "primary_action_id": "home",
+      "primary_action_key": "npc.action.edit_home",
+      "primary_icon_id": "icon.home",
+      "sprite_path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_030.png",
+      "position": {"x": 380, "y": 126},
+      "sprite_scale": 0.24,
+      "emote_id": "emote.heart"
+    },
+    {
+      "id": "event_guide",
+      "name_key": "npc.event_guide.name",
+      "dialogue_key": "npc.event_guide.dialogue",
+      "action_id": "npc_notice",
+      "primary_action_id": "notice",
+      "primary_action_key": "npc.action.open_notice",
+      "primary_icon_id": "icon.quest",
+      "sprite_path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_029.png",
+      "position": {"x": -118, "y": -36},
+      "sprite_scale": 0.24,
+      "emote_id": "emote.idea"
+    }
+  ]
+}

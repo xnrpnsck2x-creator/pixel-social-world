@@ -1,0 +1,28 @@
+{
+  "game_id": "fishing",
+  "version": "1.0.0",
+  "author": "official",
+  "mode_id": "casual_activity",
+  "name": {
+    "en": "Fishing",
+    "ja": "釣り",
+    "zh": "钓鱼"
+  },
+  "min_players": 1,
+  "max_players": 4,
+  "tags": [
+    "official",
+    "casual",
+    "fishing"
+  ],
+  "requires_network": false,
+  "runtime_contract": {
+    "camera": "contained",
+    "input_profile": "tap_timing",
+    "network_profile": "offline_optional",
+    "supports_emotes": true
+  },
+  "entry_scene": "res://scenes/minigames/fishing/main.tscn",
+  "main_script": "res://scenes/minigames/fishing/game.gd",
+  "asset_budget_bytes": 5242880
+}

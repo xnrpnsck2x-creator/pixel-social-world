@@ -1,0 +1,223 @@
+{
+  "schema_version": 1,
+  "theme_id": "forest_mmo_v0",
+  "assets": [
+    {
+      "id": "map.sheet.main_city_tileset.v0",
+      "type": "generated_sheet",
+      "path": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "source_path": "res://assets/maps/generated/forest_main_city_tileset_v0_source.png",
+      "usage": "main_city_tileset"
+    },
+    {
+      "id": "map.slices.main_city_tileset.v0",
+      "type": "generated_slices",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0",
+      "source_path": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "usage": "main_city_props_and_hotspots"
+    },
+    {
+      "id": "map.hotspot.fishing_pier",
+      "type": "hotspot_prop",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_071.png",
+      "source_path": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "usage": "main_city_fishing_hotspot"
+    },
+    {
+      "id": "map.hotspot.home_gate",
+      "type": "hotspot_prop",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_084.png",
+      "source_path": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "usage": "main_city_home_hotspot"
+    },
+    {
+      "id": "map.hotspot.games_hall",
+      "type": "hotspot_prop",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_098.png",
+      "source_path": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "usage": "main_city_games_hotspot"
+    },
+    {
+      "id": "map.hotspot.item_shop",
+      "type": "hotspot_prop",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_076.png",
+      "source_path": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "usage": "main_city_shop_hotspot"
+    },
+    {
+      "id": "map.prop.central_fountain",
+      "type": "town_prop",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_086.png",
+      "source_path": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "usage": "main_city_plaza_ambience"
+    },
+    {
+      "id": "map.prop.notice_sign",
+      "type": "town_prop",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_057.png",
+      "source_path": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "usage": "main_city_plaza_ambience"
+    },
+    {
+      "id": "map.prop.flower_stand",
+      "type": "town_prop",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_097.png",
+      "source_path": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "usage": "main_city_plaza_ambience"
+    },
+    {
+      "id": "map.prop.town_lamp",
+      "type": "town_prop",
+      "path": "res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_055.png",
+      "source_path": "res://assets/maps/generated/forest_main_city_tileset_v0_alpha.png",
+      "usage": "main_city_plaza_ambience"
+    },
+    {
+      "id": "sprite.sheet.characters_npcs.v0",
+      "type": "generated_sheet",
+      "path": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "source_path": "res://assets/sprites/generated/characters_npcs_v0_source.png",
+      "usage": "avatars_and_npcs"
+    },
+    {
+      "id": "sprite.slices.characters_npcs.v0",
+      "type": "generated_slices",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0",
+      "source_path": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "usage": "main_city_npc_sprites"
+    },
+    {
+      "id": "npc.character.fisher",
+      "type": "npc_sprite",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_031.png",
+      "source_path": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "usage": "main_city_fisher_npc"
+    },
+    {
+      "id": "npc.character.merchant",
+      "type": "npc_sprite",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_028.png",
+      "source_path": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "usage": "main_city_shop_npc"
+    },
+    {
+      "id": "npc.character.mail_courier",
+      "type": "npc_sprite",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_034.png",
+      "source_path": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "usage": "main_city_mail_npc"
+    },
+    {
+      "id": "npc.character.game_host",
+      "type": "npc_sprite",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_036.png",
+      "source_path": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "usage": "main_city_games_npc"
+    },
+    {
+      "id": "npc.character.home_keeper",
+      "type": "npc_sprite",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_030.png",
+      "source_path": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "usage": "main_city_home_npc"
+    },
+    {
+      "id": "npc.character.event_guide",
+      "type": "npc_sprite",
+      "path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_029.png",
+      "source_path": "res://assets/sprites/generated/characters_npcs_v0_alpha.png",
+      "usage": "main_city_notice_npc"
+    },
+    {
+      "id": "sprite.sheet.player_adventurer_actions.v0",
+      "type": "generated_sheet",
+      "path": "res://assets/sprites/generated/player_adventurer_actions_v0_alpha.png",
+      "source_path": "res://assets/sprites/generated/player_adventurer_actions_v0_source.png",
+      "usage": "player_action_animation"
+    },
+    {
+      "id": "sprite.slices.player_adventurer_actions.v0",
+      "type": "generated_slices",
+      "path": "res://assets/sprites/sliced/player_adventurer_actions_v0",
+      "source_path": "res://assets/sprites/generated/player_adventurer_actions_v0_alpha.png",
+      "usage": "player_action_animation_frames"
+    },
+    {
+      "id": "props.sheet.housing_fishing.v0",
+      "type": "generated_sheet",
+      "path": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "source_path": "res://assets/housing/generated/housing_fishing_props_v0_source.png",
+      "usage": "housing_and_fishing_props"
+    },
+    {
+      "id": "props.slices.housing_fishing.v0",
+      "type": "generated_slices",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0",
+      "source_path": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "usage": "housing_catalog_icons_and_fishing_props"
+    },
+    {
+      "id": "housing.item.starter_wallpaper.icon",
+      "type": "housing_icon",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_002.png",
+      "source_path": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "usage": "housing_catalog_and_room_surface"
+    },
+    {
+      "id": "housing.item.wooden_floor.icon",
+      "type": "housing_icon",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_003.png",
+      "source_path": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "usage": "housing_catalog_and_room_surface"
+    },
+    {
+      "id": "housing.item.simple_chair.icon",
+      "type": "housing_icon",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_005.png",
+      "source_path": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "usage": "housing_catalog_and_room_sprite"
+    },
+    {
+      "id": "housing.item.tiny_table.icon",
+      "type": "housing_icon",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_007.png",
+      "source_path": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "usage": "housing_catalog_and_room_sprite"
+    },
+    {
+      "id": "housing.item.potted_plant.icon",
+      "type": "housing_icon",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_006.png",
+      "source_path": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "usage": "housing_catalog_and_room_sprite"
+    },
+    {
+      "id": "housing.item.arcade_cabinet.icon",
+      "type": "housing_icon",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_008.png",
+      "source_path": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "usage": "housing_catalog_and_room_sprite"
+    },
+    {
+      "id": "fishing.fish.pond_minnow.icon",
+      "type": "fishing_icon",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_018.png",
+      "source_path": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "usage": "fishing_reward_ui"
+    },
+    {
+      "id": "fishing.fish.leaf_carp.icon",
+      "type": "fishing_icon",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_017.png",
+      "source_path": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "usage": "fishing_reward_ui"
+    },
+    {
+      "id": "fishing.fish.moon_koi.icon",
+      "type": "fishing_icon",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_014.png",
+      "source_path": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "usage": "fishing_reward_ui"
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "app_id": "pixel_social_world",
+  "version": "0.1.0",
+  "app_name_key": "app.name",
+  "default_locale": "en",
+  "supported_locales": [
+    "en",
+    "ja",
+    "zh-Hans"
+  ],
+  "startup_route": "login",
+  "post_login_route": "main_city",
+  "offline_mode_enabled": true,
+  "runtime_config": {
+    "enabled": true,
+    "url": "/runtime_config.json",
+    "local_fallback_path": "res://configs/runtime_overrides.json",
+    "timeout_seconds": 0.75
+  },
+  "feature_flags": {
+    "chat": true,
+    "housing": true,
+    "minigames": true,
+    "friends": false,
+    "trading": false
+  },
+  "limits": {
+    "display_name_min_length": 3,
+    "display_name_max_length": 18,
+    "chat_message_max_length": 180,
+    "home_item_limit": 80,
+    "party_size": 4
+  },
+  "network": {
+    "environment": "local_dev",
+    "online_enabled": true,
+    "transport": "websocket",
+    "base_url": "http://127.0.0.1:8787",
+    "websocket_url": "ws://127.0.0.1:8787/ws/city",
+    "http_timeout_seconds": 0.75,
+    "presence_tick_seconds": 10,
+    "reconnect_attempts": 3,
+    "lifecycle_enabled": true,
+    "pause_realtime_on_hidden": true,
+    "web_session_storage_key": "pixel_social_world.session.v1"
+  },
+  "content_paths": {
+    "scene_routes": "res://configs/scene_routes.json",
+    "chat_channels": "res://configs/chat_channels.json",
+    "housing_items": "res://configs/housing_items.json",
+    "minigames": "res://configs/minigames.json",
+    "creator_game_modes": "res://configs/creator_game_modes.json",
+    "economy": "res://configs/economy.json",
+    "fishing": "res://configs/fishing.json",
+    "utility_panels": "res://configs/utility_panels.json",
+    "ui_assets": "res://configs/ui_assets.json",
+    "art_assets": "res://configs/art_assets.json",
+    "player_animations": "res://configs/player_animations.json",
+    "generated_asset_slices": "res://configs/generated_asset_slices.json",
+    "runtime_overrides": "res://configs/runtime_overrides.json",
+    "localization": "res://localization"
+  }
+}

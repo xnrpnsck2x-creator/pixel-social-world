@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[node name="MinigameHub" type="Node2D"]
+
+[node name="LobbyMarker" type="Polygon2D" parent="."]
+color = Color(0.937255, 0.470588, 0.313725, 1)
+polygon = PackedVector2Array(-40, -40, 40, -40, 40, 40, -40, 40)

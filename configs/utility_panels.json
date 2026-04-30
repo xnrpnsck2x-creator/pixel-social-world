@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "shop": {
+    "items": [
+      {
+        "id": "starter_wallpaper_offer",
+        "item_id": "starter_wallpaper",
+        "action_id": "home",
+        "action_key": "world.panel.action.home"
+      },
+      {
+        "id": "wooden_floor_offer",
+        "item_id": "wooden_floor",
+        "action_id": "home",
+        "action_key": "world.panel.action.home"
+      },
+      {
+        "id": "simple_chair_offer",
+        "item_id": "simple_chair",
+        "action_id": "home",
+        "action_key": "world.panel.action.home"
+      },
+      {
+        "id": "tiny_table_offer",
+        "item_id": "tiny_table",
+        "action_id": "home",
+        "action_key": "world.panel.action.home"
+      },
+      {
+        "id": "potted_plant_offer",
+        "item_id": "potted_plant",
+        "action_id": "home",
+        "action_key": "world.panel.action.home"
+      }
+    ]
+  },
+  "mail": {
+    "messages": [
+      {
+        "id": "welcome_home",
+        "sender_key": "mail.sender.town_office",
+        "subject_key": "mail.welcome.subject",
+        "body_key": "mail.welcome.body",
+        "icon_id": "icon.mail",
+        "action_id": "home",
+        "action_key": "world.panel.action.home"
+      },
+      {
+        "id": "game_hall_open",
+        "sender_key": "mail.sender.game_hall",
+        "subject_key": "mail.game_hall.subject",
+        "body_key": "mail.game_hall.body",
+        "icon_id": "icon.games",
+        "action_id": "games",
+        "action_key": "world.panel.action.games"
+      }
+    ]
+  },
+  "notice": {
+    "notices": [
+      {
+        "id": "creator_alpha_call",
+        "subject_key": "notice.creator_alpha.subject",
+        "body_key": "notice.creator_alpha.body",
+        "icon_id": "icon.quest",
+        "action_id": "creator",
+        "action_key": "world.panel.action.creator"
+      },
+      {
+        "id": "housing_beta",
+        "subject_key": "notice.housing_beta.subject",
+        "body_key": "notice.housing_beta.body",
+        "icon_id": "icon.home",
+        "action_id": "home",
+        "action_key": "world.panel.action.home"
+      }
+    ]
+  }
+}

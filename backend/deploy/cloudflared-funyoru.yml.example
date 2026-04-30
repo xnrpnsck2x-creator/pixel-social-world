@@ -1,0 +1,14 @@
+# Example Cloudflare Tunnel ingress for the first funyoru.com launch.
+# Copy to /etc/cloudflared/config.yml after creating the tunnel credentials.
+
+tunnel: pixel-social-world-funyoru
+credentials-file: /etc/cloudflared/pixel-social-world-funyoru.json
+
+ingress:
+  - hostname: funyoru.com
+    service: http://127.0.0.1:8080
+  - hostname: www.funyoru.com
+    service: http://127.0.0.1:8080
+  - hostname: api.funyoru.com
+    service: http://127.0.0.1:8787
+  - service: http_status:404

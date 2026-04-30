@@ -1,0 +1,52 @@
+server:
+  addr: "127.0.0.1:8787"
+  cors_allowed_origins: []
+  read_header_timeout_seconds: 5
+  read_timeout_seconds: 15
+  write_timeout_seconds: 20
+  idle_timeout_seconds: 75
+  shutdown_timeout_seconds: 10
+auth:
+  access_ttl_seconds: 900
+  refresh_ttl_seconds: 2592000
+  admin_token: ""
+  provider_verification: "oidc_jwt"
+  apple_client_ids: []
+  google_client_ids: []
+storage:
+  mode: "postgres"
+  package_artifacts_dir: "/var/lib/pixel-social-world/creator_packages"
+  package_install_dir: "/var/lib/pixel-social-world/creator_runtime"
+realtime:
+  mode: "redis"
+  presence_ttl_seconds: 30
+  session_ttl_seconds: 900
+economy:
+  starting_coin_balance: 25
+housing:
+  items_config_path: "../configs/housing_items.json"
+  sell_refund_rate: 0.5
+minigames:
+  fishing_config_path: "../configs/fishing.json"
+utility:
+  panels_config_path: "../configs/utility_panels.json"
+ai_review:
+  mode: "local_policy"
+  base_url: "http://127.0.0.1:1234/v1"
+  model: "qwen/qwen3-coder-next"
+  timeout_seconds: 45
+postgres:
+  dsn: ""
+  max_open_conns: 40
+  max_idle_conns: 20
+  conn_max_lifetime_seconds: 1800
+  conn_max_idle_time_seconds: 300
+redis:
+  addr: "127.0.0.1:6379"
+  password: ""
+  db: 5
+  pool_size: 128
+  min_idle_conns: 16
+  dial_timeout_seconds: 5
+  read_timeout_seconds: 3
+  write_timeout_seconds: 3

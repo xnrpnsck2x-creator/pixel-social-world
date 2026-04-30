@@ -1,0 +1,19 @@
+{
+  "game_id": "fixture_side_scroller_2d",
+  "version": "0.1.0",
+  "author": "internal_fixture",
+  "mode_id": "side_scroller_2d",
+  "name": {"en": "Side Scroller Fixture", "ja": "Side Scroller Fixture", "zh": "Side Scroller Fixture"},
+  "min_players": 1,
+  "max_players": 4,
+  "tags": ["fixture", "platformer"],
+  "requires_network": true,
+  "runtime_contract": {
+    "camera": "side_view",
+    "input_profile": "action_platformer",
+    "network_profile": "session_sync"
+  },
+  "entry_scene": "res://templates/creator_mode_fixtures/shared/main.tscn",
+  "main_script": "res://templates/creator_mode_fixtures/shared/game.gd",
+  "asset_budget_bytes": 5242880
+}
