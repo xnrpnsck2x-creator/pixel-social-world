@@ -14,6 +14,17 @@ Accelerated content execution now lives in `docs/AcceleratedContentRoute.md`.
 
 ## Progress
 
+### MVP Autopilot Slice 7 - Retention Cleanup and Economy Caps
+
+Status: Implemented and locally verified on 2026-05-01.
+
+- Added `pixel-social-world-retention-cleanup`, a dry-run-by-default PostgreSQL retention runner that executes the `/debug/ops` cleanup plan and keeps room chat untouched.
+- Added a daily `pixel-social-world-retention-cleanup.timer` plus release/install packaging so Ubuntu 26.04 deployments carry the cleanup binary and systemd units.
+- Added `daily_soft_cap` to the backend economy policy, YAML/env config, validation, `/economy/policy`, trusted grants, fishing rewards, and creator settlement.
+- Fishing and creator rewards now return the actual granted delta after caps, preventing the UI from showing coins that were not actually added.
+- Verified with full Go backend tests, content validation, shell syntax checks, Linux amd64 backend build, and cleanup command dry-run.
+- Raised the MVP forecast from roughly 80-84% to 84-88% by turning retention policy into an executable ops path and closing the first anti-inflation cap.
+
 ### MVP Autopilot Slice 6 - Social Trust, Retention, and Creator Payouts
 
 Status: Implemented; verification in progress on 2026-05-01.

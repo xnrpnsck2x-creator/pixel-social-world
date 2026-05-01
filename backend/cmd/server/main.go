@@ -39,7 +39,10 @@ func main() {
 
 	deps := gateway.DefaultMemoryDependencies()
 	deps.StartingCoinBalance = cfg.Economy.StartingCoinBalance
-	economyPolicy := economy.Policy{CreatorShareBps: cfg.Economy.CreatorShareBps}
+	economyPolicy := economy.Policy{
+		CreatorShareBps: cfg.Economy.CreatorShareBps,
+		DailySoftCap:    cfg.Economy.DailySoftCap,
+	}
 	deps.EconomyService = economy.NewMemoryServiceWithPolicy(economyPolicy)
 	deps.RetentionPolicy = ops.RetentionPolicy{
 		RoomChatHistoryDays:        cfg.Retention.RoomChatHistoryDays,

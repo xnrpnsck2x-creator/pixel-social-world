@@ -32,6 +32,7 @@ realtime:
 economy:
   starting_coin_balance: 25
   creator_share_bps: 1000
+  daily_soft_cap: 400
 retention:
   room_chat_history_days: 0
   private_message_days: 365

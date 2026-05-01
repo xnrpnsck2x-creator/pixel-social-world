@@ -23,8 +23,11 @@ require_file() {
 
 require_file "$BUNDLE_DIR/backend/bin/pixel-social-world-server"
 require_file "$BUNDLE_DIR/backend/bin/pixel-social-world-preflight"
+require_file "$BUNDLE_DIR/backend/bin/pixel-social-world-retention-cleanup"
 require_file "$BUNDLE_DIR/backend/configs/production.yaml"
 require_file "$BUNDLE_DIR/deploy/pixel-social-world.service"
+require_file "$BUNDLE_DIR/deploy/pixel-social-world-retention-cleanup.service"
+require_file "$BUNDLE_DIR/deploy/pixel-social-world-retention-cleanup.timer"
 require_file "$BUNDLE_DIR/deploy/pixel-social-world.env.example"
 require_file "$BUNDLE_DIR/deploy/Caddyfile.funyoru.example"
 require_file "$BUNDLE_DIR/deploy/cloudflared-funyoru.yml.example"
@@ -51,10 +54,13 @@ install -d -m 0750 -g "$APP_GROUP" "$ENV_DIR"
 
 install -m 0755 "$BUNDLE_DIR/backend/bin/pixel-social-world-server" "$APP_ROOT/backend/bin/pixel-social-world-server"
 install -m 0755 "$BUNDLE_DIR/backend/bin/pixel-social-world-preflight" "$APP_ROOT/backend/bin/pixel-social-world-preflight"
+install -m 0755 "$BUNDLE_DIR/backend/bin/pixel-social-world-retention-cleanup" "$APP_ROOT/backend/bin/pixel-social-world-retention-cleanup"
 install -m 0644 "$BUNDLE_DIR/backend/configs/production.yaml" "$APP_ROOT/backend/configs/production.yaml"
 install -m 0644 "$BUNDLE_DIR/configs/"*.json "$APP_ROOT/configs/"
 install -m 0644 "$BUNDLE_DIR/web/"* "$APP_ROOT/web/"
 install -m 0644 "$BUNDLE_DIR/deploy/pixel-social-world.service" /etc/systemd/system/pixel-social-world.service
+install -m 0644 "$BUNDLE_DIR/deploy/pixel-social-world-retention-cleanup.service" /etc/systemd/system/pixel-social-world-retention-cleanup.service
+install -m 0644 "$BUNDLE_DIR/deploy/pixel-social-world-retention-cleanup.timer" /etc/systemd/system/pixel-social-world-retention-cleanup.timer
 
 if [[ -f "$ENV_DIR/backend.env" ]]; then
   install -m 0640 -g "$APP_GROUP" "$BUNDLE_DIR/deploy/pixel-social-world.env.example" "$ENV_DIR/backend.env.example.new"
@@ -82,8 +88,11 @@ Next steps:
 3. Create the Cloudflare Tunnel credentials, then adapt /etc/cloudflared/config.funyoru.yml.example.
 4. Dry-run backend config:
    sudo -u $APP_USER $APP_ROOT/backend/bin/pixel-social-world-preflight -env-file $ENV_DIR/backend.env -strict
-5. Start services:
+5. Dry-run retention cleanup:
+   sudo -u $APP_USER $APP_ROOT/backend/bin/pixel-social-world-retention-cleanup -env-file $ENV_DIR/backend.env
+6. Start services:
    sudo systemctl enable --now pixel-social-world
+   sudo systemctl enable --now pixel-social-world-retention-cleanup.timer
    sudo systemctl reload caddy
    sudo systemctl restart cloudflared
 EOF

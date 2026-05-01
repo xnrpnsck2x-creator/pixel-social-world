@@ -31,6 +31,7 @@ The binary is written to:
 ```text
 backend/bin/pixel-social-world-server
 backend/bin/pixel-social-world-preflight
+backend/bin/pixel-social-world-retention-cleanup
 ```
 
 ## Install Layout
@@ -40,6 +41,8 @@ Recommended server layout:
 ```text
 /opt/pixel-social-world/backend/
 ├── bin/pixel-social-world-server
+├── bin/pixel-social-world-preflight
+├── bin/pixel-social-world-retention-cleanup
 ├── configs/production.yaml
 └── deploy/
 /opt/pixel-social-world/configs/
@@ -68,6 +71,9 @@ Production must set at least:
 PSW_CONFIG=/opt/pixel-social-world/backend/configs/production.yaml
 PSW_STORAGE=postgres
 PSW_REALTIME=redis
+PSW_STARTING_COINS=25
+PSW_CREATOR_SHARE_BPS=1000
+PSW_DAILY_SOFT_CAP=400
 PSW_POSTGRES_DSN=postgres://pixel:CHANGE_ME@127.0.0.1:5432/pixel_social_world?sslmode=disable
 PSW_POSTGRES_MAX_OPEN_CONNS=40
 PSW_POSTGRES_MAX_IDLE_CONNS=20
@@ -96,9 +102,13 @@ Install:
 
 ```bash
 sudo cp backend/deploy/pixel-social-world.service /etc/systemd/system/pixel-social-world.service
+sudo cp backend/deploy/pixel-social-world-retention-cleanup.service /etc/systemd/system/pixel-social-world-retention-cleanup.service
+sudo cp backend/deploy/pixel-social-world-retention-cleanup.timer /etc/systemd/system/pixel-social-world-retention-cleanup.timer
 sudo systemctl daemon-reload
 sudo -u pixelsocial /opt/pixel-social-world/backend/bin/pixel-social-world-preflight -env-file /etc/pixel-social-world/backend.env -strict
+sudo -u pixelsocial /opt/pixel-social-world/backend/bin/pixel-social-world-retention-cleanup -env-file /etc/pixel-social-world/backend.env
 sudo systemctl enable --now pixel-social-world
+sudo systemctl enable --now pixel-social-world-retention-cleanup.timer
 ```
 
 Check:
@@ -125,6 +135,17 @@ Run the preflight command before starting or after editing `/etc/pixel-social-wo
 ```
 
 It validates config shape, production secrets/placeholders, shared JSON contracts, and writable package artifact/install directories. It does not print raw secrets.
+
+The retention cleanup command defaults to dry-run and prints matched row counts:
+
+```bash
+/opt/pixel-social-world/backend/bin/pixel-social-world-retention-cleanup \
+  -env-file /etc/pixel-social-world/backend.env
+```
+
+The systemd timer runs the same command with `-execute` once daily. Room chat is
+not touched by this job because it remains live-only memory/Redis state; the job
+only prunes durable PostgreSQL tables declared by the retention plan.
 
 ## Single-Host Sizing
 

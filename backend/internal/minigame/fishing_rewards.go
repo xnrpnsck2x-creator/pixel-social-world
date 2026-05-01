@@ -141,7 +141,7 @@ func (s *MemoryFishingRewardService) ClaimCatch(
 		FishID:      reward.FishID,
 		FishNameKey: reward.NameKey,
 		Rarity:      reward.Rarity,
-		RewardCoin:  reward.RewardCoin,
+		RewardCoin:  balance.Delta,
 		Balance:     balance.Balance,
 	}
 	if requestKey != "" {

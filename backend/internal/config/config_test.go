@@ -30,6 +30,7 @@ func TestLoadAppliesEnvironmentOverrides(t *testing.T) {
 	t.Setenv("PSW_CUSTOM_ROOM_CAPACITY", "30")
 	t.Setenv("PSW_STARTING_COINS", "77")
 	t.Setenv("PSW_CREATOR_SHARE_BPS", "1250")
+	t.Setenv("PSW_DAILY_SOFT_CAP", "321")
 	t.Setenv("PSW_ROOM_CHAT_HISTORY_DAYS", "0")
 	t.Setenv("PSW_PRIVATE_MESSAGE_RETENTION_DAYS", "180")
 	t.Setenv("PSW_MAILBOX_RETENTION_DAYS", "181")
@@ -105,7 +106,9 @@ func TestLoadAppliesEnvironmentOverrides(t *testing.T) {
 		cfg.Realtime.CustomRoomCapacity != 30 {
 		t.Fatalf("room capacity overrides failed: %#v", cfg.Realtime)
 	}
-	if cfg.Economy.StartingCoinBalance != 77 || cfg.Economy.CreatorShareBps != 1250 {
+	if cfg.Economy.StartingCoinBalance != 77 ||
+		cfg.Economy.CreatorShareBps != 1250 ||
+		cfg.Economy.DailySoftCap != 321 {
 		t.Fatalf("economy override failed: %#v", cfg.Economy)
 	}
 	if cfg.Retention.PrivateMessageDays != 180 ||
@@ -192,6 +195,7 @@ func TestValidateCatchesInvalidConnectionPools(t *testing.T) {
 	cfg.Redis.PoolSize = 3
 	cfg.Redis.MinIdleConns = 4
 	cfg.Realtime.MainCityRoomCapacity = 0
+	cfg.Economy.DailySoftCap = 0
 	cfg.Retention.RoomChatHistoryDays = 7
 	cfg.Retention.PrivateMessageDays = 0
 	issues := Validate(cfg, false)
@@ -203,6 +207,7 @@ func TestValidateCatchesInvalidConnectionPools(t *testing.T) {
 		"postgres.max_idle_conns",
 		"redis.min_idle_conns",
 		"realtime.main_city_room_capacity",
+		"economy.daily_soft_cap",
 		"retention.room_chat_history_days",
 		"retention.private_message_days",
 	} {

@@ -30,6 +30,7 @@ func Validate(cfg Config, strict bool) []ValidationIssue {
 	if cfg.Economy.CreatorShareBps < 0 || cfg.Economy.CreatorShareBps > 10000 {
 		issues = appendError(issues, "economy.creator_share_bps", "creator share bps must be between 0 and 10000")
 	}
+	requirePositive(&issues, cfg.Economy.DailySoftCap, "economy.daily_soft_cap")
 	if cfg.Retention.RoomChatHistoryDays != 0 {
 		issues = appendError(issues, "retention.room_chat_history_days", "room chat history must remain 0 for ephemeral room chat")
 	}

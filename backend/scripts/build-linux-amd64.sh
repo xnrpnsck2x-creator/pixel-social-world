@@ -30,5 +30,12 @@ export GOCACHE="${GOCACHE:-$ROOT_DIR/../.tools/gocache}"
   -o "$OUT_DIR/pixel-social-world-preflight" \
   ./cmd/preflight
 
+"$GO_BIN" build \
+  -trimpath \
+  -ldflags="-s -w" \
+  -o "$OUT_DIR/pixel-social-world-retention-cleanup" \
+  ./cmd/retention-cleanup
+
 echo "$OUT_DIR/pixel-social-world-server"
 echo "$OUT_DIR/pixel-social-world-preflight"
+echo "$OUT_DIR/pixel-social-world-retention-cleanup"

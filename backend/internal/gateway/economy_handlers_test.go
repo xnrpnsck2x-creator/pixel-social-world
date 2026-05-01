@@ -70,6 +70,9 @@ func TestCreatorShareRewardIsOwnerOnlyAndWritesLedgers(t *testing.T) {
 	if int(policy["creator_share_bps"].(float64)) != 2000 {
 		t.Fatalf("economy policy did not expose creator share: %#v", policy)
 	}
+	if int(policy["daily_soft_cap"].(float64)) != economy.DefaultPolicy().DailySoftCap {
+		t.Fatalf("economy policy did not expose daily soft cap: %#v", policy)
+	}
 }
 
 func ledgerHasType(events []economy.LedgerEvent, eventType string) bool {

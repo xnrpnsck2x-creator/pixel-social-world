@@ -33,6 +33,7 @@ type CreatorPlayRewardRequest struct {
 type GrantResponse struct {
 	PlayerID string `json:"player_id"`
 	Balance  int    `json:"balance"`
+	Delta    int    `json:"delta"`
 }
 
 type CreatorPlayRewardResponse struct {
@@ -44,6 +45,7 @@ type CreatorPlayRewardResponse struct {
 
 type Policy struct {
 	CreatorShareBps int `json:"creator_share_bps"`
+	DailySoftCap    int `json:"daily_soft_cap"`
 }
 
 type LedgerEvent struct {
@@ -97,7 +99,7 @@ func NewMemoryServiceWithPolicy(policy Policy) Service {
 }
 
 func DefaultPolicy() Policy {
-	return Policy{CreatorShareBps: 1000}
+	return Policy{CreatorShareBps: 1000, DailySoftCap: 400}
 }
 
 func (s *MemoryService) Balance(_ context.Context, playerID string) GrantResponse {
@@ -135,16 +137,18 @@ func (s *MemoryService) Grant(_ context.Context, request GrantRequest) GrantResp
 
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	s.balances[request.PlayerID] += request.Amount
+	amount := s.cappedGrantAmountLocked(request.PlayerID, request.Amount, time.Now().Unix())
+	s.balances[request.PlayerID] += amount
 	s.record(request.PlayerID, LedgerEvent{
 		Type:         "grant",
 		SourceID:     request.SourceID,
-		Delta:        request.Amount,
+		Delta:        amount,
 		BalanceAfter: s.balances[request.PlayerID],
 	})
 	return GrantResponse{
 		PlayerID: request.PlayerID,
 		Balance:  s.balances[request.PlayerID],
+		Delta:    amount,
 	}
 }
 

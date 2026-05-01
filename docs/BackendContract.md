@@ -363,6 +363,12 @@ Configuration keys live under `retention:` in YAML and can be overridden with:
 `PSW_LEDGER_RETENTION_DAYS`, `PSW_CREATOR_AUDIT_RETENTION_DAYS`, and
 `PSW_CREATOR_ARTIFACT_STAGING_DAYS`. Validation enforces room chat at `0`.
 
+`pixel-social-world-retention-cleanup` enforces durable PostgreSQL retention.
+It defaults to dry-run; production enables
+`pixel-social-world-retention-cleanup.timer`, which executes the same plan
+daily. Filesystem creator-artifact staging is reported as a separate storage
+boundary so raw package cleanup can later use storage-specific lifecycle rules.
+
 ### `POST /minigames/submit`
 
 Accepts creator metadata and queues asynchronous AI review. Requires admin token; upload storage is out of scope for the first skeleton.
@@ -733,7 +739,7 @@ Response:
 }
 ```
 
-Per MVP session, each player can claim up to 10 rewarded catches. Extra claims return `429 fishing_session_reward_cap`. Replaying the same `request_id` returns the original catch response without granting coins again; a duplicate request still in progress returns `409 fishing_request_pending`.
+Per MVP session, each player can claim up to 10 rewarded catches. Extra claims return `429 fishing_session_reward_cap`. Replaying the same `request_id` returns the original catch response without granting coins again; a duplicate request still in progress returns `409 fishing_request_pending`. `reward_coin` is the actual granted delta after the economy daily soft cap, so it can be lower than the fish table value when the cap is reached.
 
 ### `POST /economy/reward`
 
@@ -753,7 +759,8 @@ Request:
 
 Admin read-only endpoint exposing current economy policy knobs. MVP includes
 `creator_share_bps`, the basis-point share granted to a creator when trusted
-server logic settles play rewards for a creator minigame.
+server logic settles play rewards for a creator minigame, and
+`daily_soft_cap`, the per-player daily reward grant cap.
 
 ### `POST /economy/creator-share`
 
@@ -777,7 +784,9 @@ Request:
 ```
 
 With the default `creator_share_bps: 1000`, the creator receives `5` coins for
-a `50` coin player reward.
+a `50` coin player reward. If the player's `daily_soft_cap` leaves only `20`
+coins available, the player receives `20` and the creator share is recalculated
+from that capped grant.
 
 ### `POST /economy/spend`
 
@@ -972,7 +981,7 @@ Response includes:
 - `realtime`: fanout publish/receive/failure, rate-limit, leave, culling, write-backpressure, and local-delivery counters.
 - `chat`: message totals by room/channel, report totals by room, moderation action counts, active moderation counts, and soft rate-limit rejection counts.
 - `fishing_rewards`: trusted reward grants, replays, caps, pending requests, errors, active counters, and stored request count.
-- `economy_policy`: creator share basis points.
+- `economy_policy`: creator share basis points and daily reward soft cap.
 - `retention_policy`: room-chat, private-message, mailbox, report, ledger, creator-audit, and artifact-staging retention windows.
 - `retention_cleanup_plan`: non-destructive cleanup task metadata for ops tooling; room chat is marked `memory_only` / `ephemeral`, while durable stores expose table, cutoff column, and parameterized SQL shape.
 

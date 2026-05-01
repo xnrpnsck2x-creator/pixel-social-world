@@ -140,6 +140,8 @@ Example server and tunnel configs are checked in:
    ```text
    web/* -> /opt/pixel-social-world/web/
    backend/bin/pixel-social-world-server -> /opt/pixel-social-world/backend/bin/
+   backend/bin/pixel-social-world-preflight -> /opt/pixel-social-world/backend/bin/
+   backend/bin/pixel-social-world-retention-cleanup -> /opt/pixel-social-world/backend/bin/
    backend/configs/production.yaml -> /opt/pixel-social-world/backend/configs/
    configs/*.json -> /opt/pixel-social-world/configs/
    ```
@@ -169,6 +171,7 @@ Example server and tunnel configs are checked in:
    ```bash
    sudo systemctl daemon-reload
    sudo systemctl enable --now pixel-social-world
+   sudo systemctl enable --now pixel-social-world-retention-cleanup.timer
    sudo systemctl reload caddy
    sudo systemctl restart cloudflared
    ```

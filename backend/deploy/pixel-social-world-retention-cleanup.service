@@ -1,0 +1,17 @@
+[Unit]
+Description=Pixel Social World retention cleanup
+Wants=network-online.target
+After=network-online.target postgresql.service
+
+[Service]
+Type=oneshot
+User=pixelsocial
+Group=pixelsocial
+WorkingDirectory=/opt/pixel-social-world/backend
+EnvironmentFile=/etc/pixel-social-world/backend.env
+ExecStart=/opt/pixel-social-world/backend/bin/pixel-social-world-retention-cleanup -execute
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/opt/pixel-social-world /var/lib/pixel-social-world

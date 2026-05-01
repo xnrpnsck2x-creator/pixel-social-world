@@ -32,6 +32,7 @@ mkdir -p \
 
 cp "$BACKEND_DIR/bin/pixel-social-world-server" "$RELEASE_DIR/backend/bin/"
 cp "$BACKEND_DIR/bin/pixel-social-world-preflight" "$RELEASE_DIR/backend/bin/"
+cp "$BACKEND_DIR/bin/pixel-social-world-retention-cleanup" "$RELEASE_DIR/backend/bin/"
 cp "$BACKEND_DIR/configs/production.yaml" "$RELEASE_DIR/backend/configs/"
 cp "$BACKEND_DIR/deploy/"* "$RELEASE_DIR/deploy/"
 cp "$PROJECT_DIR/configs/"*.json "$RELEASE_DIR/configs/"
@@ -47,6 +48,7 @@ Suggested origin layout:
 
   /opt/pixel-social-world/backend/bin/pixel-social-world-server
   /opt/pixel-social-world/backend/bin/pixel-social-world-preflight
+  /opt/pixel-social-world/backend/bin/pixel-social-world-retention-cleanup
   /opt/pixel-social-world/backend/configs/production.yaml
   /opt/pixel-social-world/configs/*.json
   /opt/pixel-social-world/web/*
@@ -56,6 +58,8 @@ Suggested origin layout:
 Suggested service files:
 
   deploy/pixel-social-world.service -> /etc/systemd/system/pixel-social-world.service
+  deploy/pixel-social-world-retention-cleanup.service -> /etc/systemd/system/pixel-social-world-retention-cleanup.service
+  deploy/pixel-social-world-retention-cleanup.timer -> /etc/systemd/system/pixel-social-world-retention-cleanup.timer
   deploy/pixel-social-world.env.example -> /etc/pixel-social-world/backend.env
   deploy/Caddyfile.funyoru.example -> merge into /etc/caddy/Caddyfile
   deploy/cloudflared-funyoru.yml.example -> merge into /etc/cloudflared/config.yml
@@ -63,8 +67,10 @@ Suggested service files:
 After editing secrets in backend.env:
 
   /opt/pixel-social-world/backend/bin/pixel-social-world-preflight -env-file /etc/pixel-social-world/backend.env -strict
+  /opt/pixel-social-world/backend/bin/pixel-social-world-retention-cleanup -env-file /etc/pixel-social-world/backend.env
   sudo systemctl daemon-reload
   sudo systemctl enable --now pixel-social-world
+  sudo systemctl enable --now pixel-social-world-retention-cleanup.timer
   sudo systemctl reload caddy
   sudo systemctl restart cloudflared
 EOF

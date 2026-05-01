@@ -97,16 +97,18 @@ func (s *GormService) Grant(ctx context.Context, request GrantRequest) GrantResp
 		if err != nil {
 			return err
 		}
-		wallet.Balance += request.Amount
+		amount := s.cappedGrantAmount(tx, request.PlayerID, request.Amount, time.Now().Unix())
+		wallet.Balance += amount
 		if err := tx.Save(&wallet).Error; err != nil {
 			return err
 		}
 		response.Balance = wallet.Balance
+		response.Delta = amount
 		return s.appendRecord(tx, LedgerEvent{
 			PlayerID:     request.PlayerID,
 			Type:         "grant",
 			SourceID:     request.SourceID,
-			Delta:        request.Amount,
+			Delta:        amount,
 			BalanceAfter: wallet.Balance,
 		})
 	})

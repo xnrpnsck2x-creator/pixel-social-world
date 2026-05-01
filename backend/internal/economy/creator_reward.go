@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"strings"
+	"time"
 )
 
 const creatorPlayRewardType = "creator.play_reward"
@@ -21,8 +22,10 @@ func (s *MemoryService) GrantCreatorPlayReward(
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	if s.hasEventLocked(request.PlayerID, creatorPlayRewardType, request.SourceID) {
-		return s.creatorRewardResponseLocked(request, creatorAmount), nil
+		return s.creatorRewardResponseLocked(request, 0, 0, 0), nil
 	}
+	request.PlayerAmount = s.cappedGrantAmountLocked(request.PlayerID, request.PlayerAmount, time.Now().Unix())
+	creatorAmount = creatorShareAmount(request.PlayerAmount, s.policy.CreatorShareBps)
 	s.balances[request.PlayerID] += request.PlayerAmount
 	s.record(request.PlayerID, LedgerEvent{
 		Type:         creatorPlayRewardType,
@@ -39,16 +42,18 @@ func (s *MemoryService) GrantCreatorPlayReward(
 			BalanceAfter: s.balances[request.CreatorID],
 		})
 	}
-	return s.creatorRewardResponseLocked(request, creatorAmount), nil
+	return s.creatorRewardResponseLocked(request, creatorAmount, request.PlayerAmount, creatorAmount), nil
 }
 
 func (s *MemoryService) creatorRewardResponseLocked(
 	request CreatorPlayRewardRequest,
 	creatorAmount int,
+	playerDelta int,
+	creatorDelta int,
 ) CreatorPlayRewardResponse {
 	return CreatorPlayRewardResponse{
-		Player:          GrantResponse{PlayerID: request.PlayerID, Balance: s.balances[request.PlayerID]},
-		Creator:         GrantResponse{PlayerID: request.CreatorID, Balance: s.balances[request.CreatorID]},
+		Player:          GrantResponse{PlayerID: request.PlayerID, Balance: s.balances[request.PlayerID], Delta: playerDelta},
+		Creator:         GrantResponse{PlayerID: request.CreatorID, Balance: s.balances[request.CreatorID], Delta: creatorDelta},
 		CreatorAmount:   creatorAmount,
 		CreatorShareBps: s.policy.CreatorShareBps,
 	}
@@ -69,6 +74,9 @@ func normalizePolicy(policy Policy) Policy {
 	}
 	if policy.CreatorShareBps > 10000 {
 		policy.CreatorShareBps = 10000
+	}
+	if policy.DailySoftCap <= 0 {
+		policy.DailySoftCap = DefaultPolicy().DailySoftCap
 	}
 	return policy
 }
@@ -96,4 +104,45 @@ func creatorShareAmount(playerAmount int, shareBps int) int {
 		return 0
 	}
 	return playerAmount * shareBps / 10000
+}
+
+func (s *MemoryService) cappedGrantAmountLocked(playerID string, requested int, now int64) int {
+	if requested <= 0 || s.policy.DailySoftCap <= 0 {
+		return maxInt(requested, 0)
+	}
+	remaining := s.policy.DailySoftCap - s.dailyGrantUsedLocked(playerID, now)
+	if remaining <= 0 {
+		return 0
+	}
+	if requested > remaining {
+		return remaining
+	}
+	return requested
+}
+
+func (s *MemoryService) dailyGrantUsedLocked(playerID string, now int64) int {
+	used := 0
+	dayStart := dailyGrantStartUnix(now)
+	for _, event := range s.ledger[playerID] {
+		if event.CreatedAt >= dayStart && countsTowardDailyCap(event.Type) && event.Delta > 0 {
+			used += event.Delta
+		}
+	}
+	return used
+}
+
+func countsTowardDailyCap(eventType string) bool {
+	return eventType == "grant" || eventType == creatorPlayRewardType
+}
+
+func dailyGrantStartUnix(now int64) int64 {
+	year, month, day := time.Unix(now, 0).UTC().Date()
+	return time.Date(year, month, day, 0, 0, 0, 0, time.UTC).Unix()
+}
+
+func maxInt(left int, right int) int {
+	if left > right {
+		return left
+	}
+	return right
 }
