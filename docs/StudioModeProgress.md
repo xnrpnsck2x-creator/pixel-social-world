@@ -16,7 +16,7 @@ Accelerated content execution now lives in `docs/AcceleratedContentRoute.md`.
 
 ### MVP Autopilot Slice 3 - Room Capacity and Backpressure
 
-Status: Implemented; verification in progress on 2026-05-01.
+Status: Implemented and locally verified on 2026-05-01.
 
 - Added backend room-capacity policy knobs for main city, housing, minigame, and custom rooms, with conservative alpha defaults of 100 / 20 / 16 / 50.
 - Enforced capacity at WebSocket `world.join`, returning `room.denied` with `room_capacity_full` before assigning a socket to an overfull room.
@@ -24,17 +24,26 @@ Status: Implemented; verification in progress on 2026-05-01.
 - Extended `/debug/rooms` and `/debug/ops` visibility with room capacity and failed-write-close counters.
 - Wired capacity config through YAML, env overrides, validation, and the production server room hub factory.
 - Added client rollback for denied room joins so Godot/H5 room state returns to the last confirmed room instead of keeping an optimistic rejected room.
-- Verified so far on 2026-05-01: content validation, Go test suite, room lifecycle smoke, and core Godot smoke pass.
+- Verified on 2026-05-01: content validation, Go test suite, room lifecycle smoke, core Godot smoke, Web export, and H5 viewport matrix pass.
 
 ### MVP Autopilot Slice 4 - Dense Room Movement Backoff
 
-Status: In progress on 2026-05-01.
+Status: Implemented and locally verified on 2026-05-01.
 
 - Split `world.join` handling out of `Hub` so the realtime hub stays below the AGENTS.md 300-line ceiling while room access, capacity, leave cleanup, and join broadcast remain one flow.
 - Added first-pass dense-room movement backoff: when a local room reaches 50 joined players, server-side `player.move` accepts no faster than 120ms.
 - Kept this intentionally conservative and compatible with existing clients; it reduces 50-100 player fanout pressure before full distance-based interest culling lands.
 - Added dense-room movement interest filtering: at 50 joined players, distant move recipients outside a 360-unit radius are skipped while social events remain room-wide.
 - Added `movement_culled` metrics to backend realtime snapshots and the LiveOps room drilldown row.
+
+### MVP Autopilot Slice 5 - Redis Gateway Realtime Fanout Smoke
+
+Status: Implemented and locally verified on 2026-05-01.
+
+- Added a gateway-level Redis realtime smoke with two independent HTTP/WebSocket server instances sharing one Redis auth/fanout/rate-limit backend.
+- The smoke logs in guests through separate gateway instances, joins both sockets to one room, and verifies `player.move` crosses instances through Redis pub/sub.
+- The same smoke sends room chat through HTTP on one instance and verifies `chat.message` reaches the WebSocket on the other instance.
+- Realtime ops assertions now cover Redis fanout publish/receive counters and zero write failures at the gateway layer, not just the lower-level room hub.
 
 ### MVP Autopilot Slice 2 - Mobile Room Chat and Safe Area
 

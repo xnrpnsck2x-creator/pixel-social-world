@@ -50,6 +50,7 @@ The backend hub:
 - Clips movement positions to room bounds.
 - Stores the latest room movement states for `world.snapshot` recovery.
 - Publishes room fanout through Redis pub/sub in `realtime.mode=redis`.
+- Shares auth validation, movement/emote rate limiting, and room pub/sub across gateway instances in Redis mode.
 - Emits `world.leave` when players disconnect or switch rooms.
 - Exposes realtime counters through `/city/state`.
 - Broadcasts `player.move` only to clients in that room.
@@ -59,13 +60,14 @@ The backend hub:
 - Counts slow writes and closes failed writes as the first backpressure policy.
 - Raises the effective `player.move` interval to 120ms when a local room reaches 50 joined players, reducing dense-room broadcast pressure before full interest management lands.
 - Filters dense-room `player.move` targets by a 360-unit interest radius while keeping chat, joins, emotes, and snapshots room-wide.
+- Has gateway smoke coverage for two Redis-backed server instances exchanging cross-instance `player.move` and `chat.message`.
 
 Godot `RoomLifecycle` switches between `world_town_square`, `home:{owner_id}`, and `minigame:{game_id}:{session_id}`. `MainCityScreen` applies `player.move` and `world.snapshot` payloads to remote `PlayerAvatar` instances with interpolation. `RealtimeClient` retries dropped connections with capped backoff.
 
 ## Next Realtime Slice
 
-1. Persist room snapshots across process restarts where useful.
-2. Move private-room member/history reads behind a cleaner token-derived identity helper.
-3. Tune interest radius with real playtest data and add admin alerts for high cull/write-failure rates.
-4. Add admin/debug UI for capacity pressure and write-failure alerts.
+1. Add a Redis-mode multi-client load profile beyond the current two-gateway smoke.
+2. Persist room snapshots across process restarts where useful.
+3. Move private-room member/history reads behind a cleaner token-derived identity helper.
+4. Tune interest radius with real playtest data and add admin alerts for high cull/write-failure rates.
 5. Add mobile foreground/background network lifecycle handling.

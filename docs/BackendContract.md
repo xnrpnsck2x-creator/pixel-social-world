@@ -870,7 +870,7 @@ Response includes:
 - `last_active_at`: newest connected-client or retained movement activity timestamp, used by H5/Godot admin tooling to show stale rooms.
 - `capacity`: configured room cap for the inferred room type.
 - Per-room realtime counters include `local_broadcasts`, `local_delivery_target`, `local_delivered`, `movement_culled`, `slow_writes`, and `write_failed`.
-- `realtime`: fanout, rate-limit, leave, and local-delivery counters.
+- `realtime`: fanout publish/receive/failure, rate-limit, leave, culling, write-backpressure, and local-delivery counters.
 
 ### `GET /debug/ops`
 
@@ -880,7 +880,7 @@ Godot/H5 admin tooling calls this through `OnlineClient.fetch_debug_ops_admin(ad
 Response includes:
 
 - `rooms`: current room/player snapshot.
-- `realtime`: fanout, rate-limit, leave, and local-delivery counters.
+- `realtime`: fanout publish/receive/failure, rate-limit, leave, culling, write-backpressure, and local-delivery counters.
 - `chat`: message totals by room/channel, report totals by room, moderation action counts, active moderation counts, and soft rate-limit rejection counts.
 - `fishing_rewards`: trusted reward grants, replays, caps, pending requests, errors, active counters, and stored request count.
 
@@ -929,6 +929,9 @@ closed immediately so the read loop can retire the client and emit normal leave
 cleanup instead of letting a blocked socket consume broadcast work indefinitely.
 Dense rooms keep social events room-wide, but `player.move` fanout is filtered
 by server-side interest range once the room reaches 50 joined players.
+In `realtime.mode=redis`, gateway-level smoke coverage verifies that separate
+HTTP/WebSocket server instances can share Redis auth, rate limiting, and room
+pub/sub so `player.move` and `chat.message` cross instance boundaries.
 
 ## Redis MVP Keys
 
@@ -949,6 +952,10 @@ by server-side interest range once the room reaches 50 joined players.
 ## Verified Local E2E
 
 Local E2E: start backend on `:18787`, then run `tests/auth_upgrade_backend_e2e.gd`, `tests/reviewer_console_backend_e2e.gd`, `tests/online_backend_e2e.gd`, and `tests/realtime_backend_e2e.gd`; checks cover H5 guest account upgrade, reviewer dashboard/action flow, refresh, admin gates, `/debug/ops`, spoof rejection, owner checks, room-scoped realtime chat broadcast, housing invite/visit, house presence/chat, trusted fishing rewards, request-id replay, backend ledger writes, and blocked public rewards.
+
+Gateway Redis smoke: `TestRedisRealtimeFanoutCrossesGatewayInstances` starts
+two independent gateway instances against miniredis and verifies cross-instance
+movement, room chat, fanout counters, and zero write failures.
 
 ## First Vertical Slice
 

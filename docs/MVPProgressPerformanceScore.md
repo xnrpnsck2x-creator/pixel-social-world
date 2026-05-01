@@ -18,7 +18,7 @@ Scoring:
 | Guest auth + session refresh | 82% | Guest login, token refresh, H5 session restore, REST/WS auth gates verified. | Apple/Google provider production setup and store review data handling. |
 | Main city walking + HUD | 78% | Main scene, Image2 HUD, action buttons, NPC/hotspot entry, name reveal, H5 landscape guard verified. | Final map collision polish and mobile/touch movement ergonomics. |
 | Presence + room members | 79% | Heartbeat, room member list, remote avatars, profile card entry, stale state visible, per-room caps visible in debug state. | True disconnect edge cases and room-shard load tests. |
-| WebSocket movement + emotes | 82% | Authenticated WS join, room fanout, movement interpolation, RO-style overhead emotes, repeatable 24/50/100-client load smoke, slow/failed write metrics, failed-write close policy, dense-room move interval backoff, and distance-based movement culling. | Redis-mode load tuning and interest-radius playtest calibration. |
+| WebSocket movement + emotes | 84% | Authenticated WS join, room fanout, movement interpolation, RO-style overhead emotes, repeatable 24/50/100-client load smoke, Redis cross-gateway movement/chat smoke, slow/failed write metrics, failed-write close policy, dense-room move interval backoff, and distance-based movement culling. | Redis-mode load tuning and interest-radius playtest calibration. |
 | Room chat | 74% | Ephemeral room chat, channel picker, chat invite actions, report path, moderation console. | Abuse tuning, mute UX, and live operator workflow hardening. |
 | Private messages + mail | 68% | Durable private conversations, unread summaries, read markers, report endpoint, mailbox base. | End-to-end persistence policy, notification UX, inbox pagination polish. |
 | Player profile / social actions | 62% | Member and remote-avatar profile card, private/visit/emote/report actions wired. | Friend/block/follow model and richer profile identity fields. |
@@ -39,8 +39,8 @@ Public alpha readiness forecast: 58-64%.
 | --- | ---: | ---: | ---: | --- |
 | Auth / profile REST | 4.0 | 4.0 | 4.0 | Mostly short JSON requests; PostgreSQL token/profile writes are ordinary MVP load. |
 | Presence heartbeat | 4.0 | 4.0 | 4.5 | Redis TTL mode keeps online state cheap; heartbeat frequency is the main tuning knob. |
-| WebSocket city hub | 3.6 | 3.4 | 3.8 | One connection per client is fine; same-room broadcast cost grows with room population, now capped per room type and tracked globally/per room. |
-| Movement sync | 3.7 | 3.5 | 4.0 | Current 0.12s client send interval is playable; server now raises dense-room move limiting to 120ms and culls distant move recipients at 50 joined players. |
+| WebSocket city hub | 3.7 | 3.5 | 3.8 | One connection per client is fine; same-room broadcast cost grows with room population, now capped per room type, tracked globally/per room, and verified across two Redis-backed gateway instances. |
+| Movement sync | 3.8 | 3.6 | 4.0 | Current 0.12s client send interval is playable; server now raises dense-room move limiting to 120ms, culls distant move recipients at 50 joined players, and has cross-gateway Redis fanout smoke coverage. |
 | Room chat | 3.8 | 4.0 | 4.2 | Room chat is ephemeral and capped; report snapshots are small. |
 | Private messages / mail | 3.5 | 3.7 | 3.8 | Durable rows are manageable; pagination and retention policies decide long-term storage cost. |
 | Housing | 3.6 | 3.8 | 3.7 | Catalog validation is light; layout size and sync frequency are the future pressure points. |
@@ -54,11 +54,11 @@ Public alpha readiness forecast: 58-64%.
 Expected safe alpha envelope before dedicated load tests:
 - 300-800 concurrent users spread across rooms: likely safe with current design.
 - 50-100 users in one visible room: plausible, but movement fanout and client readability become the limit.
-- 1,000-2,000 concurrent users across many rooms: possible on the target host after Redis mode, OS limits, WS buffers, and Postgres pooling are tuned.
+- 1,000-2,000 concurrent users across many rooms: possible on the target host after Redis-mode load profiles, OS limits, WS buffers, and Postgres pooling are tuned.
 - Creator package review throughput depends on the AI reviewer adapter; keep it asynchronous and queue-limited.
 
 Most likely backend bottlenecks:
-- Same-room movement fanout, because every move can broadcast to many clients; dense rooms now back off movement accepts and cull distant recipients, but Redis-mode fanout still needs stress testing.
+- Same-room movement fanout, because every move can broadcast to many clients; dense rooms now back off movement accepts and cull distant recipients, while Redis cross-gateway fanout has smoke coverage but still needs larger stress testing.
 - WebSocket write backpressure from slow clients; failed writes now close the socket, while slow-write thresholds still need production alert tuning.
 - PostgreSQL growth from private messages, mail, ledgers, reports, and creator audit history.
 - Creator artifact storage if left on local disk without lifecycle policy.
@@ -81,10 +81,11 @@ Current baseline is a functional smoke, not a capacity benchmark:
 - Deterministic unit coverage now verifies slow-write metrics, failed-write closure, and room-capacity denial payloads.
 - Dense-room unit coverage verifies 50-player rooms use a 120ms server-side movement interval.
 - Dense-room culling coverage verifies far movement recipients are skipped and `movement_culled` appears in realtime room metrics.
+- Redis gateway smoke starts two independent gateway instances against one Redis backend and verifies cross-instance `player.move`, `chat.message`, fanout counters, and zero write failures.
 
 ## Next Performance Tasks
 
 1. Define retention rules for private messages, mail, reports, and ledgers before public alpha.
 2. Run a real-device H5/mobile keyboard and FPS pass after the next UI slice.
 3. Calibrate movement interest radius from H5/desktop playtests.
-4. Start a Redis-mode WS fanout smoke once local Redis is part of the regular dev loop.
+4. Add a Redis-mode multi-client load profile beyond the current cross-gateway smoke.
