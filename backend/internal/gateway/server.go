@@ -15,8 +15,10 @@ import (
 	"pixel-social-world/backend/internal/house"
 	"pixel-social-world/backend/internal/messaging"
 	"pixel-social-world/backend/internal/minigame"
+	"pixel-social-world/backend/internal/ops"
 	"pixel-social-world/backend/internal/presence"
 	"pixel-social-world/backend/internal/room"
+	"pixel-social-world/backend/internal/social"
 	"pixel-social-world/backend/internal/utility"
 )
 
@@ -30,6 +32,8 @@ type Server struct {
 	minigameService       minigame.Service
 	utilityService        utility.Service
 	presenceService       presence.Service
+	socialService         social.Service
+	retentionPolicy       ops.RetentionPolicy
 	roomHub               *room.Hub
 	upgrader              websocket.Upgrader
 	startingCoinBalance   int
@@ -137,6 +141,12 @@ func (s *Server) routes() {
 	s.router.GET("/private-messages/:peer_id", s.privateConversation)
 	s.router.POST("/private-messages/read/:peer_id", s.markPrivateRead)
 	s.router.POST("/private-messages/report", s.reportPrivateMessage)
+	s.router.GET("/social/state/:target_player_id", s.socialState)
+	s.router.GET("/social/following", s.socialFollowing)
+	s.router.POST("/social/follow", s.followPlayer)
+	s.router.POST("/social/unfollow", s.unfollowPlayer)
+	s.router.POST("/social/block", s.blockPlayer)
+	s.router.POST("/social/unblock", s.unblockPlayer)
 	s.router.POST("/mailbox/send", s.sendMailboxMessage)
 	s.router.GET("/mailbox/inbox", s.mailboxInbox)
 	s.router.POST("/mailbox/:mail_id/read", s.markMailboxRead)
@@ -160,6 +170,8 @@ func (s *Server) routes() {
 	s.router.POST("/minigame-sessions/:session_id/end", s.endMinigameSession)
 	s.router.POST("/minigames/fishing/catch", s.claimFishingCatch)
 	s.router.POST("/economy/reward", s.grantReward)
+	s.router.GET("/economy/policy", s.economyPolicy)
+	s.router.POST("/economy/creator-share", s.grantCreatorShare)
 	s.router.POST("/economy/spend", s.spendCoins)
 	s.router.GET("/economy/ledger/:player_id", s.getLedger)
 	s.router.GET("/housing/layout/:owner_id", s.getHousingLayout)
@@ -193,6 +205,7 @@ func (s *Server) ready(ctx *gin.Context) {
 			"minigame":        true,
 			"presence":        true,
 			"realtime":        true,
+			"social":          true,
 			"utility":         true,
 		},
 	})

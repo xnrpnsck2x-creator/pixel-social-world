@@ -76,6 +76,8 @@ func bind_ui(
 	player_profile_card.home_visit_requested.connect(_on_profile_home_visit_requested)
 	player_profile_card.emote_requested.connect(_on_room_emote_requested)
 	player_profile_card.report_requested.connect(_on_profile_report_requested)
+	player_profile_card.follow_requested.connect(_on_profile_social_requested.bind("follow"))
+	player_profile_card.block_requested.connect(_on_profile_social_requested.bind("block"))
 	if social_messages_panel.has_signal("unread_count_changed"):
 		social_messages_panel.connect("unread_count_changed", _on_messages_unread_count_changed)
 	if utility_panel.has_signal("utility_action_requested"):
@@ -241,6 +243,18 @@ func _on_profile_report_requested(profile: Dictionary) -> void:
 	player_profile_card.call("set_report_busy", false)
 	player_profile_card.call("mark_report_sent", ok)
 	_announce_system_feedback("profile.report_sent" if ok else "profile.report_failed")
+
+func _on_profile_social_requested(profile: Dictionary, action: String) -> void:
+	var online_client := _online_client()
+	var peer_id := str(profile.get("player_id", ""))
+	if online_client == null or peer_id.is_empty() or not bool(online_client.get("is_connected")):
+		_announce_system_feedback("profile.social_unavailable")
+		return
+	var response: Dictionary = await online_client.call("social_action", action, peer_id)
+	var ok := bool(response.get("ok", false))
+	player_profile_card.call("mark_social_action", action, ok)
+	var key := "profile.follow_sent" if action == "follow" else "profile.block_sent"
+	_announce_system_feedback(key if ok else "profile.social_failed")
 
 func _on_utility_action_requested(action_id: String) -> void:
 	match action_id:

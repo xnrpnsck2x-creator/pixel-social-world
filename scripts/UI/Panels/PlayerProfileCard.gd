@@ -6,6 +6,8 @@ signal private_chat_requested(peer_id: String)
 signal home_visit_requested(owner_id: String)
 signal emote_requested(emote_id: String)
 signal report_requested(profile: Dictionary)
+signal follow_requested(profile: Dictionary)
+signal block_requested(profile: Dictionary)
 
 const WorldHUDAssetsScript := preload("res://scripts/UI/HUD/WorldHUDAssets.gd")
 
@@ -19,6 +21,8 @@ var _compact := false
 @onready var visit_button: Button = %VisitButton
 @onready var emote_button: Button = %EmoteButton
 @onready var report_button: Button = %ReportButton
+@onready var follow_button: Button = %FollowButton
+@onready var block_button: Button = %BlockButton
 
 func _ready() -> void:
 	visible = false
@@ -27,6 +31,8 @@ func _ready() -> void:
 	visit_button.pressed.connect(_request_visit)
 	emote_button.pressed.connect(func() -> void: emote_requested.emit("emote.laugh"))
 	report_button.pressed.connect(_request_report)
+	follow_button.pressed.connect(func() -> void: follow_requested.emit(_profile.duplicate(true)))
+	block_button.pressed.connect(func() -> void: block_requested.emit(_profile.duplicate(true)))
 	_apply_image2_style()
 	_refresh_text()
 
@@ -41,7 +47,7 @@ func hide_card() -> void:
 func set_compact_layout(enabled: bool) -> void:
 	_compact = enabled
 	custom_minimum_size = Vector2(252, 174) if _compact else Vector2(300, 210)
-	for button in [private_button, visit_button, emote_button, report_button]:
+	for button in _action_buttons():
 		button.custom_minimum_size = Vector2(0, 30) if _compact else Vector2(0, 36)
 
 func _refresh_text() -> void:
@@ -54,12 +60,18 @@ func _refresh_text() -> void:
 	visit_button.text = App.t_key("profile.visit_home")
 	emote_button.text = App.t_key("profile.emote")
 	report_button.text = App.t_key("profile.report")
+	follow_button.text = App.t_key("profile.follow")
+	block_button.text = App.t_key("profile.block")
 	close_button.text = ""
 	close_button.tooltip_text = App.t_key("ui.action.close")
 	private_button.disabled = is_self or player_id.is_empty()
 	visit_button.disabled = player_id.is_empty()
 	report_button.disabled = is_self or player_id.is_empty()
+	follow_button.disabled = is_self or player_id.is_empty()
+	block_button.disabled = is_self or player_id.is_empty()
 	report_button.tooltip_text = App.t_key("profile.report_tooltip")
+	follow_button.tooltip_text = App.t_key("profile.follow_tooltip")
+	block_button.tooltip_text = App.t_key("profile.block_tooltip")
 
 func set_report_busy(enabled: bool) -> void:
 	report_button.disabled = enabled
@@ -68,6 +80,13 @@ func set_report_busy(enabled: bool) -> void:
 func mark_report_sent(success: bool) -> void:
 	report_button.disabled = success
 	report_button.tooltip_text = App.t_key("profile.report_sent" if success else "profile.report_failed")
+
+func mark_social_action(action: String, success: bool) -> void:
+	if action == "follow":
+		follow_button.disabled = success
+	elif action == "block":
+		block_button.disabled = success
+		private_button.disabled = success or private_button.disabled
 
 func _request_private() -> void:
 	var player_id := str(_profile.get("player_id", ""))
@@ -85,8 +104,11 @@ func _request_report() -> void:
 
 func _apply_image2_style() -> void:
 	WorldHUDAssetsScript.configure_panel_frame(self)
-	for button in [close_button, private_button, visit_button, emote_button, report_button]:
+	for button in [close_button] + _action_buttons():
 		WorldHUDAssetsScript.configure_button_frame(button)
 	close_button.icon = WorldHUDAssetsScript.load_ui_texture("icon.close")
 	close_button.custom_minimum_size = Vector2(36, 36)
 	close_button.expand_icon = true
+
+func _action_buttons() -> Array[Button]:
+	return [private_button, visit_button, emote_button, report_button, follow_button, block_button]

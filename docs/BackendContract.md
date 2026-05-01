@@ -236,6 +236,9 @@ recipient, body, and `created_at`.
 
 Private messages are softly rate-limited at 6 sends per 10 seconds per player.
 Rejected bursts return `429 {"error":"private_rate_limited"}`.
+If either player has blocked the other through `/social/block`, private sends
+return `403 {"error":"private_message_blocked"}` before a durable message is
+created.
 
 ### `GET /private-messages?player_id=...&limit=50`
 
@@ -275,6 +278,43 @@ Request:
 
 Unauthorized participant access returns `403 {"error":"private_message_forbidden"}`.
 
+### Social Relationships
+
+The player profile card exposes follow and block actions through the social
+relationship contract. Requires a bearer token matching `player_id`.
+
+- `GET /social/state/:target_player_id?player_id=...`
+- `GET /social/following?player_id=...&limit=50`
+- `POST /social/follow`
+- `POST /social/unfollow`
+- `POST /social/block`
+- `POST /social/unblock`
+
+Request body for mutating actions:
+
+```json
+{
+  "player_id": "player_123",
+  "target_player_id": "player_456"
+}
+```
+
+Response state:
+
+```json
+{
+  "player_id": "player_123",
+  "target_player_id": "player_456",
+  "following": true,
+  "followed_by": false,
+  "blocked": false,
+  "blocked_by": false,
+  "updated_at": 1777545600
+}
+```
+
+Self-follow or self-block returns `409 self_relationship_forbidden`.
+
 ### `POST /mailbox/send`
 
 Stores a durable mailbox message. Requires a bearer token matching `sender_id`.
@@ -303,6 +343,25 @@ only the static utility-panel feed; player mailbox data must use `/mailbox/*`.
 Marks a mailbox message as read and returns the updated message. Requires a
 bearer token matching the body `player_id`, and the player must be the mailbox
 recipient. Unauthorized recipient access returns `403 {"error":"mail_forbidden"}`.
+
+## Data Retention Policy
+
+The MVP storage boundary is explicit:
+
+- Room chat history: `0` days. Room chat is live-only, not a durable record,
+  and should disappear after logout/reconnect.
+- Private messages: durable sender/recipient conversations, default 365 days.
+- Mailbox messages: durable recipient-scoped mail, default 365 days.
+- Reports and moderation snapshots: default 730 days.
+- Economy ledger: default 2555 days for audit and creator payout debugging.
+- Creator review/audit rows: default 730 days.
+- Creator artifact staging files: default 30 days before cleanup candidates.
+
+Configuration keys live under `retention:` in YAML and can be overridden with:
+`PSW_ROOM_CHAT_HISTORY_DAYS`, `PSW_PRIVATE_MESSAGE_RETENTION_DAYS`,
+`PSW_MAILBOX_RETENTION_DAYS`, `PSW_REPORT_RETENTION_DAYS`,
+`PSW_LEDGER_RETENTION_DAYS`, `PSW_CREATOR_AUDIT_RETENTION_DAYS`, and
+`PSW_CREATOR_ARTIFACT_STAGING_DAYS`. Validation enforces room chat at `0`.
 
 ### `POST /minigames/submit`
 
@@ -690,6 +749,36 @@ Request:
 }
 ```
 
+### `GET /economy/policy`
+
+Admin read-only endpoint exposing current economy policy knobs. MVP includes
+`creator_share_bps`, the basis-point share granted to a creator when trusted
+server logic settles play rewards for a creator minigame.
+
+### `POST /economy/creator-share`
+
+Owner-only trusted settlement endpoint for creator minigames. It grants the
+player's play reward and the creator's revenue share in one server-side ledger
+transaction. Normal clients must not call this directly.
+`source_id` is required and acts as the idempotency key; replaying the same
+settlement returns current balances without duplicating player or creator
+ledger events.
+
+Request:
+
+```json
+{
+  "player_id": "player_123",
+  "creator_id": "player_creator",
+  "game_id": "creator_duel",
+  "source_id": "creator.play.creator_duel",
+  "player_amount": 50
+}
+```
+
+With the default `creator_share_bps: 1000`, the creator receives `5` coins for
+a `50` coin player reward.
+
 ### `POST /economy/spend`
 
 Spends coins against a server-authoritative sink. Client UI may display prices, but the backend decides final spend rules. Requires a bearer token matching `player_id`.
@@ -883,6 +972,9 @@ Response includes:
 - `realtime`: fanout publish/receive/failure, rate-limit, leave, culling, write-backpressure, and local-delivery counters.
 - `chat`: message totals by room/channel, report totals by room, moderation action counts, active moderation counts, and soft rate-limit rejection counts.
 - `fishing_rewards`: trusted reward grants, replays, caps, pending requests, errors, active counters, and stored request count.
+- `economy_policy`: creator share basis points.
+- `retention_policy`: room-chat, private-message, mailbox, report, ledger, creator-audit, and artifact-staging retention windows.
+- `retention_cleanup_plan`: non-destructive cleanup task metadata for ops tooling; room chat is marked `memory_only` / `ephemeral`, while durable stores expose table, cutoff column, and parameterized SQL shape.
 
 ## WebSocket Envelope
 
@@ -956,6 +1048,9 @@ Local E2E: start backend on `:18787`, then run `tests/auth_upgrade_backend_e2e.g
 Gateway Redis smoke: `TestRedisRealtimeFanoutCrossesGatewayInstances` starts
 two independent gateway instances against miniredis and verifies cross-instance
 movement, room chat, fanout counters, and zero write failures.
+`TestRedisRealtimeFanoutMultiClientLoadProfile` extends this into a
+configurable multi-client two-gateway profile through
+`PSW_WS_REDIS_LOAD_SMOKE_CLIENTS`.
 
 ## First Vertical Slice
 

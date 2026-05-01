@@ -20,6 +20,10 @@ func (s *Server) sendPrivateMessage(ctx *gin.Context) {
 		return
 	}
 	request.SenderID = playerID
+	if s.socialService.Blocked(ctx.Request.Context(), request.SenderID, request.RecipientID) {
+		ctx.JSON(http.StatusForbidden, gin.H{"error": "private_message_blocked"})
+		return
+	}
 	message, err := s.messagingService.SendPrivate(ctx.Request.Context(), request)
 	if err != nil {
 		ctx.JSON(messagingErrorStatus(err), gin.H{"error": err.Error()})
@@ -165,6 +169,8 @@ func messagingErrorStatus(err error) int {
 	case "mail_not_found":
 		return http.StatusNotFound
 	case "private_message_forbidden":
+		return http.StatusForbidden
+	case "private_message_blocked":
 		return http.StatusForbidden
 	case "private_message_not_found":
 		return http.StatusNotFound

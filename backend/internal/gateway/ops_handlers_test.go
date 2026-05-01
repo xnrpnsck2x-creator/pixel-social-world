@@ -38,6 +38,23 @@ func TestHealthReadyAndRequestID(t *testing.T) {
 	if services["chat"] != true || services["realtime"] != true || services["fishing_rewards"] != true {
 		t.Fatalf("ready response missing service probes: %#v", ready)
 	}
+	opsRequest := httptest.NewRequest(http.MethodGet, "/debug/ops", nil)
+	opsRequest.Header.Set("X-Admin-Token", "ops-admin")
+	opsRecorder := httptest.NewRecorder()
+	server.router.ServeHTTP(opsRecorder, opsRequest)
+	if opsRecorder.Code != http.StatusOK {
+		t.Fatalf("debug ops failed: %d %s", opsRecorder.Code, opsRecorder.Body.String())
+	}
+	ops := decodeJSONBody(t, opsRecorder.Body.Bytes())
+	retention := ops["retention_policy"].(map[string]any)
+	if int(retention["room_chat_history_days"].(float64)) != 0 ||
+		int(retention["private_message_days"].(float64)) <= 0 {
+		t.Fatalf("debug ops missing retention policy: %#v", retention)
+	}
+	cleanupPlan := ops["retention_cleanup_plan"].([]any)
+	if len(cleanupPlan) == 0 || cleanupPlan[0].(map[string]any)["name"] != "room_chat_history" {
+		t.Fatalf("debug ops missing retention cleanup plan: %#v", cleanupPlan)
+	}
 }
 
 func TestStructuredAccessLogIncludesRequestID(t *testing.T) {

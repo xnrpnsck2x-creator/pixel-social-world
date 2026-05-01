@@ -200,7 +200,10 @@ func _send_private() -> void:
 		await _refresh_private()
 		return
 	var error := str(response.get("error", ""))
-	status_label.text = _t("messages.status.private_rate_limited" if error == "private_rate_limited" else "messages.status.private_failed")
+	if error == "private_message_blocked":
+		status_label.text = _t("messages.status.private_blocked")
+	else:
+		status_label.text = _t("messages.status.private_rate_limited" if error == "private_rate_limited" else "messages.status.private_failed")
 
 func _report_private() -> void:
 	if _latest_reportable_private_message.is_empty():
@@ -250,7 +253,6 @@ func _clear_rows(parent: Node) -> void:
 		child.queue_free()
 
 func _set_unread_count(unread_count: int) -> void: _set_mail_unread_count(unread_count)
-
 func _set_mail_unread_count(unread_count: int) -> void: _unread_controller.set_mail_unread(unread_count)
 
 func _set_private_unread_count(unread_count: int) -> void: _unread_controller.set_private_unread(unread_count)

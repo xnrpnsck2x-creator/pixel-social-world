@@ -52,6 +52,9 @@ func _run() -> void:
 	})
 	if str(upgrade.get("error", "")) != "online_disabled":
 		failures.append("Guest account upgrade did not route through OnlineClient auth endpoint.")
+	var social: Dictionary = await client.call("social_action", "follow", "peer-smoke")
+	if str(social.get("error", "")) != "online_disabled":
+		failures.append("Social action did not route through OnlineClient endpoint.")
 
 	save_system.set("profile", original_profile)
 	save_system.call("save_profile")

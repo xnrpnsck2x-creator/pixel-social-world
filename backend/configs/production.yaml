@@ -27,6 +27,15 @@ realtime:
   custom_room_capacity: 50
 economy:
   starting_coin_balance: 25
+  creator_share_bps: 1000
+retention:
+  room_chat_history_days: 0
+  private_message_days: 365
+  mailbox_days: 365
+  report_days: 730
+  ledger_days: 2555
+  creator_audit_days: 730
+  creator_artifact_staging_days: 30
 housing:
   items_config_path: "../configs/housing_items.json"
   sell_refund_rate: 0.5

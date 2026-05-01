@@ -119,6 +119,19 @@ func report_player_profile(profile: Dictionary, reason: String = "profile_report
 		"reason": reason
 	})
 
+func social_action(action: String, target_player_id: String) -> Dictionary:
+	return await _client._request_json(HTTPClient.METHOD_POST, "/social/%s" % action, {
+		"player_id": _client.player_id,
+		"target_player_id": target_player_id
+	})
+
+func fetch_social_state(target_player_id: String) -> Dictionary:
+	var route := "/social/state/%s?player_id=%s" % [
+		target_player_id.uri_encode(),
+		_client.player_id.uri_encode()
+	]
+	return await _client._request_json(HTTPClient.METHOD_GET, route)
+
 func send_private_message(recipient_id: String, body: String) -> Dictionary:
 	return await _client._request_json(HTTPClient.METHOD_POST, "/private-messages", {
 		"sender_id": _client.player_id,

@@ -29,6 +29,14 @@ func TestLoadAppliesEnvironmentOverrides(t *testing.T) {
 	t.Setenv("PSW_MINIGAME_ROOM_CAPACITY", "8")
 	t.Setenv("PSW_CUSTOM_ROOM_CAPACITY", "30")
 	t.Setenv("PSW_STARTING_COINS", "77")
+	t.Setenv("PSW_CREATOR_SHARE_BPS", "1250")
+	t.Setenv("PSW_ROOM_CHAT_HISTORY_DAYS", "0")
+	t.Setenv("PSW_PRIVATE_MESSAGE_RETENTION_DAYS", "180")
+	t.Setenv("PSW_MAILBOX_RETENTION_DAYS", "181")
+	t.Setenv("PSW_REPORT_RETENTION_DAYS", "540")
+	t.Setenv("PSW_LEDGER_RETENTION_DAYS", "2000")
+	t.Setenv("PSW_CREATOR_AUDIT_RETENTION_DAYS", "720")
+	t.Setenv("PSW_CREATOR_ARTIFACT_STAGING_DAYS", "21")
 	t.Setenv("PSW_HOUSING_CONFIG_PATH", "/tmp/housing_items.json")
 	t.Setenv("PSW_HOUSING_SELL_REFUND_RATE", "0.4")
 	t.Setenv("PSW_FISHING_CONFIG_PATH", "/tmp/fishing.json")
@@ -97,8 +105,16 @@ func TestLoadAppliesEnvironmentOverrides(t *testing.T) {
 		cfg.Realtime.CustomRoomCapacity != 30 {
 		t.Fatalf("room capacity overrides failed: %#v", cfg.Realtime)
 	}
-	if cfg.Economy.StartingCoinBalance != 77 {
-		t.Fatalf("starting coin override failed: %d", cfg.Economy.StartingCoinBalance)
+	if cfg.Economy.StartingCoinBalance != 77 || cfg.Economy.CreatorShareBps != 1250 {
+		t.Fatalf("economy override failed: %#v", cfg.Economy)
+	}
+	if cfg.Retention.PrivateMessageDays != 180 ||
+		cfg.Retention.MailboxDays != 181 ||
+		cfg.Retention.ReportDays != 540 ||
+		cfg.Retention.LedgerDays != 2000 ||
+		cfg.Retention.CreatorAuditDays != 720 ||
+		cfg.Retention.CreatorArtifactStagingDays != 21 {
+		t.Fatalf("retention override failed: %#v", cfg.Retention)
 	}
 	if cfg.Housing.ItemsConfigPath != "/tmp/housing_items.json" {
 		t.Fatalf("housing config override failed: %s", cfg.Housing.ItemsConfigPath)
@@ -176,12 +192,20 @@ func TestValidateCatchesInvalidConnectionPools(t *testing.T) {
 	cfg.Redis.PoolSize = 3
 	cfg.Redis.MinIdleConns = 4
 	cfg.Realtime.MainCityRoomCapacity = 0
+	cfg.Retention.RoomChatHistoryDays = 7
+	cfg.Retention.PrivateMessageDays = 0
 	issues := Validate(cfg, false)
 	keys := map[string]bool{}
 	for _, issue := range issues {
 		keys[issue.Key] = true
 	}
-	for _, key := range []string{"postgres.max_idle_conns", "redis.min_idle_conns", "realtime.main_city_room_capacity"} {
+	for _, key := range []string{
+		"postgres.max_idle_conns",
+		"redis.min_idle_conns",
+		"realtime.main_city_room_capacity",
+		"retention.room_chat_history_days",
+		"retention.private_message_days",
+	} {
 		if !keys[key] {
 			t.Fatalf("expected validation issue for %s in %#v", key, issues)
 		}

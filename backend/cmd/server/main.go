@@ -16,8 +16,10 @@ import (
 	"pixel-social-world/backend/internal/house"
 	"pixel-social-world/backend/internal/messaging"
 	"pixel-social-world/backend/internal/minigame"
+	"pixel-social-world/backend/internal/ops"
 	"pixel-social-world/backend/internal/presence"
 	"pixel-social-world/backend/internal/room"
+	"pixel-social-world/backend/internal/social"
 	"pixel-social-world/backend/internal/utility"
 	"pixel-social-world/backend/pkg/db"
 	redisclient "pixel-social-world/backend/pkg/redis"
@@ -37,6 +39,17 @@ func main() {
 
 	deps := gateway.DefaultMemoryDependencies()
 	deps.StartingCoinBalance = cfg.Economy.StartingCoinBalance
+	economyPolicy := economy.Policy{CreatorShareBps: cfg.Economy.CreatorShareBps}
+	deps.EconomyService = economy.NewMemoryServiceWithPolicy(economyPolicy)
+	deps.RetentionPolicy = ops.RetentionPolicy{
+		RoomChatHistoryDays:        cfg.Retention.RoomChatHistoryDays,
+		PrivateMessageDays:         cfg.Retention.PrivateMessageDays,
+		MailboxDays:                cfg.Retention.MailboxDays,
+		ReportDays:                 cfg.Retention.ReportDays,
+		LedgerDays:                 cfg.Retention.LedgerDays,
+		CreatorAuditDays:           cfg.Retention.CreatorAuditDays,
+		CreatorArtifactStagingDays: cfg.Retention.CreatorArtifactStagingDays,
+	}
 	deps.HousingSellRefundRate = cfg.Housing.SellRefundRate
 	deps.AdminToken = cfg.Auth.AdminToken
 	deps.CORSAllowedOrigins = cfg.Server.CORSAllowedOrigins
@@ -142,13 +155,21 @@ func main() {
 		if err := minigame.AutoMigrate(postgresDB); err != nil {
 			log.Fatal(err)
 		}
+		if err := social.AutoMigrate(postgresDB); err != nil {
+			log.Fatal(err)
+		}
 		if err := utility.AutoMigrate(postgresDB); err != nil {
 			log.Fatal(err)
 		}
 		deps.ChatService = chat.NewGormService(postgresDB)
 		deps.MessagingService = messaging.NewGormService(postgresDB)
-		deps.EconomyService = economy.NewGormService(postgresDB, cfg.Economy.StartingCoinBalance)
+		deps.EconomyService = economy.NewGormServiceWithPolicy(
+			postgresDB,
+			cfg.Economy.StartingCoinBalance,
+			economyPolicy,
+		)
 		deps.HouseService = house.NewGormServiceWithCatalog(postgresDB, housingCatalog)
+		deps.SocialService = social.NewGormService(postgresDB)
 		deps.UtilityService = utility.NewGormService(postgresDB, utilityPanels)
 		deps.MinigameService = minigame.NewGormSubmissionService(
 			postgresDB,

@@ -14,6 +14,7 @@ type Config struct {
 	Storage   StorageConfig   `yaml:"storage"`
 	Realtime  RealtimeConfig  `yaml:"realtime"`
 	Economy   EconomyConfig   `yaml:"economy"`
+	Retention RetentionConfig `yaml:"retention"`
 	Housing   HousingConfig   `yaml:"housing"`
 	Minigames MinigamesConfig `yaml:"minigames"`
 	Utility   UtilityConfig   `yaml:"utility"`
@@ -59,6 +60,17 @@ type RealtimeConfig struct {
 
 type EconomyConfig struct {
 	StartingCoinBalance int `yaml:"starting_coin_balance"`
+	CreatorShareBps     int `yaml:"creator_share_bps"`
+}
+
+type RetentionConfig struct {
+	RoomChatHistoryDays        int `yaml:"room_chat_history_days"`
+	PrivateMessageDays         int `yaml:"private_message_days"`
+	MailboxDays                int `yaml:"mailbox_days"`
+	ReportDays                 int `yaml:"report_days"`
+	LedgerDays                 int `yaml:"ledger_days"`
+	CreatorAuditDays           int `yaml:"creator_audit_days"`
+	CreatorArtifactStagingDays int `yaml:"creator_artifact_staging_days"`
 }
 
 type HousingConfig struct {
@@ -152,7 +164,16 @@ func defaultConfig() Config {
 			MinigameRoomCapacity: 16,
 			CustomRoomCapacity:   50,
 		},
-		Economy:   EconomyConfig{StartingCoinBalance: 25},
+		Economy: EconomyConfig{StartingCoinBalance: 25, CreatorShareBps: 1000},
+		Retention: RetentionConfig{
+			RoomChatHistoryDays:        0,
+			PrivateMessageDays:         365,
+			MailboxDays:                365,
+			ReportDays:                 730,
+			LedgerDays:                 2555,
+			CreatorAuditDays:           730,
+			CreatorArtifactStagingDays: 30,
+		},
 		Housing:   HousingConfig{ItemsConfigPath: "../configs/housing_items.json", SellRefundRate: 0.5},
 		Minigames: MinigamesConfig{FishingConfigPath: "../configs/fishing.json"},
 		Utility:   UtilityConfig{PanelsConfigPath: "../configs/utility_panels.json"},
@@ -224,6 +245,14 @@ func applyEnv(cfg *Config) {
 	applyIntEnv(&cfg.Realtime.MinigameRoomCapacity, "PSW_MINIGAME_ROOM_CAPACITY")
 	applyIntEnv(&cfg.Realtime.CustomRoomCapacity, "PSW_CUSTOM_ROOM_CAPACITY")
 	applyIntEnv(&cfg.Economy.StartingCoinBalance, "PSW_STARTING_COINS")
+	applyIntEnv(&cfg.Economy.CreatorShareBps, "PSW_CREATOR_SHARE_BPS")
+	applyIntEnv(&cfg.Retention.RoomChatHistoryDays, "PSW_ROOM_CHAT_HISTORY_DAYS")
+	applyIntEnv(&cfg.Retention.PrivateMessageDays, "PSW_PRIVATE_MESSAGE_RETENTION_DAYS")
+	applyIntEnv(&cfg.Retention.MailboxDays, "PSW_MAILBOX_RETENTION_DAYS")
+	applyIntEnv(&cfg.Retention.ReportDays, "PSW_REPORT_RETENTION_DAYS")
+	applyIntEnv(&cfg.Retention.LedgerDays, "PSW_LEDGER_RETENTION_DAYS")
+	applyIntEnv(&cfg.Retention.CreatorAuditDays, "PSW_CREATOR_AUDIT_RETENTION_DAYS")
+	applyIntEnv(&cfg.Retention.CreatorArtifactStagingDays, "PSW_CREATOR_ARTIFACT_STAGING_DAYS")
 	if value := os.Getenv("PSW_HOUSING_CONFIG_PATH"); value != "" {
 		cfg.Housing.ItemsConfigPath = value
 	}

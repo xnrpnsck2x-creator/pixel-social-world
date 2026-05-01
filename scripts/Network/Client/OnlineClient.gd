@@ -125,6 +125,12 @@ func report_chat_message(message: Dictionary, reason: String = "player_report") 
 func report_player_profile(profile: Dictionary, reason: String = "profile_report") -> Dictionary:
 	return await _api().report_player_profile(profile, reason)
 
+func social_action(action: String, target_player_id: String) -> Dictionary:
+	return await _api().social_action(action, target_player_id)
+
+func fetch_social_state(target_player_id: String) -> Dictionary:
+	return await _api().fetch_social_state(target_player_id)
+
 func send_private_message(recipient_id: String, body: String) -> Dictionary:
 	return await _api().send_private_message(recipient_id, body)
 

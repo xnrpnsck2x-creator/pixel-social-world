@@ -33,6 +33,7 @@ type LedgerRecord struct {
 type GormService struct {
 	db              *gorm.DB
 	startingBalance int
+	policy          Policy
 }
 
 func AutoMigrate(db *gorm.DB) error {
@@ -40,10 +41,14 @@ func AutoMigrate(db *gorm.DB) error {
 }
 
 func NewGormService(db *gorm.DB, startingBalance int) Service {
+	return NewGormServiceWithPolicy(db, startingBalance, DefaultPolicy())
+}
+
+func NewGormServiceWithPolicy(db *gorm.DB, startingBalance int, policy Policy) Service {
 	if startingBalance < 0 {
 		startingBalance = 0
 	}
-	return &GormService{db: db, startingBalance: startingBalance}
+	return &GormService{db: db, startingBalance: startingBalance, policy: normalizePolicy(policy)}
 }
 
 func (s *GormService) Balance(ctx context.Context, playerID string) GrantResponse {
@@ -153,6 +158,10 @@ func (s *GormService) Ledger(ctx context.Context, playerID string) []LedgerEvent
 		events = append(events, record.toEvent())
 	}
 	return events
+}
+
+func (s *GormService) Policy() Policy {
+	return s.policy
 }
 
 func (s *GormService) walletForUpdate(

@@ -27,6 +27,18 @@ func Validate(cfg Config, strict bool) []ValidationIssue {
 	if cfg.Economy.StartingCoinBalance < 0 {
 		issues = appendError(issues, "economy.starting_coin_balance", "starting coins cannot be negative")
 	}
+	if cfg.Economy.CreatorShareBps < 0 || cfg.Economy.CreatorShareBps > 10000 {
+		issues = appendError(issues, "economy.creator_share_bps", "creator share bps must be between 0 and 10000")
+	}
+	if cfg.Retention.RoomChatHistoryDays != 0 {
+		issues = appendError(issues, "retention.room_chat_history_days", "room chat history must remain 0 for ephemeral room chat")
+	}
+	requirePositive(&issues, cfg.Retention.PrivateMessageDays, "retention.private_message_days")
+	requirePositive(&issues, cfg.Retention.MailboxDays, "retention.mailbox_days")
+	requirePositive(&issues, cfg.Retention.ReportDays, "retention.report_days")
+	requirePositive(&issues, cfg.Retention.LedgerDays, "retention.ledger_days")
+	requirePositive(&issues, cfg.Retention.CreatorAuditDays, "retention.creator_audit_days")
+	requirePositive(&issues, cfg.Retention.CreatorArtifactStagingDays, "retention.creator_artifact_staging_days")
 	if cfg.Housing.SellRefundRate < 0 || cfg.Housing.SellRefundRate > 1 {
 		issues = appendError(issues, "housing.sell_refund_rate", "sell refund rate must be between 0 and 1")
 	}

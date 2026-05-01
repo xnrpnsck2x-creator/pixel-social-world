@@ -22,9 +22,28 @@ type SpendRequest struct {
 	Amount   int    `json:"amount"`
 }
 
+type CreatorPlayRewardRequest struct {
+	PlayerID     string `json:"player_id"`
+	CreatorID    string `json:"creator_id"`
+	GameID       string `json:"game_id"`
+	SourceID     string `json:"source_id"`
+	PlayerAmount int    `json:"player_amount"`
+}
+
 type GrantResponse struct {
 	PlayerID string `json:"player_id"`
 	Balance  int    `json:"balance"`
+}
+
+type CreatorPlayRewardResponse struct {
+	Player          GrantResponse `json:"player"`
+	Creator         GrantResponse `json:"creator"`
+	CreatorAmount   int           `json:"creator_amount"`
+	CreatorShareBps int           `json:"creator_share_bps"`
+}
+
+type Policy struct {
+	CreatorShareBps int `json:"creator_share_bps"`
 }
 
 type LedgerEvent struct {
@@ -44,20 +63,29 @@ type Service interface {
 	Balance(ctx context.Context, playerID string) GrantResponse
 	EnsurePlayer(ctx context.Context, playerID string, startingBalance int) GrantResponse
 	Grant(ctx context.Context, request GrantRequest) GrantResponse
+	GrantCreatorPlayReward(ctx context.Context, request CreatorPlayRewardRequest) (CreatorPlayRewardResponse, error)
 	Spend(ctx context.Context, request SpendRequest) (GrantResponse, bool)
 	Ledger(ctx context.Context, playerID string) []LedgerEvent
+	Policy() Policy
 }
 
 type MemoryService struct {
 	mu       sync.Mutex
 	balances map[string]int
 	ledger   map[string][]LedgerEvent
+	policy   Policy
 }
 
 func NewMemoryService() Service {
+	return NewMemoryServiceWithPolicy(DefaultPolicy())
+}
+
+func NewMemoryServiceWithPolicy(policy Policy) Service {
+	policy = normalizePolicy(policy)
 	service := &MemoryService{
 		balances: map[string]int{"offline-player": 25},
 		ledger:   map[string][]LedgerEvent{},
+		policy:   policy,
 	}
 	service.record("offline-player", LedgerEvent{
 		Type:         "system.init",
@@ -66,6 +94,10 @@ func NewMemoryService() Service {
 		BalanceAfter: 25,
 	})
 	return service
+}
+
+func DefaultPolicy() Policy {
+	return Policy{CreatorShareBps: 1000}
 }
 
 func (s *MemoryService) Balance(_ context.Context, playerID string) GrantResponse {
@@ -145,6 +177,10 @@ func (s *MemoryService) Ledger(_ context.Context, playerID string) []LedgerEvent
 	copied := make([]LedgerEvent, len(events))
 	copy(copied, events)
 	return copied
+}
+
+func (s *MemoryService) Policy() Policy {
+	return s.policy
 }
 
 func (s *MemoryService) record(playerID string, event LedgerEvent) {

@@ -92,6 +92,8 @@ func _run() -> void:
 		failures.append("Room member profile action did not open the player card.")
 	elif not _node_tree_contains(profile_card, "Peer City"):
 		failures.append("Room member profile card did not show the selected player.")
+	if not profile_card.has_node("%FollowButton") or not profile_card.has_node("%BlockButton"):
+		failures.append("Player profile card did not expose follow/block actions.")
 	profile_card.get_node("%ReportButton").pressed.emit()
 	await process_frame
 	var report_chat_service := instance.get_node("ServiceRoot/ChatService")

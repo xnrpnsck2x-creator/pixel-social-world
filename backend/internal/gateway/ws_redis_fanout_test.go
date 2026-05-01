@@ -2,8 +2,11 @@ package gateway
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"os"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -15,6 +18,9 @@ import (
 	"pixel-social-world/backend/internal/auth"
 	"pixel-social-world/backend/internal/room"
 )
+
+const redisFanoutLoadSmokeClients = 16
+const redisFanoutLoadSmokeMaxClients = 80
 
 func TestRedisRealtimeFanoutCrossesGatewayInstances(t *testing.T) {
 	redisServer := miniredis.RunT(t)
@@ -85,6 +91,86 @@ func TestRedisRealtimeFanoutCrossesGatewayInstances(t *testing.T) {
 	assertRedisRealtimeMetricEquals(t, serverB, "write_failed", 0)
 }
 
+func TestRedisRealtimeFanoutMultiClientLoadProfile(t *testing.T) {
+	redisServer := miniredis.RunT(t)
+	redisClient := goredis.NewClient(&goredis.Options{Addr: redisServer.Addr()})
+	defer redisClient.Close()
+
+	authService := auth.NewRedisService(redisClient, time.Minute, time.Hour)
+	serverA := newRedisRealtimeTestServer(t, redisClient, authService)
+	defer serverA.roomHub.Close()
+	serverB := newRedisRealtimeTestServer(t, redisClient, authService)
+	defer serverB.roomHub.Close()
+
+	httpA := httptest.NewServer(serverA.router)
+	defer httpA.Close()
+	httpB := httptest.NewServer(serverB.router)
+	defer httpB.Close()
+	waitForRedisFanoutSubscribers(t, redisClient, 2)
+
+	clientCount := redisFanoutLoadClientCount(t)
+	clients := make([]wsLoadClient, 0, clientCount)
+	defer func() { closeLoadClients(clients) }()
+	for i := 0; i < clientCount; i++ {
+		server := serverA
+		serverURL := httpA.URL
+		if i%2 == 1 {
+			server = serverB
+			serverURL = httpB.URL
+		}
+		session := testGuestLogin(t, server, fmt.Sprintf("Redis Load %02d", i))
+		conn := dialGatewaySocket(t, serverURL)
+		client := wsLoadClient{
+			conn:     conn,
+			playerID: session["player_id"].(string),
+			token:    session["access_token"].(string),
+		}
+		clients = append(clients, client)
+		writeLoadEnvelope(t, conn, "world.join", map[string]any{
+			"player_id":    client.playerID,
+			"access_token": client.token,
+			"room_id":      "redis_load_room",
+			"display_name": fmt.Sprintf("Redis Load %02d", i),
+		})
+	}
+	drainLoadClients(clients, 200*time.Millisecond)
+
+	for round := 0; round < 2; round++ {
+		for index, client := range clients {
+			writeLoadEnvelope(t, client.conn, "player.move", map[string]any{
+				"position": loadSmokePosition(index, round),
+				"velocity": map[string]any{"x": 1, "y": 0},
+				"facing":   "right",
+			})
+		}
+		time.Sleep(80 * time.Millisecond)
+	}
+	testPostJSON(t, serverA, "/chat/send", clients[0].token, map[string]any{
+		"room_id":     "redis_load_room",
+		"channel_id":  "global",
+		"sender_id":   clients[0].playerID,
+		"sender_name": "Redis Load 00",
+		"body":        "redis fanout load chat",
+	}, http.StatusOK)
+	drainLoadClients(clients, 400*time.Millisecond)
+
+	opsA := fetchLoadOps(t, serverA)
+	opsB := fetchLoadOps(t, serverB)
+	roomsA := opsA["rooms"].(map[string]any)
+	roomsB := opsB["rooms"].(map[string]any)
+	if int(roomsA["online_count"].(float64))+int(roomsB["online_count"].(float64)) != clientCount {
+		t.Fatalf("expected %d redis clients across gateways, got A=%#v B=%#v", clientCount, roomsA, roomsB)
+	}
+	assertRedisRealtimeMetricAtLeast(t, serverA, "fanout_published", 1)
+	assertRedisRealtimeMetricAtLeast(t, serverB, "fanout_published", 1)
+	assertRedisRealtimeMetricAtLeast(t, serverA, "fanout_received", 1)
+	assertRedisRealtimeMetricAtLeast(t, serverB, "fanout_received", 1)
+	assertRedisRealtimeMetricEquals(t, serverA, "write_failed", 0)
+	assertRedisRealtimeMetricEquals(t, serverB, "write_failed", 0)
+	assertRedisRealtimeMetricEquals(t, serverA, "fanout_publish_failed", 0)
+	assertRedisRealtimeMetricEquals(t, serverB, "fanout_publish_failed", 0)
+}
+
 func newRedisRealtimeTestServer(
 	t *testing.T,
 	redisClient *goredis.Client,
@@ -101,6 +187,19 @@ func newRedisRealtimeTestServer(
 		room.WithRateLimiter(room.NewRedisRateLimiter(redisClient)),
 	)
 	return NewServerWithDependencies(deps)
+}
+
+func redisFanoutLoadClientCount(t *testing.T) int {
+	t.Helper()
+	value := strings.TrimSpace(os.Getenv("PSW_WS_REDIS_LOAD_SMOKE_CLIENTS"))
+	if value == "" {
+		return redisFanoutLoadSmokeClients
+	}
+	parsed, err := strconv.Atoi(value)
+	if err != nil || parsed < 2 || parsed > redisFanoutLoadSmokeMaxClients {
+		t.Fatalf("PSW_WS_REDIS_LOAD_SMOKE_CLIENTS must be 2-%d, got %q", redisFanoutLoadSmokeMaxClients, value)
+	}
+	return parsed
 }
 
 func waitForRedisFanoutSubscribers(t *testing.T, redisClient *goredis.Client, expected int64) {

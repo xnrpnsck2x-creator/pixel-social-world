@@ -12,8 +12,10 @@ import (
 	"pixel-social-world/backend/internal/house"
 	"pixel-social-world/backend/internal/messaging"
 	"pixel-social-world/backend/internal/minigame"
+	"pixel-social-world/backend/internal/ops"
 	"pixel-social-world/backend/internal/presence"
 	"pixel-social-world/backend/internal/room"
+	"pixel-social-world/backend/internal/social"
 	"pixel-social-world/backend/internal/utility"
 )
 
@@ -27,6 +29,8 @@ type Dependencies struct {
 	FishingRewardService  minigame.FishingRewardService
 	UtilityService        utility.Service
 	PresenceService       presence.Service
+	SocialService         social.Service
+	RetentionPolicy       ops.RetentionPolicy
 	RoomHub               *room.Hub
 	StartingCoinBalance   int
 	HousingSellRefundRate float64
@@ -44,6 +48,8 @@ func DefaultMemoryDependencies() Dependencies {
 		MinigameService:       minigame.NewMemoryService(),
 		UtilityService:        utility.NewDefaultService(),
 		PresenceService:       presence.NewMemoryService(0),
+		SocialService:         social.NewMemoryService(),
+		RetentionPolicy:       ops.DefaultRetentionPolicy(),
 		StartingCoinBalance:   startingCoinBalance,
 		HousingSellRefundRate: housingDefaultSellRefundRate,
 		CORSAllowedOrigins:    DefaultCORSAllowedOrigins(),
@@ -86,6 +92,10 @@ func NewServerWithDependencies(deps Dependencies) *Server {
 	if deps.PresenceService == nil {
 		deps.PresenceService = presence.NewMemoryService(0)
 	}
+	if deps.SocialService == nil {
+		deps.SocialService = social.NewMemoryService()
+	}
+	deps.RetentionPolicy = ops.NormalizeRetentionPolicy(deps.RetentionPolicy)
 	if deps.RoomHub == nil {
 		deps.RoomHub = room.NewHub(
 			room.WithSessionValidator(deps.AuthService),
@@ -116,6 +126,8 @@ func NewServerWithDependencies(deps Dependencies) *Server {
 		utilityService:        deps.UtilityService,
 		fishingRewards:        deps.FishingRewardService,
 		presenceService:       deps.PresenceService,
+		socialService:         deps.SocialService,
+		retentionPolicy:       deps.RetentionPolicy,
 		roomHub:               deps.RoomHub,
 		startingCoinBalance:   deps.StartingCoinBalance,
 		housingSellRefundRate: deps.HousingSellRefundRate,

@@ -14,6 +14,19 @@ Accelerated content execution now lives in `docs/AcceleratedContentRoute.md`.
 
 ## Progress
 
+### MVP Autopilot Slice 6 - Social Trust, Retention, and Creator Payouts
+
+Status: Implemented; verification in progress on 2026-05-01.
+
+- Added backend follow/block relationship state with memory and PostgreSQL implementations.
+- Player profile cards now expose Image 2 framed Follow and Block actions; follow/block requests route through `OnlineClient`, `WorldHUDActionsController`, and localized HUD feedback.
+- Private messages now respect relationship blocks and return `private_message_blocked` instead of creating durable rows.
+- Added creator revenue-share policy (`creator_share_bps`) plus an owner-only trusted settlement endpoint that writes player reward and creator payout ledger entries together, using `source_id` as an idempotency key.
+- Added explicit retention policy config: room chat stays zero-day ephemeral, while private messages, mailbox, reports, ledgers, creator audit rows, and artifact staging windows are visible in `/debug/ops`.
+- Added a non-destructive retention cleanup plan to `/debug/ops` so ops tooling can see which durable tables will be pruned and verify that room chat remains memory-only.
+- Added a Redis multi-client two-gateway load profile so realtime fanout is no longer verified only by a two-socket cross-instance smoke.
+- Raised the MVP forecast from roughly 68-72% to 80-84% by closing social trust, creator economy, retention policy/cleanup planning, and Redis-mode load-risk slices.
+
 ### MVP Autopilot Slice 3 - Room Capacity and Backpressure
 
 Status: Implemented and locally verified on 2026-05-01.
