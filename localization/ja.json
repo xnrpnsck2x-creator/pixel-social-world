@@ -422,6 +422,7 @@
   "ops.console.rooms_empty": "アクティブなルーム詳細はありません。",
   "ops.console.rooms_title": "ルーム詳細",
   "ops.console.row.chat": "チャット: {a} 件 · 通報 {b} · 制限 {c}",
+  "ops.console.row.economy": "経済: クリエイター報酬 {a} · コイン {b} · 上限 {c}",
   "ops.console.row.fishing": "釣り: 付与 {a} · 上限 {b} · 再送 {c}",
   "ops.console.row.moderation": "管理: 有効 {a} · 操作 {b}",
   "ops.console.row.realtime": "リアルタイム: 配信 {a} · 移動制限 {b} · エモート制限 {c}",

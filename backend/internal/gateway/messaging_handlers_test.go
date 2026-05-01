@@ -120,3 +120,54 @@ func TestPrivateMessagesAreRateLimited(t *testing.T) {
 		t.Fatalf("expected private_rate_limited, got %#v", blocked)
 	}
 }
+
+func TestMessagingPrivateAndMailboxPagination(t *testing.T) {
+	server := NewServer()
+	alice := testGuestLogin(t, server, "Page Alice")
+	bob := testGuestLogin(t, server, "Page Bob")
+	aliceToken := alice["access_token"].(string)
+	bobToken := bob["access_token"].(string)
+	aliceID := alice["player_id"].(string)
+	bobID := bob["player_id"].(string)
+
+	for _, body := range []string{"pm-1", "pm-2", "pm-3"} {
+		testPostJSON(t, server, "/private-messages", aliceToken, map[string]any{
+			"sender_id":    aliceID,
+			"recipient_id": bobID,
+			"body":         body,
+		}, http.StatusCreated)
+	}
+	firstPage := testGetJSON(t, server, "/private-messages/"+aliceID+"?player_id="+bobID+"&limit=2", bobToken, http.StatusOK)
+	firstMessages := firstPage["messages"].([]any)
+	if len(firstMessages) != 2 || firstMessages[0].(map[string]any)["body"] != "pm-2" || firstMessages[1].(map[string]any)["body"] != "pm-3" {
+		t.Fatalf("unexpected first private page: %#v", firstPage)
+	}
+	secondPage := testGetJSON(t, server, "/private-messages/"+aliceID+"?player_id="+bobID+"&limit=2&offset=2", bobToken, http.StatusOK)
+	secondMessages := secondPage["messages"].([]any)
+	if len(secondMessages) != 1 || secondMessages[0].(map[string]any)["body"] != "pm-1" {
+		t.Fatalf("unexpected second private page: %#v", secondPage)
+	}
+	pagination := secondPage["pagination"].(map[string]any)
+	if int(pagination["offset"].(float64)) != 2 || int(pagination["count"].(float64)) != 1 {
+		t.Fatalf("private pagination metadata missing: %#v", pagination)
+	}
+
+	for _, subject := range []string{"mail-1", "mail-2", "mail-3"} {
+		testPostJSON(t, server, "/mailbox/send", aliceToken, map[string]any{
+			"sender_id":    aliceID,
+			"recipient_id": bobID,
+			"subject":      subject,
+			"body":         "mail body",
+		}, http.StatusCreated)
+	}
+	mailPage := testGetJSON(t, server, "/mailbox/inbox?player_id="+bobID+"&limit=2", bobToken, http.StatusOK)
+	mailMessages := mailPage["messages"].([]any)
+	if len(mailMessages) != 2 || mailMessages[0].(map[string]any)["subject"] != "mail-3" || mailMessages[1].(map[string]any)["subject"] != "mail-2" {
+		t.Fatalf("unexpected first mail page: %#v", mailPage)
+	}
+	mailTail := testGetJSON(t, server, "/mailbox/inbox?player_id="+bobID+"&limit=2&offset=2", bobToken, http.StatusOK)
+	tailMessages := mailTail["messages"].([]any)
+	if len(tailMessages) != 1 || tailMessages[0].(map[string]any)["subject"] != "mail-1" {
+		t.Fatalf("unexpected second mail page: %#v", mailTail)
+	}
+}

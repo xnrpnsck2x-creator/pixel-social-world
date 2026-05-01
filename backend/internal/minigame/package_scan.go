@@ -141,6 +141,9 @@ func checkMetaJSON(request SubmitRequest, file PackageFile, report *PackageScanR
 	if meta.ModeID != request.ModeID {
 		report.Issues = append(report.Issues, "meta_mode_mismatch")
 	}
+	if err := validateModeRuntimeContract(meta.ModeID, meta.RuntimeContract); err != nil {
+		report.Issues = append(report.Issues, "meta_"+err.Error())
+	}
 }
 
 func requiredPackagePaths(request SubmitRequest) []string {

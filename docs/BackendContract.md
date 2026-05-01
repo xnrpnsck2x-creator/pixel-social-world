@@ -240,18 +240,21 @@ If either player has blocked the other through `/social/block`, private sends
 return `403 {"error":"private_message_blocked"}` before a durable message is
 created.
 
-### `GET /private-messages?player_id=...&limit=50`
+### `GET /private-messages?player_id=...&limit=50&offset=0`
 
 Returns the authenticated player's durable private conversation summaries,
 newest first. Each row includes `conversation_id`, `peer_id`, `latest_message`,
 `latest_at`, and `unread_count`. This powers the client private-chat list and
 HUD unread badge without persisting room chat.
+`limit` is capped at 100 and `offset` is zero-based for older pages.
 
-### `GET /private-messages/:peer_id?player_id=...&limit=50`
+### `GET /private-messages/:peer_id?player_id=...&limit=50&offset=0`
 
 Returns the authenticated player's durable conversation with `peer_id` in
 chronological order. Requires a bearer token matching `player_id`. MVP limit is
-capped at 100.
+capped at 100. Page `offset=0` returns the newest tail page, still ordered
+oldest-to-newest within that page; increasing `offset` walks backward through
+older durable messages.
 
 ### `POST /private-messages/read/:peer_id`
 
@@ -332,11 +335,12 @@ Request:
 }
 ```
 
-### `GET /mailbox/inbox?player_id=...&limit=50`
+### `GET /mailbox/inbox?player_id=...&limit=50&offset=0`
 
 Returns the authenticated player's mailbox messages, newest first. Requires a
 bearer token matching `player_id`. The legacy `GET /utility/mail` endpoint is
 only the static utility-panel feed; player mailbox data must use `/mailbox/*`.
+`limit` is capped at 100 and `offset` is zero-based for older pages.
 
 ### `POST /mailbox/:mail_id/read`
 
@@ -493,6 +497,14 @@ Response:
   ]
 }
 ```
+
+Successful `place`, `style`, `move`, and `remove` mutations broadcast
+`housing.layout.updated` to `home:<owner_id>` so visitors and the owner can
+apply the new layout without polling. Payload fields:
+
+- `owner_id`, `room_id`, and `version`.
+- `action`: one of `place`, `style`, `move`, or `remove`.
+- `layout`: the latest server-authoritative layout object.
 
 ### `GET /minigames/:id`
 
@@ -981,6 +993,7 @@ Response includes:
 - `realtime`: fanout publish/receive/failure, rate-limit, leave, culling, write-backpressure, and local-delivery counters.
 - `chat`: message totals by room/channel, report totals by room, moderation action counts, active moderation counts, and soft rate-limit rejection counts.
 - `fishing_rewards`: trusted reward grants, replays, caps, pending requests, errors, active counters, and stored request count.
+- `economy`: ledger event totals, grant/spend counters, reward cap hits, creator play reward count, creator revenue-share count, and creator revenue coins.
 - `economy_policy`: creator share basis points and daily reward soft cap.
 - `retention_policy`: room-chat, private-message, mailbox, report, ledger, creator-audit, and artifact-staging retention windows.
 - `retention_cleanup_plan`: non-destructive cleanup task metadata for ops tooling; room chat is marked `memory_only` / `ephemeral`, while durable stores expose table, cutoff column, and parameterized SQL shape.
@@ -1012,6 +1025,7 @@ Response includes:
 - `emote.event`
 - `housing.invite`
 - `housing.visit`
+- `housing.layout.updated`
 - `housing.place_item`
 - `housing.save_layout`
 - `minigame.session_create`

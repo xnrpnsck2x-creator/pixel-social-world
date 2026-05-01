@@ -21,6 +21,10 @@ func TestMemoryGrantHonorsDailySoftCap(t *testing.T) {
 	if third.Delta != 0 || third.Balance != 10 {
 		t.Fatalf("third grant should be fully capped: %#v", third)
 	}
+	stats := service.Stats(ctx)
+	if stats.GrantEvents != 3 || stats.RewardCapHits != 1 {
+		t.Fatalf("grant stats should expose cap hits: %#v", stats)
+	}
 }
 
 func TestMemoryCreatorRewardUsesDailySoftCapAndIdempotency(t *testing.T) {
@@ -49,5 +53,9 @@ func TestMemoryCreatorRewardUsesDailySoftCapAndIdempotency(t *testing.T) {
 	}
 	if replay.Player.Delta != 0 || replay.Creator.Delta != 0 {
 		t.Fatalf("creator reward replay should not grant again: %#v", replay)
+	}
+	stats := service.Stats(ctx)
+	if stats.CreatorPlayRewards != 1 || stats.CreatorRevenueShares != 1 || stats.CreatorRevenueCoins != 1 {
+		t.Fatalf("creator stats should expose reward and revenue counters: %#v", stats)
 	}
 }

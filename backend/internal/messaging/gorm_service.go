@@ -94,6 +94,7 @@ func (s *GormService) PrivateConversation(
 		Where("conversation_id = ?", ConversationID(request.PlayerID, request.PeerID)).
 		Order("created_unix desc, id desc").
 		Limit(normalizeLimit(request.Limit)).
+		Offset(normalizeOffset(request.Offset)).
 		Find(&records).Error
 	if err != nil {
 		return nil, err
@@ -114,7 +115,7 @@ func (s *GormService) PrivateConversations(
 		return nil, errors.New("player_required")
 	}
 	records := []PrivateMessageRecord{}
-	scanLimit := normalizeLimit(request.Limit) * 50
+	scanLimit := (normalizeLimit(request.Limit) + normalizeOffset(request.Offset)) * 50
 	err := s.db.WithContext(ctx).
 		Where("sender_id = ? OR recipient_id = ?", playerID, playerID).
 		Order("created_unix desc, id desc").
@@ -131,7 +132,7 @@ func (s *GormService) PrivateConversations(
 	if err != nil {
 		return nil, err
 	}
-	return summarizePrivateConversations(messages, playerID, readAt, normalizeLimit(request.Limit)), nil
+	return summarizePrivateConversations(messages, playerID, readAt, request.Limit, request.Offset), nil
 }
 
 func (s *GormService) MarkPrivateRead(
@@ -165,6 +166,7 @@ func (s *GormService) MarkPrivateRead(
 	summaries, err := s.PrivateConversations(ctx, ConversationListRequest{
 		PlayerID: normalized.PlayerID,
 		Limit:    maxListLimit,
+		Offset:   0,
 	})
 	if err != nil {
 		return PrivateConversationSummary{}, err
@@ -205,6 +207,7 @@ func (s *GormService) Inbox(ctx context.Context, request InboxRequest) ([]MailMe
 		Where("recipient_id = ?", request.PlayerID).
 		Order("created_unix desc, id desc").
 		Limit(normalizeLimit(request.Limit)).
+		Offset(normalizeOffset(request.Offset)).
 		Find(&records).Error
 	if err != nil {
 		return nil, err

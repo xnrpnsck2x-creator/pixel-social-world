@@ -43,7 +43,6 @@ func (s *MemoryService) PrivateConversation(
 		return nil, errors.New("player_required")
 	}
 	conversationID := ConversationID(request.PlayerID, request.PeerID)
-	limit := normalizeLimit(request.Limit)
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	messages := []PrivateMessage{}
@@ -52,7 +51,7 @@ func (s *MemoryService) PrivateConversation(
 			messages = append(messages, message)
 		}
 	}
-	return tailPrivate(messages, limit), nil
+	return tailPrivatePage(messages, request.Limit, request.Offset), nil
 }
 
 func (s *MemoryService) PrivateConversations(
@@ -79,7 +78,8 @@ func (s *MemoryService) PrivateConversations(
 		s.private,
 		playerID,
 		readAtByConversation,
-		normalizeLimit(request.Limit),
+		request.Limit,
+		request.Offset,
 	), nil
 }
 
@@ -101,7 +101,7 @@ func (s *MemoryService) MarkPrivateRead(
 	readAtByConversation := map[string]int64{
 		conversationID: s.privateReadAt[privateReadKey(conversationID, normalized.PlayerID)],
 	}
-	summaries := summarizePrivateConversations(s.private, normalized.PlayerID, readAtByConversation, maxListLimit)
+	summaries := summarizePrivateConversations(s.private, normalized.PlayerID, readAtByConversation, maxListLimit, 0)
 	for _, summary := range summaries {
 		if summary.ConversationID == conversationID {
 			return summary, nil

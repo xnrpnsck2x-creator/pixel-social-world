@@ -134,11 +134,11 @@ func fetch_social_state(target_player_id: String) -> Dictionary:
 func send_private_message(recipient_id: String, body: String) -> Dictionary:
 	return await _api().send_private_message(recipient_id, body)
 
-func fetch_private_conversation(peer_id: String, limit: int = 50) -> Dictionary:
-	return await _api().fetch_private_conversation(peer_id, limit)
+func fetch_private_conversation(peer_id: String, limit: int = 50, offset: int = 0) -> Dictionary:
+	return await _api().fetch_private_conversation(peer_id, limit, offset)
 
-func fetch_private_conversations(limit: int = 50) -> Dictionary:
-	return await _api().fetch_private_conversations(limit)
+func fetch_private_conversations(limit: int = 50, offset: int = 0) -> Dictionary:
+	return await _api().fetch_private_conversations(limit, offset)
 
 func mark_private_read(peer_id: String) -> Dictionary:
 	return await _api().mark_private_read(peer_id)
@@ -149,8 +149,8 @@ func report_private_message(message: Dictionary, reason: String = "player_report
 func send_mail(recipient_id: String, subject: String, body: String) -> Dictionary:
 	return await _api().send_mail(recipient_id, subject, body)
 
-func fetch_mailbox(limit: int = 50) -> Dictionary:
-	return await _api().fetch_mailbox(limit)
+func fetch_mailbox(limit: int = 50, offset: int = 0) -> Dictionary:
+	return await _api().fetch_mailbox(limit, offset)
 
 func mark_mail_read(mail_id: String) -> Dictionary:
 	return await _api().mark_mail_read(mail_id)

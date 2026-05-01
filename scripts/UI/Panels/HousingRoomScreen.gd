@@ -102,6 +102,7 @@ func _setup_services() -> void:
 	social_controller.name = "SocialController"
 	add_child(social_controller)
 	social_controller.initialize(owner_id, room_id)
+	social_controller.bind_layout_service(housing_service)
 
 func _build_ui() -> void:
 	var layer := CanvasLayer.new()

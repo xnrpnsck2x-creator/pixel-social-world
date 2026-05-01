@@ -14,6 +14,17 @@ Accelerated content execution now lives in `docs/AcceleratedContentRoute.md`.
 
 ## Progress
 
+### MVP Autopilot Slice 8 - Local MVP Closure Gates
+
+Status: Implemented and locally verified on 2026-05-01.
+
+- Added `limit` + `offset` pagination for private conversation summaries, private conversation history, and mailbox inbox reads across memory, PostgreSQL, REST, and Godot/H5 client wrappers.
+- Added room-scoped `housing.layout.updated` broadcasts after server-authoritative housing place/style/move/remove mutations, and wired the housing room screen to apply live layout updates.
+- Added economy Debug Ops counters for total ledger events, grant/spend totals, reward cap hits, creator play rewards, creator revenue-share events, and creator revenue coins.
+- Tightened creator mode compatibility by validating `runtime_contract.camera`, `runtime_contract.input_profile`, and `runtime_contract.network_profile` against the selected `mode_id` in both Go intake and Godot manifest validation.
+- Updated backend contracts, creator spec, content validation, LiveOps smoke data, and progress forecasts toward a local code-verifiable MVP closure pass.
+- Verified with content validation, full Go backend tests, targeted Godot smoke suite, Web export, and the H5 screenshot matrix with backend ops enabled: 35 screenshots, 0 console messages, ports clear.
+
 ### MVP Autopilot Slice 7 - Retention Cleanup and Economy Caps
 
 Status: Implemented and locally verified on 2026-05-01.

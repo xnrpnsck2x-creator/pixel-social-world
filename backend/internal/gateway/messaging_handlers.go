@@ -34,6 +34,7 @@ func (s *Server) sendPrivateMessage(ctx *gin.Context) {
 
 func (s *Server) privateConversations(ctx *gin.Context) {
 	limit, _ := strconv.Atoi(ctx.DefaultQuery("limit", "50"))
+	offset, _ := strconv.Atoi(ctx.DefaultQuery("offset", "0"))
 	playerID, ok := s.requireAuthorizedPlayer(ctx, ctx.Query("player_id"))
 	if !ok {
 		return
@@ -41,16 +42,18 @@ func (s *Server) privateConversations(ctx *gin.Context) {
 	conversations, err := s.messagingService.PrivateConversations(ctx.Request.Context(), messaging.ConversationListRequest{
 		PlayerID: playerID,
 		Limit:    limit,
+		Offset:   offset,
 	})
 	if err != nil {
 		ctx.JSON(messagingErrorStatus(err), gin.H{"error": err.Error()})
 		return
 	}
-	ctx.JSON(http.StatusOK, gin.H{"conversations": conversations})
+	ctx.JSON(http.StatusOK, gin.H{"conversations": conversations, "pagination": paginationPayload(limit, offset, len(conversations))})
 }
 
 func (s *Server) privateConversation(ctx *gin.Context) {
 	limit, _ := strconv.Atoi(ctx.DefaultQuery("limit", "50"))
+	offset, _ := strconv.Atoi(ctx.DefaultQuery("offset", "0"))
 	playerID, ok := s.requireAuthorizedPlayer(ctx, ctx.Query("player_id"))
 	if !ok {
 		return
@@ -59,12 +62,13 @@ func (s *Server) privateConversation(ctx *gin.Context) {
 		PlayerID: playerID,
 		PeerID:   ctx.Param("peer_id"),
 		Limit:    limit,
+		Offset:   offset,
 	})
 	if err != nil {
 		ctx.JSON(messagingErrorStatus(err), gin.H{"error": err.Error()})
 		return
 	}
-	ctx.JSON(http.StatusOK, gin.H{"messages": messages})
+	ctx.JSON(http.StatusOK, gin.H{"messages": messages, "pagination": paginationPayload(limit, offset, len(messages))})
 }
 
 func (s *Server) markPrivateRead(ctx *gin.Context) {
@@ -127,6 +131,7 @@ func (s *Server) sendMailboxMessage(ctx *gin.Context) {
 
 func (s *Server) mailboxInbox(ctx *gin.Context) {
 	limit, _ := strconv.Atoi(ctx.DefaultQuery("limit", "50"))
+	offset, _ := strconv.Atoi(ctx.DefaultQuery("offset", "0"))
 	playerID, ok := s.requireAuthorizedPlayer(ctx, ctx.Query("player_id"))
 	if !ok {
 		return
@@ -134,12 +139,13 @@ func (s *Server) mailboxInbox(ctx *gin.Context) {
 	messages, err := s.messagingService.Inbox(ctx.Request.Context(), messaging.InboxRequest{
 		PlayerID: playerID,
 		Limit:    limit,
+		Offset:   offset,
 	})
 	if err != nil {
 		ctx.JSON(messagingErrorStatus(err), gin.H{"error": err.Error()})
 		return
 	}
-	ctx.JSON(http.StatusOK, gin.H{"messages": messages})
+	ctx.JSON(http.StatusOK, gin.H{"messages": messages, "pagination": paginationPayload(limit, offset, len(messages))})
 }
 
 func (s *Server) markMailboxRead(ctx *gin.Context) {
@@ -160,6 +166,31 @@ func (s *Server) markMailboxRead(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, message)
+}
+
+func paginationPayload(limit int, offset int, count int) gin.H {
+	return gin.H{
+		"limit":  messagingNormalizeLimit(limit),
+		"offset": messagingNormalizeOffset(offset),
+		"count":  count,
+	}
+}
+
+func messagingNormalizeLimit(limit int) int {
+	if limit <= 0 {
+		return 50
+	}
+	if limit > 100 {
+		return 100
+	}
+	return limit
+}
+
+func messagingNormalizeOffset(offset int) int {
+	if offset < 0 {
+		return 0
+	}
+	return offset
 }
 
 func messagingErrorStatus(err error) int {

@@ -67,6 +67,7 @@ func _render_rows() -> void:
 	var realtime: Dictionary = _ops_snapshot.get("realtime", {}) as Dictionary
 	var chat: Dictionary = _ops_snapshot.get("chat", {}) as Dictionary
 	var fishing: Dictionary = _ops_snapshot.get("fishing_rewards", {}) as Dictionary
+	var economy: Dictionary = _ops_snapshot.get("economy", {}) as Dictionary
 	_status_label.text = App.format_key("ops.console.summary_format", {
 		"online": _int(rooms, "online_count"),
 		"messages": _int(chat, "total_messages"),
@@ -79,6 +80,7 @@ func _render_rows() -> void:
 	_add_row("ops.console.row.chat", [_int(chat, "total_messages"), _int(chat, "total_reports"), _int(chat, "rejected_rate_limited")])
 	_add_row("ops.console.row.moderation", [_int(chat, "active_moderation"), _int(chat, "moderation_actions")])
 	_add_row("ops.console.row.fishing", [_int(fishing, "granted"), _int(fishing, "capped"), _int(fishing, "replayed")])
+	_add_row("ops.console.row.economy", [_int(economy, "creator_play_rewards"), _int(economy, "creator_revenue_coins"), _int(economy, "reward_cap_hits")])
 	_add_room_rows()
 	_refresh_button.disabled = false
 

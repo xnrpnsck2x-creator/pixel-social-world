@@ -26,6 +26,7 @@ func (s *Server) debugOps(ctx *gin.Context) {
 		"realtime":               roomSnapshot["realtime"],
 		"chat":                   s.chatService.Stats(ctx.Request.Context()),
 		"fishing_rewards":        s.fishingRewards.Stats(ctx.Request.Context()),
+		"economy":                s.economyService.Stats(ctx.Request.Context()),
 		"economy_policy":         s.economyService.Policy(),
 		"retention_policy":       s.retentionPolicy,
 		"retention_cleanup_plan": ops.BuildRetentionCleanupPlan(s.retentionPolicy),

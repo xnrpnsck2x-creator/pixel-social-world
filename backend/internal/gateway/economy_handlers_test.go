@@ -73,6 +73,21 @@ func TestCreatorShareRewardIsOwnerOnlyAndWritesLedgers(t *testing.T) {
 	if int(policy["daily_soft_cap"].(float64)) != economy.DefaultPolicy().DailySoftCap {
 		t.Fatalf("economy policy did not expose daily soft cap: %#v", policy)
 	}
+
+	opsRequest := httptest.NewRequest(http.MethodGet, "/debug/ops", nil)
+	opsRequest.Header.Set("X-Admin-Token", "owner-token")
+	opsRecorder := httptest.NewRecorder()
+	server.router.ServeHTTP(opsRecorder, opsRequest)
+	if opsRecorder.Code != http.StatusOK {
+		t.Fatalf("debug ops request failed: %d %s", opsRecorder.Code, opsRecorder.Body.String())
+	}
+	ops := decodeJSONBody(t, opsRecorder.Body.Bytes())
+	stats := ops["economy"].(map[string]any)
+	if int(stats["creator_play_rewards"].(float64)) != 1 ||
+		int(stats["creator_revenue_shares"].(float64)) != 1 ||
+		int(stats["creator_revenue_coins"].(float64)) != 10 {
+		t.Fatalf("debug ops did not expose creator economy stats: %#v", stats)
+	}
 }
 
 func ledgerHasType(events []economy.LedgerEvent, eventType string) bool {

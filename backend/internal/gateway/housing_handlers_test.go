@@ -3,6 +3,7 @@ package gateway
 import (
 	"context"
 	"net/http"
+	"net/http/httptest"
 	"testing"
 )
 
@@ -163,6 +164,47 @@ func TestHousingRemoveUsesConfiguredRefundRate(t *testing.T) {
 	}, http.StatusOK)
 	if int(removed["refund"].(float64)) != 10 || int(removed["balance"].(float64)) != 85 {
 		t.Fatalf("expected configured 10 coin refund and balance 85, got %#v", removed)
+	}
+}
+
+func TestHousingMutationsBroadcastLayoutUpdateToHomeRoom(t *testing.T) {
+	deps := DefaultMemoryDependencies()
+	deps.StartingCoinBalance = 100
+	server := NewServerWithDependencies(deps)
+	httpServer := httptest.NewServer(server.router)
+	defer httpServer.Close()
+	owner := testGuestLogin(t, server, "Housing Broadcast Owner")
+	visitor := testGuestLogin(t, server, "Housing Broadcast Visitor")
+	ownerID := owner["player_id"].(string)
+	ownerToken := owner["access_token"].(string)
+	visitorID := visitor["player_id"].(string)
+	visitorToken := visitor["access_token"].(string)
+	conn := dialGatewaySocket(t, httpServer.URL)
+	defer conn.Close()
+	writeLoadEnvelope(t, conn, "world.join", map[string]any{
+		"room_id":      "home:" + ownerID,
+		"player_id":    visitorID,
+		"display_name": "Housing Visitor",
+		"access_token": visitorToken,
+	})
+	_ = readGatewayEnvelope(t, conn, "world.snapshot")
+
+	testPostJSON(t, server, "/housing/place", ownerToken, map[string]any{
+		"owner_id":  ownerID,
+		"player_id": ownerID,
+		"item_id":   "simple_chair",
+		"tile_x":    1,
+		"tile_y":    1,
+	}, http.StatusOK)
+	update := readGatewayEnvelope(t, conn, housingLayoutUpdatedMessage)
+	payload := update.Payload.(map[string]interface{})
+	if payload["owner_id"] != ownerID || payload["room_id"] != "home:"+ownerID || payload["action"] != "place" {
+		t.Fatalf("unexpected housing update payload: %#v", payload)
+	}
+	layout := payload["layout"].(map[string]interface{})
+	items := layout["items"].([]interface{})
+	if len(items) != 1 || int(layout["version"].(float64)) < 2 {
+		t.Fatalf("housing update did not include latest layout: %#v", payload)
 	}
 }
 

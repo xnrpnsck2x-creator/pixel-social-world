@@ -285,7 +285,11 @@ Mode fields:
 - `allowed_capabilities`: high-level features creators may use inside the sandbox.
 - `review_focus`: review and AI-audit checks that matter most for the mode.
 
-Manifest rule: `meta.json` must include `mode_id` and a `runtime_contract` object. Player caps in `meta.json` must not exceed the selected mode cap.
+Manifest rule: `meta.json` must include `mode_id` and a `runtime_contract`
+object. Player caps in `meta.json` must not exceed the selected mode cap, and
+`runtime_contract.camera`, `runtime_contract.input_profile`, and
+`runtime_contract.network_profile` must match the selected mode's expected
+runtime profile.
 
 ## Localization
 

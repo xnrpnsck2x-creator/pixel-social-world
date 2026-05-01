@@ -48,6 +48,16 @@ type Policy struct {
 	DailySoftCap    int `json:"daily_soft_cap"`
 }
 
+type Stats struct {
+	TotalLedgerEvents    int `json:"total_ledger_events"`
+	GrantEvents          int `json:"grant_events"`
+	SpendEvents          int `json:"spend_events"`
+	RewardCapHits        int `json:"reward_cap_hits"`
+	CreatorPlayRewards   int `json:"creator_play_rewards"`
+	CreatorRevenueShares int `json:"creator_revenue_shares"`
+	CreatorRevenueCoins  int `json:"creator_revenue_coins"`
+}
+
 type LedgerEvent struct {
 	ID               string `json:"id"`
 	PlayerID         string `json:"player_id"`
@@ -69,6 +79,7 @@ type Service interface {
 	Spend(ctx context.Context, request SpendRequest) (GrantResponse, bool)
 	Ledger(ctx context.Context, playerID string) []LedgerEvent
 	Policy() Policy
+	Stats(ctx context.Context) Stats
 }
 
 type MemoryService struct {

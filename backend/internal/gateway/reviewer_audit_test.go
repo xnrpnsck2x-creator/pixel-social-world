@@ -23,7 +23,7 @@ func TestReviewerActionsWriteAuditTrail(t *testing.T) {
 		"max_players":        4,
 		"tags":               []string{"audit"},
 		"requires_network":   false,
-		"runtime_contract":   map[string]any{"camera": "contained"},
+		"runtime_contract":   map[string]any{"camera": "contained", "input_profile": "tap_timing", "network_profile": "offline_optional"},
 		"entry_scene":        "res://creator/audit/main.tscn",
 		"main_script":        "res://creator/audit/game.gd",
 		"asset_budget_bytes": 1024,

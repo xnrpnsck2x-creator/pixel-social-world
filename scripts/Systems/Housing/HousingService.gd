@@ -85,6 +85,9 @@ func get_owner_id() -> String:
 func can_edit_room() -> bool:
 	return can_edit
 
+func apply_remote_layout(layout: Dictionary) -> void:
+	_online_sync().apply_remote_layout(layout)
+
 func get_item(item_id: String) -> Dictionary:
 	if catalog_by_id.has(item_id):
 		return catalog_by_id[item_id] as Dictionary

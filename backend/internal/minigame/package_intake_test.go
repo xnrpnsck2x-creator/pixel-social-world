@@ -91,6 +91,19 @@ func TestMemoryServiceSubmitPackageRejectsForbiddenScript(t *testing.T) {
 	}
 }
 
+func TestMemoryServiceSubmitPackageRejectsModeContractMismatch(t *testing.T) {
+	service := NewMemoryService()
+	request := creatorPackageRequest("creator_contract_mismatch", safeCreatorScript())
+	request.RuntimeContract["camera"] = "contained"
+	record, err := service.SubmitPackage(context.Background(), request)
+	if err == nil {
+		t.Fatal("expected runtime contract mismatch to fail")
+	}
+	if record.GameID != "" {
+		t.Fatalf("contract mismatch should fail before storing a package record: %#v", record)
+	}
+}
+
 func TestMemoryServiceReviewStatusTransitions(t *testing.T) {
 	service := NewMemoryService()
 	record, err := service.SubmitPackageAsync(context.Background(), creatorPackageRequest("creator_review_flow", safeCreatorScript()))

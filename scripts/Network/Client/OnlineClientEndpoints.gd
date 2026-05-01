@@ -139,16 +139,17 @@ func send_private_message(recipient_id: String, body: String) -> Dictionary:
 		"body": body
 	})
 
-func fetch_private_conversation(peer_id: String, limit: int = 50) -> Dictionary:
-	var route := "/private-messages/%s?player_id=%s&limit=%d" % [
+func fetch_private_conversation(peer_id: String, limit: int = 50, offset: int = 0) -> Dictionary:
+	var route := "/private-messages/%s?player_id=%s&limit=%d&offset=%d" % [
 		peer_id.uri_encode(),
 		_client.player_id.uri_encode(),
-		limit
+		limit,
+		offset
 	]
 	return await _client._request_json(HTTPClient.METHOD_GET, route)
 
-func fetch_private_conversations(limit: int = 50) -> Dictionary:
-	var route := "/private-messages?player_id=%s&limit=%d" % [_client.player_id.uri_encode(), limit]
+func fetch_private_conversations(limit: int = 50, offset: int = 0) -> Dictionary:
+	var route := "/private-messages?player_id=%s&limit=%d&offset=%d" % [_client.player_id.uri_encode(), limit, offset]
 	return await _client._request_json(HTTPClient.METHOD_GET, route)
 
 func mark_private_read(peer_id: String) -> Dictionary:
@@ -173,8 +174,8 @@ func send_mail(recipient_id: String, subject: String, body: String) -> Dictionar
 		"body": body
 	})
 
-func fetch_mailbox(limit: int = 50) -> Dictionary:
-	var route := "/mailbox/inbox?player_id=%s&limit=%d" % [_client.player_id.uri_encode(), limit]
+func fetch_mailbox(limit: int = 50, offset: int = 0) -> Dictionary:
+	var route := "/mailbox/inbox?player_id=%s&limit=%d&offset=%d" % [_client.player_id.uri_encode(), limit, offset]
 	return await _client._request_json(HTTPClient.METHOD_GET, route)
 
 func mark_mail_read(mail_id: String) -> Dictionary:

@@ -11,6 +11,15 @@ LOCALES = ["en", "ja", "zh-Hans"]
 SCENE_ROUTE_REQUIRED_FIELDS = {"id", "path", "type", "title_key"}
 MINIGAME_META_NAME_KEYS = ["en", "ja", "zh"]
 MAX_GDSCRIPT_LINES = 300
+CREATOR_MODE_RUNTIME_CONTRACTS = {
+    "casual_activity": {"camera": "contained", "input_profile": "tap_timing", "network_profile": "offline_optional"},
+    "side_scroller_2d": {"camera": "side_view", "input_profile": "action_platformer", "network_profile": "session_sync"},
+    "2d_fighting": {"camera": "side_view", "input_profile": "fighting_action", "network_profile": "authoritative_realtime"},
+    "strategy_war": {"camera": "isometric", "input_profile": "strategy_pointer", "network_profile": "turn_or_lockstep"},
+    "rpg_adventure": {"camera": "top_down", "input_profile": "rpg_move_confirm", "network_profile": "session_sync"},
+    "tower_defense": {"camera": "lane_grid", "input_profile": "tower_place_upgrade", "network_profile": "session_sync"},
+    "battle_royale": {"camera": "top_down", "input_profile": "survival_action", "network_profile": "authoritative_realtime"},
+}
 MINIGAME_FORBIDDEN_PATTERNS = [
     "OS.",
     "FileAccess",
@@ -374,6 +383,8 @@ def validate_creator_game_modes(en_locale):
         for array_key in ["allowed_capabilities", "review_focus"]:
             if not isinstance(mode.get(array_key, []), list) or not mode.get(array_key):
                 raise ValueError(f"creator mode {mode_id} must define {array_key}")
+        if mode_id not in CREATOR_MODE_RUNTIME_CONTRACTS:
+            raise ValueError(f"creator mode {mode_id} is missing runtime contract validation")
         mode_caps[mode_id] = max_players
     if data.get("default_mode_id") not in mode_caps:
         raise ValueError("creator_game_modes default_mode_id must be a mode id")
@@ -426,6 +437,7 @@ def validate_minigame_manifest(resource_path, expected_id, creator_modes):
         raise ValueError(f"{resource_path} exceeds mode player cap for {mode_id}")
     if not isinstance(manifest.get("runtime_contract"), dict):
         raise ValueError(f"{resource_path} runtime_contract must be an object")
+    validate_runtime_contract(resource_path, manifest.get("runtime_contract"), CREATOR_MODE_RUNTIME_CONTRACTS[mode_id])
 
     require_resource(manifest.get("entry_scene"), f"minigame manifest {expected_id}")
     require_resource(manifest.get("main_script"), f"minigame manifest {expected_id}")
@@ -465,6 +477,11 @@ def validate_creator_mode_fixtures(creator_modes):
             raise ValueError(f"creator fixture {mode_id} exceeds mode player cap")
         if not isinstance(manifest.get("runtime_contract"), dict):
             raise ValueError(f"creator fixture {mode_id} runtime_contract must be an object")
+        validate_runtime_contract(
+            f"creator fixture {mode_id}",
+            manifest.get("runtime_contract"),
+            CREATOR_MODE_RUNTIME_CONTRACTS[mode_id],
+        )
         require_resource(manifest.get("entry_scene"), f"creator fixture {mode_id}")
         require_resource(manifest.get("main_script"), f"creator fixture {mode_id}")
         scan_minigame_script(manifest.get("main_script"), f"creator fixture {mode_id}")
@@ -474,6 +491,12 @@ def validate_creator_mode_fixtures(creator_modes):
     missing = sorted(set(creator_modes.keys()) - seen_modes)
     if missing:
         raise ValueError(f"creator fixtures missing modes: {missing}")
+
+
+def validate_runtime_contract(label, contract, expected):
+    for field, expected_value in expected.items():
+        if str(contract.get(field, "")) != expected_value:
+            raise ValueError(f"{label} runtime_contract.{field} must be {expected_value}")
 
 
 def scan_minigame_script(resource_path, minigame_id):

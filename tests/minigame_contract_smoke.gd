@@ -26,9 +26,28 @@ func _run() -> void:
 	var fighting_manifest := manifest.duplicate(true)
 	fighting_manifest["mode_id"] = "2d_fighting"
 	fighting_manifest["max_players"] = 4
+	fighting_manifest["runtime_contract"] = {
+		"camera": "side_view",
+		"input_profile": "fighting_action",
+		"network_profile": "authoritative_realtime"
+	}
 	errors = MinigameManifestValidator.validate(fighting_manifest)
 	if not errors.is_empty():
 		failures.append("Manifest validator rejected a valid 2D fighting player cap: %s" % ", ".join(errors))
+
+	fighting_manifest["runtime_contract"] = {
+		"camera": "contained",
+		"input_profile": "tap_timing",
+		"network_profile": "offline_optional"
+	}
+	errors = MinigameManifestValidator.validate(fighting_manifest)
+	if errors.is_empty():
+		failures.append("Manifest validator accepted a mismatched 2D fighting runtime contract.")
+	fighting_manifest["runtime_contract"] = {
+		"camera": "side_view",
+		"input_profile": "fighting_action",
+		"network_profile": "authoritative_realtime"
+	}
 
 	fighting_manifest["max_players"] = 5
 	errors = MinigameManifestValidator.validate(fighting_manifest)

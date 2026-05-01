@@ -422,6 +422,7 @@
   "ops.console.rooms_empty": "暂无活跃房间钻取行。",
   "ops.console.rooms_title": "房间钻取",
   "ops.console.row.chat": "聊天：{a} 条消息 · {b} 条举报 · {c} 次限流",
+  "ops.console.row.economy": "经济：{a} 次创作者奖励 · {b} 创作者金币 · {c} 次封顶",
   "ops.console.row.fishing": "钓鱼：{a} 次发奖 · {b} 次封顶 · {c} 次重放",
   "ops.console.row.moderation": "治理：{a} 条生效 · {b} 次操作",
   "ops.console.row.realtime": "实时：{a} 次投递 · {b} 次移动限流 · {c} 次表情限流",

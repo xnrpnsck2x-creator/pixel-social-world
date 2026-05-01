@@ -422,6 +422,7 @@
   "ops.console.rooms_empty": "No active room drilldown rows.",
   "ops.console.rooms_title": "Room Drilldown",
   "ops.console.row.chat": "Chat: {a} messages · {b} reports · {c} rate-limited",
+  "ops.console.row.economy": "Economy: {a} creator rewards · {b} creator coins · {c} cap hits",
   "ops.console.row.fishing": "Fishing: {a} granted · {b} capped · {c} replayed",
   "ops.console.row.moderation": "Moderation: {a} active · {b} actions",
   "ops.console.row.realtime": "Realtime: {a} delivered · {b} move limits · {c} emote limits",

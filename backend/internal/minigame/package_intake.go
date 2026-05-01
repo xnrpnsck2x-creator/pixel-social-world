@@ -206,6 +206,9 @@ func validateSubmitRequest(request SubmitRequest) error {
 	if len(request.RuntimeContract) == 0 {
 		return errors.New("runtime_contract_required")
 	}
+	if err := validateModeRuntimeContract(request.ModeID, request.RuntimeContract); err != nil {
+		return err
+	}
 	if request.EntryScene == "" {
 		return errors.New("entry_scene_required")
 	}

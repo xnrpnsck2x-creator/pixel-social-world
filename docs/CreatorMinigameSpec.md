@@ -14,13 +14,18 @@ Every package chooses one `mode_id`. The same `IMinigame` interface is used for 
 
 MVP mode IDs:
 
-- `casual_activity`: fishing, matching, rhythm taps, festival booths.
-- `side_scroller_2d`: 2D pixel action stages with platforms, enemies, hazards, and bounded cameras.
-- `2d_fighting`: side-view duels or small team fights with hitboxes, hurtboxes, input buffers, combo rules, and round timers.
-- `strategy_war`: grid or isometric unit command games with deterministic turns or locked ticks.
-- `rpg_adventure`: top-down quests, dialogue, light combat, and co-op room moments.
-- `tower_defense`: wave defense with path grids, tower placement, upgrades, and reward pacing.
-- `battle_royale`: elimination sessions with shrinking zones, light loot, spectator state, and server authority.
+| mode_id | camera | input_profile | network_profile | Use |
+| --- | --- | --- | --- | --- |
+| `casual_activity` | `contained` | `tap_timing` | `offline_optional` | fishing, matching, rhythm taps, festival booths |
+| `side_scroller_2d` | `side_view` | `action_platformer` | `session_sync` | pixel action stages with platforms, enemies, hazards, and bounded cameras |
+| `2d_fighting` | `side_view` | `fighting_action` | `authoritative_realtime` | side-view duels or small team fights with hitboxes, hurtboxes, input buffers, combo rules, and round timers |
+| `strategy_war` | `isometric` | `strategy_pointer` | `turn_or_lockstep` | grid or isometric unit command games with deterministic turns or locked ticks |
+| `rpg_adventure` | `top_down` | `rpg_move_confirm` | `session_sync` | top-down quests, dialogue, light combat, and co-op room moments |
+| `tower_defense` | `lane_grid` | `tower_place_upgrade` | `session_sync` | wave defense with path grids, tower placement, upgrades, and reward pacing |
+| `battle_royale` | `top_down` | `survival_action` | `authoritative_realtime` | elimination sessions with shrinking zones, light loot, spectator state, and server authority |
+
+The backend and client validator reject packages where `runtime_contract` does
+not match the chosen `mode_id`.
 
 ## Required Folder
 

@@ -91,6 +91,7 @@ func (s *Server) placeHousingItem(ctx *gin.Context) {
 		s.writeHousingError(ctx, err, "place_failed", &refund.Balance)
 		return
 	}
+	s.broadcastHousingLayout(playerID, "place", layout)
 	ctx.JSON(http.StatusOK, gin.H{"layout": layout, "balance": balance.Balance})
 }
 
@@ -136,6 +137,7 @@ func (s *Server) applyHousingStyle(ctx *gin.Context) {
 		s.writeHousingError(ctx, err, "style_failed", &refund.Balance)
 		return
 	}
+	s.broadcastHousingLayout(playerID, "style", layout)
 	ctx.JSON(http.StatusOK, gin.H{"layout": layout, "balance": balance.Balance})
 }
 
@@ -165,6 +167,7 @@ func (s *Server) moveHousingItem(ctx *gin.Context) {
 		s.writeHousingError(ctx, err, "move_failed", nil)
 		return
 	}
+	s.broadcastHousingLayout(playerID, "move", layout)
 	ctx.JSON(http.StatusOK, gin.H{"layout": layout})
 }
 
@@ -200,6 +203,7 @@ func (s *Server) removeHousingItem(ctx *gin.Context) {
 			Amount:   refundAmount,
 		})
 	}
+	s.broadcastHousingLayout(playerID, "remove", layout)
 	ctx.JSON(http.StatusOK, gin.H{
 		"layout":  layout,
 		"balance": balance.Balance,

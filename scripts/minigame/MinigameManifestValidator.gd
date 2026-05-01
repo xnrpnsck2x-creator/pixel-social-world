@@ -26,6 +26,15 @@ const MODE_PLAYER_CAPS := {
 	"tower_defense": 4,
 	"battle_royale": 16
 }
+const MODE_RUNTIME_CONTRACTS := {
+	"casual_activity": {"camera": "contained", "input_profile": "tap_timing", "network_profile": "offline_optional"},
+	"side_scroller_2d": {"camera": "side_view", "input_profile": "action_platformer", "network_profile": "session_sync"},
+	"2d_fighting": {"camera": "side_view", "input_profile": "fighting_action", "network_profile": "authoritative_realtime"},
+	"strategy_war": {"camera": "isometric", "input_profile": "strategy_pointer", "network_profile": "turn_or_lockstep"},
+	"rpg_adventure": {"camera": "top_down", "input_profile": "rpg_move_confirm", "network_profile": "session_sync"},
+	"tower_defense": {"camera": "lane_grid", "input_profile": "tower_place_upgrade", "network_profile": "session_sync"},
+	"battle_royale": {"camera": "top_down", "input_profile": "survival_action", "network_profile": "authoritative_realtime"}
+}
 
 static func validate(manifest: Dictionary) -> Array[String]:
 	var errors: Array[String] = []
@@ -57,9 +66,17 @@ static func validate(manifest: Dictionary) -> Array[String]:
 	var tags: Variant = manifest.get("tags", [])
 	if typeof(tags) != TYPE_ARRAY:
 		errors.append("tags must be an array")
-	if typeof(manifest.get("runtime_contract", {})) != TYPE_DICTIONARY:
+	var runtime_contract: Variant = manifest.get("runtime_contract", {})
+	if typeof(runtime_contract) != TYPE_DICTIONARY:
 		errors.append("runtime_contract must be an object")
+	elif MODE_RUNTIME_CONTRACTS.has(mode_id):
+		_validate_runtime_contract(runtime_contract as Dictionary, MODE_RUNTIME_CONTRACTS[mode_id] as Dictionary, errors)
 	if int(manifest.get("asset_budget_bytes", 0)) <= 0:
 		errors.append("asset_budget_bytes must be positive")
 
 	return errors
+
+static func _validate_runtime_contract(contract: Dictionary, expected: Dictionary, errors: Array[String]) -> void:
+	for field in ["camera", "input_profile", "network_profile"]:
+		if str(contract.get(field, "")) != str(expected.get(field, "")):
+			errors.append("runtime_contract.%s must be %s" % [field, str(expected.get(field, ""))])

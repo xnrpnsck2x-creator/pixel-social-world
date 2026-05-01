@@ -11,6 +11,7 @@ func summarizePrivateConversations(
 	playerID string,
 	readAtByConversation map[string]int64,
 	limit int,
+	offset int,
 ) []PrivateConversationSummary {
 	summariesByID := map[string]PrivateConversationSummary{}
 	for _, message := range messages {
@@ -43,10 +44,7 @@ func summarizePrivateConversations(
 		}
 		return summaries[left].LatestAt > summaries[right].LatestAt
 	})
-	if len(summaries) > limit {
-		summaries = summaries[:limit]
-	}
-	return summaries
+	return pageConversationSummaries(summaries, limit, offset)
 }
 
 func privatePeerID(message PrivateMessage, playerID string) string {

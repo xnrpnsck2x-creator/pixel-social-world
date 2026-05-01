@@ -53,7 +53,8 @@ func _run() -> void:
 		"rooms": {"online_count": 2, "rooms": {"world_town_square": 2}},
 		"realtime": {"local_delivered": 4, "move_rate_limited": 1, "emote_rate_limited": 0},
 		"chat": {"total_messages": 7, "total_reports": 1, "rejected_rate_limited": 1, "active_moderation": 1, "moderation_actions": 2},
-		"fishing_rewards": {"granted": 3, "capped": 0, "replayed": 1}
+		"fishing_rewards": {"granted": 3, "capped": 0, "replayed": 1},
+		"economy": {"creator_play_rewards": 2, "creator_revenue_coins": 14, "reward_cap_hits": 1}
 	})
 	panel.call("set_room_snapshot", {
 		"online_count": 2,
@@ -68,7 +69,7 @@ func _run() -> void:
 	})
 	await process_frame
 
-	for text in ["LiveOps Console", "role: owner", "Creator LiveOps", "Chat Reports", "reported in live ops", "Moderation Audit", "Muted LiveOps", "Debug Ops", "Online 2", "Room Drilldown", "world_town_square", "main_city", "Export CSV"]:
+	for text in ["LiveOps Console", "role: owner", "Creator LiveOps", "Chat Reports", "reported in live ops", "Moderation Audit", "Muted LiveOps", "Debug Ops", "Online 2", "Economy", "Room Drilldown", "world_town_square", "main_city", "Export CSV"]:
 		if not _node_text_contains(panel, text):
 			failures.append("LiveOps console missing text: %s" % text)
 

@@ -29,11 +29,13 @@ type ConversationRequest struct {
 	PlayerID string
 	PeerID   string
 	Limit    int
+	Offset   int
 }
 
 type ConversationListRequest struct {
 	PlayerID string
 	Limit    int
+	Offset   int
 }
 
 type PrivateReadRequest struct {
@@ -51,6 +53,7 @@ type MailSendRequest struct {
 type InboxRequest struct {
 	PlayerID string
 	Limit    int
+	Offset   int
 }
 
 type MailReadRequest struct {
@@ -146,7 +149,6 @@ func (s *MemoryService) Inbox(ctx context.Context, request InboxRequest) ([]Mail
 	if strings.TrimSpace(request.PlayerID) == "" {
 		return nil, errors.New("player_required")
 	}
-	limit := normalizeLimit(request.Limit)
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	messages := []MailMessage{}
@@ -155,7 +157,7 @@ func (s *MemoryService) Inbox(ctx context.Context, request InboxRequest) ([]Mail
 			messages = append(messages, message)
 		}
 	}
-	return latestMail(messages, limit), nil
+	return latestMailPage(messages, request.Limit, request.Offset), nil
 }
 
 func (s *MemoryService) MarkMailRead(ctx context.Context, request MailReadRequest) (MailMessage, error) {
@@ -234,38 +236,7 @@ func normalizeMailRequest(request MailSendRequest) (MailSendRequest, error) {
 	return request, nil
 }
 
-func normalizeLimit(limit int) int {
-	if limit <= 0 {
-		return defaultListLimit
-	}
-	if limit > maxListLimit {
-		return maxListLimit
-	}
-	return limit
-}
-
 func newID(prefix string) string {
 	next := atomic.AddUint64(&idCounter, 1)
 	return fmt.Sprintf("%s-%d-%06d", prefix, time.Now().UnixNano(), next)
-}
-
-func tailPrivate(messages []PrivateMessage, limit int) []PrivateMessage {
-	if len(messages) > limit {
-		messages = messages[len(messages)-limit:]
-	}
-	copied := make([]PrivateMessage, len(messages))
-	copy(copied, messages)
-	return copied
-}
-
-func latestMail(messages []MailMessage, limit int) []MailMessage {
-	if len(messages) > limit {
-		messages = messages[len(messages)-limit:]
-	}
-	copied := make([]MailMessage, len(messages))
-	copy(copied, messages)
-	for left, right := 0, len(copied)-1; left < right; left, right = left+1, right-1 {
-		copied[left], copied[right] = copied[right], copied[left]
-	}
-	return copied
 }
