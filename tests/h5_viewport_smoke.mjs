@@ -265,6 +265,7 @@ const results = [];
 const failures = [];
 
 for (const testCase of activeCases) {
+  process.stderr.write(`h5 case start: ${testCase.name}\n`);
   let backgroundContext = null;
   if (testCase.backgroundWorldClient) {
     backgroundContext = await browser.newContext({
@@ -282,6 +283,8 @@ for (const testCase of activeCases) {
     isMobile: testCase.name.includes("mobile"),
   });
   const page = await context.newPage();
+  page.setDefaultTimeout(20000);
+  page.setDefaultNavigationTimeout(30000);
   const messages = [];
 
   page.on("console", (message) => {
@@ -314,7 +317,7 @@ for (const testCase of activeCases) {
     ? await sampleCanvasPixels(page, [{ x: 20, y: 20, label: "sandbox-top-bar" }])
     : [];
   const screenshot = path.join(ARTIFACT_DIR, `${testCase.name}.png`);
-  await page.screenshot({ path: screenshot, fullPage: true });
+  await page.screenshot({ path: screenshot, fullPage: true, timeout: 30000 });
   results.push({ name: testCase.name, canvasInfo, messages, canvasSamples, screenshot });
   if (!canvasInfo) {
     failures.push(`${testCase.name}: canvas not found`);
@@ -336,6 +339,7 @@ for (const testCase of activeCases) {
   if (backgroundContext) {
     await backgroundContext.close();
   }
+  process.stderr.write(`h5 case done: ${testCase.name}\n`);
 }
 
 await browser.close();

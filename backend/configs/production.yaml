@@ -21,6 +21,10 @@ realtime:
   mode: "redis"
   presence_ttl_seconds: 30
   session_ttl_seconds: 900
+  main_city_room_capacity: 100
+  housing_room_capacity: 20
+  minigame_room_capacity: 16
+  custom_room_capacity: 50
 economy:
   starting_coin_balance: 25
 housing:

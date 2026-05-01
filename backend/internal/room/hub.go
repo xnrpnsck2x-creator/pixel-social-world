@@ -25,6 +25,9 @@ type Envelope struct {
 type clientState struct {
 	conn         *websocket.Conn
 	writeMu      sync.Mutex
+	closeOnce    sync.Once
+	writeFn      func(Envelope) error
+	closeFn      func() error
 	roomID       string
 	playerID     string
 	displayName  string
@@ -40,30 +43,32 @@ type SessionValidator interface {
 type Option func(*Hub)
 
 type Hub struct {
-	mu            sync.RWMutex
-	clients       map[*websocket.Conn]*clientState
-	lastMoves     map[string]map[string]map[string]interface{}
-	roomMetricsMu sync.RWMutex
-	roomMetrics   map[string]*roomMetricCounters
-	fanout        Fanout
-	fanoutCancel  context.CancelFunc
-	rateLimiter   RateLimiter
-	metrics       hubMetrics
-	validator     SessionValidator
-	authorizer    RoomAuthorizer
-	now           func() time.Time
-	moveInterval  time.Duration
-	emoteInterval time.Duration
+	mu                 sync.RWMutex
+	clients            map[*websocket.Conn]*clientState
+	lastMoves          map[string]map[string]map[string]interface{}
+	roomMetricsMu      sync.RWMutex
+	roomMetrics        map[string]*roomMetricCounters
+	fanout             Fanout
+	fanoutCancel       context.CancelFunc
+	rateLimiter        RateLimiter
+	metrics            hubMetrics
+	validator          SessionValidator
+	authorizer         RoomAuthorizer
+	now                func() time.Time
+	moveInterval       time.Duration
+	emoteInterval      time.Duration
+	roomCapacityPolicy RoomCapacityPolicy
 }
 
 func NewHub(options ...Option) *Hub {
 	hub := &Hub{
-		clients:       make(map[*websocket.Conn]*clientState),
-		lastMoves:     make(map[string]map[string]map[string]interface{}),
-		roomMetrics:   make(map[string]*roomMetricCounters),
-		now:           time.Now,
-		moveInterval:  defaultMoveInterval,
-		emoteInterval: defaultEmoteInterval,
+		clients:            make(map[*websocket.Conn]*clientState),
+		lastMoves:          make(map[string]map[string]map[string]interface{}),
+		roomMetrics:        make(map[string]*roomMetricCounters),
+		now:                time.Now,
+		moveInterval:       defaultMoveInterval,
+		emoteInterval:      defaultEmoteInterval,
+		roomCapacityPolicy: DefaultRoomCapacityPolicy(),
 	}
 	for _, option := range options {
 		option(hub)
@@ -116,7 +121,7 @@ func (h *Hub) Attach(conn *websocket.Conn) {
 			h.metrics.leaveEvents.Add(1)
 			h.BroadcastToRoom(roomID, leaveEnvelope(roomID, playerID, displayName))
 		}
-		_ = conn.Close()
+		_ = client.close()
 	}()
 
 	for {
@@ -146,14 +151,20 @@ func (h *Hub) handle(client *clientState, envelope Envelope) bool {
 			h.writeDirect(client, roomDeniedEnvelope(nextRoomID))
 			return true
 		}
-		if client.playerID != "" && (client.roomID != nextRoomID || client.playerID != playerID) {
-			h.forgetMove(client.roomID, client.playerID)
-			h.metrics.leaveEvents.Add(1)
-			h.BroadcastToRoom(client.roomID, leaveEnvelope(client.roomID, client.playerID, client.displayName))
+		displayName := stringValue(payload, "display_name", client.displayName)
+		reservation := h.reserveJoin(client, playerID, displayName, nextRoomID)
+		if !reservation.accepted {
+			h.writeDirect(client, roomCapacityExceededEnvelope(nextRoomID, reservation.current, reservation.limit))
+			return true
 		}
-		client.roomID = nextRoomID
-		client.playerID = playerID
-		client.displayName = stringValue(payload, "display_name", client.displayName)
+		if reservation.shouldLeave {
+			h.forgetMove(reservation.oldRoomID, reservation.oldPlayerID)
+			h.metrics.leaveEvents.Add(1)
+			h.BroadcastToRoom(
+				reservation.oldRoomID,
+				leaveEnvelope(reservation.oldRoomID, reservation.oldPlayerID, reservation.oldDisplayName),
+			)
+		}
 		payload["player_id"] = client.playerID
 		payload["room_id"] = client.roomID
 		envelope.Payload = payload

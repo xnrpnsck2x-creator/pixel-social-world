@@ -48,9 +48,13 @@ type StorageConfig struct {
 }
 
 type RealtimeConfig struct {
-	Mode               string `yaml:"mode"`
-	PresenceTTLSeconds int    `yaml:"presence_ttl_seconds"`
-	SessionTTLSeconds  int    `yaml:"session_ttl_seconds"`
+	Mode                 string `yaml:"mode"`
+	PresenceTTLSeconds   int    `yaml:"presence_ttl_seconds"`
+	SessionTTLSeconds    int    `yaml:"session_ttl_seconds"`
+	MainCityRoomCapacity int    `yaml:"main_city_room_capacity"`
+	HousingRoomCapacity  int    `yaml:"housing_room_capacity"`
+	MinigameRoomCapacity int    `yaml:"minigame_room_capacity"`
+	CustomRoomCapacity   int    `yaml:"custom_room_capacity"`
 }
 
 type EconomyConfig struct {
@@ -139,7 +143,15 @@ func defaultConfig() Config {
 			PackageArtifactsDir: "var/creator_packages",
 			PackageInstallDir:   "var/creator_runtime",
 		},
-		Realtime:  RealtimeConfig{Mode: "memory", PresenceTTLSeconds: 30, SessionTTLSeconds: 900},
+		Realtime: RealtimeConfig{
+			Mode:                 "memory",
+			PresenceTTLSeconds:   30,
+			SessionTTLSeconds:    900,
+			MainCityRoomCapacity: 100,
+			HousingRoomCapacity:  20,
+			MinigameRoomCapacity: 16,
+			CustomRoomCapacity:   50,
+		},
 		Economy:   EconomyConfig{StartingCoinBalance: 25},
 		Housing:   HousingConfig{ItemsConfigPath: "../configs/housing_items.json", SellRefundRate: 0.5},
 		Minigames: MinigamesConfig{FishingConfigPath: "../configs/fishing.json"},
@@ -207,6 +219,10 @@ func applyEnv(cfg *Config) {
 	}
 	applyIntEnv(&cfg.Realtime.PresenceTTLSeconds, "PSW_PRESENCE_TTL_SECONDS")
 	applyIntEnv(&cfg.Realtime.SessionTTLSeconds, "PSW_SESSION_TTL_SECONDS")
+	applyIntEnv(&cfg.Realtime.MainCityRoomCapacity, "PSW_MAIN_CITY_ROOM_CAPACITY")
+	applyIntEnv(&cfg.Realtime.HousingRoomCapacity, "PSW_HOUSING_ROOM_CAPACITY")
+	applyIntEnv(&cfg.Realtime.MinigameRoomCapacity, "PSW_MINIGAME_ROOM_CAPACITY")
+	applyIntEnv(&cfg.Realtime.CustomRoomCapacity, "PSW_CUSTOM_ROOM_CAPACITY")
 	applyIntEnv(&cfg.Economy.StartingCoinBalance, "PSW_STARTING_COINS")
 	if value := os.Getenv("PSW_HOUSING_CONFIG_PATH"); value != "" {
 		cfg.Housing.ItemsConfigPath = value

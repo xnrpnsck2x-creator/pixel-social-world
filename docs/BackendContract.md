@@ -131,6 +131,12 @@ Refreshes player presence in a room with a TTL. Requires a bearer token matching
 
 Returns non-expired room members. Restricted rooms require `player_id` query plus matching bearer token.
 
+Room capacity policy is enforced at WebSocket `world.join` time before a socket
+is assigned to a room. Defaults are intentionally conservative for first alpha:
+`world_town_square` 100, `home:*` 20, `minigame:*` 16, custom rooms 50.
+Override with `PSW_MAIN_CITY_ROOM_CAPACITY`, `PSW_HOUSING_ROOM_CAPACITY`,
+`PSW_MINIGAME_ROOM_CAPACITY`, and `PSW_CUSTOM_ROOM_CAPACITY`.
+
 ### `POST /chat/send`
 
 Accepts a chat message in a room/channel and broadcasts `chat.message` to connected city sockets. Requires a bearer token matching `sender_id`.
@@ -862,6 +868,8 @@ Response includes:
 - `rooms`: per-room `connected` client count, `snapshot_players` retained in the movement snapshot, `room_type`, and `last_active_at` Unix seconds.
 - `room_type`: one of `main_city`, `housing`, `minigame`, or `custom`, inferred from the room ID contract.
 - `last_active_at`: newest connected-client or retained movement activity timestamp, used by H5/Godot admin tooling to show stale rooms.
+- `capacity`: configured room cap for the inferred room type.
+- Per-room realtime counters include `local_broadcasts`, `local_delivery_target`, `local_delivered`, `slow_writes`, and `write_failed`.
 - `realtime`: fanout, rate-limit, leave, and local-delivery counters.
 
 ### `GET /debug/ops`
@@ -892,6 +900,7 @@ Response includes:
 
 - `world.join` / `world.leave` / `world.snapshot`
 - `auth.failed`
+- `room.denied` with `error:"room_access_denied"` or `error:"room_capacity_full"`
 - `player.move`
 - `chat.send`
 - `chat.history`
@@ -914,6 +923,10 @@ Response includes:
 - `economy.ledger`
 - `minigame.submit`
 - `minigame.review_queued`
+
+Slow or blocked WebSocket writes are counted in `/debug/ops`. A failed write is
+closed immediately so the read loop can retire the client and emit normal leave
+cleanup instead of letting a blocked socket consume broadcast work indefinitely.
 
 ## Redis MVP Keys
 

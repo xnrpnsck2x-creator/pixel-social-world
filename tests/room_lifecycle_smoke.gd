@@ -32,6 +32,11 @@ func _run() -> void:
 	if save_system.call("get_profile_value", "current_room_id", "") != "minigame:fishing:session_123":
 		failures.append("Minigame room was not recorded.")
 
+	lifecycle.call("enter_housing", "full-house", "Room Life")
+	realtime.emit_signal("room_denied", "home:full-house", "room_capacity_full")
+	if save_system.call("get_profile_value", "current_room_id", "") != "minigame:fishing:session_123":
+		failures.append("Denied room did not restore the previous room.")
+
 	realtime.call("configure", {"network": {"online_enabled": true}})
 	save_system.set("profile", original_profile)
 	save_system.call("save_profile")

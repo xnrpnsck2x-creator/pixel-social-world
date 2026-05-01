@@ -20,6 +20,10 @@ func Validate(cfg Config, strict bool) []ValidationIssue {
 	requirePositive(&issues, cfg.Auth.RefreshTTLSeconds, "auth.refresh_ttl_seconds")
 	requirePositive(&issues, cfg.Realtime.PresenceTTLSeconds, "realtime.presence_ttl_seconds")
 	requirePositive(&issues, cfg.Realtime.SessionTTLSeconds, "realtime.session_ttl_seconds")
+	requirePositive(&issues, cfg.Realtime.MainCityRoomCapacity, "realtime.main_city_room_capacity")
+	requirePositive(&issues, cfg.Realtime.HousingRoomCapacity, "realtime.housing_room_capacity")
+	requirePositive(&issues, cfg.Realtime.MinigameRoomCapacity, "realtime.minigame_room_capacity")
+	requirePositive(&issues, cfg.Realtime.CustomRoomCapacity, "realtime.custom_room_capacity")
 	if cfg.Economy.StartingCoinBalance < 0 {
 		issues = appendError(issues, "economy.starting_coin_balance", "starting coins cannot be negative")
 	}

@@ -68,6 +68,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	var realtimeFanout room.Fanout
+	var realtimeRateLimiter room.RateLimiter
 	makeFishingRewards := func(economyService economy.Service) minigame.FishingRewardService {
 		return minigame.NewMemoryFishingRewardService(deps.MinigameService, economyService, fishingRules)
 	}
@@ -111,12 +113,8 @@ func main() {
 				time.Duration(cfg.Realtime.SessionTTLSeconds)*time.Second,
 			)
 		}
-		deps.RoomHub = room.NewHub(
-			room.WithSessionValidator(deps.AuthService),
-			room.WithRoomAuthorizer(gateway.NewRoomAuthorizer(deps.MinigameService)),
-			room.WithFanout(room.NewRedisFanout(client)),
-			room.WithRateLimiter(room.NewRedisRateLimiter(client)),
-		)
+		realtimeFanout = room.NewRedisFanout(client)
+		realtimeRateLimiter = room.NewRedisRateLimiter(client)
 	}
 	if cfg.Storage.Mode == "postgres" {
 		postgresDB, err := db.OpenPostgres(db.PostgresConfig{
@@ -160,6 +158,7 @@ func main() {
 			minigame.WithPackageAIReviewer(packageReviewer),
 		)
 	}
+	deps.RoomHub = configuredRoomHub(cfg.Realtime, deps.AuthService, deps.MinigameService, realtimeFanout, realtimeRateLimiter)
 	deps.FishingRewardService = makeFishingRewards(deps.EconomyService)
 
 	server := gateway.NewServerWithDependencies(deps)
@@ -173,4 +172,30 @@ func main() {
 	}); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func configuredRoomHub(
+	cfg config.RealtimeConfig,
+	authService auth.Service,
+	minigameService minigame.Service,
+	fanout room.Fanout,
+	rateLimiter room.RateLimiter,
+) *room.Hub {
+	options := []room.Option{
+		room.WithSessionValidator(authService),
+		room.WithRoomAuthorizer(gateway.NewRoomAuthorizer(minigameService)),
+		room.WithRoomCapacityPolicy(room.RoomCapacityPolicy{
+			MainCity: cfg.MainCityRoomCapacity,
+			Housing:  cfg.HousingRoomCapacity,
+			Minigame: cfg.MinigameRoomCapacity,
+			Custom:   cfg.CustomRoomCapacity,
+		}),
+	}
+	if fanout != nil {
+		options = append(options, room.WithFanout(fanout))
+	}
+	if rateLimiter != nil {
+		options = append(options, room.WithRateLimiter(rateLimiter))
+	}
+	return room.NewHub(options...)
 }

@@ -2,6 +2,7 @@ package room
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -131,6 +132,79 @@ func TestHubRateLimitsPlayerMove(t *testing.T) {
 
 	_ = readUntilType(t, roomA2, "player.move")
 	assertNoType(t, roomA2, "player.move", 80*time.Millisecond)
+}
+
+func TestHubRejectsRoomWhenCapacityFull(t *testing.T) {
+	hub := NewHub(WithRoomCapacityPolicy(RoomCapacityPolicy{
+		MainCity: 2,
+		Housing:  1,
+		Minigame: 1,
+		Custom:   1,
+	}))
+	server := newHubTestServer(t, hub)
+	defer server.Close()
+
+	first := dialTestSocket(t, server.URL)
+	defer first.Close()
+	second := dialTestSocket(t, server.URL)
+	defer second.Close()
+
+	writeEnvelope(t, first, joinEnvelope("player_a", "room_full"))
+	waitForRoomCounts(t, hub, map[string]int{"room_full": 1})
+	writeEnvelope(t, second, joinEnvelope("player_b", "room_full"))
+
+	response := readUntilType(t, second, "room.denied")
+	payload := response.Payload.(map[string]interface{})
+	if payload["error"] != "room_capacity_full" || payload["limit"] != float64(1) {
+		t.Fatalf("unexpected room capacity denial: %#v", payload)
+	}
+	waitForRoomCounts(t, hub, map[string]int{"room_full": 1})
+}
+
+func TestHubTracksSlowWritesAndClosesFailedWrites(t *testing.T) {
+	now := time.Unix(1777560000, 0)
+	hub := NewHub(WithClock(func() time.Time { return now }))
+	defer hub.Close()
+
+	closed := false
+	slowClient := &clientState{
+		roomID: "room_a",
+		writeFn: func(Envelope) error {
+			now = now.Add(slowWriteThreshold + time.Millisecond)
+			return nil
+		},
+	}
+	result := hub.writeClient(slowClient, Envelope{SchemaVersion: 1, Type: "slow.test"})
+	hub.recordRoomWrite(slowClient.roomID, result)
+	if !result.delivered || !result.slow {
+		t.Fatalf("expected delivered slow write, got %#v", result)
+	}
+
+	failedClient := &clientState{
+		roomID: "room_a",
+		writeFn: func(Envelope) error {
+			return errors.New("socket blocked")
+		},
+		closeFn: func() error {
+			closed = true
+			return nil
+		},
+	}
+	result = hub.writeClient(failedClient, Envelope{SchemaVersion: 1, Type: "fail.test"})
+	hub.recordRoomWrite(failedClient.roomID, result)
+	if !result.failed || !closed {
+		t.Fatalf("expected failed write to close client, result=%#v closed=%v", result, closed)
+	}
+
+	realtime := hub.metrics.Snapshot()
+	if realtime["slow_writes"] != 1 || realtime["write_failed"] != 1 || realtime["write_failure_closed"] != 1 {
+		t.Fatalf("unexpected realtime write metrics: %#v", realtime)
+	}
+	rooms := hub.DebugSnapshot()["rooms"].(map[string]map[string]interface{})
+	roomState := rooms["room_a"]
+	if roomState["slow_writes"] != int64(1) || roomState["write_failed"] != int64(1) {
+		t.Fatalf("unexpected room write metrics: %#v", roomState)
+	}
 }
 
 func newHubTestServer(t *testing.T, hub *Hub) *httptest.Server {

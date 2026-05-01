@@ -23,10 +23,17 @@ func (h *Hub) DebugSnapshot() map[string]interface{} {
 	onlineCount := len(h.clients)
 	h.mu.RUnlock()
 	attachRoomMetricSnapshots(rooms, h.roomMetricsSnapshot())
+	h.attachRoomCapacities(rooms)
 	return map[string]interface{}{
 		"online_count": onlineCount,
 		"rooms":        rooms,
 		"realtime":     h.metrics.Snapshot(),
+	}
+}
+
+func (h *Hub) attachRoomCapacities(rooms map[string]map[string]interface{}) {
+	for roomID, state := range rooms {
+		state["capacity"] = h.roomCapacityLimit(roomID)
 	}
 }
 

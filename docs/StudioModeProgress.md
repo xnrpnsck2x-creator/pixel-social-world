@@ -14,6 +14,18 @@ Accelerated content execution now lives in `docs/AcceleratedContentRoute.md`.
 
 ## Progress
 
+### MVP Autopilot Slice 3 - Room Capacity and Backpressure
+
+Status: Implemented; verification in progress on 2026-05-01.
+
+- Added backend room-capacity policy knobs for main city, housing, minigame, and custom rooms, with conservative alpha defaults of 100 / 20 / 16 / 50.
+- Enforced capacity at WebSocket `world.join`, returning `room.denied` with `room_capacity_full` before assigning a socket to an overfull room.
+- Added deterministic slow-write and failed-write coverage; failed WebSocket writes now close the socket so the read loop can retire the player and emit normal room leave cleanup.
+- Extended `/debug/rooms` and `/debug/ops` visibility with room capacity and failed-write-close counters.
+- Wired capacity config through YAML, env overrides, validation, and the production server room hub factory.
+- Added client rollback for denied room joins so Godot/H5 room state returns to the last confirmed room instead of keeping an optimistic rejected room.
+- Verified so far on 2026-05-01: content validation, Go test suite, room lifecycle smoke, and core Godot smoke pass.
+
 ### MVP Autopilot Slice 2 - Mobile Room Chat and Safe Area
 
 Status: Implemented and locally verified on 2026-05-01.

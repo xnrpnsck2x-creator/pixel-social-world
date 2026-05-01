@@ -134,6 +134,7 @@ For the MVP, keep PostgreSQL and Redis local:
 - The filesystem stores raw creator package artifacts under `/var/lib/pixel-social-world/creator_packages` and runtime installed packages under `/var/lib/pixel-social-world/creator_runtime`; back both up with PostgreSQL until S3-compatible storage is added.
 - Redis stores online presence, room membership, session TTLs, and future fanout state.
 - Start with one Go process; the 13900KF has enough CPU headroom for early realtime traffic.
+- Realtime room caps start at 100 players in the main city, 20 in homes, 16 in minigames, and 50 in custom rooms. Raise them only after same-room movement fanout is benchmarked on the target host.
 
 Initial conservative process targets:
 

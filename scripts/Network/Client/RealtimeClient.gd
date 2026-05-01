@@ -2,6 +2,7 @@ extends Node
 
 signal message_received(message_type: String, payload: Dictionary)
 signal connection_changed(is_connected: bool)
+signal room_denied(room_id: String, error: String)
 
 const MessageTypesScript := preload("res://scripts/Network/Protocol/MessageTypes.gd")
 
@@ -12,6 +13,8 @@ var is_connected := false
 var _socket := WebSocketPeer.new()
 var _joined := false
 var _room_id := "world_town_square"
+var _confirmed_room_id := "world_town_square"
+var _pending_room_id := ""
 var _player_id := ""
 var _display_name := ""
 var _access_token := ""
@@ -129,6 +132,7 @@ func switch_room(room_id: String) -> void:
 		request_snapshot()
 
 func send_join(room_id: String, player_id: String, display_name: String) -> void:
+	_pending_room_id = room_id
 	send_envelope(MessageTypesScript.WORLD_JOIN, {
 		"room_id": room_id,
 		"player_id": player_id,
@@ -166,6 +170,16 @@ func _receive_packet(packet_text: String) -> void:
 	if message_type == MessageTypesScript.AUTH_FAILED:
 		_should_reconnect = false
 		disconnect_city()
+	elif message_type == MessageTypesScript.ROOM_DENIED:
+		var denied_room := str(payload.get("room_id", _pending_room_id))
+		_room_id = _confirmed_room_id
+		_pending_room_id = ""
+		room_denied.emit(denied_room, str(payload.get("error", "room_denied")))
+	elif message_type == MessageTypesScript.WORLD_JOIN:
+		if str(payload.get("player_id", "")) == _player_id:
+			_confirmed_room_id = str(payload.get("room_id", _room_id))
+			_room_id = _confirmed_room_id
+			_pending_room_id = ""
 
 func _schedule_reconnect() -> void:
 	if not _should_reconnect or not online_enabled or _player_id.is_empty():

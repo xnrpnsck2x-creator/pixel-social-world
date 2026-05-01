@@ -35,3 +35,16 @@ func roomDeniedEnvelope(roomID string) Envelope {
 		},
 	}
 }
+
+func roomCapacityExceededEnvelope(roomID string, current int, limit int) Envelope {
+	return Envelope{
+		SchemaVersion: 1,
+		Type:          "room.denied",
+		Payload: map[string]interface{}{
+			"room_id": roomID,
+			"error":   "room_capacity_full",
+			"current": current,
+			"limit":   limit,
+		},
+	}
+}

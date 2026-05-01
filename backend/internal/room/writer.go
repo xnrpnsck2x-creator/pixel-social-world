@@ -24,6 +24,8 @@ func (h *Hub) writeClient(client *clientState, envelope Envelope) writeResult {
 	}
 	if err != nil {
 		h.metrics.writeFailed.Add(1)
+		h.metrics.writeFailureClosed.Add(1)
+		_ = client.close()
 	}
 	return result
 }
@@ -31,8 +33,28 @@ func (h *Hub) writeClient(client *clientState, envelope Envelope) writeResult {
 func (c *clientState) write(envelope Envelope) error {
 	c.writeMu.Lock()
 	defer c.writeMu.Unlock()
+	if c.writeFn != nil {
+		return c.writeFn(envelope)
+	}
+	if c.conn == nil {
+		return nil
+	}
 	_ = c.conn.SetWriteDeadline(time.Now().Add(defaultWriteTimeout))
 	err := c.conn.WriteJSON(envelope)
 	_ = c.conn.SetWriteDeadline(time.Time{})
+	return err
+}
+
+func (c *clientState) close() error {
+	var err error
+	c.closeOnce.Do(func() {
+		if c.closeFn != nil {
+			err = c.closeFn()
+			return
+		}
+		if c.conn != nil {
+			err = c.conn.Close()
+		}
+	})
 	return err
 }

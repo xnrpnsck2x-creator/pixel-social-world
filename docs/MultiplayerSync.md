@@ -55,6 +55,8 @@ The backend hub:
 - Broadcasts `player.move` only to clients in that room.
 - Converts `emote.send` into `emote.event` and fans it out to the sender's room.
 - Keeps `/city/state` room counts for operational smoke checks.
+- Applies room caps at `world.join`: main city, housing, minigame, and custom rooms each have separate config/env knobs.
+- Counts slow writes and closes failed writes as the first backpressure policy.
 
 Godot `RoomLifecycle` switches between `world_town_square`, `home:{owner_id}`, and `minigame:{game_id}:{session_id}`. `MainCityScreen` applies `player.move` and `world.snapshot` payloads to remote `PlayerAvatar` instances with interpolation. `RealtimeClient` retries dropped connections with capped backoff.
 
@@ -62,6 +64,6 @@ Godot `RoomLifecycle` switches between `world_town_square`, `home:{owner_id}`, a
 
 1. Persist room snapshots across process restarts where useful.
 2. Move private-room member/history reads behind a cleaner token-derived identity helper.
-3. Add fanout latency histograms and dropped packet counters.
-4. Add admin/debug UI for room metrics.
+3. Add interest culling or lower movement fanout frequency for dense public rooms.
+4. Add admin/debug UI for capacity pressure and write-failure alerts.
 5. Add mobile foreground/background network lifecycle handling.
