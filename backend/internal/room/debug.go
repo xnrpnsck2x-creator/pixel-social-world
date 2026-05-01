@@ -57,6 +57,7 @@ func attachRoomMetricSnapshots(rooms map[string]map[string]interface{}, metrics 
 		roomState["local_delivered"] = counters["local_delivered"]
 		roomState["write_failed"] = counters["write_failed"]
 		roomState["slow_writes"] = counters["slow_writes"]
+		roomState["movement_culled"] = counters["movement_culled"]
 	}
 }
 

@@ -45,6 +45,11 @@ func (h *Hub) emitToRoom(roomID string, envelope Envelope) {
 
 func (h *Hub) broadcastLocal(roomID string, envelope Envelope) {
 	clients := h.snapshotClients(roomID)
+	clients, culled := h.filterMovementTargets(roomID, envelope, clients)
+	if culled > 0 {
+		h.metrics.movementCulled.Add(int64(culled))
+		h.recordRoomMovementCulled(roomID, culled)
+	}
 	h.metrics.localBroadcasts.Add(1)
 	h.metrics.localDeliveryTarget.Add(int64(len(clients)))
 	if roomID != "" {

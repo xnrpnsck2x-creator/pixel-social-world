@@ -58,6 +58,7 @@ The backend hub:
 - Applies room caps at `world.join`: main city, housing, minigame, and custom rooms each have separate config/env knobs.
 - Counts slow writes and closes failed writes as the first backpressure policy.
 - Raises the effective `player.move` interval to 120ms when a local room reaches 50 joined players, reducing dense-room broadcast pressure before full interest management lands.
+- Filters dense-room `player.move` targets by a 360-unit interest radius while keeping chat, joins, emotes, and snapshots room-wide.
 
 Godot `RoomLifecycle` switches between `world_town_square`, `home:{owner_id}`, and `minigame:{game_id}:{session_id}`. `MainCityScreen` applies `player.move` and `world.snapshot` payloads to remote `PlayerAvatar` instances with interpolation. `RealtimeClient` retries dropped connections with capped backoff.
 
@@ -65,6 +66,6 @@ Godot `RoomLifecycle` switches between `world_town_square`, `home:{owner_id}`, a
 
 1. Persist room snapshots across process restarts where useful.
 2. Move private-room member/history reads behind a cleaner token-derived identity helper.
-3. Add distance-based interest culling for dense public rooms.
+3. Tune interest radius with real playtest data and add admin alerts for high cull/write-failure rates.
 4. Add admin/debug UI for capacity pressure and write-failure alerts.
 5. Add mobile foreground/background network lifecycle handling.

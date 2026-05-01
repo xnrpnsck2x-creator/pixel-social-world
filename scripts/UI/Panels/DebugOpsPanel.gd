@@ -159,6 +159,7 @@ func _add_room_rows() -> void:
 		_add_plain_row(App.format_key("ops.console.row.room_detail", {
 			"age": _age_seconds(int(state.get("last_active_at", 0))),
 			"connected": int(state.get("connected", 0)),
+			"culled": int(state.get("movement_culled", 0)),
 			"delivered": int(state.get("local_delivered", 0)),
 			"failed": int(state.get("write_failed", 0)),
 			"room": str(room_id),

@@ -417,7 +417,7 @@
   "ops.console.row.moderation": "治理：{a} 条生效 · {b} 次操作",
   "ops.console.row.realtime": "实时：{a} 次投递 · {b} 次移动限流 · {c} 次表情限流",
   "ops.console.row.realtime_load": "WS：打开 {a} · 投递目标 {b} · 慢写 {c} · 失败 {d}",
-  "ops.console.row.room_detail": "{room} · {type} · {connected} 个连接 · {snapshot} 个快照 · WS {delivered}/{target} · 慢写 {slow} · 失败 {failed} · {age}秒前",
+  "ops.console.row.room_detail": "{room} · {type} · {connected} 个连接 · {snapshot} 个快照 · WS {delivered}/{target} · 裁剪 {culled} · 慢写 {slow} · 失败 {failed} · {age}秒前",
   "ops.console.row.rooms": "房间：{a} 人在线 · {b} 个房间",
   "ops.console.summary_format": "在线 {online} · 消息 {messages} · 举报 {reports} · 奖励 {rewards}",
   "ops.console.title": "运营指标",

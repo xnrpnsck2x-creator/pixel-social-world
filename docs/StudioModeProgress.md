@@ -33,6 +33,8 @@ Status: In progress on 2026-05-01.
 - Split `world.join` handling out of `Hub` so the realtime hub stays below the AGENTS.md 300-line ceiling while room access, capacity, leave cleanup, and join broadcast remain one flow.
 - Added first-pass dense-room movement backoff: when a local room reaches 50 joined players, server-side `player.move` accepts no faster than 120ms.
 - Kept this intentionally conservative and compatible with existing clients; it reduces 50-100 player fanout pressure before full distance-based interest culling lands.
+- Added dense-room movement interest filtering: at 50 joined players, distant move recipients outside a 360-unit radius are skipped while social events remain room-wide.
+- Added `movement_culled` metrics to backend realtime snapshots and the LiveOps room drilldown row.
 
 ### MVP Autopilot Slice 2 - Mobile Room Chat and Safe Area
 

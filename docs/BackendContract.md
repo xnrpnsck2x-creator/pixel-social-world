@@ -869,7 +869,7 @@ Response includes:
 - `room_type`: one of `main_city`, `housing`, `minigame`, or `custom`, inferred from the room ID contract.
 - `last_active_at`: newest connected-client or retained movement activity timestamp, used by H5/Godot admin tooling to show stale rooms.
 - `capacity`: configured room cap for the inferred room type.
-- Per-room realtime counters include `local_broadcasts`, `local_delivery_target`, `local_delivered`, `slow_writes`, and `write_failed`.
+- Per-room realtime counters include `local_broadcasts`, `local_delivery_target`, `local_delivered`, `movement_culled`, `slow_writes`, and `write_failed`.
 - `realtime`: fanout, rate-limit, leave, and local-delivery counters.
 
 ### `GET /debug/ops`
@@ -927,6 +927,8 @@ Response includes:
 Slow or blocked WebSocket writes are counted in `/debug/ops`. A failed write is
 closed immediately so the read loop can retire the client and emit normal leave
 cleanup instead of letting a blocked socket consume broadcast work indefinitely.
+Dense rooms keep social events room-wide, but `player.move` fanout is filtered
+by server-side interest range once the room reaches 50 joined players.
 
 ## Redis MVP Keys
 

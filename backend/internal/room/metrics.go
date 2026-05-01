@@ -15,6 +15,7 @@ type hubMetrics struct {
 	writeFailed         atomic.Int64
 	writeFailureClosed  atomic.Int64
 	slowWrites          atomic.Int64
+	movementCulled      atomic.Int64
 	moveRateLimited     atomic.Int64
 	emoteRateLimited    atomic.Int64
 	leaveEvents         atomic.Int64
@@ -34,6 +35,7 @@ func (m *hubMetrics) Snapshot() map[string]int64 {
 		"write_failed":          m.writeFailed.Load(),
 		"write_failure_closed":  m.writeFailureClosed.Load(),
 		"slow_writes":           m.slowWrites.Load(),
+		"movement_culled":       m.movementCulled.Load(),
 		"move_rate_limited":     m.moveRateLimited.Load(),
 		"emote_rate_limited":    m.emoteRateLimited.Load(),
 		"leave_events":          m.leaveEvents.Load(),

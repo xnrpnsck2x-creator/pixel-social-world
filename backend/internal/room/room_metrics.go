@@ -11,6 +11,7 @@ type roomMetricCounters struct {
 	localDelivered      atomic.Int64
 	writeFailed         atomic.Int64
 	slowWrites          atomic.Int64
+	movementCulled      atomic.Int64
 }
 
 type writeResult struct {
@@ -36,6 +37,10 @@ func (h *Hub) recordRoomWrite(roomID string, result writeResult) {
 	if result.slow {
 		counters.slowWrites.Add(1)
 	}
+}
+
+func (h *Hub) recordRoomMovementCulled(roomID string, count int) {
+	h.roomCounters(roomID).movementCulled.Add(int64(count))
 }
 
 func (h *Hub) roomCounters(roomID string) *roomMetricCounters {
@@ -80,6 +85,7 @@ func (c *roomMetricCounters) snapshot() map[string]int64 {
 		"local_delivered":       c.localDelivered.Load(),
 		"write_failed":          c.writeFailed.Load(),
 		"slow_writes":           c.slowWrites.Load(),
+		"movement_culled":       c.movementCulled.Load(),
 	}
 }
 

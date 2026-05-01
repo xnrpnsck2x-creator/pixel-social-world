@@ -18,6 +18,7 @@ import (
 
 const wsLoadSmokeClients = 24
 const wsLoadSmokeMaxClients = 100
+const wsLoadDenseRoomThreshold = 50
 
 type wsLoadClient struct {
 	conn     *websocket.Conn
@@ -61,7 +62,7 @@ func TestWebSocketLoadSmokeUpdatesRealtimeMetrics(t *testing.T) {
 	for round := 0; round < 3; round++ {
 		for index, client := range clients {
 			writeLoadEnvelope(t, client.conn, "player.move", map[string]any{
-				"position": map[string]any{"x": index * 4, "y": round * 8},
+				"position": loadSmokePosition(index, round),
 				"velocity": map[string]any{"x": 1, "y": 0},
 				"facing":   "right",
 			})
@@ -91,19 +92,34 @@ func TestWebSocketLoadSmokeUpdatesRealtimeMetrics(t *testing.T) {
 	realtime := ops["realtime"].(map[string]any)
 	assertLoadMetricAtLeast(t, realtime, "connections_opened", clientCount)
 	assertLoadMetricAtLeast(t, realtime, "local_broadcasts", clientCount)
-	assertLoadMetricAtLeast(t, realtime, "local_delivery_target", clientCount*clientCount)
-	assertLoadMetricAtLeast(t, realtime, "local_delivered", clientCount*clientCount)
+	assertLoadMetricAtLeast(t, realtime, "local_delivery_target", clientCount)
+	assertLoadMetricAtLeast(t, realtime, "local_delivered", clientCount)
 	assertLoadMetricAtLeast(t, realtime, "move_rate_limited", 1)
+	if clientCount >= wsLoadDenseRoomThreshold {
+		assertLoadMetricAtLeast(t, realtime, "movement_culled", 1)
+	} else if int(realtime["movement_culled"].(float64)) != 0 {
+		t.Fatalf("small load smoke should not cull movement targets: %#v", realtime)
+	}
 	if int(realtime["write_failed"].(float64)) != 0 {
 		t.Fatalf("load smoke should not produce write failures: %#v", realtime)
 	}
 
 	debugRooms := fetchLoadRooms(t, server)
 	roomState := debugRooms["rooms"].(map[string]any)["load_room"].(map[string]any)
-	assertLoadMetricAtLeast(t, roomState, "local_delivery_target", clientCount*clientCount)
-	assertLoadMetricAtLeast(t, roomState, "local_delivered", clientCount*clientCount)
+	assertLoadMetricAtLeast(t, roomState, "local_delivery_target", clientCount)
+	assertLoadMetricAtLeast(t, roomState, "local_delivered", clientCount)
+	if clientCount >= wsLoadDenseRoomThreshold {
+		assertLoadMetricAtLeast(t, roomState, "movement_culled", 1)
+	}
 	if int(roomState["write_failed"].(float64)) != 0 {
 		t.Fatalf("load room should not produce write failures: %#v", roomState)
+	}
+}
+
+func loadSmokePosition(index int, round int) map[string]any {
+	return map[string]any{
+		"x": (index%20)*48 - 456 + round*3,
+		"y": (index/20)*120 - 240 + round*8,
 	}
 }
 

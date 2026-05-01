@@ -417,7 +417,7 @@
   "ops.console.row.moderation": "Moderation: {a} active · {b} actions",
   "ops.console.row.realtime": "Realtime: {a} delivered · {b} move limits · {c} emote limits",
   "ops.console.row.realtime_load": "WS: {a} opened · {b} targets · {c} slow · {d} failed",
-  "ops.console.row.room_detail": "{room} · {type} · {connected} connected · {snapshot} snapshot · WS {delivered}/{target} · slow {slow} · failed {failed} · {age}s ago",
+  "ops.console.row.room_detail": "{room} · {type} · {connected} connected · {snapshot} snapshot · WS {delivered}/{target} · culled {culled} · slow {slow} · failed {failed} · {age}s ago",
   "ops.console.row.rooms": "Rooms: {a} online · {b} tracked rooms",
   "ops.console.summary_format": "Online {online} · messages {messages} · reports {reports} · rewards {rewards}",
   "ops.console.title": "Debug Ops",

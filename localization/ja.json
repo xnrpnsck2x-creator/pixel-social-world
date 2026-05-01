@@ -417,7 +417,7 @@
   "ops.console.row.moderation": "管理: 有効 {a} · 操作 {b}",
   "ops.console.row.realtime": "リアルタイム: 配信 {a} · 移動制限 {b} · エモート制限 {c}",
   "ops.console.row.realtime_load": "WS: 接続 {a} · 配信先 {b} · 低速 {c} · 失敗 {d}",
-  "ops.console.row.room_detail": "{room} · {type} · 接続 {connected} · スナップショット {snapshot} · WS {delivered}/{target} · 低速 {slow} · 失敗 {failed} · {age}秒前",
+  "ops.console.row.room_detail": "{room} · {type} · 接続 {connected} · スナップショット {snapshot} · WS {delivered}/{target} · 間引き {culled} · 低速 {slow} · 失敗 {failed} · {age}秒前",
   "ops.console.row.rooms": "ルーム: オンライン {a} · 追跡 {b}",
   "ops.console.summary_format": "オンライン {online} · メッセージ {messages} · 通報 {reports} · 報酬 {rewards}",
   "ops.console.title": "Debug Ops",

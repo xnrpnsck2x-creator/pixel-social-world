@@ -3,6 +3,7 @@ package room
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -242,6 +243,63 @@ func TestHubUsesDenseRoomMoveInterval(t *testing.T) {
 	now = now.Add(denseRoomMoveInterval)
 	if !hub.allowAction(localClient, "player.move", hub.moveIntervalFor(localClient), &localClient.lastMoveAt) {
 		t.Fatal("dense move should pass after dense interval")
+	}
+}
+
+func TestHubCullsDenseMovementTargetsByInterestRange(t *testing.T) {
+	hub := NewHub()
+	defer hub.Close()
+
+	roomID := "dense_room"
+	deliveries := map[string]int{}
+	hub.mu.Lock()
+	hub.lastMoves[roomID] = map[string]map[string]interface{}{}
+	for i := 0; i < denseRoomMoveThreshold; i++ {
+		playerID := fmt.Sprintf("player_%02d", i)
+		conn := &websocket.Conn{}
+		id := playerID
+		hub.clients[conn] = &clientState{
+			conn:     conn,
+			roomID:   roomID,
+			playerID: playerID,
+			writeFn: func(Envelope) error {
+				deliveries[id]++
+				return nil
+			},
+		}
+		x := denseRoomInterestRadius + 80 + float64(i)
+		if i < 2 {
+			x = float64(i * 120)
+		}
+		hub.lastMoves[roomID][playerID] = map[string]interface{}{
+			"position": map[string]interface{}{"x": x, "y": 0},
+		}
+	}
+	hub.mu.Unlock()
+
+	hub.broadcastLocal(roomID, Envelope{
+		SchemaVersion: 1,
+		Type:          "player.move",
+		Payload: map[string]interface{}{
+			"player_id": "player_00",
+			"room_id":   roomID,
+			"position":  map[string]interface{}{"x": 0, "y": 0},
+		},
+	})
+
+	if deliveries["player_00"] != 1 || deliveries["player_01"] != 1 {
+		t.Fatalf("expected source and nearby player to receive move, deliveries=%#v", deliveries)
+	}
+	if deliveries["player_02"] != 0 {
+		t.Fatalf("expected far player to be culled, deliveries=%#v", deliveries)
+	}
+	realtime := hub.metrics.Snapshot()
+	if realtime["movement_culled"] == 0 {
+		t.Fatalf("expected movement_culled metric, got %#v", realtime)
+	}
+	roomState := hub.DebugSnapshot()["rooms"].(map[string]map[string]interface{})[roomID]
+	if roomState["movement_culled"] == int64(0) {
+		t.Fatalf("expected room movement_culled metric, got %#v", roomState)
 	}
 }
 
