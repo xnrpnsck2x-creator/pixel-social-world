@@ -17,6 +17,8 @@ Current MVP direction:
 - Keep creator games to interface, validation, review, and whitelist alpha during the accelerated MVP window.
 - Compress the first content expansion into 4-6 weeks, then use weeks 8-12 for small real-player tests.
 
+Local Alpha RC testing is tracked in `docs/AlphaRCTestPlan.md`.
+
 ## Day 1 Foundation
 
 - Create the Godot project shell and route the boot flow through `configs/scene_routes.json`.

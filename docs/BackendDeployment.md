@@ -135,6 +135,9 @@ Run the preflight command before starting or after editing `/etc/pixel-social-wo
 ```
 
 It validates config shape, production secrets/placeholders, shared JSON contracts, and writable package artifact/install directories. It does not print raw secrets.
+With `-strict`, production auth must use `auth.provider_verification=oidc_jwt`
+and must provide both Apple and Google client ID lists through
+`PSW_APPLE_CLIENT_IDS` and `PSW_GOOGLE_CLIENT_IDS`.
 
 The retention cleanup command defaults to dry-run and prints matched row counts:
 

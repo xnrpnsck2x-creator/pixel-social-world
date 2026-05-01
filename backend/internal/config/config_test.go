@@ -172,6 +172,9 @@ func TestValidateCatchesProductionPlaceholders(t *testing.T) {
 	cfg.Storage.Mode = "postgres"
 	cfg.Realtime.Mode = "redis"
 	cfg.Auth.AdminToken = "CHANGE_ME"
+	cfg.Auth.ProviderVerification = "claimed"
+	cfg.Auth.AppleClientIDs = nil
+	cfg.Auth.GoogleClientIDs = nil
 	cfg.Postgres.DSN = ""
 	cfg.Server.CORSAllowedOrigins = nil
 	issues := Validate(cfg, true)
@@ -179,7 +182,14 @@ func TestValidateCatchesProductionPlaceholders(t *testing.T) {
 	for _, issue := range issues {
 		keys[issue.Key] = true
 	}
-	for _, key := range []string{"auth.admin_token", "postgres.dsn", "server.cors_allowed_origins"} {
+	for _, key := range []string{
+		"auth.admin_token",
+		"auth.provider_verification",
+		"auth.apple_client_ids",
+		"auth.google_client_ids",
+		"postgres.dsn",
+		"server.cors_allowed_origins",
+	} {
 		if !keys[key] {
 			t.Fatalf("expected validation issue for %s in %#v", key, issues)
 		}

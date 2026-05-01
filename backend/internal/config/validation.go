@@ -110,6 +110,15 @@ func validateProductionSecrets(issues []ValidationIssue, cfg Config, strict bool
 	if secretLooksUnsafe(cfg.Auth.AdminToken) {
 		issues = appendError(issues, "auth.admin_token", "production admin token must be a long non-placeholder secret")
 	}
+	if cfg.Auth.ProviderVerification != "oidc_jwt" {
+		issues = appendError(issues, "auth.provider_verification", "production auth provider verification must be oidc_jwt")
+	}
+	if len(cfg.Auth.AppleClientIDs) == 0 {
+		issues = appendError(issues, "auth.apple_client_ids", "production Apple client IDs must be configured")
+	}
+	if len(cfg.Auth.GoogleClientIDs) == 0 {
+		issues = appendError(issues, "auth.google_client_ids", "production Google client IDs must be configured")
+	}
 	if len(cfg.Server.CORSAllowedOrigins) == 0 {
 		issues = appendError(issues, "server.cors_allowed_origins", "production CORS origins must be explicit")
 	}

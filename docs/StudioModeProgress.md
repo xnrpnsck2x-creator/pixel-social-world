@@ -14,6 +14,15 @@ Accelerated content execution now lives in `docs/AcceleratedContentRoute.md`.
 
 ## Progress
 
+### Alpha RC Local Test Harness
+
+Status: Implemented and locally verified on 2026-05-02.
+
+- Added `scripts/run_local_alpha.sh`, a one-command local Alpha harness that builds the backend, runs local preflight, serves the current H5 export, writes a runtime config for the selected ports, prints player/admin URLs, and cleans ports on exit.
+- Added `docs/AlphaRCTestPlan.md` with player, two-client, LiveOps, mobile browser, and known-external test steps for the upcoming hands-on pass.
+- Tightened strict backend preflight so production auth must use `oidc_jwt` and include Apple/Google client ID lists before the server is considered production-safe.
+- Verified with shell syntax checks, content validation, full Go backend tests, local Alpha non-interactive readiness, and the 34-state H5 screenshot matrix: 0 console messages, ports clear.
+
 ### MVP Autopilot Slice 8 - Local MVP Closure Gates
 
 Status: Implemented and locally verified on 2026-05-01.
