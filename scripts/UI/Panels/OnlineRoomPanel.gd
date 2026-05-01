@@ -11,17 +11,15 @@ const WorldHUDAssetsScript := preload("res://scripts/UI/HUD/WorldHUDAssets.gd")
 const Formatter := preload("res://scripts/UI/Panels/OnlineRoomPanelFormatter.gd")
 const Actions := preload("res://scripts/UI/Panels/OnlineRoomPanelActions.gd")
 const Members := preload("res://scripts/UI/Panels/OnlineRoomPanelMembers.gd")
-const REGULAR_SESSION_ROW_LIMIT := 3
-const COMPACT_SESSION_ROW_LIMIT := 2
+const Layout := preload("res://scripts/UI/Panels/OnlineRoomPanelLayout.gd")
 
 var presence_service: Node
 var chat_service: Node
 var minigame_registry: Node
 var session_service: Node
-var _compact_layout := false
-var _layout_initialized := false
 var _actions := Actions.new()
 var _members := Members.new()
+var _layout := Layout.new()
 
 @onready var title_label: Label = %TitleLabel
 @onready var refresh_button: Button = %RefreshButton
@@ -54,8 +52,9 @@ var _members := Members.new()
 @onready var visit_home_button: Button = %VisitHomeButton
 
 func _ready() -> void:
+	_bind_layout()
 	_apply_image2_style()
-	_apply_session_text_limits()
+	_layout.apply_session_text_limits()
 	for label in [members_label, chat_preview_label, game_catalog_label, sessions_label]:
 		label.clip_text = true
 	refresh_button.pressed.connect(_refresh_now)
@@ -133,49 +132,37 @@ func _refresh_text() -> void:
 	invite_home_button.text = App.t_key("housing.invite_button")
 	visit_home_button.text = App.t_key("housing.visit_button")
 	_members.refresh_text()
-	_apply_compact_text()
+	_layout.apply_text()
 	_refresh_all()
 
 func set_compact_layout(enabled: bool) -> void:
-	if _layout_initialized and _compact_layout == enabled:
+	if not _layout.set_compact(enabled):
 		return
-	_compact_layout = enabled
-	_layout_initialized = true
-	custom_minimum_size = Vector2(252, 226) if _compact_layout else Vector2(328, 420)
-	for title in [members_title_label, chat_title_label, games_title_label, home_title_label]:
-		title.visible = false
-	chat_preview_label.visible = not _compact_layout
-	panel_invite_button.custom_minimum_size = Vector2(0, 32) if _compact_layout else Vector2(0, 36)
-	room_chat_row.visible = not _compact_layout
-	quick_emote_row.alignment = BoxContainer.ALIGNMENT_END if _compact_layout else BoxContainer.ALIGNMENT_BEGIN
-	members_label.custom_minimum_size = Vector2(0, 0) if _compact_layout else Vector2(0, 52)
-	chat_preview_label.custom_minimum_size = Vector2(0, 0) if _compact_layout else Vector2(0, 46)
-	room_chat_input.custom_minimum_size = Vector2(0, 32) if _compact_layout else Vector2(0, 40)
-	sessions_label.custom_minimum_size = Vector2(0, 28) if _compact_layout else Vector2(0, 52)
-	game_catalog_label.custom_minimum_size = Vector2(0, 20) if _compact_layout else Vector2(0, 28)
-	_apply_session_text_limits()
-	for button in [
-		refresh_button,
-		report_button,
-		close_button,
-		room_send_button,
-		host_fishing_button,
-		join_session_button,
-		invite_home_button,
-		visit_home_button
-	]:
-		button.custom_minimum_size = Vector2(0, 32) if _compact_layout else Vector2(0, 40)
-	_apply_compact_text()
 	_refresh_all()
 
-func _apply_compact_text() -> void:
-	if not _compact_layout:
-		return
-	refresh_button.text = App.t_key("ui.action.refresh")
-	close_button.text = App.t_key("ui.action.close")
-
-func _apply_session_text_limits() -> void:
-	sessions_label.max_lines_visible = _session_row_limit()
+func _bind_layout() -> void:
+	_layout.bind(
+		self,
+		[members_title_label, chat_title_label, games_title_label, home_title_label],
+		chat_preview_label,
+		game_catalog_label,
+		panel_invite_button,
+		room_chat_row,
+		quick_emote_row,
+		members_label,
+		room_chat_input,
+		sessions_label,
+		[
+			refresh_button,
+			report_button,
+			close_button,
+			room_send_button,
+			host_fishing_button,
+			join_session_button,
+			invite_home_button,
+			visit_home_button
+		]
+	)
 
 func _apply_image2_style() -> void:
 	WorldHUDAssetsScript.configure_panel_frame(self)
@@ -217,7 +204,7 @@ func _refresh_presence() -> void:
 	status_dot.tooltip_text = tooltip
 	member_count_label.tooltip_text = tooltip
 	heartbeat_label.tooltip_text = tooltip
-	_members.refresh(members, SaveSystem.get_player_id(), _compact_layout)
+	_members.refresh(members, SaveSystem.get_player_id(), _layout.is_compact())
 
 func _refresh_chat_preview() -> void:
 	if chat_service == null:
@@ -234,16 +221,13 @@ func _refresh_chat_preview() -> void:
 
 func _refresh_sessions() -> void:
 	var sessions: Array = session_service.get_sessions() if session_service != null else []
-	sessions_label.text = Formatter.session_rows(session_service, sessions, _session_row_limit(), presence_service)
+	sessions_label.text = Formatter.session_rows(session_service, sessions, _layout.session_row_limit(), presence_service)
 
 func _refresh_invite_chip() -> void:
 	var text := Formatter.invite_chip_text(chat_service, minigame_registry)
 	panel_invite_button.visible = not text.is_empty()
 	panel_invite_button.disabled = text.is_empty()
 	panel_invite_button.text = text
-
-func _session_row_limit() -> int:
-	return COMPACT_SESSION_ROW_LIMIT if _compact_layout else REGULAR_SESSION_ROW_LIMIT
 
 func _refresh_game_catalog() -> void:
 	game_catalog_label.text = Formatter.game_catalog(minigame_registry)

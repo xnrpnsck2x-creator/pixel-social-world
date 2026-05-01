@@ -7,7 +7,7 @@ const PlayerAvatarScript := preload("res://scripts/Entities/Player/PlayerAvatar.
 const EmoteBubbleScript := preload("res://scripts/UI/Emotes/OverheadEmoteBubble.gd")
 
 const SIDE_UI_SAFE_PIXELS := 40.0
-const TOP_UI_SAFE_PIXELS := 72.0
+const TOP_UI_SAFE_PIXELS := 300.0
 const BOTTOM_UI_SAFE_PIXELS := 150.0
 
 var _remote_root: Node2D
@@ -133,6 +133,10 @@ func _playable_world_rect() -> Rect2:
 	var safe_right: float = viewport_size.x * 0.5 / zoom_x - SIDE_UI_SAFE_PIXELS / zoom_x
 	var safe_top: float = -viewport_size.y * 0.5 / zoom_y + TOP_UI_SAFE_PIXELS / zoom_y
 	var safe_bottom: float = viewport_size.y * 0.5 / zoom_y - BOTTOM_UI_SAFE_PIXELS / zoom_y
+	if safe_bottom <= safe_top:
+		var center_y := (safe_top + safe_bottom) * 0.5
+		safe_top = center_y - 8.0
+		safe_bottom = center_y + 8.0
 	return Rect2(Vector2(safe_left, safe_top), Vector2(safe_right - safe_left, safe_bottom - safe_top))
 
 func _facing_for(player_id: String) -> String:

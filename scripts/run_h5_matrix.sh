@@ -79,6 +79,7 @@ done
 
 PSW_H5_URL="http://127.0.0.1:$WEB_PORT/index.html" \
 PSW_H5_ARTIFACT_DIR="$ARTIFACT_DIR" \
+PSW_H5_CASE="${PSW_H5_CASE:-}" \
 node "$ROOT_DIR/tests/h5_viewport_smoke.mjs" >"$MATRIX_LOG"
 
 cleanup

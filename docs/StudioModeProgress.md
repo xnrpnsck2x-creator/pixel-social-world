@@ -14,6 +14,18 @@ Accelerated content execution now lives in `docs/AcceleratedContentRoute.md`.
 
 ## Progress
 
+### MVP Autopilot Slice 2 - Mobile Room Chat and Safe Area
+
+Status: Implemented and locally verified on 2026-05-01.
+
+- Tightened `MainCityRemotePlayers` mobile safe-area spawning so remote avatars no longer appear partly under the top HUD in mobile landscape.
+- Fixed `tests/remote_players_smoke.gd` so per-avatar assertions always run, then added mobile viewport coverage and a guard against top-HUD overlap.
+- `scripts/run_h5_matrix.sh` now passes through `PSW_H5_CASE`, enabling targeted one-screenshot H5 checks before the full 34-case matrix.
+- Mobile compact `OnlineRoomPanel` now preserves the room chat input instead of hiding it, keeping room chat usable on phones while still showing session join/host controls.
+- Split compact layout rules into `OnlineRoomPanelLayout`, pulling `OnlineRoomPanel.gd` back to 271 lines and keeping room UI under the AGENTS.md 300-line ceiling.
+- Updated mobile Host Fishing H5 click coverage after the compact room chat row shifted the button position.
+- Verified on 2026-05-01: content validation, core Godot smoke, mobile input smoke, online room UI smoke, remote players smoke, minigame session service smoke, main city interactions smoke, world state sync smoke, Go test suite, Web export, targeted mobile room/minigame screenshots, full H5 screenshot matrix, and local port cleanup all pass.
+
 ### MVP Autopilot Slice 1 - Main City Visual Base
 
 Status: Implemented and locally verified on 2026-05-01.

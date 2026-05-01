@@ -123,6 +123,7 @@ func _run() -> void:
 		failures.append("Chat report button is not using an Image 2 button frame.")
 	if not report_button.disabled:
 		failures.append("Chat report button should be disabled without a reportable online message.")
+	var room_chat_row := panel.get_node("Margin/Rows/RoomChatRow") as HBoxContainer
 	var room_chat_input := panel.get_node("Margin/Rows/RoomChatRow/RoomChatInput") as LineEdit
 	var room_send_button := panel.get_node("Margin/Rows/RoomChatRow/RoomSendButton") as Button
 	var laugh_emote_button := panel.get_node("Margin/Rows/QuickEmoteRow/LaughEmoteButton") as Button
@@ -227,6 +228,15 @@ func _run() -> void:
 		failures.append("Online room compact layout did not reduce panel height.")
 	if bool(members_label.get("visible")):
 		failures.append("Online room compact layout kept the full members list visible.")
+	if not bool(room_chat_row.get("visible")):
+		failures.append("Online room compact layout hid the room chat input.")
+	room_chat_input.text = "Compact room hello"
+	room_send_button.pressed.emit()
+	await process_frame
+	if not _chat_rows_contain(chat_service.call("get_recent_messages", 3), "Compact room hello"):
+		failures.append("Online room compact chat did not send through ChatService.")
+	if not room_chat_input.text.is_empty():
+		failures.append("Online room compact chat input did not clear after send.")
 	if sessions_label.max_lines_visible > 2:
 		failures.append("Online room compact layout did not cap session rows.")
 	panel.call("set_compact_layout", false)
@@ -273,5 +283,11 @@ func _node_tree_contains(node: Node, text: String) -> bool:
 		return true
 	for child in node.get_children():
 		if _node_tree_contains(child, text):
+			return true
+	return false
+
+func _chat_rows_contain(messages: Array, text: String) -> bool:
+	for message in messages:
+		if typeof(message) == TYPE_DICTIONARY and str((message as Dictionary).get("body", "")).contains(text):
 			return true
 	return false
