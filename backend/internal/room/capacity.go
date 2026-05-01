@@ -89,6 +89,12 @@ func (h *Hub) joinedClientCountLocked(roomID string, excluded *clientState) int 
 	return count
 }
 
+func (h *Hub) joinedClientCount(roomID string) int {
+	h.mu.RLock()
+	defer h.mu.RUnlock()
+	return h.joinedClientCountLocked(roomID, nil)
+}
+
 func (h *Hub) roomCapacityLimit(roomID string) int {
 	switch {
 	case roomID == "" || roomID == defaultRoomID:

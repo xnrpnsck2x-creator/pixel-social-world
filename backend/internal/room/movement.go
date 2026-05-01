@@ -3,7 +3,11 @@ package room
 import (
 	"encoding/json"
 	"strings"
+	"time"
 )
+
+const denseRoomMoveThreshold = 50
+const denseRoomMoveInterval = 120 * time.Millisecond
 
 type roomBounds struct {
 	minX float64
@@ -22,6 +26,14 @@ func (h *Hub) sanitizeMovePayload(client *clientState, payload map[string]interf
 		"y": clampFloat(floatValue(position, "y", 0), bounds.minY, bounds.maxY),
 	}
 	return payload
+}
+
+func (h *Hub) moveIntervalFor(client *clientState) time.Duration {
+	interval := h.moveInterval
+	if h.joinedClientCount(client.roomID) >= denseRoomMoveThreshold && interval < denseRoomMoveInterval {
+		return denseRoomMoveInterval
+	}
+	return interval
 }
 
 func boundsForRoom(roomID string) roomBounds {

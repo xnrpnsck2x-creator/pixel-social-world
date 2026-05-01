@@ -26,6 +26,14 @@ Status: Implemented; verification in progress on 2026-05-01.
 - Added client rollback for denied room joins so Godot/H5 room state returns to the last confirmed room instead of keeping an optimistic rejected room.
 - Verified so far on 2026-05-01: content validation, Go test suite, room lifecycle smoke, and core Godot smoke pass.
 
+### MVP Autopilot Slice 4 - Dense Room Movement Backoff
+
+Status: In progress on 2026-05-01.
+
+- Split `world.join` handling out of `Hub` so the realtime hub stays below the AGENTS.md 300-line ceiling while room access, capacity, leave cleanup, and join broadcast remain one flow.
+- Added first-pass dense-room movement backoff: when a local room reaches 50 joined players, server-side `player.move` accepts no faster than 120ms.
+- Kept this intentionally conservative and compatible with existing clients; it reduces 50-100 player fanout pressure before full distance-based interest culling lands.
+
 ### MVP Autopilot Slice 2 - Mobile Room Chat and Safe Area
 
 Status: Implemented and locally verified on 2026-05-01.

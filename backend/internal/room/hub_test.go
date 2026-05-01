@@ -207,6 +207,44 @@ func TestHubTracksSlowWritesAndClosesFailedWrites(t *testing.T) {
 	}
 }
 
+func TestHubUsesDenseRoomMoveInterval(t *testing.T) {
+	now := time.Unix(1777560000, 0)
+	hub := NewHub(
+		WithClock(func() time.Time { return now }),
+		WithRateLimits(defaultMoveInterval, 0),
+	)
+	defer hub.Close()
+
+	var localConn websocket.Conn
+	localClient := &clientState{
+		conn:     &localConn,
+		roomID:   "dense_room",
+		playerID: "player_00",
+	}
+	hub.mu.Lock()
+	hub.clients[&localConn] = localClient
+	for i := 1; i < denseRoomMoveThreshold; i++ {
+		conn := &websocket.Conn{}
+		hub.clients[conn] = &clientState{conn: conn, roomID: "dense_room", playerID: "player"}
+	}
+	hub.mu.Unlock()
+
+	if interval := hub.moveIntervalFor(localClient); interval != denseRoomMoveInterval {
+		t.Fatalf("expected dense interval %s, got %s", denseRoomMoveInterval, interval)
+	}
+	if !hub.allowAction(localClient, "player.move", hub.moveIntervalFor(localClient), &localClient.lastMoveAt) {
+		t.Fatal("first dense move should pass")
+	}
+	now = now.Add(defaultMoveInterval + time.Millisecond)
+	if hub.allowAction(localClient, "player.move", hub.moveIntervalFor(localClient), &localClient.lastMoveAt) {
+		t.Fatal("dense move should remain limited until dense interval elapses")
+	}
+	now = now.Add(denseRoomMoveInterval)
+	if !hub.allowAction(localClient, "player.move", hub.moveIntervalFor(localClient), &localClient.lastMoveAt) {
+		t.Fatal("dense move should pass after dense interval")
+	}
+}
+
 func newHubTestServer(t *testing.T, hub *Hub) *httptest.Server {
 	t.Helper()
 	upgrader := websocket.Upgrader{}

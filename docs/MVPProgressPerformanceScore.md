@@ -18,7 +18,7 @@ Scoring:
 | Guest auth + session refresh | 82% | Guest login, token refresh, H5 session restore, REST/WS auth gates verified. | Apple/Google provider production setup and store review data handling. |
 | Main city walking + HUD | 78% | Main scene, Image2 HUD, action buttons, NPC/hotspot entry, name reveal, H5 landscape guard verified. | Final map collision polish and mobile/touch movement ergonomics. |
 | Presence + room members | 79% | Heartbeat, room member list, remote avatars, profile card entry, stale state visible, per-room caps visible in debug state. | True disconnect edge cases and room-shard load tests. |
-| WebSocket movement + emotes | 78% | Authenticated WS join, room fanout, movement interpolation, RO-style overhead emotes, repeatable 24/50/100-client load smoke, slow/failed write metrics and failed-write close policy. | Interest management and dense-room fanout tuning. |
+| WebSocket movement + emotes | 80% | Authenticated WS join, room fanout, movement interpolation, RO-style overhead emotes, repeatable 24/50/100-client load smoke, slow/failed write metrics, failed-write close policy, and dense-room move interval backoff. | Distance-based interest management and Redis-mode load tuning. |
 | Room chat | 74% | Ephemeral room chat, channel picker, chat invite actions, report path, moderation console. | Abuse tuning, mute UX, and live operator workflow hardening. |
 | Private messages + mail | 68% | Durable private conversations, unread summaries, read markers, report endpoint, mailbox base. | End-to-end persistence policy, notification UX, inbox pagination polish. |
 | Player profile / social actions | 62% | Member and remote-avatar profile card, private/visit/emote/report actions wired. | Friend/block/follow model and richer profile identity fields. |
@@ -40,7 +40,7 @@ Public alpha readiness forecast: 58-64%.
 | Auth / profile REST | 4.0 | 4.0 | 4.0 | Mostly short JSON requests; PostgreSQL token/profile writes are ordinary MVP load. |
 | Presence heartbeat | 4.0 | 4.0 | 4.5 | Redis TTL mode keeps online state cheap; heartbeat frequency is the main tuning knob. |
 | WebSocket city hub | 3.6 | 3.4 | 3.8 | One connection per client is fine; same-room broadcast cost grows with room population, now capped per room type and tracked globally/per room. |
-| Movement sync | 3.3 | 3.1 | 4.0 | Current 0.12s send interval is playable, and 24/50/100-client local fanout smoke passes; dense rooms still need interest culling or lower update rates. |
+| Movement sync | 3.5 | 3.3 | 4.0 | Current 0.12s client send interval is playable; server now raises dense-room move limiting to 120ms at 50 joined players, but dense rooms still need distance-based culling. |
 | Room chat | 3.8 | 4.0 | 4.2 | Room chat is ephemeral and capped; report snapshots are small. |
 | Private messages / mail | 3.5 | 3.7 | 3.8 | Durable rows are manageable; pagination and retention policies decide long-term storage cost. |
 | Housing | 3.6 | 3.8 | 3.7 | Catalog validation is light; layout size and sync frequency are the future pressure points. |
@@ -58,7 +58,7 @@ Expected safe alpha envelope before dedicated load tests:
 - Creator package review throughput depends on the AI reviewer adapter; keep it asynchronous and queue-limited.
 
 Most likely backend bottlenecks:
-- Same-room movement fanout, because every move can broadcast to many clients.
+- Same-room movement fanout, because every move can broadcast to many clients; dense rooms now back off movement accepts but still need culling for bigger public plazas.
 - WebSocket write backpressure from slow clients; failed writes now close the socket, while slow-write thresholds still need production alert tuning.
 - PostgreSQL growth from private messages, mail, ledgers, reports, and creator audit history.
 - Creator artifact storage if left on local disk without lifecycle policy.
@@ -79,10 +79,11 @@ Current baseline is a functional smoke, not a capacity benchmark:
   delivery targets, delivered messages, rate-limit hits, and zero write failures.
 - Debug Ops UI now exposes WS opened, delivery target, slow write, and failed write counters, plus per-room delivered/target/slow/failed values.
 - Deterministic unit coverage now verifies slow-write metrics, failed-write closure, and room-capacity denial payloads.
+- Dense-room unit coverage verifies 50-player rooms use a 120ms server-side movement interval.
 
 ## Next Performance Tasks
 
 1. Define retention rules for private messages, mail, reports, and ledgers before public alpha.
 2. Run a real-device H5/mobile keyboard and FPS pass after the next UI slice.
-3. Add interest culling or adaptive movement frequency for 100-player public rooms.
+3. Add distance-based interest culling for 100-player public rooms.
 4. Start a Redis-mode WS fanout smoke once local Redis is part of the regular dev loop.
