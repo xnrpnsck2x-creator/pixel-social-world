@@ -7,6 +7,7 @@ const WorldHUDAssetsScript := preload("res://scripts/UI/HUD/WorldHUDAssets.gd")
 const MAX_ROWS := 6
 
 var compact_layout := false
+var _embedded_admin_mode := false
 var _built := false
 var _token_input: LineEdit
 var _status_label: Label
@@ -25,6 +26,12 @@ func set_compact_layout(enabled: bool) -> void:
 func set_admin_token(token: String) -> void:
 	_build()
 	_token_input.text = token
+
+func set_embedded_admin_mode(enabled: bool) -> void:
+	_embedded_admin_mode = enabled
+	_build()
+	if _token_input != null:
+		_token_input.visible = not enabled
 
 func set_reports_snapshot(snapshot: Dictionary) -> void:
 	_build()
@@ -77,6 +84,7 @@ func _build() -> void:
 	_token_input = LineEdit.new()
 	_token_input.placeholder_text = App.t_key("reviewer.console.token_placeholder")
 	_token_input.secret = true
+	_token_input.visible = not _embedded_admin_mode
 	rows.add_child(_token_input)
 
 	_status_label = Label.new()

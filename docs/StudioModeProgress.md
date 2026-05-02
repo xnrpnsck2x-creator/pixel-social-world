@@ -14,6 +14,15 @@ Accelerated content execution now lives in `docs/AcceleratedContentRoute.md`.
 
 ## Progress
 
+### LiveOps Small-Screen Readability Pass
+
+Status: Implemented and locally verified on 2026-05-02.
+
+- Changed 375px-class H5 LiveOps from stacked all-panels-at-once layout to a 2x2 tab strip that shows Review, Reports, Audit, or Ops one at a time.
+- Moved the top admin token input into its own row and hides duplicate child-panel admin token inputs when panels are embedded inside LiveOps.
+- Web LiveOps now reads browser `window.innerWidth` for responsive decisions, fixing the mismatch between Godot's 960-wide canvas and a narrow browser viewport.
+- Added H5 smoke coverage for the narrow Audit and Ops tabs, re-exported Web, and verified with content validation, Godot LiveOps smoke, 960x540 regression, targeted 375px screenshots, and the full 35-state H5 matrix: 0 console messages, ports clear.
+
 ### Alpha RC Local Test Harness
 
 Status: Implemented and locally verified on 2026-05-02.

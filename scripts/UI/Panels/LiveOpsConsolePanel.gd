@@ -8,6 +8,7 @@ const DebugOpsScene := preload("res://scenes/ui/DebugOpsPanel.tscn")
 const WorldHUDAssetsScript := preload("res://scripts/UI/HUD/WorldHUDAssets.gd")
 
 var compact_layout := false
+var _narrow_layout := false
 var _built := false
 var _token_input: LineEdit
 var _status_label: Label
@@ -17,6 +18,10 @@ var _chat_reports_panel
 var _moderation_panel
 var _ops_panel
 var _panels_row: GridContainer
+var _tabs: GridContainer
+var _section_buttons: Array[Button] = []
+var _section_panels: Array[Node] = []
+var _active_section_index := 0
 var _admin_role := "owner"
 
 func _ready() -> void:
@@ -42,6 +47,14 @@ func set_compact_layout(enabled: bool) -> void:
 		_token_input.custom_minimum_size = Vector2(112, 32) if enabled else Vector2(160, 32)
 	if _refresh_button != null:
 		_refresh_button.custom_minimum_size = Vector2(64, 32) if enabled else Vector2(74, 32)
+	_apply_panel_visibility()
+
+func set_narrow_layout(enabled: bool) -> void:
+	_narrow_layout = enabled
+	_build()
+	if _tabs != null:
+		_tabs.visible = enabled
+	_apply_panel_visibility()
 
 func set_admin_token(token: String) -> void:
 	_build()
@@ -117,8 +130,12 @@ func _build() -> void:
 	rows.add_child(header)
 	_add_icon(header)
 	_add_header_labels(header)
-	_add_token_input(header)
-	_add_refresh_button(header)
+	var admin_row := HBoxContainer.new()
+	admin_row.add_theme_constant_override("separation", 6)
+	rows.add_child(admin_row)
+	_add_token_input(admin_row)
+	_add_refresh_button(admin_row)
+	_add_tabs(rows)
 
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -136,8 +153,13 @@ func _build() -> void:
 	_chat_reports_panel = ChatReportsConsoleScene.instantiate()
 	_moderation_panel = ChatModerationAuditScene.instantiate()
 	_ops_panel = DebugOpsScene.instantiate()
-	for panel in [_reviewer_panel, _chat_reports_panel, _moderation_panel, _ops_panel]:
-		panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_section_panels = [_reviewer_panel, _chat_reports_panel, _moderation_panel, _ops_panel]
+	for panel in _section_panels:
+		var control := panel as Control
+		if control != null:
+			control.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		if panel.has_method("set_embedded_admin_mode"):
+			panel.call("set_embedded_admin_mode", true)
 		_panels_row.add_child(panel)
 
 func _add_icon(header: HBoxContainer) -> void:
@@ -165,6 +187,7 @@ func _add_token_input(header: HBoxContainer) -> void:
 	_token_input.placeholder_text = App.t_key("reviewer.console.token_placeholder")
 	_token_input.secret = true
 	_token_input.custom_minimum_size = Vector2(160, 32)
+	_token_input.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_token_input.text_changed.connect(func(_text: String) -> void: _apply_token_to_children())
 	WorldHUDAssetsScript.configure_line_edit_frame(_token_input)
 	header.add_child(_token_input)
@@ -176,6 +199,42 @@ func _add_refresh_button(header: HBoxContainer) -> void:
 	_refresh_button.pressed.connect(refresh_all)
 	WorldHUDAssetsScript.configure_button_frame(_refresh_button)
 	header.add_child(_refresh_button)
+
+func _add_tabs(rows: VBoxContainer) -> void:
+	_tabs = GridContainer.new()
+	_tabs.columns = 2
+	_tabs.visible = false
+	_tabs.add_theme_constant_override("h_separation", 4)
+	_tabs.add_theme_constant_override("v_separation", 4)
+	rows.add_child(_tabs)
+	var labels := [
+		"liveops.console.tab.review",
+		"liveops.console.tab.reports",
+		"liveops.console.tab.audit",
+		"liveops.console.tab.ops"
+	]
+	for i in range(labels.size()):
+		var button := Button.new()
+		button.text = App.t_key(labels[i])
+		button.toggle_mode = true
+		button.custom_minimum_size = Vector2(0, 28)
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button.pressed.connect(_set_active_section.bind(i))
+		WorldHUDAssetsScript.configure_button_frame(button)
+		_tabs.add_child(button)
+		_section_buttons.append(button)
+
+func _set_active_section(index: int) -> void:
+	_active_section_index = clampi(index, 0, max(0, _section_panels.size() - 1))
+	_apply_panel_visibility()
+
+func _apply_panel_visibility() -> void:
+	for i in range(_section_panels.size()):
+		var panel := _section_panels[i] as Control
+		if panel != null:
+			panel.visible = not _narrow_layout or i == _active_section_index
+	for i in range(_section_buttons.size()):
+		_section_buttons[i].button_pressed = i == _active_section_index
 
 func _apply_token_to_children() -> void:
 	if _reviewer_panel != null:
@@ -192,4 +251,23 @@ func _online_client() -> Node:
 	return tree.root.get_node("OnlineClient")
 
 func _update_responsive_layout() -> void:
-	set_compact_layout(get_viewport_rect().size.x < 1120)
+	var width := _responsive_width()
+	set_compact_layout(width < 1120)
+	set_narrow_layout(width < 520)
+
+func _responsive_width() -> float:
+	if OS.has_feature("web") and Engine.has_singleton("JavaScriptBridge"):
+		var bridge := Engine.get_singleton("JavaScriptBridge")
+		var value: Variant = bridge.call(
+			"eval",
+			"Math.max(0, Math.floor(window.innerWidth || document.documentElement.clientWidth || 0))",
+			true
+		)
+		if typeof(value) == TYPE_FLOAT or typeof(value) == TYPE_INT:
+			var browser_width := float(value)
+			if browser_width > 0.0:
+				return browser_width
+	var window_size := Vector2(DisplayServer.window_get_size())
+	if window_size.x > 0.0:
+		return window_size.x
+	return get_viewport_rect().size.x

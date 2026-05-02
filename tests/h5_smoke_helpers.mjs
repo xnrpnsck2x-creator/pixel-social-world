@@ -90,6 +90,7 @@ function interactionSteps(testCase) {
     ["placeClick", 1000, true],
     ["selectPlacedClick", 500],
     ["moveClick", 1000],
+    ["liveopsTabClick", 900],
     ["hostClick", 4500, false, "hostClickConfirm"],
     ["castClick", 2500],
   ].filter(([key]) => testCase[key]);
