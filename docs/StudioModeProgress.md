@@ -14,6 +14,17 @@ Accelerated content execution now lives in `docs/AcceleratedContentRoute.md`.
 
 ## Progress
 
+### Android Release Signing Readiness V1
+
+Status: Implemented and locally verified on 2026-05-11.
+
+- Added `scripts/check_android_release_readiness.sh` as the Android release preflight for the native handoff path.
+- The script verifies the Android export preset, stable package id, signing-enabled package setting, internet permission, APK/AAB format contract, Java/build-tools availability, `zipalign`, `apksigner`, and `keytool`.
+- Release credentials stay outside the repo: the preflight fails if `export_presets.cfg` contains signing/provisioning values, and it only validates keystore file/alias when `ANDROID_RELEASE_KEYSTORE`, `ANDROID_RELEASE_KEYSTORE_USER`, and `ANDROID_RELEASE_KEYSTORE_PASSWORD` are provided together.
+- The strict mode `PSW_ANDROID_RELEASE_SIGNING_REQUIRED=1` is reserved for the actual release machine; default local mode passes as a no-secret contract check when release env is intentionally unset.
+- Wired the release readiness contract into the project category v2 gate through `android_release_readiness_contract_pass`, so `mobile_h5_native` now verifies both release signing hygiene and Android runtime budget evidence.
+- Verified: `scripts/check_android_release_readiness.sh`, Python syntax parse for `tests/project_category_v2_gate.py`, JSON syntax for `configs/project_categories_v2.json`, and `scripts/run_project_category_v2_gate.sh`.
+
 ### Android Runtime Budget Gate V1
 
 Status: Implemented and Android-device budget verified on `c7e94055` reports on 2026-05-11.

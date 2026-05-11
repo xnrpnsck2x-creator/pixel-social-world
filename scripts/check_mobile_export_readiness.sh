@@ -315,6 +315,7 @@ check_android_toolchain() {
 
 	[[ -n "${ANDROID_RELEASE_KEYSTORE:-}" ]] && pass "ANDROID_RELEASE_KEYSTORE is set" || warn "ANDROID_RELEASE_KEYSTORE is not set"
 	[[ -n "${ANDROID_RELEASE_KEYSTORE_USER:-}" ]] && pass "ANDROID_RELEASE_KEYSTORE_USER is set" || warn "ANDROID_RELEASE_KEYSTORE_USER is not set"
+	[[ -n "${ANDROID_RELEASE_KEYSTORE_PASSWORD:-}" ]] && pass "ANDROID_RELEASE_KEYSTORE_PASSWORD is set" || warn "ANDROID_RELEASE_KEYSTORE_PASSWORD is not set"
 }
 
 check_assets() {

@@ -1,6 +1,7 @@
 # Mobile Export Readiness
 
-Status: Toolchain and store-branding scan added on 2026-05-07.
+Status: Toolchain, store-branding, Android debug export, device gates, and
+Android release signing contract scans are in place as of 2026-05-11.
 
 This document tracks the gap between the current H5 MVP and the first iOS/Android
 device build. The project logic is pre-device ready, and the current Mac now has
@@ -31,6 +32,11 @@ Observed on the current machine:
   and accepted SDK licenses.
 - Android export is now blocked by signing configuration only for release builds;
   the readiness scan no longer reports Android toolchain failures.
+- Android release handoff now has `scripts/check_android_release_readiness.sh`.
+  In default local mode it verifies the no-secret signing contract, APK release
+  target, Java/build-tools, `zipalign`, `apksigner`, and `keytool`. On the
+  release machine, set `PSW_ANDROID_RELEASE_SIGNING_REQUIRED=1` plus the release
+  keystore env values to make missing signing configuration fail the gate.
 - Local debug APK export uses `scripts/export_android_debug_local.sh`, which keeps
   debug signing values out of `export_presets.cfg` and injects them through
   Godot's documented `GODOT_ANDROID_KEYSTORE_DEBUG_*` environment variables.
@@ -44,9 +50,10 @@ Observed on the current machine:
   `assets/branding/generated/`. They are PNG outputs derived from the approved
   Image 2 forest dawn city motherboard and registered in
   `configs/store_branding.json` plus `configs/art_assets.json`.
-- Latest scan result after Android SDK setup: 0 failures and 4 warnings. The
+- Latest scan result after Android SDK setup: 0 failures and 5 warnings. The
   warnings are external signing values only: iOS Team ID, iOS bundle override,
-  Android release keystore path, and Android release keystore alias.
+  Android release keystore path, Android release keystore alias, and Android
+  release keystore password.
 - Native preset parse check passed with Godot `--export-pack` for both iOS and
   Android after the branding assets were wired. The generated temporary PCKs and
   logs are under `.tools/native-preset-parse/`.
@@ -68,7 +75,10 @@ Observed on the current machine:
 3. Configure signing outside the repo:
    - iOS team ID and bundle ID through local environment or Godot editor export UI.
    - Android release keystore path, alias, and passwords through local environment
-     or Godot editor export UI.
+     or Godot editor export UI. The scripted env contract is
+     `ANDROID_RELEASE_KEYSTORE`, `ANDROID_RELEASE_KEYSTORE_USER`,
+     `ANDROID_RELEASE_KEYSTORE_PASSWORD`, and optional
+     `ANDROID_RELEASE_KEY_PASSWORD`.
 4. Before store submission, review whether the MVP derived icon/splash should be
    replaced by dedicated Image 2 branding renders. The current assets are valid
    for local export wiring and device-test readiness.
@@ -77,6 +87,7 @@ Observed on the current machine:
 
 ```bash
 scripts/check_mobile_export_readiness.sh
+scripts/check_android_release_readiness.sh
 PSW_ANDROID_PREFLIGHT_EXPORT=0 scripts/run_android_device_preflight.sh
 ./.tools/godot-standard/Godot.app/Contents/MacOS/Godot --headless --path . --export-pack "iOS" .tools/native-preset-parse/ios-main.pck
 ./.tools/godot-standard/Godot.app/Contents/MacOS/Godot --headless --path . --export-pack "Android" .tools/native-preset-parse/android-main.pck

@@ -58,7 +58,12 @@ The local project category v2 gate passes with 14 categories and no failures.
 The current local H5 category v2 summary also passes, covering maps, NPC
 ambience, avatar variants, and avatar actions.
 The mobile native category now requires the Android export, APK asset budget,
-stability probe, runtime budget, and device regression scripts.
+release readiness, stability probe, runtime budget, and device regression
+scripts.
+The Android release contract is executed by
+`android_release_readiness_contract_pass`, which verifies no signing secrets are
+stored in `export_presets.cfg` and that the local release tooling contract is
+ready before real keystore values are introduced.
 The runtime budget gate is validated against the current 240-second Android
 render-throttle report and the 600-second Android soak report. This validation
 is executed by the `android_runtime_budget_reports_pass` category check, not
