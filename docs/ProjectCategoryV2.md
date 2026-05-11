@@ -60,10 +60,14 @@ ambience, avatar variants, and avatar actions.
 The mobile native category now requires the Android export, APK asset budget,
 stability probe, runtime budget, and device regression scripts.
 The runtime budget gate is validated against the current 240-second Android
-render-throttle report and the 600-second Android soak report.
+render-throttle report and the 600-second Android soak report. This validation
+is executed by the `android_runtime_budget_reports_pass` category check, not
+only documented as a manual step.
 
 ## Notes
 
 This is a local-plus-Android-device v2 gate. iOS true-device checks, release
 signing, store auth providers, and production monitoring remain outside the
 local gate until device and deployment credentials are available.
+Use `PSW_PROJECT_CATEGORY_V2_SKIP_ANDROID_RUNTIME=1` only for environments that
+intentionally lack Android stability report artifacts.

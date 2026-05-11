@@ -2,6 +2,7 @@
 import html
 import json
 import os
+import subprocess
 import sys
 from pathlib import Path
 
@@ -9,6 +10,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG = ROOT / "configs" / "project_categories_v2.json"
 DEFAULT_ARTIFACT_DIR = ROOT / ".tools" / "project-category-v2-gate"
+DEFAULT_ANDROID_RUNTIME_REPORTS = [
+    ROOT / ".tools" / "android-stability-render-throttle-v1" / "android-stability-report.json",
+    ROOT / ".tools" / "android-stability-soak-v1" / "android-stability-report.json",
+]
 REQUIRED_MAP_COUNTS = {
     "main_city": 6,
     "life_skill": 8,
@@ -147,6 +152,7 @@ def run_check(check_name):
         "ui_v2_assets_present": check_ui_v2_assets_present,
         "art_assets_min_100": check_art_assets_min_100,
         "store_branding_assets_present": check_store_branding_assets_present,
+        "android_runtime_budget_reports_pass": check_android_runtime_budget_reports_pass,
         "utility_panels_min_3": check_utility_panels_min_3,
         "economy_has_caps": check_economy_has_caps,
         "social_facility_trade_present": check_social_facility_trade_present,
@@ -289,6 +295,50 @@ def check_store_branding_assets_present():
     if missing:
         return fail(f"missing store branding resources: {missing}")
     return ok("all store branding resources exist")
+
+
+def check_android_runtime_budget_reports_pass():
+    if os.environ.get("PSW_PROJECT_CATEGORY_V2_SKIP_ANDROID_RUNTIME") == "1":
+        return ok("skipped by PSW_PROJECT_CATEGORY_V2_SKIP_ANDROID_RUNTIME=1")
+
+    raw_reports = os.environ.get("PSW_PROJECT_CATEGORY_V2_ANDROID_RUNTIME_REPORTS")
+    if raw_reports:
+        reports = [
+            Path(item).resolve() if Path(item).is_absolute() else (ROOT / item).resolve()
+            for item in raw_reports.split(os.pathsep)
+            if item
+        ]
+    else:
+        reports = DEFAULT_ANDROID_RUNTIME_REPORTS
+
+    missing = [str(report) for report in reports if not report.exists()]
+    if missing:
+        return fail({
+            "missing": missing,
+            "hint": "run Android stability probes first or set PSW_PROJECT_CATEGORY_V2_SKIP_ANDROID_RUNTIME=1",
+        })
+
+    checker = ROOT / "scripts" / "check_android_runtime_budget.sh"
+    outputs = []
+    for report in reports:
+        result = subprocess.run(
+            [str(checker), str(report)],
+            cwd=str(ROOT),
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        if result.returncode != 0:
+            return fail({
+                "report": str(report),
+                "stdout": result.stdout.strip(),
+                "stderr": result.stderr.strip(),
+            })
+        outputs.append({
+            "report": str(report),
+            "summary": result.stdout.strip().splitlines(),
+        })
+    return ok(outputs)
 
 
 def check_utility_panels_min_3():
