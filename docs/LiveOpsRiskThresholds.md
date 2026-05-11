@@ -98,6 +98,11 @@ Before public alpha, the operator should be able to:
 6. Run `scripts/check_production_monitoring_handoff.sh` locally, then run it in
    strict mode on the production host with `PSW_PRODUCTION_MONITORING_REQUIRED=1`
    plus `PSW_LIVEOPS_ALERT_ENDPOINT` and an operator/admin alert token.
+7. Run `scripts/check_production_data_backup_handoff.sh` locally, then run it
+   in strict mode on the production host with
+   `PSW_PRODUCTION_BACKUP_REQUIRED=1`, a non-placeholder `PSW_POSTGRES_DSN`,
+   creator package paths, `PSW_BACKUP_DESTINATION`, and
+   `PSW_BACKUP_ENCRYPTION`.
 
-The full release handoff source of truth is
-`docs/ProductionMonitoringHandoff.md`.
+The release handoff sources of truth are `docs/ProductionMonitoringHandoff.md`
+and `docs/ProductionDataBackupHandoff.md`.

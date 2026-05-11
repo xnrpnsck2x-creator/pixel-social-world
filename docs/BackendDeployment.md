@@ -187,6 +187,21 @@ The strict run must have `PSW_LIVEOPS_ALERT_ENDPOINT`, a non-placeholder
 `PSW_LIVEOPS_ALERT_FORMAT` when format is overridden. The full checklist lives
 in `docs/ProductionMonitoringHandoff.md`.
 
+Before public alpha, run the production data backup handoff gate locally and on
+the release host:
+
+```bash
+scripts/check_production_data_backup_handoff.sh
+PSW_PRODUCTION_BACKUP_REQUIRED=1 scripts/check_production_data_backup_handoff.sh
+```
+
+The strict run must have `PSW_POSTGRES_DSN`, `PSW_PACKAGE_ARTIFACT_DIR`,
+`PSW_PACKAGE_INSTALL_DIR`, `PSW_BACKUP_DESTINATION`, and
+`PSW_BACKUP_ENCRYPTION`. Backups must include PostgreSQL plus both creator
+package directories as one recovery set; do not place backup output inside the
+repo or `/opt/pixel-social-world`. The full checklist lives in
+`docs/ProductionDataBackupHandoff.md`.
+
 ## Single-Host Sizing
 
 For the MVP, keep PostgreSQL and Redis local:

@@ -69,6 +69,12 @@ The LiveOps/moderation category now requires the production monitoring handoff:
 `/debug/ops/alerts`, prometheus and heartbeat modes, systemd alert probe/timer
 packaging, no committed monitoring secrets, and strict-mode fail-closed
 behavior when monitoring env is absent.
+The LiveOps/moderation category also requires production data backup handoff:
+`production_data_backup_handoff_contract_pass` validates
+`docs/ProductionDataBackupHandoff.md`, PostgreSQL and creator package backup
+scope, restore drill requirements, evidence location, no committed backup
+artifacts, external backup destination/encryption env, and strict-mode
+fail-closed behavior when backup env is absent.
 The mobile native category now requires iOS release readiness, Android export,
 APK asset budget, Android release readiness, native release handoff, stability
 probe, runtime budget, and device regression scripts.

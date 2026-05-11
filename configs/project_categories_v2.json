@@ -141,12 +141,12 @@
       "status": "implemented",
       "mvp_chain": "LiveOps / moderation",
       "agents": ["LiveOps", "Backend Engineer", "UI/UX", "QA"],
-      "required_docs": ["docs/LiveOpsRiskThresholds.md", "docs/BackendDeployment.md", "docs/ProductionMonitoringHandoff.md", "docs/MVPProgressPerformanceScore.md"],
+      "required_docs": ["docs/LiveOpsRiskThresholds.md", "docs/BackendDeployment.md", "docs/ProductionMonitoringHandoff.md", "docs/ProductionDataBackupHandoff.md", "docs/MVPProgressPerformanceScore.md"],
       "required_configs": ["configs/runtime_overrides.json"],
       "required_tests": ["tests/liveops_console_smoke.gd", "tests/chat_reports_console_smoke.gd", "tests/chat_moderation_audit_smoke.gd", "tests/reviewer_console_backend_e2e.gd", "backend/internal/gateway/ops_handlers_test.go", "backend/internal/gateway/admin_action_audit_test.go"],
-      "required_scripts": ["scripts/run_mvp_100_gate.sh", "scripts/check_production_monitoring_handoff.sh"],
-      "checks": ["backend_package:ops", "production_monitoring_handoff_contract_pass"],
-      "acceptance": ["moderation and reports are visible", "risk alerts and audit surfaces are covered", "production monitoring handoff is gated and fails closed without monitoring env", "retention cleanup is documented and tested"]
+      "required_scripts": ["scripts/run_mvp_100_gate.sh", "scripts/check_production_monitoring_handoff.sh", "scripts/check_production_data_backup_handoff.sh"],
+      "checks": ["backend_package:ops", "production_monitoring_handoff_contract_pass", "production_data_backup_handoff_contract_pass"],
+      "acceptance": ["moderation and reports are visible", "risk alerts and audit surfaces are covered", "production monitoring handoff is gated and fails closed without monitoring env", "production data backup handoff is gated and fails closed without backup env", "retention cleanup is documented and tested"]
     },
     {
       "id": "realtime_presence_sync",

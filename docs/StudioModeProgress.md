@@ -14,6 +14,15 @@ Accelerated content execution now lives in `docs/AcceleratedContentRoute.md`.
 
 ## Progress
 
+### Production Data Backup Handoff V1
+
+Status: Implemented and locally verified on 2026-05-12.
+
+- Added `docs/ProductionDataBackupHandoff.md` as the release handoff source of truth for PostgreSQL, creator package artifacts, creator runtime installs, release manifest evidence, restore drill evidence, stop conditions, and rollback blockers.
+- Added `scripts/check_production_data_backup_handoff.sh` to validate the handoff doc, production package paths, external backup destination/encryption env, no committed backup artifacts, and strict-mode fail-closed behavior when backup env is absent.
+- Wired the handoff check into `liveops_moderation` through `production_data_backup_handoff_contract_pass`, so the project category v2 gate now checks backup/restore readiness alongside monitoring and LiveOps backend coverage.
+- Updated deployment, LiveOps release, project-category, and MVP progress docs so backup/restore is treated as a release gate rather than a loose operator note.
+
 ### Production Monitoring Handoff V1
 
 Status: Implemented and locally verified on 2026-05-12.
