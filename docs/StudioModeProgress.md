@@ -14,6 +14,16 @@ Accelerated content execution now lives in `docs/AcceleratedContentRoute.md`.
 
 ## Progress
 
+### Production Monitoring Handoff V1
+
+Status: Implemented and locally verified on 2026-05-12.
+
+- Added `docs/ProductionMonitoringHandoff.md` as the release handoff source of truth for health/readiness probes, LiveOps alert polling, systemd probe/timer evidence, rollout metrics, stop conditions, and rollback.
+- Added `scripts/check_production_monitoring_handoff.sh` to validate the handoff doc, backend health/readiness and `/debug/ops/alerts` contracts, prometheus/heartbeat modes, systemd alert probe/timer packaging, no committed monitoring secrets, and strict-mode fail-closed behavior when monitoring env is absent.
+- Wired the handoff check into `liveops_moderation` through `production_monitoring_handoff_contract_pass`, so the project category v2 gate now checks monitoring readiness alongside LiveOps backend package coverage.
+- Updated LiveOps thresholds, backend deployment, backend contract, and MVP progress docs to reflect the new gated monitoring handoff while keeping real alert/admin tokens outside committed config.
+- Verified: `scripts/check_production_monitoring_handoff.sh`, strict-mode env check, Python syntax parse for `tests/project_category_v2_gate.py`, JSON syntax for `configs/project_categories_v2.json`, and `scripts/run_project_category_v2_gate.sh`.
+
 ### Store Auth Provider Handoff V1
 
 Status: Implemented and locally verified on 2026-05-12.

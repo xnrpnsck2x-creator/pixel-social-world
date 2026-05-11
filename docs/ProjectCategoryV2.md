@@ -63,6 +63,12 @@ The auth/profile category now requires the store auth provider handoff:
 production `oidc_jwt` config, Apple/Google client ID env names, no committed
 provider secrets, and strict-mode fail-closed behavior when provider env is
 absent.
+The LiveOps/moderation category now requires the production monitoring handoff:
+`production_monitoring_handoff_contract_pass` validates
+`docs/ProductionMonitoringHandoff.md`, health/readiness probe docs,
+`/debug/ops/alerts`, prometheus and heartbeat modes, systemd alert probe/timer
+packaging, no committed monitoring secrets, and strict-mode fail-closed
+behavior when monitoring env is absent.
 The mobile native category now requires iOS release readiness, Android export,
 APK asset budget, Android release readiness, native release handoff, stability
 probe, runtime budget, and device regression scripts.

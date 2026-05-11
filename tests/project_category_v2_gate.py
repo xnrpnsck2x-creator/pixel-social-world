@@ -164,6 +164,7 @@ def run_check(check_name):
         "creator_modes_min_7": check_creator_modes_min_7,
         "minigames_min_3": check_minigames_min_3,
         "fishing_rewards_min_3": check_fishing_rewards_min_3,
+        "production_monitoring_handoff_contract_pass": check_production_monitoring_handoff_contract_pass,
         "localization_equal_keys": check_localization_equal_keys,
         "localization_min_900_keys": check_localization_min_900_keys,
     }
@@ -472,6 +473,23 @@ def check_fishing_rewards_min_3():
     if len(fish) < 3:
         return fail(f"expected at least 3 fish rewards, got {len(fish)}")
     return ok(f"{len(fish)} fish rewards")
+
+
+def check_production_monitoring_handoff_contract_pass():
+    checker = ROOT / "scripts" / "check_production_monitoring_handoff.sh"
+    result = subprocess.run(
+        [str(checker)],
+        cwd=str(ROOT),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        return fail({
+            "stdout": result.stdout.strip(),
+            "stderr": result.stderr.strip(),
+        })
+    return ok(result.stdout.strip().splitlines())
 
 
 def check_localization_equal_keys():

@@ -174,6 +174,19 @@ collector should scrape text metrics from the probe output. The timer does not
 mutate game state, and its output lands in journald under
 `pixel-social-world-liveops-alerts.service`.
 
+Before public alpha, run the production monitoring handoff gate locally and on
+the release host:
+
+```bash
+scripts/check_production_monitoring_handoff.sh
+PSW_PRODUCTION_MONITORING_REQUIRED=1 scripts/check_production_monitoring_handoff.sh
+```
+
+The strict run must have `PSW_LIVEOPS_ALERT_ENDPOINT`, a non-placeholder
+`PSW_LIVEOPS_ALERT_TOKEN` or `PSW_ADMIN_TOKEN`, and a supported
+`PSW_LIVEOPS_ALERT_FORMAT` when format is overridden. The full checklist lives
+in `docs/ProductionMonitoringHandoff.md`.
+
 ## Single-Host Sizing
 
 For the MVP, keep PostgreSQL and Redis local:

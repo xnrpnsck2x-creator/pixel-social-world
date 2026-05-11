@@ -1541,7 +1541,19 @@ Response:
 }
 ```
 
-`GET /debug/ops/alerts?format=prometheus` returns a text metrics view for a lightweight poller. When active alerts exist, the endpoint also writes a structured `liveops_alert_snapshot` JSON line to the normal server log; `emit_log=1` forces a log line even when severity is `ok`.
+`GET /debug/ops/alerts?format=prometheus` returns a text metrics view for a lightweight poller. The exported series include `psw_liveops_alerts_active`, `psw_liveops_alerts_severity`, and `psw_liveops_alert_item`. When active alerts exist, the endpoint also writes a structured `liveops_alert_snapshot` JSON line to the normal server log; `emit_log=1` forces a log line even when severity is `ok`.
+
+Production monitoring release handoff:
+
+- `docs/ProductionMonitoringHandoff.md` is the checklist for health/readiness,
+  LiveOps alert polling, systemd alert probe/timer evidence, and rollback
+  metrics.
+- `scripts/check_production_monitoring_handoff.sh` verifies the checklist,
+  systemd packaging, no-secret monitoring contract, and strict-mode fail-closed
+  behavior when monitoring env is absent.
+- On the release host, set `PSW_PRODUCTION_MONITORING_REQUIRED=1` with
+  `PSW_LIVEOPS_ALERT_ENDPOINT` and either `PSW_LIVEOPS_ALERT_TOKEN` or
+  `PSW_ADMIN_TOKEN` before public alpha monitoring is considered ready.
 
 ## WebSocket Envelope
 

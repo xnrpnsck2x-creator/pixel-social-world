@@ -95,3 +95,9 @@ Before public alpha, the operator should be able to:
 4. Check Debug Ops counters for rooms, realtime failures, economy caps,
    creator payouts, cleanup metadata, and admin action audit size.
 5. Confirm the latest H5 smoke matrix has zero console messages.
+6. Run `scripts/check_production_monitoring_handoff.sh` locally, then run it in
+   strict mode on the production host with `PSW_PRODUCTION_MONITORING_REQUIRED=1`
+   plus `PSW_LIVEOPS_ALERT_ENDPOINT` and an operator/admin alert token.
+
+The full release handoff source of truth is
+`docs/ProductionMonitoringHandoff.md`.
