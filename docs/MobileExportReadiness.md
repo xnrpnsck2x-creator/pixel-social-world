@@ -1,7 +1,8 @@
 # Mobile Export Readiness
 
-Status: Toolchain, store-branding, Android debug export, device gates, and
-iOS/Android release signing contract scans are in place as of 2026-05-11.
+Status: Toolchain, store-branding, Android debug export, device gates,
+iOS/Android release signing contract scans, and native release handoff gate are
+in place as of 2026-05-12.
 
 This document tracks the gap between the current H5 MVP and the first iOS/Android
 device build. The project logic is pre-device ready, and the current Mac now has
@@ -52,6 +53,11 @@ Observed on the current machine:
   which runs the mobile export readiness scan, the map quality v2 gate, and the
   local debug APK exporter before a phone install is attempted.
 - iOS and Android signing values are intentionally not stored in the repo.
+- Native release handoff is captured in
+  `docs/NativeReleaseHandoffRunbook.md` and checked by
+  `scripts/check_native_release_handoff.sh`. The handoff gate validates the
+  runbook, default release readiness scripts, and strict-mode fail-closed
+  behavior when signing env is absent.
 - Dedicated MVP app icon and splash assets now exist under
   `assets/branding/generated/`. They are PNG outputs derived from the approved
   Image 2 forest dawn city motherboard and registered in
@@ -76,7 +82,7 @@ Observed on the current machine:
    - Java runtime is usable.
    - `ANDROID_HOME` or `ANDROID_SDK_ROOT` points to the SDK.
    - `adb` and `sdkmanager` are on PATH.
-  - `platforms;android-35`, `build-tools;35.0.1`, `cmake;3.10.2.4988404`,
+   - `platforms;android-35`, `build-tools;35.0.1`, `cmake;3.10.2.4988404`,
      `ndk;28.1.13356709`, and SDK license files exist.
 3. Configure signing outside the repo:
    - iOS team ID, bundle ID, distribution signing identity, and release
@@ -85,12 +91,15 @@ Observed on the current machine:
      `IOS_CODE_SIGN_IDENTITY_RELEASE`, and either
      `IOS_PROVISIONING_PROFILE_UUID_RELEASE` or
      `IOS_PROVISIONING_PROFILE_SPECIFIER_RELEASE`.
-   - Android release keystore path, alias, and passwords through local environment
-     or Godot editor export UI. The scripted env contract is
+   - Android release keystore path, alias, and passwords through local
+     environment or Godot editor export UI. The scripted env contract is
      `ANDROID_RELEASE_KEYSTORE`, `ANDROID_RELEASE_KEYSTORE_USER`,
      `ANDROID_RELEASE_KEYSTORE_PASSWORD`, and optional
      `ANDROID_RELEASE_KEY_PASSWORD`.
-4. Before store submission, review whether the MVP derived icon/splash should be
+4. Run the native release handoff gate before introducing release credentials:
+   - `scripts/check_native_release_handoff.sh`
+   - `scripts/run_project_category_v2_gate.sh`
+5. Before store submission, review whether the MVP derived icon/splash should be
    replaced by dedicated Image 2 branding renders. The current assets are valid
    for local export wiring and device-test readiness.
 
@@ -100,6 +109,7 @@ Observed on the current machine:
 scripts/check_mobile_export_readiness.sh
 scripts/check_ios_release_readiness.sh
 scripts/check_android_release_readiness.sh
+scripts/check_native_release_handoff.sh
 PSW_ANDROID_PREFLIGHT_EXPORT=0 scripts/run_android_device_preflight.sh
 ./.tools/godot-standard/Godot.app/Contents/MacOS/Godot --headless --path . --export-pack "iOS" .tools/native-preset-parse/ios-main.pck
 ./.tools/godot-standard/Godot.app/Contents/MacOS/Godot --headless --path . --export-pack "Android" .tools/native-preset-parse/android-main.pck
@@ -122,6 +132,8 @@ subset should run inside the same preflight.
 - Do not commit production signing secrets.
 - Do not write bundle secrets, keystore passwords, Apple team secrets, or store
   tokens into `export_presets.cfg`.
+- Treat `docs/NativeReleaseHandoffRunbook.md` as the release handoff source of
+  truth until real store credentials and true-device iOS evidence exist.
 - Keep H5 smoke and semantic screenshot gates passing before every native export.
 - Keep official app icon/splash assets as Image 2 PNG/WebP outputs, not SVG
   placeholders.

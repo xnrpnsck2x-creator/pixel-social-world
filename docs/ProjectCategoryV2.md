@@ -1,6 +1,6 @@
 # Project Category v2 Gate
 
-Date: 2026-05-11
+Date: 2026-05-12
 
 This document defines the project-level v2 category gate. It is the umbrella
 contract above the existing MVP 100 gate and H5 screenshot patrols.
@@ -58,8 +58,8 @@ The local project category v2 gate passes with 14 categories and no failures.
 The current local H5 category v2 summary also passes, covering maps, NPC
 ambience, avatar variants, and avatar actions.
 The mobile native category now requires iOS release readiness, Android export,
-APK asset budget, Android release readiness, stability probe, runtime budget,
-and device regression scripts.
+APK asset budget, Android release readiness, native release handoff, stability
+probe, runtime budget, and device regression scripts.
 The iOS release contract is executed by
 `ios_release_readiness_contract_pass`, which verifies no signing or
 provisioning values are stored in `export_presets.cfg` and that local Xcode
@@ -68,6 +68,11 @@ The Android release contract is executed by
 `android_release_readiness_contract_pass`, which verifies no signing secrets are
 stored in `export_presets.cfg` and that the local release tooling contract is
 ready before real keystore values are introduced.
+The native release handoff contract is executed by
+`native_release_handoff_contract_pass`, which verifies
+`docs/NativeReleaseHandoffRunbook.md`, required signing env names, local release
+commands, evidence locations, and strict-mode fail-closed behavior when signing
+env is absent.
 The runtime budget gate is validated against the current 240-second Android
 render-throttle report and the 600-second Android soak report. This validation
 is executed by the `android_runtime_budget_reports_pass` category check, not

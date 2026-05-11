@@ -14,6 +14,16 @@ Accelerated content execution now lives in `docs/AcceleratedContentRoute.md`.
 
 ## Progress
 
+### Native Release Handoff Runbook V1
+
+Status: Implemented and locally verified on 2026-05-12.
+
+- Added `docs/NativeReleaseHandoffRunbook.md` as the release-candidate handoff source of truth for Android/iOS signing, local gates, true-device evidence, stop conditions, and rollback.
+- Added `scripts/check_native_release_handoff.sh` to validate the runbook contract, default iOS/Android release readiness checks, required signing env names, evidence paths, and strict-mode fail-closed behavior when release signing env is absent.
+- Wired the handoff check into `mobile_h5_native` through `native_release_handoff_contract_pass`, so the project category v2 gate now checks the release handoff alongside iOS readiness, Android readiness, store branding, and Android runtime budget evidence.
+- Updated the mobile export and MVP progress docs to reflect the new gated handoff step while keeping real signing credentials outside committed config.
+- Verified: `scripts/check_native_release_handoff.sh`, Python syntax parse for `tests/project_category_v2_gate.py`, JSON syntax for `configs/project_categories_v2.json`, and `scripts/run_project_category_v2_gate.sh`.
+
 ### iOS Release Signing Readiness V1
 
 Status: Implemented and locally verified on 2026-05-11.
