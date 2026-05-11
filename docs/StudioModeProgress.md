@@ -14,6 +14,19 @@ Accelerated content execution now lives in `docs/AcceleratedContentRoute.md`.
 
 ## Progress
 
+### Android Native Render Throttle V1
+
+Status: Implemented, re-exported, reinstalled, and Android-device verified on `c7e94055` on 2026-05-11.
+
+- Tightened the mobile native frame budget in `Boot.gd`: Android/iOS now cap foreground rendering at 24 FPS, run physics at 30 ticks per second, limit max physics catch-up steps, and enable Godot low-processor sleep for the social-world route.
+- Stopped idle `PlayerAvatar` work when no nameplate is visible and no remote interpolation is active; remote avatars now also disable physics processing while they are not locally controlled.
+- Stopped `RealtimeClient` from polling every frame after it is closed with no pending reconnect window, while keeping connected and reconnecting sockets active.
+- Re-exported, pruned, aligned, signed, reinstalled, and verified the Android debug APK. The package still passes APK Signature Scheme v2/v3 verification and the 220 MB asset budget at 147.3 MB.
+- Ran the same 240-second Android stability probe shape as the previous baseline. CPU improved from 37.5% / 43.6% avg/max to 23.5% / 32% avg/max; PSS remained stable with -45.1 MB growth, 335.1 MB average PSS, and only 0.5 MB max swap PSS.
+- Re-ran the full Android device regression wrapper after the performance change: 7 player-path cases, 4 UI-panel cases, and all 32 generated maps passed on `c7e94055`.
+- Verified focused Godot smokes for player avatar variants, remote players, tap-to-move, network lifecycle, room lifecycle, main-city interactions, and actor depth sorting; changed GDScript files remain under the 300-line budget.
+- Evidence: `.tools/android-stability-render-throttle-v1/android-stability-report.json`, `.tools/android-stability-render-throttle-v1/android-stability-summary.txt`, `.tools/android-regression-render-throttle-v1/android-device-regression.json`, and `.tools/android-regression-render-throttle-v1/map-sweep/contact-sheet.png`.
+
 ### Android Stability Probe V1
 
 Status: Implemented and Android-device verified on `c7e94055` on 2026-05-11.

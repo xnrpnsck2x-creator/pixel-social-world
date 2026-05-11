@@ -26,6 +26,7 @@ var _next_reconnect_msec := 0
 func _ready() -> void:
 	_connect_app_config_signal()
 	configure()
+	_sync_process_state()
 
 func _process(_delta: float) -> void:
 	_socket.poll()
@@ -50,6 +51,7 @@ func _process(_delta: float) -> void:
 
 	while _socket.get_available_packet_count() > 0:
 		_receive_packet(_socket.get_packet().get_string_from_utf8())
+	_sync_process_state()
 
 func configure(config: Dictionary = {}) -> void:
 	_configure(config, not config.is_empty())
@@ -66,6 +68,7 @@ func _configure(config: Dictionary = {}, manual: bool = true) -> void:
 	websocket_url = str(network.get("websocket_url", websocket_url))
 	online_enabled = bool(network.get("online_enabled", online_enabled))
 	reconnect_attempts = int(network.get("reconnect_attempts", reconnect_attempts))
+	_sync_process_state()
 
 func _connect_app_config_signal() -> void:
 	if not has_node("/root/App"):
@@ -88,6 +91,7 @@ func connect_city(room_id: String, player_id: String, display_name: String, acce
 	_access_token = access_token if not access_token.is_empty() else _resolve_access_token()
 	_should_reconnect = online_enabled
 	if not online_enabled:
+		_sync_process_state()
 		return
 	var state := _socket.get_ready_state()
 	if state == WebSocketPeer.STATE_OPEN:
@@ -102,18 +106,21 @@ func connect_city(room_id: String, player_id: String, display_name: String, acce
 		is_connected = false
 		connection_changed.emit(false)
 		_schedule_reconnect()
+	_sync_process_state()
 
 func disconnect_city() -> void:
 	_should_reconnect = false
 	_joined = false
 	if _socket.get_ready_state() != WebSocketPeer.STATE_CLOSED:
 		_socket.close()
+	_sync_process_state()
 
 func pause_realtime() -> void:
 	_should_reconnect = false
 	_joined = false
 	if _socket.get_ready_state() != WebSocketPeer.STATE_CLOSED:
 		_socket.close()
+	_sync_process_state()
 
 func resume_realtime() -> void:
 	if not online_enabled or _player_id.is_empty():
@@ -201,6 +208,14 @@ func _try_reconnect() -> void:
 	var error_code := _socket.connect_to_url(websocket_url)
 	if error_code != OK:
 		_schedule_reconnect()
+	_sync_process_state()
+
+func _sync_process_state() -> void:
+	if not is_inside_tree():
+		return
+	var state := _socket.get_ready_state()
+	var should_process := state != WebSocketPeer.STATE_CLOSED or (_should_reconnect and _next_reconnect_msec > 0)
+	set_process(should_process)
 
 func _resolve_access_token() -> String:
 	if has_node("/root/OnlineClient"):

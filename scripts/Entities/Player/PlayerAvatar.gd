@@ -1,28 +1,26 @@
 class_name PlayerAvatar
 extends CharacterBody2D
-
 signal profile_requested(profile: Dictionary)
 
 const PlayerAvatarNameplateScript := preload("res://scripts/Entities/Player/PlayerAvatarNameplate.gd")
 const PlayerAvatarConfigScript := preload("res://scripts/Entities/Player/PlayerAvatarConfig.gd")
 const PlayerAvatarAttackFeedbackScript := preload("res://scripts/Entities/Player/PlayerAvatarAttackFeedback.gd")
-
 @export var speed := 120.0
-@export var input_enabled := true
+@export var input_enabled := true:
+	set(value):
+		input_enabled = value
+		if is_node_ready():
+			_sync_process_flags()
 @export var remote_interpolation_speed := 12.0
-
-const ANIMATION_CONFIG := "player_animations"
 const DIRECTIONS := ["down", "right", "up", "left"]
 const ATTACK_SECONDS := 0.32
 const NAME_REVEAL_SECONDS := 3.0
 const NAME_HIT_RADIUS := 26.0
-
 var display_name := "":
 	set(value):
 		display_name = value
 		if is_node_ready():
 			_refresh_name()
-
 var player_id := ""
 var character_variant_id := ""
 var facing := "down"
@@ -33,12 +31,11 @@ var _sprite: AnimatedSprite2D
 var _body: CanvasItem
 var _target_global_position := Vector2.ZERO
 var _has_remote_target := false
+var _remote_initialized := false
 var _nameplate
 var _movement_validator := Callable()
-
 @onready var name_label: Label = get_node_or_null("NameLabel") as Label
 @onready var emote_bubble: Node = get_node_or_null("EmoteBubble")
-
 func _ready() -> void:
 	_body = get_node_or_null("Body") as CanvasItem
 	_setup_sprite()
@@ -47,17 +44,19 @@ func _ready() -> void:
 	_refresh_name()
 	_nameplate.hide()
 	_play_action("idle")
-
+	_sync_process_flags()
 func _process(delta: float) -> void:
 	if _nameplate != null:
 		_nameplate.tick(delta)
 	if input_enabled or not _has_remote_target:
+		_sync_process_flags()
 		return
 	var weight: float = clamp(delta * remote_interpolation_speed, 0.0, 1.0)
 	global_position = global_position.lerp(_target_global_position, weight)
 	if global_position.distance_to(_target_global_position) <= 0.5:
 		global_position = _target_global_position
-
+		_has_remote_target = false
+	_sync_process_flags()
 func _physics_process(delta: float) -> void:
 	if not input_enabled:
 		velocity = Vector2.ZERO
@@ -152,14 +151,13 @@ func apply_remote_state(state: Dictionary) -> void:
 			next_position = raw_position
 		elif typeof(raw_position) == TYPE_DICTIONARY:
 			var position_data: Dictionary = raw_position as Dictionary
-			next_position = Vector2(
-				float(position_data.get("x", global_position.x)),
-				float(position_data.get("y", global_position.y))
-			)
-		if input_enabled or not _has_remote_target:
+			next_position = Vector2(float(position_data.get("x", global_position.x)), float(position_data.get("y", global_position.y)))
+		if input_enabled or not _remote_initialized:
 			global_position = next_position
+			_remote_initialized = true
 		_target_global_position = next_position
-		_has_remote_target = true
+		_has_remote_target = not input_enabled and global_position.distance_to(_target_global_position) > 0.5
+		_sync_process_flags()
 	if DIRECTIONS.has(str(state.get("facing", ""))):
 		facing = str(state.get("facing", facing))
 	_is_sitting = bool(state.get("is_sitting", _is_sitting))
@@ -175,14 +173,8 @@ func get_avatar_state() -> Dictionary:
 		"is_sitting": _is_sitting,
 		"is_attacking": _attack_time_left > 0.0,
 		"animation": _current_animation,
-		"position": {
-			"x": global_position.x,
-			"y": global_position.y
-		},
-		"velocity": {
-			"x": velocity.x,
-			"y": velocity.y
-		}
+		"position": {"x": global_position.x, "y": global_position.y},
+		"velocity": {"x": velocity.x, "y": velocity.y}
 	}
 
 func _refresh_name() -> void:
@@ -192,10 +184,12 @@ func _refresh_name() -> void:
 func reveal_name(seconds: float = NAME_REVEAL_SECONDS) -> void:
 	if _nameplate != null:
 		_nameplate.reveal(display_name, seconds)
+	_sync_process_flags()
 
 func hide_name() -> void:
 	if _nameplate != null:
 		_nameplate.hide()
+	_sync_process_flags()
 
 func show_emote(emote_id: String) -> void:
 	if emote_bubble != null and emote_bubble.has_method("play"):
@@ -270,6 +264,10 @@ func _play_action(action: String) -> void:
 		return
 	_current_animation = animation
 	_sprite.play(animation)
+
+func _sync_process_flags() -> void:
+	set_physics_process(input_enabled)
+	set_process((_nameplate != null and bool(_nameplate.call("is_active"))) or (not input_enabled and _has_remote_target))
 
 func _validated_velocity(direction: Vector2, delta: float) -> Vector2:
 	var base_velocity := direction * speed

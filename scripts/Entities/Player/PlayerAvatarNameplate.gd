@@ -28,6 +28,9 @@ func hide() -> void:
 	if label != null:
 		label.visible = false
 
+func is_active() -> bool:
+	return _time_left > 0.0
+
 func tick(delta: float) -> void:
 	if _time_left <= 0.0:
 		return
