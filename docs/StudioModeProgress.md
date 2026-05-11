@@ -14,6 +14,19 @@ Accelerated content execution now lives in `docs/AcceleratedContentRoute.md`.
 
 ## Progress
 
+### Android Stability Probe V1
+
+Status: Implemented and Android-device verified on `c7e94055` on 2026-05-11.
+
+- Added `scripts/run_android_stability_probe.sh` as the repeatable true-device stability sampler for CPU, PSS/RSS memory, swap PSS, screenshots, and package/Godot-focused logcat scanning.
+- The default case loop covers main city idle, Trade Market panel, Map Atlas, Housing Edit, and the fishing minigame route; custom case JSON is supported through `PSW_ANDROID_STABILITY_CASES_JSON`.
+- Verified a short 75-second smoke after fixing the sampler parser and narrowing logcat issue detection to package/Godot signals.
+- Ran a 240-second stability probe with 10-second sampling and 45-second route intervals on Android device `c7e94055`.
+- Current 240-second result: 20 samples, observed duration 229s, average/peak CPU 37.5% / 43.6%, average/peak PSS 311.4 MB / 337.8 MB, average/peak RSS 393.2 MB / 421.3 MB, max swap PSS 6.6 MB, and PSS growth -15.9 MB.
+- Logcat passed the package/Godot-focused issue scan; no fatal exception, ANR, Godot script error, panic, segmentation, or package crash marker was found.
+- Evidence: `.tools/android-stability-current/android-stability-report.json`, `.tools/android-stability-current/stability_samples.tsv`, `.tools/android-stability-current/route-03-map-atlas.png`, `.tools/android-stability-current/route-04-housing-edit.png`, and `.tools/android-stability-current/route-05-fishing-minigame.png`.
+- Remaining performance note: the app is stable in this short route-cycle probe, but the 37.5% average process CPU confirms the next native performance pass should focus on render/idle throttling rather than memory leaks.
+
 ### Android Device Regression Gate V1
 
 Status: Implemented and Android-device verified on `c7e94055` on 2026-05-11.
