@@ -1,10 +1,13 @@
 extends SceneTree
 
+const SmokeAssertions := preload("res://tests/helpers/MainCitySmokeAssertions.gd")
+
 func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
 	var failures: Array[String] = []
+	var assertions := SmokeAssertions.new()
 	var save_system := root.get_node("SaveSystem")
 	save_system.call("load_profile")
 	var original_profile: Dictionary = (save_system.get("profile") as Dictionary).duplicate(true)
@@ -18,6 +21,8 @@ func _run() -> void:
 		"current_route": "main_city",
 		"inventory": [],
 		"owned_items": ["starter_wallpaper", "wooden_floor"],
+		"map_activity_inventory": {"trail_token": {"item_id": "trail_token", "quantity": 2, "rarity": "common"}},
+		"map_activity_skill_xp": {"exploration": 4},
 		"house_styles": {"wall": "starter_wallpaper", "floor": "wooden_floor"},
 		"house_items": [],
 		"house_sync_required": false
@@ -49,20 +54,31 @@ func _run() -> void:
 	elif hud.get("action_controller").get("chat_action_router") == null:
 		failures.append("World HUD actions did not bind a chat action router.")
 
-	if not _has_image2_panel(hud.get_node("Root/TopBar")):
+	if not assertions.has_image2_panel(hud.get_node("Root/TopBar")):
 		failures.append("HUD TopBar is not using an Image 2 panel frame.")
-	if not _has_image2_panel(hud.get_node("Root/BottomBar")):
+	for badge_name in ["TitleBadge", "PlayerBadge", "CoinBadge", "PresenceBadge"]:
+		if not assertions.has_image2_panel(hud.get_node("Root/TopBar/TopMargin/TopRow/%s" % badge_name)):
+			failures.append("HUD %s is not using an Image 2 badge frame." % badge_name)
+	if not assertions.has_image2_panel(hud.get_node("Root/BottomBar")):
 		failures.append("HUD BottomBar is not using an Image 2 panel frame.")
-	if not _has_image2_button(games_button):
+	if not assertions.has_image2_button(games_button):
 		failures.append("HUD minigames button is not using an Image 2 button frame.")
-	if not _has_image2_button(inventory_button):
+	if not assertions.has_image2_button(inventory_button):
 		failures.append("HUD inventory button is not using an Image 2 button frame.")
-	if not _has_image2_line_edit(hud.get_node("Root/BottomBar/BottomMargin/BottomRows/InputRow/ChatInput")):
+	if not assertions.has_image2_line_edit(hud.get_node("Root/BottomBar/BottomMargin/BottomRows/InputRow/ChatInput")):
 		failures.append("HUD chat input is not using an Image 2 field frame.")
-	if not _has_image2_button(chat_invite_button):
+	if not assertions.has_image2_button(chat_invite_button):
 		failures.append("HUD chat invite chip is not using an Image 2 button frame.")
+	var hud_chat_input := hud.get_node("Root/BottomBar/BottomMargin/BottomRows/InputRow/ChatInput") as LineEdit
+	hud_chat_input.text = "Android enter hello"
+	hud_chat_input.emit_signal("text_submitted", hud_chat_input.text)
+	await process_frame
+	if not assertions.chat_rows_contain(chat_service.call("get_recent_messages", 3), "Android enter hello"):
+		failures.append("HUD chat input did not send when text_submitted was emitted.")
+	if not hud_chat_input.text.is_empty():
+		failures.append("HUD chat input did not clear after text_submitted send.")
 	var long_player_name := "VeryVeryLongPlayerNameForTopBarOverflowCheck"
-	var player_label := hud.get_node("Root/TopBar/TopMargin/TopRow/PlayerLabel") as Label
+	var player_label := hud.get_node("%PlayerLabel") as Label
 	hud.call("set_player_name", long_player_name)
 	await process_frame
 	if player_label.text.contains(long_player_name) or not player_label.text.contains("..."):
@@ -73,53 +89,59 @@ func _run() -> void:
 	await process_frame
 	if not bool(utility_panel.get("visible")):
 		failures.append("Inventory utility panel did not open.")
-	if not _has_image2_panel(utility_panel):
+	if not assertions.has_image2_panel(utility_panel):
 		failures.append("Inventory utility panel is not using an Image 2 panel frame.")
 	var utility_title := utility_panel.get_node("Margin/Rows/HeaderRow/TitleLabel") as Label
 	if utility_title == null or utility_title.text != "Inventory":
 		failures.append("Inventory utility panel did not render localized title.")
-	if not _utility_rows_contain(utility_panel, "Starter Wallpaper"):
+	if not assertions.utility_rows_contain(utility_panel, "Starter Wallpaper"):
 		failures.append("Inventory utility panel did not render owned item rows.")
+	if not assertions.utility_rows_contain(utility_panel, "Trail Token") or not assertions.utility_rows_contain(utility_panel, "Exploration"):
+		failures.append("Inventory utility panel did not render map activity rewards.")
+	if assertions.utility_row_card_count(utility_panel) < 1:
+		failures.append("Inventory utility panel did not apply v2 row card frames.")
 	utility_panel.call("show_panel", "shop")
 	await process_frame
-	if not _utility_rows_contain(utility_panel, "Simple Chair"):
+	if not assertions.utility_rows_contain(utility_panel, "Simple Chair"):
 		failures.append("Shop utility panel did not render configured shop stock.")
 	utility_panel.call("show_panel", "mail")
 	await process_frame
-	if not _utility_rows_contain(utility_panel, "Welcome home"):
+	if not assertions.utility_rows_contain(utility_panel, "Welcome home"):
 		failures.append("Mail utility panel did not render configured messages.")
 	utility_panel.call("show_panel", "notice")
 	await process_frame
-	if not _utility_rows_contain(utility_panel, "Creator alpha"):
+	if not assertions.utility_rows_contain(utility_panel, "Creator alpha"):
 		failures.append("Notice utility panel did not render configured notices.")
 	utility_panel.call("show_panel", "creator")
 	await process_frame
 	if utility_title == null or utility_title.text != "Creator Lab":
 		failures.append("Creator utility panel did not render localized title.")
-	if not _utility_rows_contain(utility_panel, "Side-Scrolling 2D"):
+	if not assertions.utility_rows_contain(utility_panel, "Side-Scrolling 2D"):
 		failures.append("Creator utility panel did not render side-scroller mode.")
-	if not _utility_rows_contain(utility_panel, "2D Fighting"):
+	if not assertions.utility_rows_contain(utility_panel, "2D Fighting"):
 		failures.append("Creator utility panel did not render 2D fighting mode.")
-	if not _utility_rows_contain(utility_panel, "Battle Royale"):
+	if not assertions.utility_rows_contain(utility_panel, "Battle Royale"):
 		failures.append("Creator utility panel did not render battle royale mode.")
-	if not _utility_rows_contain(utility_panel, "Draft Review Probe"):
+	if not assertions.utility_rows_contain(utility_panel, "Draft Review Probe"):
 		failures.append("Creator utility panel did not render draft submission status row.")
-	if not _utility_rows_contain(utility_panel, "Package Intake Probe"):
+	if not assertions.utility_rows_contain(utility_panel, "Package Intake Probe"):
 		failures.append("Creator utility panel did not render package intake status row.")
-	if not _utility_rows_contain(utility_panel, "Review Signals"):
+	if not assertions.utility_rows_contain(utility_panel, "Review Signals"):
 		failures.append("Creator utility panel did not render reviewer signal row.")
-	if not _utility_rows_contain(utility_panel, "Creator Status Page"):
+	if not assertions.utility_rows_contain(utility_panel, "Creator Status Page"):
 		failures.append("Creator utility panel did not render creator status page row.")
+	if assertions.utility_row_card_count(utility_panel) < 10:
+		failures.append("Creator utility panel did not apply v2 row card frames.")
 	utility_panel.call("hide_panel")
 	games_button.pressed.emit()
 	await process_frame
 
 	if not bool(panel.get("visible")):
 		failures.append("Online room panel did not open.")
-	if not _has_image2_panel(panel):
+	if not assertions.has_image2_panel(panel):
 		failures.append("Online room panel is not using an Image 2 panel frame.")
 	var report_button := panel.get_node("Margin/Rows/HeaderRow/ReportButton") as Button
-	if not _has_image2_button(report_button):
+	if not assertions.has_image2_button(report_button):
 		failures.append("Chat report button is not using an Image 2 button frame.")
 	if not report_button.disabled:
 		failures.append("Chat report button should be disabled without a reportable online message.")
@@ -129,11 +151,11 @@ func _run() -> void:
 	var laugh_emote_button := panel.get_node("Margin/Rows/QuickEmoteRow/LaughEmoteButton") as Button
 	var heart_emote_button := panel.get_node("Margin/Rows/QuickEmoteRow/HeartEmoteButton") as Button
 	var exclamation_emote_button := panel.get_node("Margin/Rows/QuickEmoteRow/ExclamationEmoteButton") as Button
-	if not _has_image2_line_edit(room_chat_input):
+	if not assertions.has_image2_line_edit(room_chat_input):
 		failures.append("Room chat input is not using an Image 2 field frame.")
-	if not _has_image2_button(room_send_button):
+	if not assertions.has_image2_button(room_send_button):
 		failures.append("Room chat send button is not using an Image 2 button frame.")
-	if not _has_image2_button(laugh_emote_button) or not _has_image2_button(heart_emote_button) or not _has_image2_button(exclamation_emote_button):
+	if not assertions.has_image2_button(laugh_emote_button) or not assertions.has_image2_button(heart_emote_button) or not assertions.has_image2_button(exclamation_emote_button):
 		failures.append("Room quick emote buttons are not using Image 2 button frames.")
 	laugh_emote_button.pressed.emit()
 	await process_frame
@@ -153,7 +175,7 @@ func _run() -> void:
 	if not chat_preview.text.contains("hosting Fishing"):
 		failures.append("Room panel did not post a localized minigame invite message.")
 	var panel_invite_button := panel.get_node("Margin/Rows/PanelInviteButton") as Button
-	if not _has_image2_button(panel_invite_button):
+	if not assertions.has_image2_button(panel_invite_button):
 		failures.append("Room invite chip is not using an Image 2 button frame.")
 	if not bool(panel_invite_button.get("visible")) or not panel_invite_button.text.contains("Join Fishing"):
 		failures.append("Room invite chip did not show the latest minigame invite.")
@@ -165,13 +187,13 @@ func _run() -> void:
 		failures.append("Room minigame invite did not register a join_minigame action.")
 	if str(invite_action.get("session_id", "")) != "local_fishing":
 		failures.append("Room minigame invite did not target the local fishing session.")
-	if not _has_image2_button(panel.get_node("Margin/Rows/ActionRow/HostFishingButton")):
+	if not assertions.has_image2_button(panel.get_node("Margin/Rows/ActionRow/HostFishingButton")):
 		failures.append("Host Fishing button is not using an Image 2 button frame.")
 	var invite_home_button := panel.get_node("Margin/Rows/HousingActionRow/InviteHomeButton")
 	var visit_home_button := panel.get_node("Margin/Rows/HousingActionRow/VisitHomeButton")
-	if not _has_image2_button(invite_home_button):
+	if not assertions.has_image2_button(invite_home_button):
 		failures.append("Invite Home button is not using an Image 2 button frame.")
-	if not _has_image2_button(visit_home_button):
+	if not assertions.has_image2_button(visit_home_button):
 		failures.append("Visit Home button is not using an Image 2 button frame.")
 	panel.home_visit_requested.connect(func(owner_id: String) -> void:
 		panel.set_meta("visit_owner", owner_id)
@@ -219,9 +241,14 @@ func _run() -> void:
 	if game_catalog_label.text.is_empty() or not game_catalog_label.text.contains("Fishing"):
 		failures.append("Game lobby catalog did not render enabled games.")
 
-	var presence_label := hud.get_node("Root/TopBar/TopMargin/TopRow/PresencePill/PresenceLabel") as Label
+	var presence_label := hud.get_node("%PresenceLabel") as Label
 	if presence_label.text.is_empty():
 		failures.append("Presence heartbeat label did not render.")
+	presence_service.set("_last_heartbeat_msec", Time.get_ticks_msec())
+	hud.call("_on_presence_updated", presence_service.get_members(), true, 0)
+	var offline_text := str(root.get_node("App").call("t_key", "ui.status.offline"))
+	if presence_label.text.contains(offline_text):
+		failures.append("Presence heartbeat label showed offline despite a fresh heartbeat: %s" % presence_label.text)
 	panel.call("set_compact_layout", true)
 	await process_frame
 	if panel.custom_minimum_size.y > 226.0:
@@ -233,7 +260,7 @@ func _run() -> void:
 	room_chat_input.text = "Compact room hello"
 	room_send_button.pressed.emit()
 	await process_frame
-	if not _chat_rows_contain(chat_service.call("get_recent_messages", 3), "Compact room hello"):
+	if not assertions.chat_rows_contain(chat_service.call("get_recent_messages", 3), "Compact room hello"):
 		failures.append("Online room compact chat did not send through ChatService.")
 	if not room_chat_input.text.is_empty():
 		failures.append("Online room compact chat input did not clear after send.")
@@ -253,41 +280,3 @@ func _run() -> void:
 	for failure in failures:
 		push_error(failure)
 	quit(1)
-
-func _has_image2_panel(node: Node) -> bool:
-	if not node is PanelContainer:
-		return false
-	var style := (node as PanelContainer).get_theme_stylebox("panel")
-	return style is StyleBoxTexture and (style as StyleBoxTexture).texture != null
-
-func _has_image2_button(node: Node) -> bool:
-	if not node is Button:
-		return false
-	var style := (node as Button).get_theme_stylebox("normal")
-	return style is StyleBoxTexture and (style as StyleBoxTexture).texture != null
-
-func _has_image2_line_edit(node: Node) -> bool:
-	if not node is LineEdit:
-		return false
-	var style := (node as LineEdit).get_theme_stylebox("normal")
-	return style is StyleBoxTexture and (style as StyleBoxTexture).texture != null
-
-func _utility_rows_contain(panel: Node, text: String) -> bool:
-	var rows := panel.find_child("ItemsRows", true, false)
-	if rows == null:
-		return false
-	return _node_tree_contains(rows, text)
-
-func _node_tree_contains(node: Node, text: String) -> bool:
-	if node is Label and (node as Label).text.contains(text):
-		return true
-	for child in node.get_children():
-		if _node_tree_contains(child, text):
-			return true
-	return false
-
-func _chat_rows_contain(messages: Array, text: String) -> bool:
-	for message in messages:
-		if typeof(message) == TYPE_DICTIONARY and str((message as Dictionary).get("body", "")).contains(text):
-			return true
-	return false

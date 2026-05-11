@@ -41,6 +41,27 @@ func _run() -> void:
 	if room_id != "minigame:fishing:local_fishing":
 		failures.append("RoomLifecycle did not enter the minigame session room.")
 
+	var cancel_event := InputEventAction.new()
+	cancel_event.action = "ui_cancel"
+	cancel_event.pressed = true
+	instance.call("_unhandled_input", cancel_event)
+	await process_frame
+	await process_frame
+	if str(save_system.call("get_profile_value", "current_route", "")) != "main_city":
+		failures.append("Sandbox did not route back to main_city on ui_cancel.")
+	if str(root.get_node("RoomLifecycle").get("current_room_id")) != "world_town_square":
+		failures.append("Sandbox ui_cancel did not return to the main city room.")
+	if is_instance_valid(instance):
+		instance.queue_free()
+
+	save_system.call("set_profile_value", "current_route", "minigame_fishing")
+	save_system.call("set_profile_value", "pending_minigame_id", "fishing")
+	save_system.call("set_profile_value", "pending_minigame_session_id", "local_fishing")
+	instance = scene.instantiate()
+	root.add_child(instance)
+	await process_frame
+	active_game = instance.get("active_game") as Node
+
 	if active_game != null and active_game.has_method("_finish_game"):
 		active_game.call("_finish_game")
 		await process_frame

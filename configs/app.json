@@ -23,7 +23,10 @@
     "housing": true,
     "minigames": true,
     "friends": false,
-    "trading": false
+    "trading": true,
+    "social_facilities_remote": false,
+    "trade_backend": true,
+    "first_session_guide": false
   },
   "limits": {
     "display_name_min_length": 3,
@@ -54,8 +57,10 @@
     "economy": "res://configs/economy.json",
     "fishing": "res://configs/fishing.json",
     "utility_panels": "res://configs/utility_panels.json",
+    "social_facilities": "res://configs/social_facilities.json",
     "ui_assets": "res://configs/ui_assets.json",
     "art_assets": "res://configs/art_assets.json",
+    "store_branding": "res://configs/store_branding.json",
     "player_animations": "res://configs/player_animations.json",
     "generated_asset_slices": "res://configs/generated_asset_slices.json",
     "runtime_overrides": "res://configs/runtime_overrides.json",

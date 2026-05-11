@@ -26,10 +26,13 @@ func _run() -> void:
 	root.add_child(bubble)
 	await process_frame
 	bubble.call("play", "emote.heart")
-	await create_timer(0.05).timeout
+	await create_timer(0.22).timeout
 
 	if not bubble.visible:
 		failures.append("Overhead emote bubble did not become visible.")
+	var sprite := bubble.get_child(0) as Sprite2D
+	if sprite == null or abs(sprite.scale.x - 0.095) > 0.02:
+		failures.append("Overhead emote bubble scale drifted outside the compact headroom target.")
 
 	bubble.free()
 	await _check_hud_palette(failures)

@@ -10,9 +10,18 @@
       "primary_action_key": "npc.action.go_fishing",
       "primary_icon_id": "icon.fishing",
       "sprite_path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_031.png",
-      "position": {"x": -360, "y": 210},
-      "sprite_scale": 0.24,
-      "emote_id": "emote.music"
+      "avatar_id": "male_ranged_v1",
+      "pose": "idle",
+      "facing": "down",
+      "position": {
+        "x": -52,
+        "y": 258
+      },
+      "sprite_scale": 0.105,
+      "emote_id": "emote.music",
+      "npc_visual_id": "fisher_v1",
+      "role_key": "npc.role.fisher",
+      "duty_key": "npc.duty.fisher"
     },
     {
       "id": "merchant",
@@ -23,9 +32,18 @@
       "primary_action_key": "npc.action.shop_soon",
       "primary_icon_id": "icon.shop",
       "sprite_path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_028.png",
-      "position": {"x": 330, "y": 42},
-      "sprite_scale": 0.24,
-      "emote_id": "emote.coin"
+      "avatar_id": "female_melee_v1",
+      "pose": "idle",
+      "facing": "down",
+      "position": {
+        "x": 334,
+        "y": -242
+      },
+      "sprite_scale": 0.105,
+      "emote_id": "emote.coin",
+      "npc_visual_id": "merchant_v1",
+      "role_key": "npc.role.merchant",
+      "duty_key": "npc.duty.merchant"
     },
     {
       "id": "mail_courier",
@@ -36,9 +54,18 @@
       "primary_action_key": "npc.action.mail_soon",
       "primary_icon_id": "icon.mail",
       "sprite_path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_034.png",
-      "position": {"x": -230, "y": -42},
-      "sprite_scale": 0.24,
-      "emote_id": "emote.exclamation"
+      "avatar_id": "male_ranged_v1",
+      "pose": "idle",
+      "facing": "down",
+      "position": {
+        "x": -700,
+        "y": -48
+      },
+      "sprite_scale": 0.105,
+      "emote_id": "emote.exclamation",
+      "npc_visual_id": "mail_courier_v1",
+      "role_key": "npc.role.mail_courier",
+      "duty_key": "npc.duty.mail_courier"
     },
     {
       "id": "game_host",
@@ -49,9 +76,18 @@
       "primary_action_key": "npc.action.open_games",
       "primary_icon_id": "icon.games",
       "sprite_path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_036.png",
-      "position": {"x": 220, "y": -40},
-      "sprite_scale": 0.24,
-      "emote_id": "emote.go"
+      "avatar_id": "male_magic_v1",
+      "pose": "idle",
+      "facing": "down",
+      "position": {
+        "x": 582,
+        "y": -30
+      },
+      "sprite_scale": 0.105,
+      "emote_id": "emote.go",
+      "npc_visual_id": "game_host_v1",
+      "role_key": "npc.role.game_host",
+      "duty_key": "npc.duty.game_host"
     },
     {
       "id": "home_keeper",
@@ -62,9 +98,18 @@
       "primary_action_key": "npc.action.edit_home",
       "primary_icon_id": "icon.home",
       "sprite_path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_030.png",
-      "position": {"x": 380, "y": 126},
-      "sprite_scale": 0.24,
-      "emote_id": "emote.heart"
+      "avatar_id": "female_melee_v1",
+      "pose": "idle",
+      "facing": "down",
+      "position": {
+        "x": -520,
+        "y": 198
+      },
+      "sprite_scale": 0.105,
+      "emote_id": "emote.heart",
+      "npc_visual_id": "home_keeper_v1",
+      "role_key": "npc.role.home_keeper",
+      "duty_key": "npc.duty.home_keeper"
     },
     {
       "id": "event_guide",
@@ -75,9 +120,392 @@
       "primary_action_key": "npc.action.open_notice",
       "primary_icon_id": "icon.quest",
       "sprite_path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_029.png",
-      "position": {"x": -118, "y": -36},
-      "sprite_scale": 0.24,
-      "emote_id": "emote.idea"
+      "avatar_id": "female_magic_v1",
+      "pose": "idle",
+      "facing": "down",
+      "position": {
+        "x": 94,
+        "y": 40
+      },
+      "sprite_scale": 0.105,
+      "emote_id": "emote.idea",
+      "npc_visual_id": "game_host_v1",
+      "role_key": "npc.role.event_guide",
+      "duty_key": "npc.duty.event_guide"
+    },
+    {
+      "id": "creator_tutor",
+      "name_key": "npc.creator_tutor.name",
+      "dialogue_key": "npc.creator_tutor.dialogue",
+      "action_id": "npc_creator_tutor",
+      "primary_action_id": "creator_help",
+      "primary_action_key": "npc.action.creator_help",
+      "primary_icon_id": "icon.quest",
+      "sprite_path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_038.png",
+      "avatar_id": "male_magic_v1",
+      "pose": "idle",
+      "facing": "down",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "sprite_scale": 0.105,
+      "emote_id": "emote.idea",
+      "npc_visual_id": "academy_registrar_v1",
+      "role_key": "npc.role.creator_tutor",
+      "duty_key": "npc.duty.creator_tutor"
+    },
+    {
+      "id": "academy_registrar",
+      "name_key": "npc.academy_registrar.name",
+      "dialogue_key": "npc.academy_registrar.dialogue",
+      "action_id": "npc_academy_registrar",
+      "primary_action_id": "notice",
+      "primary_action_key": "npc.action.open_notice",
+      "primary_icon_id": "icon.quest",
+      "sprite_path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_034.png",
+      "avatar_id": "female_magic_v1",
+      "pose": "idle",
+      "facing": "down",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "sprite_scale": 0.105,
+      "emote_id": "emote.idea",
+      "npc_visual_id": "academy_registrar_v1",
+      "role_key": "npc.role.academy_registrar",
+      "duty_key": "npc.duty.academy_registrar"
+    },
+    {
+      "id": "snow_guide",
+      "name_key": "npc.snow_guide.name",
+      "dialogue_key": "npc.snow_guide.dialogue",
+      "action_id": "npc_snow_guide",
+      "primary_action_id": "notice",
+      "primary_action_key": "npc.action.open_notice",
+      "primary_icon_id": "icon.quest",
+      "sprite_path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_006.png",
+      "avatar_id": "female_ranged_v1",
+      "pose": "idle",
+      "facing": "down",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "sprite_scale": 0.105,
+      "emote_id": "emote.exclamation",
+      "npc_visual_id": "home_keeper_v1",
+      "role_key": "npc.role.snow_guide",
+      "duty_key": "npc.duty.snow_guide"
+    },
+    {
+      "id": "winter_innkeeper",
+      "name_key": "npc.winter_innkeeper.name",
+      "dialogue_key": "npc.winter_innkeeper.dialogue",
+      "action_id": "npc_winter_innkeeper",
+      "primary_action_id": "notice",
+      "primary_action_key": "npc.action.open_notice",
+      "primary_icon_id": "icon.quest",
+      "sprite_path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_030.png",
+      "avatar_id": "female_melee_v1",
+      "pose": "idle",
+      "facing": "down",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "sprite_scale": 0.105,
+      "emote_id": "emote.heart",
+      "npc_visual_id": "home_keeper_v1",
+      "role_key": "npc.role.winter_innkeeper",
+      "duty_key": "npc.duty.winter_innkeeper"
+    },
+    {
+      "id": "festival_host",
+      "name_key": "npc.festival_host.name",
+      "dialogue_key": "npc.festival_host.dialogue",
+      "action_id": "npc_festival_host",
+      "primary_action_id": "notice",
+      "primary_action_key": "npc.action.open_notice",
+      "primary_icon_id": "icon.quest",
+      "sprite_path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_036.png",
+      "avatar_id": "female_magic_v1",
+      "pose": "idle",
+      "facing": "down",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "sprite_scale": 0.105,
+      "emote_id": "emote.music",
+      "npc_visual_id": "game_host_v1",
+      "role_key": "npc.role.festival_host",
+      "duty_key": "npc.duty.festival_host"
+    },
+    {
+      "id": "booth_keeper",
+      "name_key": "npc.booth_keeper.name",
+      "dialogue_key": "npc.booth_keeper.dialogue",
+      "action_id": "npc_booth_keeper",
+      "primary_action_id": "games",
+      "primary_action_key": "npc.action.open_games",
+      "primary_icon_id": "icon.games",
+      "sprite_path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_028.png",
+      "avatar_id": "male_ranged_v1",
+      "pose": "idle",
+      "facing": "down",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "sprite_scale": 0.105,
+      "emote_id": "emote.go",
+      "npc_visual_id": "merchant_v1",
+      "role_key": "npc.role.booth_keeper",
+      "duty_key": "npc.duty.booth_keeper"
+    },
+    {
+      "id": "stage_manager",
+      "name_key": "npc.stage_manager.name",
+      "dialogue_key": "npc.stage_manager.dialogue",
+      "action_id": "npc_stage_manager",
+      "primary_action_id": "notice",
+      "primary_action_key": "npc.action.open_notice",
+      "primary_icon_id": "icon.quest",
+      "sprite_path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_036.png",
+      "avatar_id": "male_melee_v1",
+      "pose": "idle",
+      "facing": "down",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "sprite_scale": 0.105,
+      "emote_id": "emote.exclamation",
+      "npc_visual_id": "game_host_v1",
+      "role_key": "npc.role.stage_manager",
+      "duty_key": "npc.duty.stage_manager"
+    },
+    {
+      "id": "herbalist",
+      "name_key": "npc.herbalist.name",
+      "dialogue_key": "npc.herbalist.dialogue",
+      "action_id": "npc_herbalist",
+      "primary_action_id": "notice",
+      "primary_action_key": "npc.action.open_notice",
+      "primary_icon_id": "icon.quest",
+      "sprite_path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_008.png",
+      "avatar_id": "female_magic_v1",
+      "pose": "idle",
+      "facing": "down",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "sprite_scale": 0.105,
+      "emote_id": "emote.search",
+      "npc_visual_id": "herbalist_v1",
+      "role_key": "npc.role.herbalist",
+      "duty_key": "npc.duty.herbalist"
+    },
+    {
+      "id": "lumber_foreman",
+      "name_key": "npc.lumber_foreman.name",
+      "dialogue_key": "npc.lumber_foreman.dialogue",
+      "action_id": "npc_lumber_foreman",
+      "primary_action_id": "notice",
+      "primary_action_key": "npc.action.open_notice",
+      "primary_icon_id": "icon.quest",
+      "sprite_path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_029.png",
+      "avatar_id": "male_melee_v1",
+      "pose": "idle",
+      "facing": "down",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "sprite_scale": 0.105,
+      "emote_id": "emote.thumbs_up",
+      "npc_visual_id": "fisher_v1",
+      "role_key": "npc.role.lumber_foreman",
+      "duty_key": "npc.duty.lumber_foreman"
+    },
+    {
+      "id": "farm_keeper",
+      "name_key": "npc.farm_keeper.name",
+      "dialogue_key": "npc.farm_keeper.dialogue",
+      "action_id": "npc_farm_keeper",
+      "primary_action_id": "notice",
+      "primary_action_key": "npc.action.open_notice",
+      "primary_icon_id": "icon.quest",
+      "sprite_path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_030.png",
+      "avatar_id": "female_melee_v1",
+      "pose": "idle",
+      "facing": "down",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "sprite_scale": 0.105,
+      "emote_id": "emote.heart",
+      "npc_visual_id": "home_keeper_v1",
+      "role_key": "npc.role.farm_keeper",
+      "duty_key": "npc.duty.farm_keeper"
+    },
+    {
+      "id": "bug_keeper",
+      "name_key": "npc.bug_keeper.name",
+      "dialogue_key": "npc.bug_keeper.dialogue",
+      "action_id": "npc_bug_keeper",
+      "primary_action_id": "notice",
+      "primary_action_key": "npc.action.open_notice",
+      "primary_icon_id": "icon.quest",
+      "sprite_path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_009.png",
+      "avatar_id": "female_ranged_v1",
+      "pose": "idle",
+      "facing": "down",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "sprite_scale": 0.105,
+      "emote_id": "emote.surprise",
+      "npc_visual_id": "herbalist_v1",
+      "role_key": "npc.role.bug_keeper",
+      "duty_key": "npc.duty.bug_keeper"
+    },
+    {
+      "id": "archaeologist",
+      "name_key": "npc.archaeologist.name",
+      "dialogue_key": "npc.archaeologist.dialogue",
+      "action_id": "npc_archaeologist",
+      "primary_action_id": "notice",
+      "primary_action_key": "npc.action.open_notice",
+      "primary_icon_id": "icon.quest",
+      "sprite_path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_029.png",
+      "avatar_id": "male_ranged_v1",
+      "pose": "idle",
+      "facing": "down",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "sprite_scale": 0.105,
+      "emote_id": "emote.search",
+      "npc_visual_id": "academy_registrar_v1",
+      "role_key": "npc.role.archaeologist",
+      "duty_key": "npc.duty.archaeologist"
+    },
+    {
+      "id": "chef_guide",
+      "name_key": "npc.chef_guide.name",
+      "dialogue_key": "npc.chef_guide.dialogue",
+      "action_id": "npc_chef_guide",
+      "primary_action_id": "notice",
+      "primary_action_key": "npc.action.open_notice",
+      "primary_icon_id": "icon.quest",
+      "sprite_path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_028.png",
+      "avatar_id": "male_melee_v1",
+      "pose": "idle",
+      "facing": "down",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "sprite_scale": 0.105,
+      "emote_id": "emote.thanks",
+      "npc_visual_id": "chef_guide_v1",
+      "role_key": "npc.role.chef_guide",
+      "duty_key": "npc.duty.chef_guide"
+    },
+    {
+      "id": "trade_broker",
+      "name_key": "npc.trade_broker.name",
+      "dialogue_key": "npc.trade_broker.dialogue",
+      "action_id": "npc_trade_broker",
+      "primary_action_id": "trade",
+      "primary_action_key": "npc.action.open_trade",
+      "primary_icon_id": "icon.coin",
+      "sprite_path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_028.png",
+      "avatar_id": "female_melee_v1",
+      "pose": "idle",
+      "facing": "down",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "sprite_scale": 0.105,
+      "emote_id": "emote.coin",
+      "npc_visual_id": "merchant_v1",
+      "role_key": "npc.role.trade_broker",
+      "duty_key": "npc.duty.trade_broker"
+    },
+    {
+      "id": "workshop_master",
+      "name_key": "npc.workshop_master.name",
+      "dialogue_key": "npc.workshop_master.dialogue",
+      "action_id": "npc_workshop_master",
+      "primary_action_id": "workshop",
+      "primary_action_key": "npc.action.open_workshop",
+      "primary_icon_id": "icon.quest",
+      "sprite_path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_036.png",
+      "avatar_id": "male_melee_v1",
+      "pose": "idle",
+      "facing": "down",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "sprite_scale": 0.105,
+      "emote_id": "emote.thumbs_up",
+      "npc_visual_id": "merchant_v1",
+      "role_key": "npc.role.workshop_master",
+      "duty_key": "npc.duty.workshop_master"
+    },
+    {
+      "id": "mine_foreman",
+      "name_key": "npc.mine_foreman.name",
+      "dialogue_key": "npc.mine_foreman.dialogue",
+      "action_id": "npc_mine_foreman",
+      "primary_action_id": "mine",
+      "primary_action_key": "npc.action.open_mine",
+      "primary_icon_id": "icon.quest",
+      "sprite_path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_029.png",
+      "avatar_id": "male_ranged_v1",
+      "pose": "idle",
+      "facing": "down",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "sprite_scale": 0.105,
+      "emote_id": "emote.search",
+      "npc_visual_id": "fisher_v1",
+      "role_key": "npc.role.mine_foreman",
+      "duty_key": "npc.duty.mine_foreman"
+    },
+    {
+      "id": "guild_coordinator",
+      "name_key": "npc.guild_coordinator.name",
+      "dialogue_key": "npc.guild_coordinator.dialogue",
+      "action_id": "npc_guild_coordinator",
+      "primary_action_id": "guild",
+      "primary_action_key": "npc.action.open_guild",
+      "primary_icon_id": "icon.quest",
+      "sprite_path": "res://assets/sprites/sliced/characters_npcs_v0/characters_npcs_v0_038.png",
+      "avatar_id": "female_magic_v1",
+      "pose": "idle",
+      "facing": "down",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "sprite_scale": 0.105,
+      "emote_id": "emote.heart",
+      "npc_visual_id": "academy_registrar_v1",
+      "role_key": "npc.role.guild_coordinator",
+      "duty_key": "npc.duty.guild_coordinator"
     }
   ]
 }

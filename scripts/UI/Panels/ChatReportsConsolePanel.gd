@@ -5,6 +5,8 @@ signal report_action_completed(report_id: String, status: String)
 
 const WorldHUDAssetsScript := preload("res://scripts/UI/HUD/WorldHUDAssets.gd")
 const MAX_ROWS := 6
+const PanelTextThemeScript := preload("res://scripts/UI/Panels/PanelTextTheme.gd")
+const PanelListFrameScript := preload("res://scripts/UI/Panels/PanelListFrame.gd")
 
 var compact_layout := false
 var _embedded_admin_mode := false
@@ -89,6 +91,7 @@ func _build() -> void:
 
 	_status_label = Label.new()
 	_status_label.text = App.t_key("chat_reports.console.empty")
+	_status_label.modulate = PanelTextThemeScript.MUTED
 	_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	rows.add_child(_status_label)
 
@@ -107,9 +110,11 @@ func _add_header_labels(header: HBoxContainer) -> void:
 	header.add_child(labels)
 	var title := Label.new()
 	title.text = App.t_key("chat_reports.console.title")
+	title.modulate = PanelTextThemeScript.PRIMARY
 	labels.add_child(title)
 	var detail := Label.new()
 	detail.text = App.t_key("chat_reports.console.detail")
+	detail.modulate = PanelTextThemeScript.MUTED
 	detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	labels.add_child(detail)
 
@@ -131,10 +136,7 @@ func _render_items(items: Array) -> void:
 			_add_report_row(item as Dictionary)
 
 func _add_report_row(item: Dictionary) -> void:
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 8)
-	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_items_rows.add_child(row)
+	var row := PanelListFrameScript.new().add_hbox(_items_rows, compact_layout)
 	_add_icon(row, "icon.mail", Vector2(30, 30))
 	_add_report_labels(row, item)
 	_add_action_buttons(row, item)
@@ -149,12 +151,14 @@ func _add_report_labels(row: HBoxContainer, item: Dictionary) -> void:
 		"room": str(item.get("room_id", "-")),
 		"status": str(item.get("status", "open"))
 	})
+	title.modulate = PanelTextThemeScript.PRIMARY
 	labels.add_child(title)
 	var detail := Label.new()
 	detail.text = App.format_key("chat_reports.console.row_detail_format", {
 		"reason": str(item.get("reason", "-")),
 		"body": _clamp_body(str(item.get("message_body", "")))
 	})
+	detail.modulate = PanelTextThemeScript.MUTED
 	detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	labels.add_child(detail)
 
@@ -226,12 +230,11 @@ func _run_mute_action(item: Dictionary, _action_id: String) -> void:
 	await _run_review_action(item, "reviewed")
 
 func _add_empty_row() -> void:
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 8)
-	_items_rows.add_child(row)
+	var row := PanelListFrameScript.new().add_hbox(_items_rows, compact_layout)
 	_add_icon(row, "icon.check", Vector2(30, 30))
 	var label := Label.new()
 	label.text = App.t_key("chat_reports.console.empty")
+	label.modulate = PanelTextThemeScript.MUTED
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	row.add_child(label)
 

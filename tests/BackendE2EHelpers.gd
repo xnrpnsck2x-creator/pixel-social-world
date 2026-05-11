@@ -88,6 +88,69 @@ static func verify_profile_report(client: Node, failures: Array) -> void:
 	elif str((response.get("data", {}) as Dictionary).get("channel_id", "")) != "profile":
 		failures.append("Player profile report did not enter the moderation report queue.")
 
+static func verify_first_session_reward(client: Node, player_id: String, failures: Array) -> void:
+	var steps := ["npc_met", "map_opened", "trade_opened", "games_opened", "chat_sent"]
+	var reward: Dictionary = await client.call("claim_first_session_reward", steps)
+	if not ok(reward):
+		failures.append("First session reward claim failed: %s" % str(reward))
+		return
+	var data: Dictionary = reward.get("data", {}) as Dictionary
+	if int(data.get("delta", 0)) != 5:
+		failures.append("First session reward did not grant 5 coins.")
+	var replay: Dictionary = await client.call("claim_first_session_reward", steps)
+	if not ok(replay) or int((replay.get("data", {}) as Dictionary).get("delta", -1)) != 0:
+		failures.append("First session reward replay was not idempotent.")
+	var ledger: Dictionary = await client.call("fetch_coin_ledger", player_id)
+	if not ledger_has_source_prefix(ledger, "first_session.guide_complete"):
+		failures.append("First session reward did not write backend ledger source.")
+
+static func verify_map_activity_reward(root: Node, client: Node, player_id: String, save_system: Node, failures: Array) -> void:
+	var service = load("res://scripts/Systems/Map/MapActivityService.gd").new()
+	root.add_child(service)
+	service.set_context("random_flower_valley_v1", null)
+	var first: Dictionary = await service.perform_activity("explore")
+	service.queue_free()
+	if not bool(first.get("ok", false)) or int(first.get("reward_coins", 0)) != 1:
+		failures.append("Online map activity did not grant the backend reward: %s" % str(first))
+	if str(first.get("skill_id", "")) != "exploration" or int(first.get("skill_xp", 0)) != 2:
+		failures.append("Online map activity did not expose skill XP: %s" % str(first))
+	var drops: Array = first.get("drops", []) as Array
+	if drops.is_empty() or str((drops[0] as Dictionary).get("item_id", "")) != "trail_token":
+		failures.append("Online map activity did not expose configured drops: %s" % str(first))
+	var activity_inventory: Dictionary = save_system.call("get_profile_value", "map_activity_inventory", {}) as Dictionary
+	var trail_token: Dictionary = activity_inventory.get("trail_token", {}) as Dictionary
+	if int(trail_token.get("quantity", 0)) != 1:
+		failures.append("Online map activity did not sync server drop quantity locally: %s" % str(activity_inventory))
+	var trade_inventory: Dictionary = await client.call("fetch_trade_inventory")
+	if not ok(trade_inventory):
+		failures.append("Trade inventory fetch after map activity failed: %s" % str(trade_inventory))
+	elif not inventory_has_count((trade_inventory.get("data", {}) as Dictionary).get("items", []) as Array, "trail_token", "available", 1):
+		failures.append("Map activity drop did not enter tradeable backend inventory: %s" % str(trade_inventory))
+	var inventory: Dictionary = await client.call("fetch_inventory")
+	if not ok(inventory):
+		failures.append("Inventory fetch after map activity failed: %s" % str(inventory))
+	elif not inventory_has_count((inventory.get("data", {}) as Dictionary).get("items", []) as Array, "trail_token", "available", 1):
+		failures.append("Map activity drop did not enter generic backend inventory: %s" % str(inventory))
+	var profile: Dictionary = await client.call("fetch_profile")
+	var wallet: Dictionary = (profile.get("data", {}) as Dictionary).get("wallet", {}) as Dictionary
+	if int(save_system.call("get_coin_balance")) != int(wallet.get("coin", -1)):
+		failures.append("Online map activity did not sync the local wallet.")
+	var replay: Dictionary = await client.call("claim_map_activity", "random_flower_valley_v1", "explore")
+	if ok(replay) or int(replay.get("status", 0)) != 429:
+		failures.append("Online map activity replay did not hit backend cooldown.")
+	var ledger: Dictionary = await client.call("fetch_coin_ledger", player_id)
+	if not ledger_has_source_prefix(ledger, "map_activity.explore."):
+		failures.append("Online map activity did not write a backend ledger source.")
+
+static func inventory_has_count(items: Array, item_id: String, field: String, expected: int) -> bool:
+	for raw in items:
+		if typeof(raw) != TYPE_DICTIONARY:
+			continue
+		var item: Dictionary = raw as Dictionary
+		if str(item.get("item_id", "")) == item_id:
+			return int(item.get(field, -1)) == expected
+	return false
+
 static func verify_creator_package_publish(root: Node, failures: Array) -> void:
 	var package_approve := await raw_json(root, HTTPClient.METHOD_POST, "/minigames/creator_e2e_package/review", {
 		"action": "approve"

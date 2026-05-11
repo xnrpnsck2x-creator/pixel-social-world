@@ -1,7 +1,12 @@
 class_name DebugOpsPanel
 extends PanelContainer
 
+const DebugOpsAlertRowsScript := preload("res://scripts/UI/Panels/DebugOpsAlertRows.gd")
+const DebugOpsCreatorPayoutRowsScript := preload("res://scripts/UI/Panels/DebugOpsCreatorPayoutRows.gd")
+const InventoryAuditRowsScript := preload("res://scripts/UI/Panels/InventoryAuditRows.gd")
 const WorldHUDAssetsScript := preload("res://scripts/UI/HUD/WorldHUDAssets.gd")
+const PanelTextThemeScript := preload("res://scripts/UI/Panels/PanelTextTheme.gd")
+const PanelListFrameScript := preload("res://scripts/UI/Panels/PanelListFrame.gd")
 
 var compact_layout := false
 var _embedded_admin_mode := false
@@ -10,8 +15,12 @@ var _token_input: LineEdit
 var _status_label: Label
 var _rows: VBoxContainer
 var _refresh_button: Button
+var _audit_player_input: LineEdit
+var _audit_button: Button
+var _audit_rows: VBoxContainer
 var _ops_snapshot: Dictionary = {}
 var _room_snapshot: Dictionary = {}
+var _inventory_audit_snapshot: Dictionary = {}
 
 func _ready() -> void:
 	_build()
@@ -42,6 +51,11 @@ func set_room_snapshot(snapshot: Dictionary) -> void:
 	_room_snapshot = snapshot.duplicate(true)
 	_render_rows()
 
+func set_inventory_audit_snapshot(snapshot: Dictionary) -> void:
+	_build()
+	_inventory_audit_snapshot = snapshot.duplicate(true)
+	InventoryAuditRowsScript.render(_audit_rows, _inventory_audit_snapshot, compact_layout)
+
 func refresh_ops() -> void:
 	_build()
 	var token := _token_input.text.strip_edges()
@@ -61,6 +75,30 @@ func refresh_ops() -> void:
 		_room_snapshot = rooms_response.get("data", {}) as Dictionary
 	_render_rows()
 	_refresh_button.disabled = false
+
+func refresh_inventory_audit() -> void:
+	_build()
+	var token := _token_input.text.strip_edges()
+	var player_id := _audit_player_input.text.strip_edges()
+	if token.is_empty() or player_id.is_empty():
+		InventoryAuditRowsScript.render(_audit_rows, {}, compact_layout)
+		return
+	_audit_button.disabled = true
+	var response: Dictionary = await _online_client().call("fetch_inventory_audit_admin", player_id, token)
+	if bool(response.get("ok", false)):
+		_inventory_audit_snapshot = response.get("data", {}) as Dictionary
+		InventoryAuditRowsScript.render(_audit_rows, _inventory_audit_snapshot, compact_layout)
+	else:
+		InventoryAuditRowsScript.render(_audit_rows, {
+			"totals": {},
+			"items": [{
+				"item_id": str(response.get("error", "inventory_audit_failed")),
+				"owned": 0,
+				"locked": 0,
+				"available": 0
+			}]
+		}, compact_layout)
+	_audit_button.disabled = false
 
 func _render_rows() -> void:
 	for child in _rows.get_children():
@@ -88,6 +126,8 @@ func _render_rows() -> void:
 	_add_row("ops.console.row.moderation", [_int(chat, "active_moderation"), _int(chat, "moderation_actions")])
 	_add_row("ops.console.row.fishing", [_int(fishing, "granted"), _int(fishing, "capped"), _int(fishing, "replayed")])
 	_add_row("ops.console.row.economy", [_int(economy, "creator_play_rewards"), _int(economy, "creator_revenue_coins"), _int(economy, "reward_cap_hits")])
+	DebugOpsCreatorPayoutRowsScript.render(_rows, _ops_snapshot.get("creator_payouts", {}) as Dictionary, compact_layout)
+	DebugOpsAlertRowsScript.render(_rows, _ops_snapshot.get("alerts", {}) as Dictionary, compact_layout)
 	_add_room_rows()
 	_refresh_button.disabled = false
 
@@ -113,11 +153,13 @@ func _build() -> void:
 	layout.add_child(_token_input)
 	_status_label = Label.new()
 	_status_label.text = App.t_key("ops.console.empty")
+	_status_label.modulate = PanelTextThemeScript.MUTED
 	_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	layout.add_child(_status_label)
 	_rows = VBoxContainer.new()
 	_rows.add_theme_constant_override("separation", 6)
 	layout.add_child(_rows)
+	_add_inventory_audit(layout)
 
 func _add_header(layout: VBoxContainer) -> void:
 	var header := HBoxContainer.new()
@@ -133,12 +175,35 @@ func _add_header(layout: VBoxContainer) -> void:
 	var detail := Label.new()
 	detail.text = App.t_key("ops.console.detail")
 	detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	PanelTextThemeScript.apply_pair([title], [detail])
 	labels.add_child(detail)
 	_refresh_button = Button.new()
 	_refresh_button.text = App.t_key("ui.action.refresh")
 	_refresh_button.custom_minimum_size = Vector2(72, 32)
 	_refresh_button.pressed.connect(refresh_ops)
 	header.add_child(_refresh_button)
+
+func _add_inventory_audit(layout: VBoxContainer) -> void:
+	var title := Label.new()
+	title.text = App.t_key("ops.console.inventory.audit_title")
+	title.modulate = PanelTextThemeScript.PRIMARY
+	layout.add_child(title)
+	var controls := HBoxContainer.new()
+	controls.add_theme_constant_override("separation", 6)
+	layout.add_child(controls)
+	_audit_player_input = LineEdit.new()
+	_audit_player_input.placeholder_text = App.t_key("ops.console.inventory.player_placeholder")
+	_audit_player_input.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	controls.add_child(_audit_player_input)
+	_audit_button = Button.new()
+	_audit_button.text = App.t_key("ops.console.inventory.audit_button")
+	_audit_button.custom_minimum_size = Vector2(86, 32)
+	_audit_button.pressed.connect(refresh_inventory_audit)
+	controls.add_child(_audit_button)
+	_audit_rows = VBoxContainer.new()
+	_audit_rows.add_theme_constant_override("separation", 3)
+	layout.add_child(_audit_rows)
+	InventoryAuditRowsScript.render(_audit_rows, _inventory_audit_snapshot, compact_layout)
 
 func _add_row(key: String, values: Array) -> void:
 	var label := Label.new()
@@ -148,14 +213,16 @@ func _add_row(key: String, values: Array) -> void:
 		"c": values[2] if values.size() > 2 else 0,
 		"d": values[3] if values.size() > 3 else 0
 	})
+	label.modulate = PanelTextThemeScript.MUTED
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_rows.add_child(label)
+	PanelListFrameScript.new().add_hbox(_rows, compact_layout).add_child(label)
 
 func _add_room_rows() -> void:
 	if _room_snapshot.is_empty():
 		return
 	var title := Label.new()
 	title.text = App.t_key("ops.console.rooms_title")
+	title.modulate = PanelTextThemeScript.PRIMARY
 	_rows.add_child(title)
 	var room_states: Dictionary = _room_snapshot.get("rooms", {}) as Dictionary
 	if room_states.is_empty():
@@ -183,8 +250,9 @@ func _add_room_rows() -> void:
 func _add_plain_row(text: String) -> void:
 	var label := Label.new()
 	label.text = text
+	label.modulate = PanelTextThemeScript.MUTED
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_rows.add_child(label)
+	PanelListFrameScript.new().add_hbox(_rows, compact_layout).add_child(label)
 
 func _sorted_keys(data: Dictionary) -> Array:
 	var keys := data.keys()
@@ -210,6 +278,10 @@ func _apply_image2_style() -> void:
 		WorldHUDAssetsScript.configure_line_edit_frame(_token_input)
 	if _refresh_button != null:
 		WorldHUDAssetsScript.configure_button_frame(_refresh_button)
+	if _audit_player_input != null:
+		WorldHUDAssetsScript.configure_line_edit_frame(_audit_player_input)
+	if _audit_button != null:
+		WorldHUDAssetsScript.configure_button_frame(_audit_button)
 
 func _int(data: Dictionary, key: String) -> int:
 	return int(data.get(key, 0))

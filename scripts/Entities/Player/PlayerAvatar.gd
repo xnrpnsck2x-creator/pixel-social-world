@@ -3,6 +3,10 @@ extends CharacterBody2D
 
 signal profile_requested(profile: Dictionary)
 
+const PlayerAvatarNameplateScript := preload("res://scripts/Entities/Player/PlayerAvatarNameplate.gd")
+const PlayerAvatarConfigScript := preload("res://scripts/Entities/Player/PlayerAvatarConfig.gd")
+const PlayerAvatarAttackFeedbackScript := preload("res://scripts/Entities/Player/PlayerAvatarAttackFeedback.gd")
+
 @export var speed := 120.0
 @export var input_enabled := true
 @export var remote_interpolation_speed := 12.0
@@ -20,6 +24,7 @@ var display_name := "":
 			_refresh_name()
 
 var player_id := ""
+var character_variant_id := ""
 var facing := "down"
 var _is_sitting := false
 var _attack_time_left := 0.0
@@ -28,7 +33,8 @@ var _sprite: AnimatedSprite2D
 var _body: CanvasItem
 var _target_global_position := Vector2.ZERO
 var _has_remote_target := false
-var _name_reveal_time_left := 0.0
+var _nameplate
+var _movement_validator := Callable()
 
 @onready var name_label: Label = get_node_or_null("NameLabel") as Label
 @onready var emote_bubble: Node = get_node_or_null("EmoteBubble")
@@ -36,12 +42,15 @@ var _name_reveal_time_left := 0.0
 func _ready() -> void:
 	_body = get_node_or_null("Body") as CanvasItem
 	_setup_sprite()
+	_nameplate = PlayerAvatarNameplateScript.new()
+	_nameplate.bind(self, name_label, NAME_REVEAL_SECONDS, NAME_HIT_RADIUS)
 	_refresh_name()
-	_set_name_visible(false)
+	_nameplate.hide()
 	_play_action("idle")
 
 func _process(delta: float) -> void:
-	_tick_name_reveal(delta)
+	if _nameplate != null:
+		_nameplate.tick(delta)
 	if input_enabled or not _has_remote_target:
 		return
 	var weight: float = clamp(delta * remote_interpolation_speed, 0.0, 1.0)
@@ -78,7 +87,7 @@ func _physics_process(delta: float) -> void:
 		move_and_slide()
 		return
 
-	velocity = direction * speed
+	velocity = _validated_velocity(direction, delta)
 	if direction.length() > 0.01:
 		_play_action("walk")
 	else:
@@ -106,6 +115,11 @@ func start_attack() -> void:
 	_is_sitting = false
 	_attack_time_left = ATTACK_SECONDS
 	_play_action("attack")
+	var config := _avatar_config()
+	PlayerAvatarAttackFeedbackScript.new().play(self, _sprite, config, facing)
+	var attack_emote_id := str(config.get("attack_emote_id", ""))
+	if not attack_emote_id.is_empty():
+		show_emote(attack_emote_id)
 
 func toggle_sit() -> void:
 	if _is_sitting:
@@ -127,6 +141,10 @@ func stand_up() -> void:
 func apply_remote_state(state: Dictionary) -> void:
 	if state.has("display_name"):
 		display_name = str(state.get("display_name", display_name))
+	var next_variant := str(state.get("character_variant_id", character_variant_id))
+	if not next_variant.is_empty() and next_variant != character_variant_id:
+		character_variant_id = next_variant
+		_setup_sprite()
 	if state.has("position"):
 		var raw_position: Variant = state.get("position")
 		var next_position := global_position
@@ -153,6 +171,7 @@ func apply_remote_state(state: Dictionary) -> void:
 func get_avatar_state() -> Dictionary:
 	return {
 		"facing": facing,
+		"character_variant_id": character_variant_id,
 		"is_sitting": _is_sitting,
 		"is_attacking": _attack_time_left > 0.0,
 		"animation": _current_animation,
@@ -167,56 +186,47 @@ func get_avatar_state() -> Dictionary:
 	}
 
 func _refresh_name() -> void:
-	if name_label == null:
-		return
-	name_label.text = display_name
+	if _nameplate != null:
+		_nameplate.refresh(display_name)
 
 func reveal_name(seconds: float = NAME_REVEAL_SECONDS) -> void:
-	if name_label == null or display_name.strip_edges().is_empty():
-		return
-	_name_reveal_time_left = max(0.1, seconds)
-	_set_name_visible(true)
+	if _nameplate != null:
+		_nameplate.reveal(display_name, seconds)
 
 func hide_name() -> void:
-	_name_reveal_time_left = 0.0
-	_set_name_visible(false)
+	if _nameplate != null:
+		_nameplate.hide()
 
 func show_emote(emote_id: String) -> void:
 	if emote_bubble != null and emote_bubble.has_method("play"):
 		emote_bubble.play(emote_id)
 
+func set_movement_validator(validator: Callable) -> void:
+	_movement_validator = validator
+
+func can_enter_world_position(position: Vector2) -> bool:
+	return not _movement_validator.is_valid() or bool(_movement_validator.call(position))
+
 func _handle_name_reveal_input(event: InputEvent) -> bool:
-	if not event is InputEventMouseButton:
+	if _nameplate == null:
 		return false
-	var mouse_event := event as InputEventMouseButton
-	if not mouse_event.pressed or mouse_event.button_index != MOUSE_BUTTON_LEFT:
-		return false
-	if global_position.distance_to(get_global_mouse_position()) > NAME_HIT_RADIUS:
-		return false
-	reveal_name()
-	if not input_enabled and not player_id.is_empty():
-		profile_requested.emit({
-			"player_id": player_id,
-			"display_name": display_name
-		})
-	get_viewport().set_input_as_handled()
-	return true
-
-func _tick_name_reveal(delta: float) -> void:
-	if _name_reveal_time_left <= 0.0:
-		return
-	_name_reveal_time_left = max(0.0, _name_reveal_time_left - delta)
-	if _name_reveal_time_left <= 0.0:
-		_set_name_visible(false)
-
-func _set_name_visible(visible: bool) -> void:
-	if name_label != null:
-		name_label.visible = visible
+	var result: Dictionary = _nameplate.handle_input(event, input_enabled, player_id, display_name)
+	if typeof(result.get("profile")) == TYPE_DICTIONARY:
+		var profile := (result.get("profile") as Dictionary).duplicate(true)
+		var config := _avatar_config()
+		profile["character_variant_id"] = character_variant_id
+		profile["avatar_id"] = str(config.get("avatar_id", ""))
+		profile["gender_id"] = str(config.get("gender_id", ""))
+		profile["class_id"] = str(config.get("class_id", ""))
+		profile["character_name_key"] = str(config.get("name_key", ""))
+		profile_requested.emit(profile)
+	return bool(result.get("handled", false))
 
 func _setup_sprite() -> void:
 	var config := _avatar_config()
 	if config.is_empty():
 		return
+	character_variant_id = str(config.get("character_variant_id", character_variant_id))
 	_sprite = get_node_or_null("AvatarSprite") as AnimatedSprite2D
 	if _sprite == null:
 		_sprite = AnimatedSprite2D.new()
@@ -238,14 +248,16 @@ func _setup_sprite() -> void:
 	_sprite.sprite_frames = frames
 	var sprite_scale := float(config.get("sprite_scale", 0.36))
 	_sprite.scale = Vector2(sprite_scale, sprite_scale)
+	_sprite.modulate = PlayerAvatarConfigScript.sprite_modulate(config)
 	_sprite.position = Vector2(0, 5)
+	_current_animation = ""
 	if _body != null:
 		_body.visible = false
 	if name_label != null:
-		name_label.offset_top = -70
-		name_label.offset_bottom = -46
+		name_label.offset_top = -46
+		name_label.offset_bottom = -28
 	if emote_bubble != null:
-		(emote_bubble as Node2D).position = Vector2(0, -76)
+		(emote_bubble as Node2D).position = Vector2(0, -24)
 
 func _play_action(action: String) -> void:
 	if _sprite == null or _sprite.sprite_frames == null:
@@ -253,23 +265,28 @@ func _play_action(action: String) -> void:
 	var animation := "%s_%s" % [action, facing]
 	if not _sprite.sprite_frames.has_animation(animation):
 		animation = "%s_down" % action
+	_sprite.flip_h = facing == "right"
 	if _current_animation == animation:
 		return
 	_current_animation = animation
 	_sprite.play(animation)
 
+func _validated_velocity(direction: Vector2, delta: float) -> Vector2:
+	var base_velocity := direction * speed
+	if not _movement_validator.is_valid() or direction.length() <= 0.01 or can_enter_world_position(global_position + base_velocity * delta):
+		return base_velocity
+	for candidate in [Vector2(base_velocity.x, 0.0), Vector2(0.0, base_velocity.y)]:
+		if candidate.length() > 0.01 and can_enter_world_position(global_position + candidate * delta):
+			return candidate
+	return Vector2.ZERO
+
 func _direction_from_vector(direction: Vector2) -> String:
-	if abs(direction.x) > abs(direction.y):
+	if abs(direction.x) >= abs(direction.y):
 		return "right" if direction.x > 0.0 else "left"
 	return "down" if direction.y > 0.0 else "up"
 
 func _avatar_config() -> Dictionary:
-	var config: Dictionary = ConfigLoader.load_config(ANIMATION_CONFIG)
-	var avatar_id := str(config.get("default_avatar", ""))
-	for avatar in config.get("avatars", []):
-		if typeof(avatar) == TYPE_DICTIONARY and str(avatar.get("id", "")) == avatar_id:
-			return avatar as Dictionary
-	return {}
+	return PlayerAvatarConfigScript.new().avatar_config(character_variant_id)
 
 func _load_texture(path: String) -> Texture2D:
 	var resource := ResourceLoader.load(path)

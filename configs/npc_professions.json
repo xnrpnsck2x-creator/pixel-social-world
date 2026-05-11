@@ -1,0 +1,191 @@
+{
+  "schema_version": 1,
+  "source_sheet": "res://assets/sprites/generated/npc_professions_direction_v1_alpha.png",
+  "roles": [
+    {
+      "id": "fisher_v1",
+      "frame_path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/fisher_idle_down.png",
+      "source_sheet": "res://assets/sprites/generated/npc_professions_life_direction_v1_alpha.png",
+      "sprite_scale": 0.115,
+      "pose": "idle",
+      "facing": "down",
+      "usage": "main_city_fishing_and_river_maps",
+      "directional_frames": {
+        "idle_down": "res://assets/sprites/sliced/npc_professions_life_direction_v1/fisher_idle_down.png",
+        "idle_right": "res://assets/sprites/sliced/npc_professions_life_direction_v1/fisher_idle_right.png",
+        "idle_up": "res://assets/sprites/sliced/npc_professions_life_direction_v1/fisher_idle_up.png",
+        "idle_left": "res://assets/sprites/sliced/npc_professions_life_direction_v1/fisher_idle_left.png",
+        "rod_down": "res://assets/sprites/sliced/npc_professions_life_direction_v1/fisher_rod_down.png",
+        "rod_right": "res://assets/sprites/sliced/npc_professions_life_direction_v1/fisher_rod_right.png",
+        "rod_up": "res://assets/sprites/sliced/npc_professions_life_direction_v1/fisher_rod_up.png",
+        "rod_left": "res://assets/sprites/sliced/npc_professions_life_direction_v1/fisher_rod_left.png",
+        "bucket_down": "res://assets/sprites/sliced/npc_professions_life_direction_v1/fisher_bucket_down.png",
+        "bucket_right": "res://assets/sprites/sliced/npc_professions_life_direction_v1/fisher_bucket_right.png",
+        "bucket_up": "res://assets/sprites/sliced/npc_professions_life_direction_v1/fisher_bucket_up.png",
+        "bucket_left": "res://assets/sprites/sliced/npc_professions_life_direction_v1/fisher_bucket_left.png"
+      },
+      "ambience_poses": [
+        "rod",
+        "bucket"
+      ],
+      "action_source_sheet": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png"
+    },
+    {
+      "id": "merchant_v1",
+      "frame_path": "res://assets/sprites/sliced/npc_professions_direction_v1/merchant_idle_down.png",
+      "source_sheet": "res://assets/sprites/generated/npc_professions_direction_v1_alpha.png",
+      "sprite_scale": 0.14,
+      "pose": "idle",
+      "facing": "down",
+      "usage": "main_city_trade_and_market_maps",
+      "directional_frames": {
+        "idle_down": "res://assets/sprites/sliced/npc_professions_direction_v1/merchant_idle_down.png",
+        "idle_right": "res://assets/sprites/sliced/npc_professions_direction_v1/merchant_idle_right.png",
+        "idle_up": "res://assets/sprites/sliced/npc_professions_direction_v1/merchant_idle_up.png",
+        "idle_left": "res://assets/sprites/sliced/npc_professions_direction_v1/merchant_idle_left.png",
+        "present_down": "res://assets/sprites/sliced/npc_professions_direction_v1/merchant_present_down.png",
+        "present_right": "res://assets/sprites/sliced/npc_professions_direction_v1/merchant_present_right.png",
+        "present_up": "res://assets/sprites/sliced/npc_professions_direction_v1/merchant_present_up.png",
+        "present_left": "res://assets/sprites/sliced/npc_professions_direction_v1/merchant_present_left.png",
+        "ledger_down": "res://assets/sprites/sliced/npc_professions_direction_v1/merchant_ledger_down.png",
+        "ledger_right": "res://assets/sprites/sliced/npc_professions_direction_v1/merchant_ledger_right.png",
+        "ledger_up": "res://assets/sprites/sliced/npc_professions_direction_v1/merchant_ledger_up.png",
+        "ledger_left": "res://assets/sprites/sliced/npc_professions_direction_v1/merchant_ledger_left.png"
+      },
+      "ambience_poses": [
+        "present",
+        "ledger"
+      ],
+      "action_source_sheet": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png"
+    },
+    {
+      "id": "mail_courier_v1",
+      "frame_path": "res://assets/sprites/sliced/npc_professions_direction_v1/mail_courier_idle_down.png",
+      "source_sheet": "res://assets/sprites/generated/npc_professions_direction_v1_alpha.png",
+      "sprite_scale": 0.14,
+      "pose": "idle",
+      "facing": "down",
+      "usage": "main_city_mail_and_messaging",
+      "directional_frames": {
+        "idle_down": "res://assets/sprites/sliced/npc_professions_direction_v1/mail_courier_idle_down.png",
+        "idle_right": "res://assets/sprites/sliced/npc_professions_direction_v1/mail_courier_idle_right.png",
+        "idle_up": "res://assets/sprites/sliced/npc_professions_direction_v1/mail_courier_idle_up.png",
+        "idle_left": "res://assets/sprites/sliced/npc_professions_direction_v1/mail_courier_idle_left.png",
+        "letter_down": "res://assets/sprites/sliced/npc_professions_direction_v1/mail_courier_letter_down.png",
+        "letter_right": "res://assets/sprites/sliced/npc_professions_direction_v1/mail_courier_letter_right.png",
+        "letter_up": "res://assets/sprites/sliced/npc_professions_direction_v1/mail_courier_letter_up.png",
+        "letter_left": "res://assets/sprites/sliced/npc_professions_direction_v1/mail_courier_letter_left.png",
+        "parcel_down": "res://assets/sprites/sliced/npc_professions_direction_v1/mail_courier_parcel_down.png",
+        "parcel_right": "res://assets/sprites/sliced/npc_professions_direction_v1/mail_courier_parcel_right.png",
+        "parcel_up": "res://assets/sprites/sliced/npc_professions_direction_v1/mail_courier_parcel_up.png",
+        "parcel_left": "res://assets/sprites/sliced/npc_professions_direction_v1/mail_courier_parcel_left.png"
+      },
+      "ambience_poses": [
+        "letter",
+        "parcel"
+      ],
+      "action_source_sheet": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png"
+    },
+    {
+      "id": "game_host_v1",
+      "frame_path": "res://assets/sprites/sliced/npc_professions_direction_v1/game_host_idle_down.png",
+      "source_sheet": "res://assets/sprites/generated/npc_professions_direction_v1_alpha.png",
+      "sprite_scale": 0.14,
+      "pose": "idle",
+      "facing": "down",
+      "usage": "main_city_minigame_and_event_host",
+      "directional_frames": {
+        "idle_down": "res://assets/sprites/sliced/npc_professions_direction_v1/game_host_idle_down.png",
+        "idle_right": "res://assets/sprites/sliced/npc_professions_direction_v1/game_host_idle_right.png",
+        "idle_up": "res://assets/sprites/sliced/npc_professions_direction_v1/game_host_idle_up.png",
+        "idle_left": "res://assets/sprites/sliced/npc_professions_direction_v1/game_host_idle_left.png"
+      }
+    },
+    {
+      "id": "home_keeper_v1",
+      "frame_path": "res://assets/sprites/sliced/npc_professions_direction_v1/home_keeper_idle_down.png",
+      "source_sheet": "res://assets/sprites/generated/npc_professions_direction_v1_alpha.png",
+      "sprite_scale": 0.14,
+      "pose": "idle",
+      "facing": "down",
+      "usage": "housing_and_cozy_service_maps",
+      "directional_frames": {
+        "idle_down": "res://assets/sprites/sliced/npc_professions_direction_v1/home_keeper_idle_down.png",
+        "idle_right": "res://assets/sprites/sliced/npc_professions_direction_v1/home_keeper_idle_right.png",
+        "idle_up": "res://assets/sprites/sliced/npc_professions_direction_v1/home_keeper_idle_up.png",
+        "idle_left": "res://assets/sprites/sliced/npc_professions_direction_v1/home_keeper_idle_left.png"
+      }
+    },
+    {
+      "id": "academy_registrar_v1",
+      "frame_path": "res://assets/sprites/sliced/npc_professions_direction_v1/academy_registrar_idle_down.png",
+      "source_sheet": "res://assets/sprites/generated/npc_professions_direction_v1_alpha.png",
+      "sprite_scale": 0.14,
+      "pose": "idle",
+      "facing": "down",
+      "usage": "academy_creator_and_review_maps",
+      "directional_frames": {
+        "idle_down": "res://assets/sprites/sliced/npc_professions_direction_v1/academy_registrar_idle_down.png",
+        "idle_right": "res://assets/sprites/sliced/npc_professions_direction_v1/academy_registrar_idle_right.png",
+        "idle_up": "res://assets/sprites/sliced/npc_professions_direction_v1/academy_registrar_idle_up.png",
+        "idle_left": "res://assets/sprites/sliced/npc_professions_direction_v1/academy_registrar_idle_left.png",
+        "book_down": "res://assets/sprites/sliced/npc_professions_direction_v1/academy_registrar_book_down.png",
+        "book_right": "res://assets/sprites/sliced/npc_professions_direction_v1/academy_registrar_book_right.png",
+        "book_up": "res://assets/sprites/sliced/npc_professions_direction_v1/academy_registrar_book_up.png",
+        "book_left": "res://assets/sprites/sliced/npc_professions_direction_v1/academy_registrar_book_left.png",
+        "scroll_down": "res://assets/sprites/sliced/npc_professions_direction_v1/academy_registrar_scroll_down.png",
+        "scroll_right": "res://assets/sprites/sliced/npc_professions_direction_v1/academy_registrar_scroll_right.png",
+        "scroll_up": "res://assets/sprites/sliced/npc_professions_direction_v1/academy_registrar_scroll_up.png",
+        "scroll_left": "res://assets/sprites/sliced/npc_professions_direction_v1/academy_registrar_scroll_left.png"
+      },
+      "ambience_poses": [
+        "book",
+        "scroll"
+      ],
+      "action_source_sheet": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png"
+    },
+    {
+      "id": "herbalist_v1",
+      "frame_path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/herbalist_idle_down.png",
+      "source_sheet": "res://assets/sprites/generated/npc_professions_life_direction_v1_alpha.png",
+      "sprite_scale": 0.115,
+      "pose": "idle",
+      "facing": "down",
+      "usage": "life_skill_nature_maps",
+      "directional_frames": {
+        "idle_down": "res://assets/sprites/sliced/npc_professions_life_direction_v1/herbalist_idle_down.png",
+        "idle_right": "res://assets/sprites/sliced/npc_professions_life_direction_v1/herbalist_idle_right.png",
+        "idle_up": "res://assets/sprites/sliced/npc_professions_life_direction_v1/herbalist_idle_up.png",
+        "idle_left": "res://assets/sprites/sliced/npc_professions_life_direction_v1/herbalist_idle_left.png"
+      }
+    },
+    {
+      "id": "chef_guide_v1",
+      "frame_path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/chef_guide_idle_down.png",
+      "source_sheet": "res://assets/sprites/generated/npc_professions_life_direction_v1_alpha.png",
+      "sprite_scale": 0.115,
+      "pose": "idle",
+      "facing": "down",
+      "usage": "cooking_and_market_maps",
+      "directional_frames": {
+        "idle_down": "res://assets/sprites/sliced/npc_professions_life_direction_v1/chef_guide_idle_down.png",
+        "idle_right": "res://assets/sprites/sliced/npc_professions_life_direction_v1/chef_guide_idle_right.png",
+        "idle_up": "res://assets/sprites/sliced/npc_professions_life_direction_v1/chef_guide_idle_up.png",
+        "idle_left": "res://assets/sprites/sliced/npc_professions_life_direction_v1/chef_guide_idle_left.png",
+        "stir_down": "res://assets/sprites/sliced/npc_professions_life_direction_v1/chef_guide_stir_down.png",
+        "stir_right": "res://assets/sprites/sliced/npc_professions_life_direction_v1/chef_guide_stir_right.png",
+        "stir_up": "res://assets/sprites/sliced/npc_professions_life_direction_v1/chef_guide_stir_up.png",
+        "stir_left": "res://assets/sprites/sliced/npc_professions_life_direction_v1/chef_guide_stir_left.png",
+        "dish_down": "res://assets/sprites/sliced/npc_professions_life_direction_v1/chef_guide_dish_down.png",
+        "dish_right": "res://assets/sprites/sliced/npc_professions_life_direction_v1/chef_guide_dish_right.png",
+        "dish_up": "res://assets/sprites/sliced/npc_professions_life_direction_v1/chef_guide_dish_up.png",
+        "dish_left": "res://assets/sprites/sliced/npc_professions_life_direction_v1/chef_guide_dish_left.png"
+      },
+      "ambience_poses": [
+        "stir",
+        "dish"
+      ],
+      "action_source_sheet": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png"
+    }
+  ]
+}

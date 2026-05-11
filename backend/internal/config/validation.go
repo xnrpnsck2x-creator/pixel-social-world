@@ -136,6 +136,8 @@ func validateRequiredPaths(issues []ValidationIssue, cfg Config) []ValidationIss
 	requireNonEmpty(&issues, cfg.Storage.PackageInstallDir, "storage.package_install_dir", "package install directory is required")
 	requireNonEmpty(&issues, cfg.Housing.ItemsConfigPath, "housing.items_config_path", "housing catalog path is required")
 	requireNonEmpty(&issues, cfg.Minigames.FishingConfigPath, "minigames.fishing_config_path", "fishing config path is required")
+	requireNonEmpty(&issues, cfg.World.MapActivitiesConfigPath, "world.map_activities_config_path", "map activities config path is required")
+	requireNonEmpty(&issues, cfg.World.MapPointsConfigPath, "world.map_points_config_path", "map points config path is required")
 	requireNonEmpty(&issues, cfg.Utility.PanelsConfigPath, "utility.panels_config_path", "utility panels config path is required")
 	return issues
 }

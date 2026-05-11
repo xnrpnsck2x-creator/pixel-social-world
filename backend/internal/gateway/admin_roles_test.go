@@ -18,6 +18,9 @@ func TestAdminRoleTokensAndActionSafety(t *testing.T) {
 	if session["role"] != AdminRoleViewer {
 		t.Fatalf("expected viewer role, got %#v", session)
 	}
+	if !stringSliceContains(session["capabilities"].([]any), "read_creator_payouts") {
+		t.Fatalf("viewer session should expose creator payout read capability: %#v", session)
+	}
 
 	testPostJSON(t, server, "/admin/chat-moderation/actions", "view-token", map[string]any{
 		"target_player_id": "player_a",
@@ -55,6 +58,15 @@ func TestAdminRoleTokensAndActionSafety(t *testing.T) {
 		"reason":           "severe abuse",
 		"confirm":          true,
 	}, http.StatusAccepted)
+}
+
+func stringSliceContains(items []any, value string) bool {
+	for _, item := range items {
+		if item == value {
+			return true
+		}
+	}
+	return false
 }
 
 func TestCreatorUnpublishRequiresOwnerConfirmation(t *testing.T) {

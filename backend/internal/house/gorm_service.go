@@ -88,10 +88,13 @@ func (s *GormService) PlaceItem(ctx context.Context, request PlaceRequest) (Layo
 			return err
 		}
 		layout.Items = append(layout.Items, PlacedItem{
-			ItemID:   request.ItemID,
-			TileX:    request.TileX,
-			TileY:    request.TileY,
-			Rotation: normalizeRotation(request.Rotation),
+			ItemID:          request.ItemID,
+			TileX:           request.TileX,
+			TileY:           request.TileY,
+			Rotation:        normalizeRotation(request.Rotation),
+			InventoryLocked: request.InventoryLocked,
+			InventorySource: request.InventorySource,
+			ReservationID:   request.ReservationID,
 		})
 		layout.Version++
 		if err := saveLayout(tx, layout); err != nil {

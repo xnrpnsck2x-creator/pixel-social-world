@@ -102,6 +102,12 @@ func applyContentEnv(cfg *Config) {
 	if value := os.Getenv("PSW_FISHING_CONFIG_PATH"); value != "" {
 		cfg.Minigames.FishingConfigPath = value
 	}
+	if value := os.Getenv("PSW_MAP_ACTIVITIES_CONFIG_PATH"); value != "" {
+		cfg.World.MapActivitiesConfigPath = value
+	}
+	if value := os.Getenv("PSW_MAP_POINTS_CONFIG_PATH"); value != "" {
+		cfg.World.MapPointsConfigPath = value
+	}
 	if value := os.Getenv("PSW_UTILITY_PANELS_CONFIG_PATH"); value != "" {
 		cfg.Utility.PanelsConfigPath = value
 	}

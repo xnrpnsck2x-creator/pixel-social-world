@@ -4,18 +4,22 @@ extends PanelContainer
 signal chat_send_requested(body: String)
 
 const WorldHUDAssetsScript := preload("res://scripts/UI/HUD/WorldHUDAssets.gd")
+const PanelTextThemeScript := preload("res://scripts/UI/Panels/PanelTextTheme.gd")
 
 var presence_service: Node
 var chat_service: Node
 var owner_id := ""
 var _compact_layout := false
+var margin_container: MarginContainer
+var rows_container: VBoxContainer
+var input_row: HBoxContainer
 var members_label: Label
 var chat_preview_label: Label
 var chat_input: LineEdit
 var send_button: Button
 
 func _ready() -> void:
-	WorldHUDAssetsScript.configure_panel_frame(self)
+	WorldHUDAssetsScript.configure_light_panel_frame(self)
 	_build_ui()
 	_refresh_text()
 
@@ -30,37 +34,40 @@ func bind_services(new_presence_service: Node, new_chat_service: Node, new_owner
 	_refresh_all()
 
 func _build_ui() -> void:
-	var margin := MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 10)
-	margin.add_theme_constant_override("margin_top", 8)
-	margin.add_theme_constant_override("margin_right", 10)
-	margin.add_theme_constant_override("margin_bottom", 8)
-	add_child(margin)
+	margin_container = MarginContainer.new()
+	margin_container.add_theme_constant_override("margin_left", 10)
+	margin_container.add_theme_constant_override("margin_top", 8)
+	margin_container.add_theme_constant_override("margin_right", 10)
+	margin_container.add_theme_constant_override("margin_bottom", 8)
+	add_child(margin_container)
 
-	var rows := VBoxContainer.new()
-	rows.add_theme_constant_override("separation", 6)
-	margin.add_child(rows)
+	rows_container = VBoxContainer.new()
+	rows_container.add_theme_constant_override("separation", 6)
+	margin_container.add_child(rows_container)
 
 	var title := Label.new()
 	title.name = "TitleLabel"
 	title.text = App.t_key("housing.social_title")
-	rows.add_child(title)
+	title.modulate = PanelTextThemeScript.PRIMARY
+	rows_container.add_child(title)
 
 	members_label = Label.new()
 	members_label.name = "MembersLabel"
 	members_label.custom_minimum_size = Vector2(0, 46)
+	members_label.modulate = PanelTextThemeScript.PRIMARY
 	members_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	rows.add_child(members_label)
+	rows_container.add_child(members_label)
 
 	chat_preview_label = Label.new()
 	chat_preview_label.name = "ChatPreviewLabel"
 	chat_preview_label.custom_minimum_size = Vector2(0, 58)
+	chat_preview_label.modulate = PanelTextThemeScript.PRIMARY
 	chat_preview_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	rows.add_child(chat_preview_label)
+	rows_container.add_child(chat_preview_label)
 
-	var input_row := HBoxContainer.new()
+	input_row = HBoxContainer.new()
 	input_row.add_theme_constant_override("separation", 6)
-	rows.add_child(input_row)
+	rows_container.add_child(input_row)
 
 	chat_input = LineEdit.new()
 	chat_input.name = "ChatInput"
@@ -82,16 +89,26 @@ func set_compact_layout(enabled: bool) -> void:
 	if _compact_layout == enabled:
 		return
 	_compact_layout = enabled
-	custom_minimum_size = Vector2(208, 154) if _compact_layout else Vector2(276, 172)
+	custom_minimum_size = Vector2(236, 136) if _compact_layout else Vector2(276, 172)
+	_apply_compact_spacing()
 	if members_label != null:
-		members_label.custom_minimum_size = Vector2(0, 42) if _compact_layout else Vector2(0, 46)
+		members_label.custom_minimum_size = Vector2(0, 36) if _compact_layout else Vector2(0, 46)
 	if chat_preview_label != null:
 		chat_preview_label.visible = not _compact_layout
 		chat_preview_label.custom_minimum_size = Vector2(0, 0) if _compact_layout else Vector2(0, 58)
 	if send_button != null:
-		send_button.custom_minimum_size = Vector2(52, 32) if _compact_layout else Vector2(68, 36)
+		send_button.custom_minimum_size = Vector2(50, 30) if _compact_layout else Vector2(68, 36)
 	if chat_input != null:
-		chat_input.custom_minimum_size = Vector2(0, 32) if _compact_layout else Vector2.ZERO
+		chat_input.custom_minimum_size = Vector2(82, 30) if _compact_layout else Vector2.ZERO
+
+func _apply_compact_spacing() -> void:
+	var margin := Vector4(8, 6, 8, 6) if _compact_layout else Vector4(10, 8, 10, 8)
+	margin_container.add_theme_constant_override("margin_left", int(margin.x))
+	margin_container.add_theme_constant_override("margin_top", int(margin.y))
+	margin_container.add_theme_constant_override("margin_right", int(margin.z))
+	margin_container.add_theme_constant_override("margin_bottom", int(margin.w))
+	rows_container.add_theme_constant_override("separation", 4 if _compact_layout else 6)
+	input_row.add_theme_constant_override("separation", 4 if _compact_layout else 6)
 
 func _refresh_all() -> void:
 	_refresh_members()

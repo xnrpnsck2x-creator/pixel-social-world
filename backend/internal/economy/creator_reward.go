@@ -29,6 +29,7 @@ func (s *MemoryService) GrantCreatorPlayReward(
 	s.balances[request.PlayerID] += request.PlayerAmount
 	s.record(request.PlayerID, LedgerEvent{
 		Type:         creatorPlayRewardType,
+		GameID:       request.GameID,
 		SourceID:     request.SourceID,
 		Delta:        request.PlayerAmount,
 		BalanceAfter: s.balances[request.PlayerID],
@@ -37,6 +38,7 @@ func (s *MemoryService) GrantCreatorPlayReward(
 		s.balances[request.CreatorID] += creatorAmount
 		s.record(request.CreatorID, LedgerEvent{
 			Type:         creatorRevenueShareType,
+			GameID:       request.GameID,
 			SourceID:     request.SourceID,
 			Delta:        creatorAmount,
 			BalanceAfter: s.balances[request.CreatorID],

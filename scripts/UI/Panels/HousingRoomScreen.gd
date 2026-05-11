@@ -9,6 +9,7 @@ const HousingRoomResponsiveLayoutScript := preload("res://scripts/UI/Panels/Hous
 const HousingRoomSocialControllerScript := preload("res://scripts/UI/Panels/HousingRoomSocialController.gd")
 const HousingRoomSocialPanelScript := preload("res://scripts/UI/Panels/HousingRoomSocialPanel.gd")
 const WorldHUDAssetsScript := preload("res://scripts/UI/HUD/WorldHUDAssets.gd")
+const PanelTextThemeScript := preload("res://scripts/UI/Panels/PanelTextTheme.gd")
 
 var housing_service: HousingService
 var art: HousingRoomArt
@@ -29,7 +30,6 @@ var rotate_button: Button
 var sell_button: Button
 var undo_button: Button
 var social_panel: PanelContainer
-
 func _ready() -> void:
 	owner_id = str(SaveSystem.get_profile_value("active_home_owner_id", SaveSystem.get_player_id()))
 	if owner_id.is_empty():
@@ -55,6 +55,10 @@ func _draw() -> void:
 	)
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel"):
+		SceneRouter.route_to("main_city")
+		get_viewport().set_input_as_handled()
+		return
 	if is_visit_mode:
 		return
 	if event is InputEventMouseMotion:
@@ -63,14 +67,21 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not event is InputEventMouseButton:
 		return
 	var mouse_event := event as InputEventMouseButton
-	if not mouse_event.pressed or mouse_event.button_index != MOUSE_BUTTON_LEFT:
+	if not mouse_event.pressed:
 		return
-
+	if mouse_event.button_index != MOUSE_BUTTON_LEFT:
+		if mouse_event.button_index == MOUSE_BUTTON_RIGHT and edit_controller.cancel_selection():
+			queue_redraw()
+		return
 	var tile: Vector2i = renderer.tile_from_position(self, get_global_mouse_position())
 	if tile.x < 0:
 		return
 	if edit_controller.handle_tile(tile):
 		queue_redraw()
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_GO_BACK_REQUEST:
+		SceneRouter.route_to("main_city")
 
 func _enter_room_lifecycle() -> void:
 	if not has_node("/root/RoomLifecycle"):
@@ -118,19 +129,18 @@ func _build_top_bar(layer: CanvasLayer) -> void:
 	layer.add_child(top_panel)
 	var top := HBoxContainer.new()
 	top.add_theme_constant_override("separation", 10)
-	WorldHUDAssetsScript.add_margin_child(top_panel, top, Vector4(12, 8, 12, 8))
-
+	WorldHUDAssetsScript.add_margin_child(top_panel, top, Vector4(34, 8, 34, 8))
 	var title := Label.new()
 	title.text = App.t_key("scene.home.visit.title" if is_visit_mode else "scene.home.edit.title")
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(title)
-
 	owner_label = Label.new()
 	owner_label.text = App.format_key("housing.owner_format", {"owner": owner_id})
 	top.add_child(owner_label)
-
 	coin_label = Label.new()
 	top.add_child(coin_label)
+	for label in [title, owner_label, coin_label]:
+		label.modulate = PanelTextThemeScript.PRIMARY
 
 	invite_button = Button.new()
 	invite_button.text = App.t_key("housing.invite_button")
@@ -274,17 +284,7 @@ func _set_catalog_status_text(text: String) -> void:
 func _apply_responsive_layout() -> void:
 	if responsive_layout == null or top_panel == null or social_panel == null or catalog_bar == null:
 		return
-	responsive_layout.apply(
-		self,
-		top_panel,
-		owner_label,
-		invite_button,
-		social_panel,
-		catalog_bar,
-		renderer,
-		art,
-		is_visit_mode
-	)
+	responsive_layout.apply(self, top_panel, owner_label, invite_button, social_panel, catalog_bar, renderer, art, is_visit_mode)
 	queue_redraw()
 
 func _invite_home() -> void:

@@ -1,0 +1,208 @@
+{
+  "schema_version": 1,
+  "style_reference": "approved_forest_social_mmo_board",
+  "active_batch": "seasonal_activity_batch_9",
+  "batches": [
+    {
+      "id": "main_city_batch_3",
+      "title": "Remaining main-city Image2 motherboards",
+      "goal": "Complete the six-main-city visual foundation before expanding the life-skill and seasonal map batch.",
+      "status": "image2_prompt_ready",
+      "completed_maps": [
+        {
+          "map_id": "city_snowbell_village_v1",
+          "status": "registered_playtest_candidate",
+          "asset_path": "res://assets/maps/generated/city_snowbell_village_v1.png",
+          "source_path": "res://assets/maps/generated/city_snowbell_village_v1_source.png"
+        },
+        {
+          "map_id": "city_academy_plaza_v1",
+          "status": "registered_playtest_candidate",
+          "asset_path": "res://assets/maps/generated/city_academy_plaza_v1.png",
+          "source_path": "res://assets/maps/generated/city_academy_plaza_v1_source.png"
+        },
+        {
+          "map_id": "city_festival_night_market_v1",
+          "status": "registered_playtest_candidate",
+          "asset_path": "res://assets/maps/generated/city_festival_night_market_v1.png",
+          "source_path": "res://assets/maps/generated/city_festival_night_market_v1_source.png"
+        }
+      ],
+      "maps": []
+    },
+    {
+      "id": "life_skill_batch_4",
+      "title": "Life-skill Image2 motherboard batch",
+      "goal": "Promote the herb, lumber, and starter farm life-skill maps as a shared playable gathering foundation.",
+      "status": "completed",
+      "completed_maps": [
+        {
+          "map_id": "life_herb_forest_v1",
+          "status": "registered_playtest_candidate",
+          "asset_path": "res://assets/maps/generated/life_herb_forest_v1.png",
+          "source_path": "res://assets/maps/generated/life_herb_forest_v1_source.png"
+        },
+        {
+          "map_id": "life_lumber_grove_v1",
+          "status": "registered_playtest_candidate",
+          "asset_path": "res://assets/maps/generated/life_lumber_grove_v1.png",
+          "source_path": "res://assets/maps/generated/life_lumber_grove_v1_source.png"
+        },
+        {
+          "map_id": "life_starter_farm_v1",
+          "status": "registered_playtest_candidate",
+          "asset_path": "res://assets/maps/generated/life_starter_farm_v1.png",
+          "source_path": "res://assets/maps/generated/life_starter_farm_v1_source.png"
+        }
+      ],
+      "maps": []
+    },
+    {
+      "id": "life_skill_batch_5",
+      "title": "Remaining life-skill Image2 motherboard batch",
+      "goal": "Complete the MVP life-skill map foundation with insect catching, archaeology, and cooking spaces.",
+      "status": "completed",
+      "completed_maps": [
+        {
+          "map_id": "life_insect_meadow_v1",
+          "status": "registered_playtest_candidate",
+          "asset_path": "res://assets/maps/generated/life_insect_meadow_v1.png",
+          "source_path": "res://assets/maps/generated/life_insect_meadow_v1_source.png"
+        },
+        {
+          "map_id": "life_ruin_dig_site_v1",
+          "status": "registered_playtest_candidate",
+          "asset_path": "res://assets/maps/generated/life_ruin_dig_site_v1.png",
+          "source_path": "res://assets/maps/generated/life_ruin_dig_site_v1_source.png"
+        },
+        {
+          "map_id": "life_cooking_market_v1",
+          "status": "registered_playtest_candidate",
+          "asset_path": "res://assets/maps/generated/life_cooking_market_v1.png",
+          "source_path": "res://assets/maps/generated/life_cooking_market_v1_source.png"
+        }
+      ],
+      "maps": []
+    },
+    {
+      "id": "social_function_batch_6",
+      "title": "Remaining social-function Image2 motherboard batch",
+      "goal": "Complete the MVP social-function map foundation with mail and creator-gallery spaces.",
+      "status": "completed",
+      "completed_maps": [
+        {
+          "map_id": "social_mail_plaza_v1",
+          "status": "registered_playtest_candidate",
+          "asset_path": "res://assets/maps/generated/social_mail_plaza_v1.png",
+          "source_path": "res://assets/maps/generated/social_mail_plaza_v1_source.png"
+        },
+        {
+          "map_id": "social_creator_gallery_v1",
+          "status": "registered_playtest_candidate",
+          "asset_path": "res://assets/maps/generated/social_creator_gallery_v1.png",
+          "source_path": "res://assets/maps/generated/social_creator_gallery_v1_source.png"
+        }
+      ],
+      "maps": []
+    },
+    {
+      "id": "random_exploration_batch_7",
+      "title": "First random-exploration Image2 motherboard batch",
+      "goal": "Start the random exploration foundation with flower, wetland, ruin, and autumn-road spaces.",
+      "status": "completed",
+      "completed_maps": [
+        {
+          "map_id": "random_flower_valley_v1",
+          "status": "registered_playtest_candidate",
+          "asset_path": "res://assets/maps/generated/random_flower_valley_v1.png",
+          "source_path": "res://assets/maps/generated/random_flower_valley_v1_source.png"
+        },
+        {
+          "map_id": "random_mist_wetland_v1",
+          "status": "registered_playtest_candidate",
+          "asset_path": "res://assets/maps/generated/random_mist_wetland_v1.png",
+          "source_path": "res://assets/maps/generated/random_mist_wetland_v1_source.png"
+        },
+        {
+          "map_id": "random_old_ruins_v1",
+          "status": "registered_playtest_candidate",
+          "asset_path": "res://assets/maps/generated/random_old_ruins_v1.png",
+          "source_path": "res://assets/maps/generated/random_old_ruins_v1_source.png"
+        },
+        {
+          "map_id": "random_autumn_road_v1",
+          "status": "registered_playtest_candidate",
+          "asset_path": "res://assets/maps/generated/random_autumn_road_v1.png",
+          "source_path": "res://assets/maps/generated/random_autumn_road_v1_source.png"
+        }
+      ],
+      "maps": []
+    },
+    {
+      "id": "random_exploration_batch_8",
+      "title": "Remaining random-exploration Image2 motherboard batch",
+      "goal": "Complete the random exploration foundation with island, lantern forest, cliff boardwalk, and ancient tree maze spaces.",
+      "status": "completed",
+      "completed_maps": [
+        {
+          "map_id": "random_island_coast_v1",
+          "status": "registered_playtest_candidate",
+          "asset_path": "res://assets/maps/generated/random_island_coast_v1.png",
+          "source_path": "res://assets/maps/generated/random_island_coast_v1_source.png"
+        },
+        {
+          "map_id": "random_lantern_forest_v1",
+          "status": "registered_playtest_candidate",
+          "asset_path": "res://assets/maps/generated/random_lantern_forest_v1.png",
+          "source_path": "res://assets/maps/generated/random_lantern_forest_v1_source.png"
+        },
+        {
+          "map_id": "random_cliff_boardwalk_v1",
+          "status": "registered_playtest_candidate",
+          "asset_path": "res://assets/maps/generated/random_cliff_boardwalk_v1.png",
+          "source_path": "res://assets/maps/generated/random_cliff_boardwalk_v1_source.png"
+        },
+        {
+          "map_id": "random_ancient_tree_maze_v1",
+          "status": "registered_playtest_candidate",
+          "asset_path": "res://assets/maps/generated/random_ancient_tree_maze_v1.png",
+          "source_path": "res://assets/maps/generated/random_ancient_tree_maze_v1_source.png"
+        }
+      ],
+      "maps": []
+    },
+    {
+      "id": "seasonal_activity_batch_9",
+      "title": "Seasonal and activity Image2 motherboard batch",
+      "goal": "Complete the first 32-map visual foundation with cherry blossom, snow, summer fireworks, and pumpkin lantern activity spaces.",
+      "status": "completed",
+      "completed_maps": [
+        {
+          "map_id": "season_cherry_blossom_fair_v1",
+          "status": "registered_playtest_candidate",
+          "asset_path": "res://assets/maps/generated/season_cherry_blossom_fair_v1.png",
+          "source_path": "res://assets/maps/generated/season_cherry_blossom_fair_v1_source.png"
+        },
+        {
+          "map_id": "season_snow_festival_v1",
+          "status": "registered_playtest_candidate",
+          "asset_path": "res://assets/maps/generated/season_snow_festival_v1.png",
+          "source_path": "res://assets/maps/generated/season_snow_festival_v1_source.png"
+        },
+        {
+          "map_id": "season_summer_fireworks_pier_v1",
+          "status": "registered_playtest_candidate",
+          "asset_path": "res://assets/maps/generated/season_summer_fireworks_pier_v1.png",
+          "source_path": "res://assets/maps/generated/season_summer_fireworks_pier_v1_source.png"
+        },
+        {
+          "map_id": "season_pumpkin_lantern_square_v1",
+          "status": "registered_playtest_candidate",
+          "asset_path": "res://assets/maps/generated/season_pumpkin_lantern_square_v1.png",
+          "source_path": "res://assets/maps/generated/season_pumpkin_lantern_square_v1_source.png"
+        }
+      ],
+      "maps": []
+    }
+  ]
+}

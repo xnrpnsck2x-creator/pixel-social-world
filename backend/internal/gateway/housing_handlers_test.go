@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"pixel-social-world/backend/internal/house"
 )
 
 func TestHousingPlaceRejectsInvalidBeforeSpending(t *testing.T) {
@@ -34,8 +36,13 @@ func TestHousingPlaceRejectsInvalidBeforeSpending(t *testing.T) {
 		"tile_x":    0,
 		"tile_y":    0,
 	}, http.StatusOK)
-	if int(placed["balance"].(float64)) != 175 {
-		t.Fatalf("expected balance 175 after chair, got %#v", placed)
+	if int(placed["balance"].(float64)) != 200 || placed["inventory_source"] != "owned" {
+		t.Fatalf("expected starter chair to use inventory without spending, got %#v", placed)
+	}
+	inventoryItems := placed["inventory_items"].([]any)
+	if itemCount(inventoryItems, "simple_chair", "locked") != 1 ||
+		itemCount(inventoryItems, "simple_chair", "available") != 0 {
+		t.Fatalf("housing placement did not lock the starter chair: %#v", placed)
 	}
 
 	occupied := testPostJSON(t, server, "/housing/place", token, map[string]any{
@@ -48,7 +55,7 @@ func TestHousingPlaceRejectsInvalidBeforeSpending(t *testing.T) {
 	if occupied["error"] != "occupied_tile" {
 		t.Fatalf("expected occupied_tile, got %#v", occupied)
 	}
-	assertHousingBalance(t, server, playerID, 175)
+	assertHousingBalance(t, server, playerID, 200)
 }
 
 func TestHousingStyleRejectsFurnitureBeforeSpending(t *testing.T) {
@@ -81,7 +88,7 @@ func TestHousingStyleRejectsFurnitureBeforeSpending(t *testing.T) {
 	}
 }
 
-func TestHousingMoveAndRemoveAreOwnerOnlyAndRefundSellValue(t *testing.T) {
+func TestHousingMoveAndRemoveAreOwnerOnlyAndReturnInventory(t *testing.T) {
 	deps := DefaultMemoryDependencies()
 	deps.StartingCoinBalance = 100
 	server := NewServerWithDependencies(deps)
@@ -114,7 +121,7 @@ func TestHousingMoveAndRemoveAreOwnerOnlyAndRefundSellValue(t *testing.T) {
 	if int(item["tile_x"].(float64)) != 2 || int(item["rotation"].(float64)) != 90 {
 		t.Fatalf("move did not update item: %#v", item)
 	}
-	assertHousingBalance(t, server, playerID, 75)
+	assertHousingBalance(t, server, playerID, 100)
 
 	removed := testPostJSON(t, server, "/housing/remove", token, map[string]any{
 		"owner_id":  playerID,
@@ -124,8 +131,13 @@ func TestHousingMoveAndRemoveAreOwnerOnlyAndRefundSellValue(t *testing.T) {
 		"tile_y":    2,
 		"rotation":  90,
 	}, http.StatusOK)
-	if int(removed["refund"].(float64)) != 12 || int(removed["balance"].(float64)) != 87 {
-		t.Fatalf("expected 12 coin sell refund and balance 87, got %#v", removed)
+	if int(removed["refund"].(float64)) != 0 || int(removed["balance"].(float64)) != 100 {
+		t.Fatalf("expected inventory return without coin refund, got %#v", removed)
+	}
+	returnedInventory := removed["inventory_items"].([]any)
+	if itemCount(returnedInventory, "simple_chair", "available") != 1 ||
+		itemCount(returnedInventory, "simple_chair", "locked") != 0 {
+		t.Fatalf("housing remove did not unlock the placed chair: %#v", removed)
 	}
 
 	testPostJSON(t, server, "/housing/remove", token, map[string]any{
@@ -147,13 +159,18 @@ func TestHousingRemoveUsesConfiguredRefundRate(t *testing.T) {
 	playerID := session["player_id"].(string)
 	token := session["access_token"].(string)
 
-	testPostJSON(t, server, "/housing/place", token, map[string]any{
-		"owner_id":  playerID,
-		"player_id": playerID,
-		"item_id":   "simple_chair",
-		"tile_x":    1,
-		"tile_y":    1,
-	}, http.StatusOK)
+	if err := server.houseService.SaveLayout(context.Background(), house.Layout{
+		OwnerID: playerID,
+		Version: 2,
+		Items: []house.PlacedItem{{
+			ItemID: "simple_chair",
+			TileX:  1,
+			TileY:  1,
+		}},
+		Styles: map[string]string{"wall": "starter_wallpaper", "floor": "wooden_floor"},
+	}); err != nil {
+		t.Fatalf("seed legacy housing layout: %v", err)
+	}
 
 	removed := testPostJSON(t, server, "/housing/remove", token, map[string]any{
 		"owner_id":  playerID,
@@ -162,8 +179,110 @@ func TestHousingRemoveUsesConfiguredRefundRate(t *testing.T) {
 		"tile_x":    1,
 		"tile_y":    1,
 	}, http.StatusOK)
-	if int(removed["refund"].(float64)) != 10 || int(removed["balance"].(float64)) != 85 {
-		t.Fatalf("expected configured 10 coin refund and balance 85, got %#v", removed)
+	if int(removed["refund"].(float64)) != 10 || int(removed["balance"].(float64)) != 110 {
+		t.Fatalf("expected configured 10 coin legacy refund and balance 110, got %#v", removed)
+	}
+}
+
+func TestHousingCanPurchaseAndLockAdditionalInventory(t *testing.T) {
+	deps := DefaultMemoryDependencies()
+	deps.StartingCoinBalance = 25
+	server := NewServerWithDependencies(deps)
+	session := testGuestLogin(t, server, "Housing Buyer")
+	playerID := session["player_id"].(string)
+	token := session["access_token"].(string)
+
+	testPostJSON(t, server, "/housing/place", token, map[string]any{
+		"owner_id":  playerID,
+		"player_id": playerID,
+		"item_id":   "simple_chair",
+		"tile_x":    0,
+		"tile_y":    0,
+	}, http.StatusOK)
+	purchased := testPostJSON(t, server, "/housing/place", token, map[string]any{
+		"owner_id":  playerID,
+		"player_id": playerID,
+		"item_id":   "simple_chair",
+		"tile_x":    1,
+		"tile_y":    0,
+	}, http.StatusOK)
+	if purchased["inventory_source"] != "purchased" || int(purchased["balance"].(float64)) != 0 {
+		t.Fatalf("expected second chair to be bought into inventory then locked: %#v", purchased)
+	}
+	if itemCount(purchased["inventory_items"].([]any), "simple_chair", "owned") != 2 ||
+		itemCount(purchased["inventory_items"].([]any), "simple_chair", "locked") != 2 {
+		t.Fatalf("purchased chair did not lock as placed inventory: %#v", purchased)
+	}
+	testPostJSON(t, server, "/housing/place", token, map[string]any{
+		"owner_id":  playerID,
+		"player_id": playerID,
+		"item_id":   "simple_chair",
+		"tile_x":    2,
+		"tile_y":    0,
+	}, http.StatusPaymentRequired)
+}
+
+func TestHousingAndTradeReservationsReleaseBySource(t *testing.T) {
+	deps := DefaultMemoryDependencies()
+	deps.StartingCoinBalance = 25
+	server := NewServerWithDependencies(deps)
+	session := testGuestLogin(t, server, "Reservation Owner")
+	playerID := session["player_id"].(string)
+	token := session["access_token"].(string)
+
+	testPostJSON(t, server, "/housing/place", token, map[string]any{
+		"owner_id":  playerID,
+		"player_id": playerID,
+		"item_id":   "simple_chair",
+		"tile_x":    0,
+		"tile_y":    0,
+	}, http.StatusOK)
+	testPostJSON(t, server, "/housing/place", token, map[string]any{
+		"owner_id":  playerID,
+		"player_id": playerID,
+		"item_id":   "simple_chair",
+		"tile_x":    1,
+		"tile_y":    0,
+	}, http.StatusOK)
+	inventory := testGetJSON(t, server, "/inventory?player_id="+playerID, token, http.StatusOK)
+	if itemCount(inventory["items"].([]any), "simple_chair", "locked") != 2 ||
+		reservationReasonCount(inventory["items"].([]any), "simple_chair", "housing") != 2 {
+		t.Fatalf("expected two housing reservations: %#v", inventory)
+	}
+
+	testPostJSON(t, server, "/housing/remove", token, map[string]any{
+		"owner_id":  playerID,
+		"player_id": playerID,
+		"item_id":   "simple_chair",
+		"tile_x":    0,
+		"tile_y":    0,
+	}, http.StatusOK)
+	afterRemove := testGetJSON(t, server, "/inventory?player_id="+playerID, token, http.StatusOK)
+	if itemCount(afterRemove["items"].([]any), "simple_chair", "available") != 1 ||
+		reservationReasonCount(afterRemove["items"].([]any), "simple_chair", "housing") != 1 {
+		t.Fatalf("housing remove released the wrong reservation: %#v", afterRemove)
+	}
+
+	created := testPostJSON(t, server, "/trade/listings", token, map[string]any{
+		"seller_id": playerID,
+		"item_id":   "simple_chair",
+		"price":     9,
+	}, http.StatusCreated)
+	listingID := created["listing"].(map[string]any)["id"].(string)
+	locked := testGetJSON(t, server, "/inventory?player_id="+playerID, token, http.StatusOK)
+	if itemCount(locked["items"].([]any), "simple_chair", "locked") != 2 ||
+		reservationReasonCount(locked["items"].([]any), "simple_chair", "trade") != 1 ||
+		reservationReasonCount(locked["items"].([]any), "simple_chair", "housing") != 1 {
+		t.Fatalf("trade listing did not add a separate reservation: %#v", locked)
+	}
+	testPostJSON(t, server, "/trade/listings/"+listingID+"/cancel", token, map[string]any{
+		"seller_id": playerID,
+	}, http.StatusOK)
+	restored := testGetJSON(t, server, "/inventory?player_id="+playerID, token, http.StatusOK)
+	if itemCount(restored["items"].([]any), "simple_chair", "locked") != 1 ||
+		reservationReasonCount(restored["items"].([]any), "simple_chair", "trade") != 0 ||
+		reservationReasonCount(restored["items"].([]any), "simple_chair", "housing") != 1 {
+		t.Fatalf("trade cancel released the wrong reservation: %#v", restored)
 	}
 }
 
@@ -214,4 +333,22 @@ func assertHousingBalance(t *testing.T, server *Server, playerID string, want in
 	if balance.Balance != want {
 		t.Fatalf("expected balance %d, got %d", want, balance.Balance)
 	}
+}
+
+func reservationReasonCount(items []any, itemID string, reason string) int {
+	for _, raw := range items {
+		item := raw.(map[string]any)
+		if item["item_id"] != itemID {
+			continue
+		}
+		total := 0
+		for _, rawReservation := range item["reservations"].([]any) {
+			reservation := rawReservation.(map[string]any)
+			if reservation["reason"] == reason {
+				total += int(reservation["quantity"].(float64))
+			}
+		}
+		return total
+	}
+	return 0
 }

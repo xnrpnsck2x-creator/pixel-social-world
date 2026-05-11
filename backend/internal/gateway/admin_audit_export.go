@@ -10,6 +10,7 @@ import (
 
 	"pixel-social-world/backend/internal/chat"
 	"pixel-social-world/backend/internal/minigame"
+	"pixel-social-world/backend/internal/trade"
 )
 
 func wantsCSV(ctx *gin.Context) bool {
@@ -73,6 +74,28 @@ func appendModerationRows(rows [][]string, section string, items []chat.Moderati
 			strconv.FormatInt(item.RevokedAt, 10),
 			item.RevokedBy,
 			item.RevocationReason,
+		})
+	}
+	return rows
+}
+
+func tradeHistoryCSVRows(items []trade.Event) [][]string {
+	rows := [][]string{{
+		"id", "type", "listing_id", "seller_id", "buyer_id", "item_id",
+		"title_key", "icon_id", "price", "created_unix",
+	}}
+	for _, item := range items {
+		rows = append(rows, []string{
+			item.ID,
+			item.Type,
+			item.ListingID,
+			item.SellerID,
+			item.BuyerID,
+			item.ItemID,
+			item.TitleKey,
+			item.IconID,
+			strconv.Itoa(item.Price),
+			strconv.FormatInt(item.CreatedUnix, 10),
 		})
 	}
 	return rows

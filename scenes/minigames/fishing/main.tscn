@@ -26,16 +26,16 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 24.0
-offset_top = 24.0
-offset_right = -24.0
-offset_bottom = -24.0
+offset_left = 18.0
+offset_top = 18.0
+offset_right = -18.0
+offset_bottom = -18.0
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Layout" type="VBoxContainer" parent="RootMargin"]
 layout_mode = 2
-theme_override_constants/separation = 16
+theme_override_constants/separation = 8
 
 [node name="TitleLabel" type="Label" parent="RootMargin/Layout"]
 unique_name_in_owner = true
@@ -45,18 +45,17 @@ horizontal_alignment = 1
 [node name="PondPanel" type="PanelContainer" parent="RootMargin/Layout"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_vertical = 3
 
 [node name="PondMargin" type="MarginContainer" parent="RootMargin/Layout/PondPanel"]
 layout_mode = 2
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_top = 24
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_bottom = 24
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
 
 [node name="PondRows" type="VBoxContainer" parent="RootMargin/Layout/PondPanel/PondMargin"]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 6
 
 [node name="StatusLabel" type="Label" parent="RootMargin/Layout/PondPanel/PondMargin/PondRows"]
 unique_name_in_owner = true
@@ -68,23 +67,39 @@ unique_name_in_owner = true
 layout_mode = 2
 horizontal_alignment = 1
 
+[node name="ActionRow" type="HBoxContainer" parent="RootMargin/Layout/PondPanel/PondMargin/PondRows"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="CastButton" type="Button" parent="RootMargin/Layout/PondPanel/PondMargin/PondRows/ActionRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="EndButton" type="Button" parent="RootMargin/Layout/PondPanel/PondMargin/PondRows/ActionRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+size_flags_horizontal = 3
+
 [node name="RewardPanel" type="PanelContainer" parent="RootMargin/Layout/PondPanel/PondMargin/PondRows"]
 unique_name_in_owner = true
 visible = false
-custom_minimum_size = Vector2(0, 142)
+custom_minimum_size = Vector2(0, 108)
 layout_mode = 2
 script = ExtResource("2_reward")
 
 [node name="RewardMargin" type="MarginContainer" parent="RootMargin/Layout/PondPanel/PondMargin/PondRows/RewardPanel"]
 layout_mode = 2
-theme_override_constants/margin_left = 14
-theme_override_constants/margin_top = 12
-theme_override_constants/margin_right = 14
-theme_override_constants/margin_bottom = 12
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
 
 [node name="RewardRows" type="VBoxContainer" parent="RootMargin/Layout/PondPanel/PondMargin/PondRows/RewardPanel/RewardMargin"]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 4
 
 [node name="RewardTitleLabel" type="Label" parent="RootMargin/Layout/PondPanel/PondMargin/PondRows/RewardPanel/RewardMargin/RewardRows"]
 unique_name_in_owner = true
@@ -97,7 +112,7 @@ theme_override_constants/separation = 12
 
 [node name="RewardFishIcon" type="TextureRect" parent="RootMargin/Layout/PondPanel/PondMargin/PondRows/RewardPanel/RewardMargin/RewardRows/RewardContentRow"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(72, 52)
+custom_minimum_size = Vector2(54, 40)
 layout_mode = 2
 stretch_mode = 5
 
@@ -125,19 +140,5 @@ autowrap_mode = 3
 
 [node name="CastAgainButton" type="Button" parent="RootMargin/Layout/PondPanel/PondMargin/PondRows/RewardPanel/RewardMargin/RewardRows"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 44)
+custom_minimum_size = Vector2(0, 36)
 layout_mode = 2
-
-[node name="ActionRow" type="HBoxContainer" parent="RootMargin/Layout"]
-layout_mode = 2
-theme_override_constants/separation = 12
-
-[node name="CastButton" type="Button" parent="RootMargin/Layout/ActionRow"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="EndButton" type="Button" parent="RootMargin/Layout/ActionRow"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3

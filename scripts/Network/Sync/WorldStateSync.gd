@@ -35,6 +35,7 @@ func build_player_move_payload() -> Dictionary:
 		"position": state.get("position", {"x": 0, "y": 0}),
 		"velocity": state.get("velocity", {"x": 0, "y": 0}),
 		"facing": str(state.get("facing", "down")),
+		"character_variant_id": str(state.get("character_variant_id", "")),
 		"is_sitting": bool(state.get("is_sitting", false)),
 		"is_attacking": bool(state.get("is_attacking", false)),
 		"sent_at": int(Time.get_unix_time_from_system())

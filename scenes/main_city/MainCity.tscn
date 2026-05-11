@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3]
+[gd_scene load_steps=31 format=3]
 
 [ext_resource type="Script" path="res://scripts/main_city/MainCityScreen.gd" id="1_city"]
 [ext_resource type="Script" path="res://scripts/Entities/Player/PlayerAvatar.gd" id="2_player"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" path="res://scripts/Systems/Emotes/EmoteSync.gd" id="8_emote_sync"]
 [ext_resource type="Script" path="res://scripts/Systems/Presence/PresenceService.gd" id="9_presence"]
 [ext_resource type="Script" path="res://scripts/Systems/Minigames/MinigameSessionService.gd" id="10_sessions"]
+[ext_resource type="Script" path="res://scripts/Systems/Social/SocialFacilityService.gd" id="10_social_facilities"]
 [ext_resource type="Script" path="res://scripts/main_city/MainCityHotspot.gd" id="11_hotspot"]
 [ext_resource type="Texture2D" path="res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_071.png" id="12_fishing_pier"]
 [ext_resource type="Texture2D" path="res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_084.png" id="13_home_gate"]
@@ -28,6 +29,7 @@
 [ext_resource type="Texture2D" path="res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_039.png" id="26_flower"]
 [ext_resource type="Texture2D" path="res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_044.png" id="27_bush"]
 [ext_resource type="Texture2D" path="res://assets/maps/sliced/forest_main_city_tileset_v0/forest_main_city_tileset_v0_001.png" id="28_tree"]
+[ext_resource type="Texture2D" path="res://assets/maps/generated/city_forest_dawn_v1_candidate_e.png" id="29_map_backdrop"]
 
 [node name="MainCity" type="Node2D"]
 script = ExtResource("1_city")
@@ -39,7 +41,13 @@ z_index = -40
 color = Color(0.137255, 0.341176, 0.266667, 1)
 polygon = PackedVector2Array(-1400, -900, 1400, -900, 1400, 900, -1400, 900)
 
+[node name="MapBackdrop" type="Sprite2D" parent="MapRoot"]
+z_index = -36
+texture_filter = 1
+texture = ExtResource("29_map_backdrop")
+
 [node name="TerrainPainter" type="Node2D" parent="MapRoot"]
+visible = false
 script = ExtResource("20_terrain")
 grass_texture = ExtResource("21_grass")
 grass_alt_texture = ExtResource("22_grass_alt")
@@ -66,6 +74,7 @@ color = Color(0.560784, 0.470588, 0.337255, 1)
 polygon = PackedVector2Array(-96, 160, 96, 160, 80, 520, -80, 520)
 
 [node name="TownProps" type="Node2D" parent="MapRoot"]
+visible = false
 
 [node name="CentralFountain" type="Sprite2D" parent="MapRoot/TownProps"]
 position = Vector2(-20, 18)
@@ -91,7 +100,8 @@ texture = ExtResource("19_lamp")
 unique_name_in_owner = true
 
 [node name="FishingPierMarker" type="Sprite2D" parent="MapRoot"]
-position = Vector2(-430, 284)
+visible = false
+position = Vector2(-12, 336)
 scale = Vector2(0.72, 0.72)
 texture = ExtResource("12_fishing_pier")
 
@@ -104,12 +114,13 @@ polygon = PackedVector2Array(-1400, 320, 1400, 320, 1400, 900, -1400, 900)
 
 [node name="HomeGateHotspot" type="Area2D" parent="MapRoot/Entrances"]
 unique_name_in_owner = true
-position = Vector2(460, 80)
+position = Vector2(-520, 246)
 script = ExtResource("11_hotspot")
 action_id = "home"
 label_key = "world.hotspot_home"
 
 [node name="Marker" type="Sprite2D" parent="MapRoot/Entrances/HomeGateHotspot"]
+visible = false
 scale = Vector2(0.75, 0.75)
 texture = ExtResource("13_home_gate")
 
@@ -127,12 +138,13 @@ horizontal_alignment = 1
 
 [node name="FishingPierHotspot" type="Area2D" parent="MapRoot/InteractionPoints"]
 unique_name_in_owner = true
-position = Vector2(-430, 280)
+position = Vector2(-12, 336)
 script = ExtResource("11_hotspot")
 action_id = "fishing"
 label_key = "world.hotspot_fishing"
 
 [node name="Marker" type="Sprite2D" parent="MapRoot/InteractionPoints/FishingPierHotspot"]
+visible = false
 scale = Vector2(0.72, 0.72)
 texture = ExtResource("12_fishing_pier")
 
@@ -148,12 +160,13 @@ horizontal_alignment = 1
 
 [node name="GamesHallHotspot" type="Area2D" parent="MapRoot/InteractionPoints"]
 unique_name_in_owner = true
-position = Vector2(280, -180)
+position = Vector2(580, -78)
 script = ExtResource("11_hotspot")
 action_id = "games"
 label_key = "world.hotspot_games"
 
 [node name="Marker" type="Sprite2D" parent="MapRoot/InteractionPoints/GamesHallHotspot"]
+visible = false
 scale = Vector2(0.95, 0.95)
 texture = ExtResource("14_games_board")
 
@@ -169,12 +182,13 @@ horizontal_alignment = 1
 
 [node name="ShopHotspot" type="Area2D" parent="MapRoot/InteractionPoints"]
 unique_name_in_owner = true
-position = Vector2(410, 20)
+position = Vector2(334, -278)
 script = ExtResource("11_hotspot")
 action_id = "shop"
 label_key = "world.hotspot_shop"
 
 [node name="Marker" type="Sprite2D" parent="MapRoot/InteractionPoints/ShopHotspot"]
+visible = false
 scale = Vector2(0.62, 0.62)
 texture = ExtResource("15_shop_stall")
 
@@ -188,6 +202,121 @@ offset_right = 72.0
 offset_bottom = -68.0
 horizontal_alignment = 1
 
+[node name="TradeMarketHotspot" type="Area2D" parent="MapRoot/InteractionPoints"]
+unique_name_in_owner = true
+visible = false
+position = Vector2(0, 0)
+script = ExtResource("11_hotspot")
+action_id = "trade"
+label_key = "world.hotspot_trade"
+
+[node name="Marker" type="Sprite2D" parent="MapRoot/InteractionPoints/TradeMarketHotspot"]
+visible = false
+scale = Vector2(0.62, 0.62)
+texture = ExtResource("15_shop_stall")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="MapRoot/InteractionPoints/TradeMarketHotspot"]
+polygon = PackedVector2Array(-54, -30, 54, -30, 58, 42, -58, 42)
+
+[node name="PromptLabel" type="Label" parent="MapRoot/InteractionPoints/TradeMarketHotspot"]
+offset_left = -76.0
+offset_top = -88.0
+offset_right = 76.0
+offset_bottom = -64.0
+horizontal_alignment = 1
+
+[node name="GuildGardenHotspot" type="Area2D" parent="MapRoot/InteractionPoints"]
+unique_name_in_owner = true
+visible = false
+position = Vector2(0, 0)
+script = ExtResource("11_hotspot")
+action_id = "guild"
+label_key = "world.hotspot_guild"
+
+[node name="Marker" type="Sprite2D" parent="MapRoot/InteractionPoints/GuildGardenHotspot"]
+visible = false
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("17_signpost")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="MapRoot/InteractionPoints/GuildGardenHotspot"]
+polygon = PackedVector2Array(-58, -34, 58, -34, 62, 34, -62, 34)
+
+[node name="PromptLabel" type="Label" parent="MapRoot/InteractionPoints/GuildGardenHotspot"]
+offset_left = -76.0
+offset_top = -76.0
+offset_right = 76.0
+offset_bottom = -52.0
+horizontal_alignment = 1
+
+[node name="WorkshopHotspot" type="Area2D" parent="MapRoot/InteractionPoints"]
+unique_name_in_owner = true
+visible = false
+position = Vector2(0, 0)
+script = ExtResource("11_hotspot")
+action_id = "workshop"
+label_key = "world.hotspot_workshop"
+
+[node name="Marker" type="Sprite2D" parent="MapRoot/InteractionPoints/WorkshopHotspot"]
+visible = false
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("17_signpost")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="MapRoot/InteractionPoints/WorkshopHotspot"]
+polygon = PackedVector2Array(-58, -34, 58, -34, 62, 34, -62, 34)
+
+[node name="PromptLabel" type="Label" parent="MapRoot/InteractionPoints/WorkshopHotspot"]
+offset_left = -78.0
+offset_top = -76.0
+offset_right = 78.0
+offset_bottom = -52.0
+horizontal_alignment = 1
+
+[node name="MineHotspot" type="Area2D" parent="MapRoot/InteractionPoints"]
+unique_name_in_owner = true
+visible = false
+position = Vector2(0, 0)
+script = ExtResource("11_hotspot")
+action_id = "mine"
+label_key = "world.hotspot_mine"
+
+[node name="Marker" type="Sprite2D" parent="MapRoot/InteractionPoints/MineHotspot"]
+visible = false
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("17_signpost")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="MapRoot/InteractionPoints/MineHotspot"]
+polygon = PackedVector2Array(-58, -34, 58, -34, 62, 34, -62, 34)
+
+[node name="PromptLabel" type="Label" parent="MapRoot/InteractionPoints/MineHotspot"]
+offset_left = -76.0
+offset_top = -76.0
+offset_right = 76.0
+offset_bottom = -52.0
+horizontal_alignment = 1
+
+[node name="ReturnCityHotspot" type="Area2D" parent="MapRoot/InteractionPoints"]
+unique_name_in_owner = true
+visible = false
+position = Vector2(0, 0)
+script = ExtResource("11_hotspot")
+action_id = "to_city"
+label_key = "world.hotspot_city"
+
+[node name="Marker" type="Sprite2D" parent="MapRoot/InteractionPoints/ReturnCityHotspot"]
+visible = false
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("17_signpost")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="MapRoot/InteractionPoints/ReturnCityHotspot"]
+polygon = PackedVector2Array(-58, -34, 58, -34, 62, 34, -62, 34)
+
+[node name="PromptLabel" type="Label" parent="MapRoot/InteractionPoints/ReturnCityHotspot"]
+offset_left = -76.0
+offset_top = -76.0
+offset_right = 76.0
+offset_bottom = -52.0
+horizontal_alignment = 1
+
 [node name="PlayerRoot" type="Node2D" parent="."]
 
 [node name="RemotePlayers" type="Node2D" parent="PlayerRoot"]
@@ -195,6 +324,7 @@ unique_name_in_owner = true
 
 [node name="LocalPlayer" type="CharacterBody2D" parent="PlayerRoot"]
 unique_name_in_owner = true
+position = Vector2(0, 92)
 script = ExtResource("2_player")
 
 [node name="Body" type="Polygon2D" parent="PlayerRoot/LocalPlayer"]
@@ -204,18 +334,18 @@ polygon = PackedVector2Array(-8, -12, 8, -12, 8, 12, -8, 12)
 [node name="NameLabel" type="Label" parent="PlayerRoot/LocalPlayer"]
 unique_name_in_owner = true
 offset_left = -48.0
-offset_top = -38.0
+offset_top = -46.0
 offset_right = 48.0
-offset_bottom = -14.0
+offset_bottom = -28.0
 horizontal_alignment = 1
 
 [node name="EmoteBubble" type="Node2D" parent="PlayerRoot/LocalPlayer"]
-position = Vector2(0, -52)
+position = Vector2(0, -24)
 script = ExtResource("7_emote")
 
 [node name="Camera2D" type="Camera2D" parent="PlayerRoot/LocalPlayer"]
 current = true
-zoom = Vector2(3, 3)
+zoom = Vector2(0.88, 0.88)
 
 [node name="ServiceRoot" type="Node" parent="."]
 
@@ -238,6 +368,10 @@ script = ExtResource("9_presence")
 [node name="MinigameSessionService" type="Node" parent="ServiceRoot"]
 unique_name_in_owner = true
 script = ExtResource("10_sessions")
+
+[node name="SocialFacilityService" type="Node" parent="ServiceRoot"]
+unique_name_in_owner = true
+script = ExtResource("10_social_facilities")
 
 [node name="EmoteSync" type="Node" parent="ServiceRoot"]
 unique_name_in_owner = true

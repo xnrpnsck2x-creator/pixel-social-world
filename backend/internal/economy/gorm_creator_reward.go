@@ -43,6 +43,7 @@ func (s *GormService) GrantCreatorPlayReward(
 		if err := s.appendRecord(tx, LedgerEvent{
 			PlayerID:     request.PlayerID,
 			Type:         creatorPlayRewardType,
+			GameID:       request.GameID,
 			SourceID:     request.SourceID,
 			Delta:        request.PlayerAmount,
 			BalanceAfter: playerWallet.Balance,
@@ -62,6 +63,7 @@ func (s *GormService) GrantCreatorPlayReward(
 			if err := s.appendRecord(tx, LedgerEvent{
 				PlayerID:     request.CreatorID,
 				Type:         creatorRevenueShareType,
+				GameID:       request.GameID,
 				SourceID:     request.SourceID,
 				Delta:        creatorAmount,
 				BalanceAfter: creatorWallet.Balance,

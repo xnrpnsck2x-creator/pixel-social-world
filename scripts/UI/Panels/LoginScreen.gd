@@ -11,11 +11,14 @@ func _ready() -> void:
 	App.locale_changed.connect(func(_locale: String) -> void: _refresh_runtime_gate())
 	_refresh_runtime_gate()
 
-func _handle_login(display_name: String) -> void:
+func _handle_login(display_name: String, character: Dictionary = {}) -> void:
 	var gate: Dictionary = App.call("get_runtime_gate")
 	if bool(gate.get("blocked", false)):
 		return
 	SaveSystem.set_profile_value("display_name", display_name)
+	for key in ["gender_id", "class_id", "avatar_id", "character_variant_id"]:
+		if character.has(key):
+			SaveSystem.set_profile_value(key, character[key])
 	SaveSystem.save_profile()
 	await OnlineClient.guest_login(display_name)
 	if OnlineClient.is_connected:

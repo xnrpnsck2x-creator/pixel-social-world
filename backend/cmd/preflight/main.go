@@ -9,6 +9,7 @@ import (
 
 	"pixel-social-world/backend/internal/config"
 	"pixel-social-world/backend/internal/house"
+	"pixel-social-world/backend/internal/mapactivity"
 	"pixel-social-world/backend/internal/minigame"
 	"pixel-social-world/backend/internal/utility"
 )
@@ -79,6 +80,10 @@ func runPreflight(configPath string, cfg config.Config, strict bool, checkDirs b
 		_, err := minigame.LoadFishingRewardRules(cfg.Minigames.FishingConfigPath)
 		return err
 	}, cfg.Minigames.FishingConfigPath)
+	report.add("map_activity_rules", func() error {
+		_, err := mapactivity.LoadRuleset(cfg.World.MapActivitiesConfigPath, cfg.World.MapPointsConfigPath)
+		return err
+	}, cfg.World.MapActivitiesConfigPath+" + "+cfg.World.MapPointsConfigPath)
 	report.add("utility_panels", func() error {
 		_, err := utility.LoadPanels(cfg.Utility.PanelsConfigPath)
 		return err

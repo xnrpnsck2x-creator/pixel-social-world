@@ -4,6 +4,7 @@ extends RefCounted
 signal emote_requested(emote_id: String)
 signal home_invite_requested
 signal home_visit_requested(owner_id: String)
+signal minigame_launch_requested
 
 var presence_service: Node
 var chat_service: Node
@@ -46,6 +47,7 @@ func host_fishing() -> void:
 		return
 	var session: Dictionary = response.get("data", {}) as Dictionary
 	announce_game_invite("fishing", str(session.get("id", "")))
+	minigame_launch_requested.emit()
 	session_service.launch_game("fishing")
 
 func announce_game_invite(game_id: String, session_id: String = "") -> void:
@@ -122,5 +124,6 @@ func _join_session(session_id: String, fallback_game_id: String) -> bool:
 		return false
 	var session: Dictionary = response.get("data", {}) as Dictionary
 	var game_id := str(session.get("game_id", fallback_game_id))
+	minigame_launch_requested.emit()
 	session_service.launch_game(game_id if not game_id.is_empty() else "fishing")
 	return true

@@ -18,6 +18,43 @@ func fetch_debug_ops(admin_token: String) -> Dictionary:
 func fetch_debug_rooms(admin_token: String) -> Dictionary:
 	return await _request_admin_json(HTTPClient.METHOD_GET, "/debug/rooms", {}, admin_token)
 
+func fetch_inventory_audit(player_id: String, admin_token: String) -> Dictionary:
+	return await _request_admin_json(HTTPClient.METHOD_GET, "/admin/inventory/audit?player_id=%s" % player_id.uri_encode(), {}, admin_token)
+
+func fetch_admin_action_audit(admin_token: String, filters: Dictionary = {}) -> Dictionary:
+	var query_filters := filters.duplicate()
+	if not query_filters.has("limit"):
+		query_filters["limit"] = 25
+	return await _request_admin_json(
+		HTTPClient.METHOD_GET,
+		"/admin/action-audit%s" % _query_string(query_filters),
+		{},
+		admin_token
+	)
+
+func fetch_trade_history_audit(admin_token: String, filters: Dictionary = {}) -> Dictionary:
+	var query_filters := filters.duplicate()
+	if not query_filters.has("limit"):
+		query_filters["limit"] = 25
+	return await _request_admin_json(
+		HTTPClient.METHOD_GET,
+		"/admin/trade/history%s" % _query_string(query_filters),
+		{},
+		admin_token
+	)
+
+func export_trade_history_audit(admin_token: String, filters: Dictionary = {}) -> Dictionary:
+	var export_filters := filters.duplicate()
+	if not export_filters.has("limit"):
+		export_filters["limit"] = 25
+	export_filters["format"] = "csv"
+	return await _request_admin_text(
+		HTTPClient.METHOD_GET,
+		"/admin/trade/history%s" % _query_string(export_filters),
+		{},
+		admin_token
+	)
+
 func fetch_reviewer_audit(game_id: String, admin_token: String, filters: Dictionary = {}) -> Dictionary:
 	return await _request_admin_json(
 		HTTPClient.METHOD_GET,

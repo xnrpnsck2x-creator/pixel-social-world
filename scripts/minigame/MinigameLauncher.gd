@@ -20,17 +20,29 @@ const REQUIRED_METHODS := [
 var active_game: Node
 var active_game_id := ""
 var active_session_id := ""
+var _returning_to_world := false
 
 @onready var title_label: Label = %TitleLabel
 @onready var status_label: Label = %StatusLabel
 @onready var exit_button: Button = %ExitButton
+@onready var top_bar: PanelContainer = $TopBar
 @onready var sandbox_viewport: SubViewport = %SandboxViewport
 
 func _ready() -> void:
-	exit_button.pressed.connect(_return_to_world)
+	exit_button.pressed.connect(_request_return_to_world)
 	App.locale_changed.connect(_on_locale_changed)
+	_apply_sandbox_chrome()
 	_refresh_text()
 	_launch_pending_game()
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_GO_BACK_REQUEST:
+		_request_return_to_world()
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel"):
+		_request_return_to_world()
+		get_viewport().set_input_as_handled()
 
 func launch_game(game_path: String, context: Dictionary) -> bool:
 	_clear_active_game()
@@ -121,6 +133,12 @@ func _on_game_ended(result: Dictionary) -> void:
 func _on_game_emote_requested(player_id: String, emote_id: String) -> void:
 	emote_requested.emit(player_id, emote_id)
 
+func _request_return_to_world() -> void:
+	if _returning_to_world:
+		return
+	_returning_to_world = true
+	call_deferred("_return_to_world")
+
 func _return_to_world() -> void:
 	await _close_online_session(false)
 	_route_to_world()
@@ -170,3 +188,12 @@ func _refresh_text() -> void:
 	title_label.text = App.t_key("scene.minigame.sandbox.title")
 	status_label.text = App.t_key("minigame.sandbox.loading")
 	exit_button.text = App.t_key("minigame.sandbox.exit")
+
+func _apply_sandbox_chrome() -> void:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.09, 0.13, 0.16, 0.96)
+	style.border_color = Color(0.21, 0.17, 0.12, 1.0)
+	style.set_border_width_all(2)
+	top_bar.add_theme_stylebox_override("panel", style)
+	title_label.add_theme_color_override("font_color", Color(0.93, 0.88, 0.76, 1.0))
+	status_label.add_theme_color_override("font_color", Color(0.78, 0.86, 0.84, 1.0))

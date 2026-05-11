@@ -25,6 +25,27 @@ Generated Image 2 sheets:
 
 Former SVG placeholders have been removed from runtime paths. Use semantic Image 2 PNG bindings from `configs/ui_assets.json`.
 
+## UI v2 Runtime Contract
+
+Formal runtime UI surfaces must use Image 2 PNG/WebP assets through `WorldHUDAssets` and `configs/ui_assets.json`.
+
+Required semantic frame bindings:
+
+- `ui.panel.pixel`
+- `ui.panel.hud_bar.pixel`
+- `ui.panel.hud_strip.pixel`
+- `ui.button.pixel`
+- `ui.input.pixel`
+- `ui.panel.compact.pixel`
+
+All formal panel, HUD strip, compact panel, button, input, and item-list frames use `StyleBoxTexture.AXIS_STRETCH_MODE_TILE_FIT` on both axes. `STRETCH` is reserved only for explicitly temporary or special one-off surfaces, because it visibly distorts the warm yellow Image 2 frame assets at H5 mobile widths.
+
+Regression gates:
+
+- `tests/ui_v2_contract_smoke.py` validates the semantic Image 2 runtime assets, no-SVG rule, H5 UI case coverage, and tile-fit helper contract.
+- `tests/ui_frame_contract_smoke.gd` instantiates Godot controls and verifies their runtime `StyleBoxTexture` assets, margins, and tile-fit mode.
+- `scripts/run_ui_v2_gate.sh` runs the UI contract, Godot frame smoke, content validation, and the H5 UI screenshot semantic matrix.
+
 ## Image 2 Replacement Plan
 
 Generated production PNG sheets now exist. Next step is cutting individual sprites and UI regions:

@@ -1,29 +1,1050 @@
 {
   "schema_version": 1,
-  "default_avatar": "adventurer_v0",
+  "default_avatar": "male_melee_v1",
+  "default_character_variant": "male_melee_v0",
+  "genders": [
+    {
+      "id": "male",
+      "name_key": "character.gender.male"
+    },
+    {
+      "id": "female",
+      "name_key": "character.gender.female"
+    }
+  ],
+  "classes": [
+    {
+      "id": "melee",
+      "range": "near",
+      "attack_emote_id": "emote.exclamation",
+      "attack_feedback": {
+        "style": "lunge",
+        "accent": [1.0, 0.78, 0.38, 0.9],
+        "distance": 6.0
+      },
+      "name_key": "character.class.melee",
+      "description_key": "character.class.melee.description"
+    },
+    {
+      "id": "ranged",
+      "range": "far",
+      "attack_emote_id": "emote.go",
+      "attack_feedback": {
+        "style": "aim",
+        "accent": [0.42, 0.82, 1.0, 0.88],
+        "distance": 4.0
+      },
+      "name_key": "character.class.ranged",
+      "description_key": "character.class.ranged.description"
+    },
+    {
+      "id": "magic",
+      "range": "magic",
+      "attack_emote_id": "emote.idea",
+      "attack_feedback": {
+        "style": "cast",
+        "accent": [0.86, 0.55, 1.0, 0.9],
+        "distance": 3.0
+      },
+      "name_key": "character.class.magic",
+      "description_key": "character.class.magic.description"
+    }
+  ],
+  "character_variants": [
+    {
+      "id": "male_melee_v0",
+      "gender_id": "male",
+      "class_id": "melee",
+      "avatar_id": "male_melee_v1",
+      "name_key": "character.variant.male_melee"
+    },
+    {
+      "id": "male_ranged_v0",
+      "gender_id": "male",
+      "class_id": "ranged",
+      "avatar_id": "male_ranged_v1",
+      "name_key": "character.variant.male_ranged"
+    },
+    {
+      "id": "male_magic_v0",
+      "gender_id": "male",
+      "class_id": "magic",
+      "avatar_id": "male_magic_v1",
+      "name_key": "character.variant.male_magic"
+    },
+    {
+      "id": "female_melee_v0",
+      "gender_id": "female",
+      "class_id": "melee",
+      "avatar_id": "female_melee_v1",
+      "name_key": "character.variant.female_melee"
+    },
+    {
+      "id": "female_ranged_v0",
+      "gender_id": "female",
+      "class_id": "ranged",
+      "avatar_id": "female_ranged_v1",
+      "name_key": "character.variant.female_ranged"
+    },
+    {
+      "id": "female_magic_v0",
+      "gender_id": "female",
+      "class_id": "magic",
+      "avatar_id": "female_magic_v1",
+      "name_key": "character.variant.female_magic"
+    }
+  ],
   "avatars": [
     {
       "id": "adventurer_v0",
       "source_sheet": "res://assets/sprites/generated/player_adventurer_actions_v0_alpha.png",
       "source_path": "res://assets/sprites/generated/player_adventurer_actions_v0_source.png",
-      "sprite_scale": 0.36,
+      "sprite_scale": 0.24,
       "animations": {
-        "idle_down": {"fps": 1, "loop": true, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/idle_down.png"]},
-        "idle_right": {"fps": 1, "loop": true, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/idle_right.png"]},
-        "idle_up": {"fps": 1, "loop": true, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/idle_up.png"]},
-        "idle_left": {"fps": 1, "loop": true, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/idle_left.png"]},
-        "walk_down": {"fps": 7, "loop": true, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/walk_down_down_0.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/walk_down_down_1.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/walk_down_down_2.png"]},
-        "walk_right": {"fps": 7, "loop": true, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/walk_right_right_0.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/walk_right_right_1.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/walk_right_right_2.png"]},
-        "walk_up": {"fps": 7, "loop": true, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/walk_up_up_0.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/walk_up_up_1.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/walk_up_up_2.png"]},
-        "walk_left": {"fps": 7, "loop": true, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/walk_left_left_0.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/walk_left_left_1.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/walk_left_left_2.png"]},
-        "attack_down": {"fps": 10, "loop": false, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/attack_down_down_0.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/attack_down_down_1.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/attack_down_down_2.png"]},
-        "attack_right": {"fps": 10, "loop": false, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/attack_right_right_0.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/attack_right_right_1.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/attack_right_right_2.png"]},
-        "attack_up": {"fps": 10, "loop": false, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/attack_up_up_0.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/attack_up_up_1.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/attack_up_up_2.png"]},
-        "attack_left": {"fps": 10, "loop": false, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/attack_left_left_0.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/attack_left_left_1.png", "res://assets/sprites/sliced/player_adventurer_actions_v0/attack_left_left_2.png"]},
-        "sit_down": {"fps": 1, "loop": true, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/sit_down.png"]},
-        "sit_right": {"fps": 1, "loop": true, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/sit_right.png"]},
-        "sit_up": {"fps": 1, "loop": true, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/sit_up.png"]},
-        "sit_left": {"fps": 1, "loop": true, "frames": ["res://assets/sprites/sliced/player_adventurer_actions_v0/sit_left.png"]}
+        "idle_down": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/idle_down.png"
+          ]
+        },
+        "idle_right": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/idle_right.png"
+          ]
+        },
+        "idle_up": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/idle_up.png"
+          ]
+        },
+        "idle_left": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/idle_left.png"
+          ]
+        },
+        "walk_down": {
+          "fps": 7,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/walk_down_down_0.png",
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/walk_down_down_1.png",
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/walk_down_down_2.png"
+          ]
+        },
+        "walk_right": {
+          "fps": 7,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/walk_right_right_0.png",
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/walk_right_right_1.png",
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/walk_right_right_2.png"
+          ]
+        },
+        "walk_up": {
+          "fps": 7,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/walk_up_up_0.png",
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/walk_up_up_1.png",
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/walk_up_up_2.png"
+          ]
+        },
+        "walk_left": {
+          "fps": 7,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/walk_left_left_0.png",
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/walk_left_left_1.png",
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/walk_left_left_2.png"
+          ]
+        },
+        "attack_down": {
+          "fps": 10,
+          "loop": false,
+          "frames": [
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/attack_down_down_0.png",
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/attack_down_down_1.png",
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/attack_down_down_2.png"
+          ]
+        },
+        "attack_right": {
+          "fps": 10,
+          "loop": false,
+          "frames": [
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/attack_right_right_0.png",
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/attack_right_right_1.png",
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/attack_right_right_2.png"
+          ]
+        },
+        "attack_up": {
+          "fps": 10,
+          "loop": false,
+          "frames": [
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/attack_up_up_0.png",
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/attack_up_up_1.png",
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/attack_up_up_2.png"
+          ]
+        },
+        "attack_left": {
+          "fps": 10,
+          "loop": false,
+          "frames": [
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/attack_left_left_0.png",
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/attack_left_left_1.png",
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/attack_left_left_2.png"
+          ]
+        },
+        "sit_down": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/sit_down.png"
+          ]
+        },
+        "sit_right": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/sit_right.png"
+          ]
+        },
+        "sit_up": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/sit_up.png"
+          ]
+        },
+        "sit_left": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_adventurer_actions_v0/sit_left.png"
+          ]
+        }
+      }
+    },
+    {
+      "id": "male_melee_v1",
+      "source_sheet": "res://assets/sprites/generated/player_male_melee_actions_v1_alpha.png",
+      "source_path": "res://assets/sprites/generated/player_male_melee_actions_v1_source.png",
+      "sprite_scale": 0.22,
+      "animations": {
+        "idle_down": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/idle_down.png"
+          ]
+        },
+        "idle_right": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/idle_right.png"
+          ]
+        },
+        "idle_up": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/idle_up.png"
+          ]
+        },
+        "idle_left": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/idle_left.png"
+          ]
+        },
+        "walk_down": {
+          "fps": 7,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/walk_down_down_0.png",
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/walk_down_down_1.png",
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/walk_down_down_2.png"
+          ]
+        },
+        "walk_right": {
+          "fps": 7,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/walk_right_right_0.png",
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/walk_right_right_1.png",
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/walk_right_right_2.png"
+          ]
+        },
+        "walk_up": {
+          "fps": 7,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/walk_up_up_0.png",
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/walk_up_up_1.png",
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/walk_up_up_2.png"
+          ]
+        },
+        "walk_left": {
+          "fps": 7,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/walk_left_left_0.png",
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/walk_left_left_1.png",
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/walk_left_left_2.png"
+          ]
+        },
+        "attack_down": {
+          "fps": 10,
+          "loop": false,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/attack_down_down_0.png",
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/attack_down_down_1.png",
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/attack_down_down_2.png"
+          ]
+        },
+        "attack_right": {
+          "fps": 10,
+          "loop": false,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/attack_right_right_0.png",
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/attack_right_right_1.png",
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/attack_right_right_2.png"
+          ]
+        },
+        "attack_up": {
+          "fps": 10,
+          "loop": false,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/attack_up_up_0.png",
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/attack_up_up_1.png",
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/attack_up_up_2.png"
+          ]
+        },
+        "attack_left": {
+          "fps": 10,
+          "loop": false,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/attack_left_left_0.png",
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/attack_left_left_1.png",
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/attack_left_left_2.png"
+          ]
+        },
+        "sit_down": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/sit_down.png"
+          ]
+        },
+        "sit_right": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/sit_right.png"
+          ]
+        },
+        "sit_up": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/sit_up.png"
+          ]
+        },
+        "sit_left": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_melee_actions_v1/sit_left.png"
+          ]
+        }
+      }
+    },
+    {
+      "id": "male_ranged_v1",
+      "source_sheet": "res://assets/sprites/generated/player_male_ranged_actions_v1_alpha.png",
+      "source_path": "res://assets/sprites/generated/player_male_ranged_actions_v1_source.png",
+      "sprite_scale": 0.22,
+      "animations": {
+        "idle_down": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/idle_down.png"
+          ]
+        },
+        "idle_right": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/idle_right.png"
+          ]
+        },
+        "idle_up": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/idle_up.png"
+          ]
+        },
+        "idle_left": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/idle_left.png"
+          ]
+        },
+        "walk_down": {
+          "fps": 7,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/walk_down_down_0.png",
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/walk_down_down_1.png",
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/walk_down_down_2.png"
+          ]
+        },
+        "walk_right": {
+          "fps": 7,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/walk_right_right_0.png",
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/walk_right_right_1.png",
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/walk_right_right_2.png"
+          ]
+        },
+        "walk_up": {
+          "fps": 7,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/walk_up_up_0.png",
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/walk_up_up_1.png",
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/walk_up_up_2.png"
+          ]
+        },
+        "walk_left": {
+          "fps": 7,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/walk_left_left_0.png",
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/walk_left_left_1.png",
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/walk_left_left_2.png"
+          ]
+        },
+        "attack_down": {
+          "fps": 10,
+          "loop": false,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/attack_down_down_0.png",
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/attack_down_down_1.png",
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/attack_down_down_2.png"
+          ]
+        },
+        "attack_right": {
+          "fps": 10,
+          "loop": false,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/attack_right_right_0.png",
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/attack_right_right_1.png",
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/attack_right_right_2.png"
+          ]
+        },
+        "attack_up": {
+          "fps": 10,
+          "loop": false,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/attack_up_up_0.png",
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/attack_up_up_1.png",
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/attack_up_up_2.png"
+          ]
+        },
+        "attack_left": {
+          "fps": 10,
+          "loop": false,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/attack_left_left_0.png",
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/attack_left_left_1.png",
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/attack_left_left_2.png"
+          ]
+        },
+        "sit_down": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/sit_down.png"
+          ]
+        },
+        "sit_right": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/sit_right.png"
+          ]
+        },
+        "sit_up": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/sit_up.png"
+          ]
+        },
+        "sit_left": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_ranged_actions_v1/sit_left.png"
+          ]
+        }
+      }
+    },
+    {
+      "id": "male_magic_v1",
+      "source_sheet": "res://assets/sprites/generated/player_male_magic_actions_v1_alpha.png",
+      "source_path": "res://assets/sprites/generated/player_male_magic_actions_v1_source.png",
+      "sprite_scale": 0.22,
+      "animations": {
+        "idle_down": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/idle_down.png"
+          ]
+        },
+        "idle_right": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/idle_right.png"
+          ]
+        },
+        "idle_up": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/idle_up.png"
+          ]
+        },
+        "idle_left": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/idle_left.png"
+          ]
+        },
+        "walk_down": {
+          "fps": 7,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/walk_down_down_0.png",
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/walk_down_down_1.png",
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/walk_down_down_2.png"
+          ]
+        },
+        "walk_right": {
+          "fps": 7,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/walk_right_right_0.png",
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/walk_right_right_1.png",
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/walk_right_right_2.png"
+          ]
+        },
+        "walk_up": {
+          "fps": 7,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/walk_up_up_0.png",
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/walk_up_up_1.png",
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/walk_up_up_2.png"
+          ]
+        },
+        "walk_left": {
+          "fps": 7,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/walk_left_left_0.png",
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/walk_left_left_1.png",
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/walk_left_left_2.png"
+          ]
+        },
+        "attack_down": {
+          "fps": 10,
+          "loop": false,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/attack_down_down_0.png",
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/attack_down_down_1.png",
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/attack_down_down_2.png"
+          ]
+        },
+        "attack_right": {
+          "fps": 10,
+          "loop": false,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/attack_right_right_0.png",
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/attack_right_right_1.png",
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/attack_right_right_2.png"
+          ]
+        },
+        "attack_up": {
+          "fps": 10,
+          "loop": false,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/attack_up_up_0.png",
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/attack_up_up_1.png",
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/attack_up_up_2.png"
+          ]
+        },
+        "attack_left": {
+          "fps": 10,
+          "loop": false,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/attack_left_left_0.png",
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/attack_left_left_1.png",
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/attack_left_left_2.png"
+          ]
+        },
+        "sit_down": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/sit_down.png"
+          ]
+        },
+        "sit_right": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/sit_right.png"
+          ]
+        },
+        "sit_up": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/sit_up.png"
+          ]
+        },
+        "sit_left": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_male_magic_actions_v1/sit_left.png"
+          ]
+        }
+      }
+    },
+    {
+      "id": "female_melee_v1",
+      "source_sheet": "res://assets/sprites/generated/player_female_melee_actions_v1_alpha.png",
+      "source_path": "res://assets/sprites/generated/player_female_melee_actions_v1_source.png",
+      "sprite_scale": 0.22,
+      "animations": {
+        "idle_down": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/idle_down.png"
+          ]
+        },
+        "idle_right": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/idle_right.png"
+          ]
+        },
+        "idle_up": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/idle_up.png"
+          ]
+        },
+        "idle_left": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/idle_left.png"
+          ]
+        },
+        "walk_down": {
+          "fps": 7,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/walk_down_down_0.png",
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/walk_down_down_1.png",
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/walk_down_down_2.png"
+          ]
+        },
+        "walk_right": {
+          "fps": 7,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/walk_right_right_0.png",
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/walk_right_right_1.png",
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/walk_right_right_2.png"
+          ]
+        },
+        "walk_up": {
+          "fps": 7,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/walk_up_up_0.png",
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/walk_up_up_1.png",
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/walk_up_up_2.png"
+          ]
+        },
+        "walk_left": {
+          "fps": 7,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/walk_left_left_0.png",
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/walk_left_left_1.png",
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/walk_left_left_2.png"
+          ]
+        },
+        "attack_down": {
+          "fps": 10,
+          "loop": false,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/attack_down_down_0.png",
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/attack_down_down_1.png",
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/attack_down_down_2.png"
+          ]
+        },
+        "attack_right": {
+          "fps": 10,
+          "loop": false,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/attack_right_right_0.png",
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/attack_right_right_1.png",
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/attack_right_right_2.png"
+          ]
+        },
+        "attack_up": {
+          "fps": 10,
+          "loop": false,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/attack_up_up_0.png",
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/attack_up_up_1.png",
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/attack_up_up_2.png"
+          ]
+        },
+        "attack_left": {
+          "fps": 10,
+          "loop": false,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/attack_left_left_0.png",
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/attack_left_left_1.png",
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/attack_left_left_2.png"
+          ]
+        },
+        "sit_down": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/sit_down.png"
+          ]
+        },
+        "sit_right": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/sit_right.png"
+          ]
+        },
+        "sit_up": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/sit_up.png"
+          ]
+        },
+        "sit_left": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_melee_actions_v1/sit_left.png"
+          ]
+        }
+      }
+    },
+    {
+      "id": "female_ranged_v1",
+      "source_sheet": "res://assets/sprites/generated/player_female_ranged_actions_v1_alpha.png",
+      "source_path": "res://assets/sprites/generated/player_female_ranged_actions_v1_source.png",
+      "sprite_scale": 0.22,
+      "animations": {
+        "idle_down": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/idle_down.png"
+          ]
+        },
+        "idle_right": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/idle_right.png"
+          ]
+        },
+        "idle_up": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/idle_up.png"
+          ]
+        },
+        "idle_left": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/idle_left.png"
+          ]
+        },
+        "walk_down": {
+          "fps": 7,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/walk_down_down_0.png",
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/walk_down_down_1.png",
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/walk_down_down_2.png"
+          ]
+        },
+        "walk_right": {
+          "fps": 7,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/walk_right_right_0.png",
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/walk_right_right_1.png",
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/walk_right_right_2.png"
+          ]
+        },
+        "walk_up": {
+          "fps": 7,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/walk_up_up_0.png",
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/walk_up_up_1.png",
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/walk_up_up_2.png"
+          ]
+        },
+        "walk_left": {
+          "fps": 7,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/walk_left_left_0.png",
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/walk_left_left_1.png",
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/walk_left_left_2.png"
+          ]
+        },
+        "attack_down": {
+          "fps": 10,
+          "loop": false,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/attack_down_down_0.png",
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/attack_down_down_1.png",
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/attack_down_down_2.png"
+          ]
+        },
+        "attack_right": {
+          "fps": 10,
+          "loop": false,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/attack_right_right_0.png",
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/attack_right_right_1.png",
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/attack_right_right_2.png"
+          ]
+        },
+        "attack_up": {
+          "fps": 10,
+          "loop": false,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/attack_up_up_0.png",
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/attack_up_up_1.png",
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/attack_up_up_2.png"
+          ]
+        },
+        "attack_left": {
+          "fps": 10,
+          "loop": false,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/attack_left_left_0.png",
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/attack_left_left_1.png",
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/attack_left_left_2.png"
+          ]
+        },
+        "sit_down": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/sit_down.png"
+          ]
+        },
+        "sit_right": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/sit_right.png"
+          ]
+        },
+        "sit_up": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/sit_up.png"
+          ]
+        },
+        "sit_left": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_ranged_actions_v1/sit_left.png"
+          ]
+        }
+      }
+    },
+    {
+      "id": "female_magic_v1",
+      "source_sheet": "res://assets/sprites/generated/player_female_magic_actions_v1_alpha.png",
+      "source_path": "res://assets/sprites/generated/player_female_magic_actions_v1_source.png",
+      "sprite_scale": 0.22,
+      "animations": {
+        "idle_down": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/idle_down.png"
+          ]
+        },
+        "idle_right": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/idle_right.png"
+          ]
+        },
+        "idle_up": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/idle_up.png"
+          ]
+        },
+        "idle_left": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/idle_left.png"
+          ]
+        },
+        "walk_down": {
+          "fps": 7,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/walk_down_down_0.png",
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/walk_down_down_1.png",
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/walk_down_down_2.png"
+          ]
+        },
+        "walk_right": {
+          "fps": 7,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/walk_right_right_0.png",
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/walk_right_right_1.png",
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/walk_right_right_2.png"
+          ]
+        },
+        "walk_up": {
+          "fps": 7,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/walk_up_up_0.png",
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/walk_up_up_1.png",
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/walk_up_up_2.png"
+          ]
+        },
+        "walk_left": {
+          "fps": 7,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/walk_left_left_0.png",
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/walk_left_left_1.png",
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/walk_left_left_2.png"
+          ]
+        },
+        "attack_down": {
+          "fps": 10,
+          "loop": false,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/attack_down_down_0.png",
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/attack_down_down_1.png",
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/attack_down_down_2.png"
+          ]
+        },
+        "attack_right": {
+          "fps": 10,
+          "loop": false,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/attack_right_right_0.png",
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/attack_right_right_1.png",
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/attack_right_right_2.png"
+          ]
+        },
+        "attack_up": {
+          "fps": 10,
+          "loop": false,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/attack_up_up_0.png",
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/attack_up_up_1.png",
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/attack_up_up_2.png"
+          ]
+        },
+        "attack_left": {
+          "fps": 10,
+          "loop": false,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/attack_left_left_0.png",
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/attack_left_left_1.png",
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/attack_left_left_2.png"
+          ]
+        },
+        "sit_down": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/sit_down.png"
+          ]
+        },
+        "sit_right": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/sit_right.png"
+          ]
+        },
+        "sit_up": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/sit_up.png"
+          ]
+        },
+        "sit_left": {
+          "fps": 1,
+          "loop": true,
+          "frames": [
+            "res://assets/sprites/sliced/player_female_magic_actions_v1/sit_left.png"
+          ]
+        }
       }
     }
   ]

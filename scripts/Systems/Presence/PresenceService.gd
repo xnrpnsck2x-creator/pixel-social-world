@@ -16,12 +16,13 @@ func initialize(new_display_name: String, new_room_id: String = DEFAULT_ROOM_ID)
 	display_name = new_display_name
 	room_id = new_room_id if not new_room_id.is_empty() else DEFAULT_ROOM_ID
 	_tick_seconds = int(ConfigLoader.get_value("app", ["network", "presence_tick_seconds"], 10))
+	_connect_online_client_signal()
 	_ensure_timer()
 	_timer.start(max(2.0, float(_tick_seconds)))
 	refresh_now()
 
 func refresh_now() -> void:
-	if _online_client_connected():
+	if _online_client_available():
 		await _refresh_online()
 	else:
 		_set_local_member()
@@ -31,7 +32,7 @@ func get_members() -> Array[Dictionary]:
 	return members.duplicate(true)
 
 func is_online() -> bool:
-	return _online_client_connected() and _last_heartbeat_msec > 0
+	return _last_heartbeat_msec > 0
 
 func is_stale() -> bool:
 	var seconds := seconds_since_heartbeat()
@@ -47,7 +48,7 @@ func seconds_since_heartbeat() -> int:
 
 func _refresh_online() -> void:
 	var client := _online_client()
-	var heartbeat: Dictionary = await client.call("send_presence", room_id, display_name)
+	var heartbeat: Dictionary = await client.call("send_presence", room_id, display_name, _character_variant_id())
 	if bool(heartbeat.get("ok", false)):
 		_last_heartbeat_msec = Time.get_ticks_msec()
 
@@ -71,6 +72,7 @@ func _set_local_member() -> void:
 		"player_id": SaveSystem.get_player_id(),
 		"room_id": room_id,
 		"display_name": display_name,
+		"character_variant_id": _character_variant_id(),
 		"last_seen_at": int(Time.get_unix_time_from_system())
 	}]
 
@@ -85,11 +87,30 @@ func _ensure_timer() -> void:
 func _on_presence_tick() -> void:
 	refresh_now()
 
-func _online_client_connected() -> bool:
+func _connect_online_client_signal() -> void:
 	var client := _online_client()
-	return client != null and bool(client.get("is_connected"))
+	if client == null or not client.has_signal("connection_changed"):
+		return
+	var callback := Callable(self, "_on_online_connection_changed")
+	if not client.is_connected("connection_changed", callback):
+		client.connect("connection_changed", callback)
+
+func _on_online_connection_changed(connected: bool) -> void:
+	if connected:
+		refresh_now()
+
+func _online_client_available() -> bool:
+	var client := _online_client()
+	if client == null:
+		return false
+	if client.has_method("has_authenticated_session"):
+		return bool(client.call("has_authenticated_session"))
+	return bool(client.get("online_enabled")) and not str(client.get("access_token")).strip_edges().is_empty()
 
 func _online_client() -> Node:
 	if not has_node("/root/OnlineClient"):
 		return null
 	return get_node("/root/OnlineClient")
+
+func _character_variant_id() -> String:
+	return str(SaveSystem.get_profile_value("character_variant_id", ""))

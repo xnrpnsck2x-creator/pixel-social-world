@@ -2,6 +2,8 @@ class_name CreatorContractRows
 extends RefCounted
 
 const WorldHUDAssetsScript := preload("res://scripts/UI/HUD/WorldHUDAssets.gd")
+const PanelListFrameScript := preload("res://scripts/UI/Panels/PanelListFrame.gd")
+const PanelTextThemeScript := preload("res://scripts/UI/Panels/PanelTextTheme.gd")
 
 var compact_layout := false
 
@@ -25,7 +27,8 @@ func render(items_rows: VBoxContainer, compact: bool) -> void:
 	)
 
 func _add_mode_row(items_rows: VBoxContainer, mode: Dictionary) -> void:
-	var detail := App.format_key("creator.mode.row_detail_format", {
+	var detail_key := "creator.mode.row_detail_compact_format" if compact_layout else "creator.mode.row_detail_format"
+	var detail := App.format_key(detail_key, {
 		"camera": App.t_key(str(mode.get("camera_key", ""))),
 		"input": App.t_key(str(mode.get("input_key", ""))),
 		"network": App.t_key(str(mode.get("network_key", ""))),
@@ -36,17 +39,14 @@ func _add_mode_row(items_rows: VBoxContainer, mode: Dictionary) -> void:
 		items_rows,
 		str(mode.get("icon_id", "icon.games")),
 		App.t_key(str(mode.get("name_key", ""))),
-		"%s\n%s" % [App.t_key(str(mode.get("summary_key", ""))), detail]
+		detail if compact_layout else "%s\n%s" % [App.t_key(str(mode.get("summary_key", ""))), detail]
 	)
 
 func _add_contract_row(items_rows: VBoxContainer, icon_id: String, title: String, detail: String) -> void:
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 8)
-	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	items_rows.add_child(row)
+	var row := PanelListFrameScript.new().add_hbox(items_rows, compact_layout)
 
 	var icon := TextureRect.new()
-	icon.custom_minimum_size = Vector2(30, 30) if compact_layout else Vector2(34, 34)
+	icon.custom_minimum_size = Vector2(24, 24) if compact_layout else Vector2(34, 34)
 	icon.texture = WorldHUDAssetsScript.load_ui_texture(icon_id)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -58,10 +58,17 @@ func _add_contract_row(items_rows: VBoxContainer, icon_id: String, title: String
 
 	var title_label := Label.new()
 	title_label.text = title
-	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	title_label.add_theme_font_size_override("font_size", 10 if compact_layout else 14)
+	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	title_label.autowrap_mode = TextServer.AUTOWRAP_OFF if compact_layout else TextServer.AUTOWRAP_WORD_SMART
+	title_label.clip_text = compact_layout
 	labels.add_child(title_label)
 
 	var detail_label := Label.new()
 	detail_label.text = detail
-	detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	detail_label.add_theme_font_size_override("font_size", 8 if compact_layout else 11)
+	detail_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	detail_label.autowrap_mode = TextServer.AUTOWRAP_OFF if compact_layout else TextServer.AUTOWRAP_WORD_SMART
+	detail_label.clip_text = compact_layout
+	PanelTextThemeScript.apply_pair([title_label], [detail_label])
 	labels.add_child(detail_label)

@@ -39,6 +39,10 @@ func enter_room(room_id: String, display_name: String = "") -> void:
 	if realtime == null:
 		room_changed.emit(current_room_id)
 		return
+	if not _has_online_session():
+		realtime.disconnect_city()
+		room_changed.emit(current_room_id)
+		return
 	if bool(realtime.get("is_connected")):
 		realtime.switch_room(current_room_id)
 	else:
@@ -65,3 +69,11 @@ func _realtime_client() -> Node:
 	if not has_node("/root/RealtimeClient"):
 		return null
 	return get_node("/root/RealtimeClient")
+
+func _has_online_session() -> bool:
+	if not has_node("/root/OnlineClient"):
+		return false
+	var client := get_node("/root/OnlineClient")
+	if client.has_method("has_authenticated_session"):
+		return bool(client.call("has_authenticated_session"))
+	return bool(client.get("online_enabled")) and not str(client.get("access_token")).strip_edges().is_empty()

@@ -2,9 +2,10 @@ class_name WorldHUDChatController
 extends RefCounted
 
 signal join_invite_requested(action: Dictionary)
+signal layout_refresh_requested
 
 const WorldHUDAssetsScript := preload("res://scripts/UI/HUD/WorldHUDAssets.gd")
-const ACTION_BUTTON_MIN_SIZE := Vector2(56, 56)
+const ACTION_BUTTON_MIN_SIZE := Vector2(44, 44)
 
 var chat_service: Node
 var minigame_registry: Node
@@ -30,6 +31,7 @@ func bind_ui(
 	send_button = new_send_button
 	invite_button.pressed.connect(_on_invite_pressed)
 	channel_picker.item_selected.connect(_on_channel_selected)
+	chat_input.text_submitted.connect(func(_text: String) -> void: _send_chat())
 	send_button.pressed.connect(_send_chat)
 
 func bind_service(new_chat_service: Node) -> void:
@@ -103,6 +105,14 @@ func _send_chat() -> void:
 		channel_id = chat_service.get_default_channel_id()
 	if chat_service.send_local_message(channel_id, player_name, body):
 		chat_input.clear()
+		_release_mobile_keyboard()
+
+func _release_mobile_keyboard() -> void:
+	if OS.get_name() not in ["Android", "iOS"]:
+		return
+	chat_input.release_focus()
+	if DisplayServer.has_feature(DisplayServer.FEATURE_VIRTUAL_KEYBOARD):
+		DisplayServer.virtual_keyboard_hide()
 
 func _on_channel_selected(index: int) -> void:
 	if channel_picker == null:
@@ -119,11 +129,14 @@ func _on_message_added(_message: Dictionary) -> void:
 func _refresh_invite_button() -> void:
 	if invite_button == null:
 		return
+	var was_visible := invite_button.visible
 	var invite := _latest_join_invite()
 	invite_button.visible = not invite.is_empty()
 	invite_button.disabled = invite.is_empty()
 	if invite.is_empty():
 		invite_button.text = ""
+		if was_visible != invite_button.visible:
+			layout_refresh_requested.emit()
 		return
 	var action: Dictionary = invite.get("action", {}) as Dictionary
 	var message: Dictionary = invite.get("message", {}) as Dictionary
@@ -132,6 +145,8 @@ func _refresh_invite_button() -> void:
 		"name": str(message.get("sender_name", ""))
 	})
 	invite_button.tooltip_text = App.t_key("world.session_invite_chip_tooltip")
+	if was_visible != invite_button.visible:
+		layout_refresh_requested.emit()
 
 func _latest_join_invite() -> Dictionary:
 	if chat_service == null or not chat_service.has_method("get_latest_action"):

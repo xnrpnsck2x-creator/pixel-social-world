@@ -1,6 +1,8 @@
 extends "res://scripts/minigame/IMinigame.gd"
 
 const WorldHUDAssetsScript := preload("res://scripts/UI/HUD/WorldHUDAssets.gd")
+const PANEL_MAX_WIDTH := 760.0
+const PANEL_COMPACT_MAX_WIDTH := 600.0
 
 var context: Dictionary = {}
 var fish_records: Array = []
@@ -14,7 +16,11 @@ var _last_catch_rarity := ""
 var _last_catch_coins := 0
 
 @onready var title_label: Label = %TitleLabel
+@onready var root_margin: MarginContainer = $RootMargin
+@onready var layout_box: VBoxContainer = $RootMargin/Layout
 @onready var pond_panel: PanelContainer = %PondPanel
+@onready var pond_margin: MarginContainer = $RootMargin/Layout/PondPanel/PondMargin
+@onready var pond_rows: VBoxContainer = $RootMargin/Layout/PondPanel/PondMargin/PondRows
 @onready var status_label: Label = %StatusLabel
 @onready var reward_label: Label = %RewardLabel
 @onready var reward_panel: PanelContainer = %RewardPanel
@@ -27,7 +33,9 @@ func _ready() -> void:
 	end_button.pressed.connect(_finish_game)
 	reward_panel.connect("cast_again_requested", _catch_fish)
 	App.locale_changed.connect(_on_locale_changed)
+	get_viewport().size_changed.connect(_apply_layout_density)
 	_apply_image2_style()
+	_apply_layout_density()
 	_load_fish()
 	_refresh_text()
 
@@ -233,6 +241,30 @@ func _apply_image2_style() -> void:
 	WorldHUDAssetsScript.configure_panel_frame(pond_panel)
 	WorldHUDAssetsScript.configure_button_frame(cast_button)
 	WorldHUDAssetsScript.configure_button_frame(end_button)
+	status_label.add_theme_color_override("font_color", Color(0.24, 0.16, 0.09, 1.0))
+	reward_label.add_theme_color_override("font_color", Color(0.42, 0.32, 0.22, 1.0))
+
+func _apply_layout_density(force_compact: Variant = null) -> void:
+	var viewport_size := get_viewport().get_visible_rect().size
+	var compact: bool = bool(force_compact) if force_compact != null else viewport_size.y <= 430.0
+	var side_margin := 10.0 if compact else 24.0
+	root_margin.offset_left = side_margin
+	root_margin.offset_top = 10.0 if compact else 16.0
+	root_margin.offset_right = -side_margin
+	root_margin.offset_bottom = -side_margin
+	layout_box.add_theme_constant_override("separation", 6 if compact else 8)
+	pond_panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	pond_panel.custom_minimum_size.x = minf(viewport_size.x - side_margin * 2.0, PANEL_COMPACT_MAX_WIDTH if compact else PANEL_MAX_WIDTH)
+	var inner_margin := 8 if compact else 12
+	pond_margin.add_theme_constant_override("margin_left", inner_margin)
+	pond_margin.add_theme_constant_override("margin_top", inner_margin)
+	pond_margin.add_theme_constant_override("margin_right", inner_margin)
+	pond_margin.add_theme_constant_override("margin_bottom", inner_margin)
+	pond_rows.add_theme_constant_override("separation", 5 if compact else 6)
+	var button_height := 32.0 if compact else 36.0
+	cast_button.custom_minimum_size.y = button_height
+	end_button.custom_minimum_size.y = button_height
+	reward_panel.call("set_compact_layout", compact)
 
 func _fish_icon_path(name_key: String) -> String:
 	for record in fish_records:

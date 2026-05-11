@@ -6,10 +6,13 @@ import (
 )
 
 type PlacedItem struct {
-	ItemID   string `json:"item_id"`
-	TileX    int    `json:"tile_x"`
-	TileY    int    `json:"tile_y"`
-	Rotation int    `json:"rotation"`
+	ItemID          string `json:"item_id"`
+	TileX           int    `json:"tile_x"`
+	TileY           int    `json:"tile_y"`
+	Rotation        int    `json:"rotation"`
+	InventoryLocked bool   `json:"inventory_locked,omitempty"`
+	InventorySource string `json:"inventory_source,omitempty"`
+	ReservationID   string `json:"reservation_id,omitempty"`
 }
 
 type Layout struct {
@@ -20,11 +23,14 @@ type Layout struct {
 }
 
 type PlaceRequest struct {
-	OwnerID  string `json:"owner_id"`
-	ItemID   string `json:"item_id"`
-	TileX    int    `json:"tile_x"`
-	TileY    int    `json:"tile_y"`
-	Rotation int    `json:"rotation"`
+	OwnerID         string `json:"owner_id"`
+	ItemID          string `json:"item_id"`
+	TileX           int    `json:"tile_x"`
+	TileY           int    `json:"tile_y"`
+	Rotation        int    `json:"rotation"`
+	InventoryLocked bool   `json:"inventory_locked"`
+	InventorySource string `json:"inventory_source"`
+	ReservationID   string `json:"reservation_id"`
 }
 
 type StyleRequest struct {
@@ -123,10 +129,13 @@ func (s *MemoryService) PlaceItem(_ context.Context, request PlaceRequest) (Layo
 		return Layout{}, err
 	}
 	layout.Items = append(layout.Items, PlacedItem{
-		ItemID:   request.ItemID,
-		TileX:    request.TileX,
-		TileY:    request.TileY,
-		Rotation: normalizeRotation(request.Rotation),
+		ItemID:          request.ItemID,
+		TileX:           request.TileX,
+		TileY:           request.TileY,
+		Rotation:        normalizeRotation(request.Rotation),
+		InventoryLocked: request.InventoryLocked,
+		InventorySource: request.InventorySource,
+		ReservationID:   request.ReservationID,
 	})
 	layout.Version++
 	s.layouts[request.OwnerID] = cloneLayout(layout)

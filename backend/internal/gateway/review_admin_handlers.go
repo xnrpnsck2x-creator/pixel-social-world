@@ -47,6 +47,19 @@ func (s *Server) reviewMinigame(ctx *gin.Context) {
 		return
 	}
 	s.recordReviewAudit(ctx, request, response)
+	s.recordAdminAction(ctx, adminActionAuditEvent{
+		Action:     "minigame.review",
+		TargetType: "minigame",
+		TargetID:   response.GameID,
+		Status:     response.Status,
+		Note:       request.Note,
+		Confirmed:  request.Confirm,
+		Metadata: adminActionMetadata(map[string]any{
+			"operation":        operation,
+			"requested_action": request.Action,
+			"requested_status": request.Status,
+		}),
+	})
 	ctx.JSON(http.StatusAccepted, response)
 }
 

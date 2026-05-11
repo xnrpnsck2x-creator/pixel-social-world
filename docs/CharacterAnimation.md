@@ -1,4 +1,4 @@
-# Character Animation v0
+# Character Animation v1
 
 ## Reference Notes
 
@@ -18,6 +18,7 @@ Current player animation states:
 - `walk`: four directions, three frames per direction.
 - `attack`: four directions, three frames per direction.
 - `sit`: four directions.
+- Six formal Image 2 avatar variants: male/female crossed with melee, ranged, and magic.
 
 Controls:
 
@@ -28,23 +29,51 @@ Controls:
 
 ## Asset Contract
 
-Generated Image 2 source:
+Formal generated Image 2 source:
 
-- `assets/sprites/generated/player_adventurer_actions_v0_source.png`
+- `assets/sprites/generated/player_male_melee_actions_v1_source.png`
+- `assets/sprites/generated/player_male_ranged_actions_v1_source.png`
+- `assets/sprites/generated/player_male_magic_actions_v1_source.png`
+- `assets/sprites/generated/player_female_melee_actions_v1_source.png`
+- `assets/sprites/generated/player_female_ranged_actions_v1_source.png`
+- `assets/sprites/generated/player_female_magic_actions_v1_source.png`
 
-Processed alpha sheet:
+Processed alpha sheets:
 
-- `assets/sprites/generated/player_adventurer_actions_v0_alpha.png`
+- `assets/sprites/generated/player_*_actions_v1_alpha.png`
 
 Sliced frames:
 
-- `assets/sprites/sliced/player_adventurer_actions_v0/`
+- `assets/sprites/sliced/player_*_actions_v1/`
 
 Runtime config:
 
 - `configs/player_animations.json`
 
-The sprite sheet is original and must not be replaced by extracted or copied Ragnarok Online assets.
+The sprite sheets are original Image 2 assets and must not be replaced by extracted or copied Ragnarok Online assets.
+
+## NPC Profession Visuals v1
+
+Main-city NPCs now use a dedicated Image 2 profession sheet before falling back to player avatars or legacy NPC slices.
+
+Formal generated Image 2 source:
+
+- `assets/sprites/generated/npc_professions_v1_source.png`
+
+Processed alpha sheet:
+
+- `assets/sprites/generated/npc_professions_v1_alpha.png`
+
+Sliced idle frames:
+
+- `assets/sprites/sliced/npc_professions_v1/`
+
+Runtime config:
+
+- `configs/npc_professions.json`
+- `configs/main_city_npcs.json` via `npc_visual_id`
+
+V1 intentionally ships one front-facing idle frame per high-frequency NPC profession. Full direction and action strips should be generated as one strip per approved profession seed frame when NPC patrols or service animations become gameplay-critical.
 
 ## Next Animation Risks
 

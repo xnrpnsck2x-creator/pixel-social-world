@@ -74,6 +74,17 @@ func (s *Server) updateUtilityPanels(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	s.recordAdminAction(ctx, adminActionAuditEvent{
+		Action:     "utility_panels.update",
+		TargetType: "utility_panels",
+		TargetID:   "global",
+		Status:     "updated",
+		Metadata: adminActionMetadata(map[string]any{
+			"shop_items": len(panels.Shop.Items),
+			"mail":       len(panels.Mail.Messages),
+			"notices":    len(panels.Notice.Notices),
+		}),
+	})
 	ctx.JSON(http.StatusOK, panels)
 }
 

@@ -46,6 +46,7 @@ func sync_members(members: Array, local_id: String) -> void:
 		var avatar: Node = _get_or_create_remote_avatar(player_id)
 		avatar.apply_remote_state({
 			"display_name": display_name_for(member as Dictionary, player_id),
+			"character_variant_id": str((member as Dictionary).get("character_variant_id", "")),
 			"position": _spawn_position_for(player_id),
 			"facing": _facing_for(player_id),
 			"is_sitting": false

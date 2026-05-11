@@ -24,6 +24,10 @@ Default endpoints:
 - Backend ready: `http://127.0.0.1:8787/readyz`
 - Local admin token: `local-admin-token`
 
+The backend URLs are API probes, not player-facing pages. For operations tools,
+open the LiveOps URL, paste `local-admin-token` into the top Admin token field,
+then press Refresh.
+
 If the Web export is stale or missing:
 
 ```bash

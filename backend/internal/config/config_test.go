@@ -41,6 +41,8 @@ func TestLoadAppliesEnvironmentOverrides(t *testing.T) {
 	t.Setenv("PSW_HOUSING_CONFIG_PATH", "/tmp/housing_items.json")
 	t.Setenv("PSW_HOUSING_SELL_REFUND_RATE", "0.4")
 	t.Setenv("PSW_FISHING_CONFIG_PATH", "/tmp/fishing.json")
+	t.Setenv("PSW_MAP_ACTIVITIES_CONFIG_PATH", "/tmp/map_activities.json")
+	t.Setenv("PSW_MAP_POINTS_CONFIG_PATH", "/tmp/map_points.json")
 	t.Setenv("PSW_UTILITY_PANELS_CONFIG_PATH", "/tmp/utility_panels.json")
 	t.Setenv("PSW_AI_REVIEWER_MODE", "openai_compatible")
 	t.Setenv("PSW_AI_REVIEWER_BASE_URL", "http://127.0.0.1:1234/v1")
@@ -127,6 +129,12 @@ func TestLoadAppliesEnvironmentOverrides(t *testing.T) {
 	}
 	if cfg.Minigames.FishingConfigPath != "/tmp/fishing.json" {
 		t.Fatalf("fishing config override failed: %s", cfg.Minigames.FishingConfigPath)
+	}
+	if cfg.World.MapActivitiesConfigPath != "/tmp/map_activities.json" {
+		t.Fatalf("map activities config override failed: %s", cfg.World.MapActivitiesConfigPath)
+	}
+	if cfg.World.MapPointsConfigPath != "/tmp/map_points.json" {
+		t.Fatalf("map points config override failed: %s", cfg.World.MapPointsConfigPath)
 	}
 	if cfg.Utility.PanelsConfigPath != "/tmp/utility_panels.json" {
 		t.Fatalf("utility panels config override failed: %s", cfg.Utility.PanelsConfigPath)

@@ -6,6 +6,8 @@ signal request_failed(route: String, message: String)
 const OnlineClientEndpointsScript := preload("res://scripts/Network/Client/OnlineClientEndpoints.gd")
 const OnlineClientSessionScript := preload("res://scripts/Network/Client/OnlineClientSession.gd")
 const OnlineClientAdminScript := preload("res://scripts/Network/Client/OnlineClientAdmin.gd")
+const OnlineClientEconomyScript := preload("res://scripts/Network/Client/OnlineClientEconomy.gd")
+const OnlineClientTradeScript := preload("res://scripts/Network/Client/OnlineClientTrade.gd")
 const OnlineClientRequestScript := preload("res://scripts/Network/Client/OnlineClientRequest.gd")
 
 var base_url := "http://127.0.0.1:8787"
@@ -20,6 +22,8 @@ var _has_manual_config := false
 var _endpoints
 var _session
 var _admin
+var _economy
+var _trade
 var _requester
 
 func _ready() -> void:
@@ -61,18 +65,17 @@ func _on_app_config_changed(config: Dictionary) -> void:
 		return
 	_configure(config, false)
 
+func has_authenticated_session() -> bool:
+	return online_enabled and not access_token.strip_edges().is_empty()
+
 func guest_login(display_name: String) -> Dictionary:
 	return await _auth().guest_login(display_name)
-
 func refresh_session() -> Dictionary:
 	return await _auth().refresh_session()
-
 func upgrade_guest_account(request: Dictionary) -> Dictionary:
 	return await _auth().upgrade_guest_account(request)
-
 func fetch_profile() -> Dictionary:
 	return await _auth().fetch_profile()
-
 func fetch_housing_layout(owner_id: String = "") -> Dictionary:
 	return await _api().fetch_housing_layout(owner_id)
 
@@ -97,15 +100,18 @@ func move_housing_item(
 
 func remove_housing_item(owner_id: String, item: Dictionary) -> Dictionary:
 	return await _api().remove_housing_item(owner_id, item)
-
 func create_housing_invite(owner_id: String = "") -> Dictionary:
 	return await _api().create_housing_invite(owner_id)
-
 func visit_housing(owner_id: String) -> Dictionary:
 	return await _api().visit_housing(owner_id)
-
 func fetch_coin_ledger(player_id_override: String = "") -> Dictionary:
-	return await _api().fetch_coin_ledger(player_id_override)
+	return await _economy_api().fetch_coin_ledger(player_id_override)
+func fetch_inventory(player_id_override: String = "") -> Dictionary:
+	return await _economy_api().fetch_inventory(player_id_override)
+func claim_first_session_reward(completed_step_ids: Array = []) -> Dictionary:
+	return await _economy_api().claim_first_session_reward(completed_step_ids)
+func claim_map_activity(map_id: String, action_id: String) -> Dictionary:
+	return await _economy_api().claim_map_activity(map_id, action_id)
 
 func send_chat(
 	room_id: String,
@@ -118,136 +124,124 @@ func send_chat(
 
 func fetch_chat_history(room_id: String, channel_id: String, limit: int = 50) -> Dictionary:
 	return await _api().fetch_chat_history(room_id, channel_id, limit)
-
 func report_chat_message(message: Dictionary, reason: String = "player_report") -> Dictionary:
 	return await _api().report_chat_message(message, reason)
-
 func report_player_profile(profile: Dictionary, reason: String = "profile_report") -> Dictionary:
 	return await _api().report_player_profile(profile, reason)
-
 func social_action(action: String, target_player_id: String) -> Dictionary:
 	return await _api().social_action(action, target_player_id)
-
 func fetch_social_state(target_player_id: String) -> Dictionary:
 	return await _api().fetch_social_state(target_player_id)
-
 func send_private_message(recipient_id: String, body: String) -> Dictionary:
 	return await _api().send_private_message(recipient_id, body)
-
 func fetch_private_conversation(peer_id: String, limit: int = 50, offset: int = 0) -> Dictionary:
 	return await _api().fetch_private_conversation(peer_id, limit, offset)
-
 func fetch_private_conversations(limit: int = 50, offset: int = 0) -> Dictionary:
 	return await _api().fetch_private_conversations(limit, offset)
-
 func mark_private_read(peer_id: String) -> Dictionary:
 	return await _api().mark_private_read(peer_id)
-
 func report_private_message(message: Dictionary, reason: String = "player_report") -> Dictionary:
 	return await _api().report_private_message(message, reason)
-
 func send_mail(recipient_id: String, subject: String, body: String) -> Dictionary:
 	return await _api().send_mail(recipient_id, subject, body)
-
 func fetch_mailbox(limit: int = 50, offset: int = 0) -> Dictionary:
 	return await _api().fetch_mailbox(limit, offset)
-
 func mark_mail_read(mail_id: String) -> Dictionary:
 	return await _api().mark_mail_read(mail_id)
-
-func send_presence(room_id: String, display_name: String) -> Dictionary:
-	return await _api().send_presence(room_id, display_name)
-
+func send_presence(room_id: String, display_name: String, character_variant_id: String = "") -> Dictionary:
+	return await _api().send_presence(room_id, display_name, character_variant_id)
 func fetch_room_members(room_id: String) -> Dictionary:
 	return await _api().fetch_room_members(room_id)
-
 func create_minigame_session(game_id: String, room_id: String, max_players: int = 0) -> Dictionary:
 	return await _api().create_minigame_session(game_id, room_id, max_players)
-
 func list_minigame_sessions(room_id: String) -> Dictionary:
 	return await _api().list_minigame_sessions(room_id)
-
 func join_minigame_session(session_id: String) -> Dictionary:
 	return await _api().join_minigame_session(session_id)
-
 func leave_minigame_session(session_id: String) -> Dictionary:
 	return await _api().leave_minigame_session(session_id)
-
 func end_minigame_session(session_id: String) -> Dictionary:
 	return await _api().end_minigame_session(session_id)
-
 func claim_fishing_catch(session_id: String, request_id: String = "") -> Dictionary:
 	return await _api().claim_fishing_catch(session_id, request_id)
-
 func submit_creator_draft(request: Dictionary) -> Dictionary:
 	return await _api().submit_creator_draft(request)
-
 func submit_creator_package(request: Dictionary) -> Dictionary:
 	return await _api().submit_creator_package(request)
-
 func fetch_creator_submission_status(game_id: String) -> Dictionary:
 	return await _api().fetch_creator_submission_status(game_id)
-
 func fetch_creator_submission_history(game_id: String) -> Dictionary:
 	return await _api().fetch_creator_submission_history(game_id)
-
 func fetch_utility_panels() -> Dictionary:
 	return await _api().fetch_utility_panels()
-
+func fetch_social_facilities() -> Dictionary:
+	return await _api().fetch_social_facilities()
+func fetch_trade_listings() -> Dictionary:
+	return await _api().fetch_trade_listings()
+func fetch_trade_inventory() -> Dictionary:
+	return await _api().fetch_trade_inventory()
+func fetch_trade_history(limit: int = 5) -> Dictionary:
+	return await _trade_api().fetch_trade_history(limit)
+func purchase_trade_listing(listing_id: String) -> Dictionary:
+	return await _api().purchase_trade_listing(listing_id)
+func create_trade_listing(item_id: String, price: int, metadata: Dictionary = {}) -> Dictionary:
+	return await _api().create_trade_listing(item_id, price, metadata)
+func cancel_trade_listing(listing_id: String) -> Dictionary:
+	return await _api().cancel_trade_listing(listing_id)
 func fetch_reviewer_dashboard(admin_token: String) -> Dictionary:
 	return await _admin_api().fetch_reviewer_dashboard(admin_token)
-
 func fetch_admin_session(admin_token: String) -> Dictionary:
 	return await _admin_api().fetch_admin_session(admin_token)
-
 func fetch_debug_ops_admin(admin_token: String) -> Dictionary:
 	return await _admin_api().fetch_debug_ops(admin_token)
-
 func fetch_debug_rooms_admin(admin_token: String) -> Dictionary:
 	return await _admin_api().fetch_debug_rooms(admin_token)
-
+func fetch_inventory_audit_admin(player_id: String, admin_token: String) -> Dictionary:
+	return await _admin_api().fetch_inventory_audit(player_id, admin_token)
+func fetch_admin_action_audit_admin(admin_token: String, filters: Dictionary = {}) -> Dictionary:
+	return await _admin_api().fetch_admin_action_audit(admin_token, filters)
+func fetch_trade_history_audit_admin(admin_token: String, filters: Dictionary = {}) -> Dictionary:
+	return await _admin_api().fetch_trade_history_audit(admin_token, filters)
+func export_trade_history_audit_admin(admin_token: String, filters: Dictionary = {}) -> Dictionary:
+	return await _admin_api().export_trade_history_audit(admin_token, filters)
 func fetch_reviewer_audit(game_id: String, admin_token: String, filters: Dictionary = {}) -> Dictionary:
 	return await _admin_api().fetch_reviewer_audit(game_id, admin_token, filters)
-
 func export_reviewer_audit_admin(game_id: String, admin_token: String, filters: Dictionary = {}) -> Dictionary:
 	return await _admin_api().export_reviewer_audit(game_id, admin_token, filters)
-
 func fetch_chat_reports_admin(admin_token: String, status: String = "open") -> Dictionary:
 	return await _admin_api().fetch_chat_reports(admin_token, status)
-
 func review_chat_report_admin(report_id: String, status: String, admin_token: String, note: String = "") -> Dictionary:
 	return await _admin_api().review_chat_report(report_id, status, admin_token, note)
-
 func fetch_chat_moderation_admin(admin_token: String, target_player_id: String = "", action: String = "", offset: int = 0) -> Dictionary:
 	return await _admin_api().fetch_chat_moderation(admin_token, target_player_id, action, offset)
-
 func export_chat_moderation_admin(admin_token: String, target_player_id: String = "", action: String = "", offset: int = 0) -> Dictionary:
 	return await _admin_api().export_chat_moderation(admin_token, target_player_id, action, offset)
-
 func apply_chat_moderation_admin(request: Dictionary, admin_token: String) -> Dictionary:
 	return await _admin_api().apply_chat_moderation(request, admin_token)
-
 func review_minigame_admin(game_id: String, action: String, admin_token: String, confirm: bool = false, note: String = "") -> Dictionary:
 	return await _admin_api().review_minigame(game_id, action, admin_token, confirm, note)
 
 func _api():
-	if _endpoints == null:
-		_endpoints = OnlineClientEndpointsScript.new(self)
+	if _endpoints == null: _endpoints = OnlineClientEndpointsScript.new(self)
 	return _endpoints
-
 func _auth():
-	if _session == null:
-		_session = OnlineClientSessionScript.new(self)
+	if _session == null: _session = OnlineClientSessionScript.new(self)
 	return _session
 
 func _admin_api():
-	if _admin == null:
-		_admin = OnlineClientAdminScript.new(self)
+	if _admin == null: _admin = OnlineClientAdminScript.new(self)
 	return _admin
 
+func _economy_api():
+	if _economy == null: _economy = OnlineClientEconomyScript.new(self)
+	return _economy
+
+func _trade_api():
+	if _trade == null: _trade = OnlineClientTradeScript.new(self)
+	return _trade
+
 func _request_transport():
-	if _requester == null:
-		_requester = OnlineClientRequestScript.new(self)
+	if _requester == null: _requester = OnlineClientRequestScript.new(self)
 	return _requester
 
 func _request_json(method: int, path: String, payload: Dictionary = {}, allow_refresh: bool = true) -> Dictionary:
@@ -261,9 +255,7 @@ func _owner_or_player(owner_id: String) -> String:
 	return str(_save_system().call("get_player_id"))
 
 func _room_or_default(room_id: String) -> String:
-	if room_id.is_empty():
-		return "world_town_square"
-	return room_id
+	return "world_town_square" if room_id.is_empty() else room_id
 
 func _mark_connected() -> void:
 	if is_connected:

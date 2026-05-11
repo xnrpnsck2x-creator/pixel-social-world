@@ -16,12 +16,14 @@ var default_channel_id := FALLBACK_CHANNEL_ID
 var active_view_channel_id := FALLBACK_CHANNEL_ID
 var room_id := "world_town_square"
 var _message_ids := {}
+var _local_order := 0
 
 func initialize() -> void:
 	channels.clear()
 	channels_by_id.clear()
 	messages.clear()
 	_message_ids.clear()
+	_local_order = 0
 	default_channel_id = FALLBACK_CHANNEL_ID
 	active_view_channel_id = FALLBACK_CHANNEL_ID
 	var config: Dictionary = ConfigLoader.load_config("chat_channels")
@@ -225,9 +227,16 @@ func _add_message(message: Dictionary) -> void:
 		return
 	if not message_id.is_empty():
 		_message_ids[message_id] = true
+	_local_order += 1
+	if not message.has("_local_order"):
+		message["_local_order"] = _local_order
 	messages.append(message)
 	messages.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
-		return int(a.get("created_at", 0)) < int(b.get("created_at", 0))
+		var left_time := int(a.get("created_at", 0))
+		var right_time := int(b.get("created_at", 0))
+		if left_time == right_time:
+			return int(a.get("_local_order", 0)) < int(b.get("_local_order", 0))
+		return left_time < right_time
 	)
 	while messages.size() > MAX_LOCAL_MESSAGES:
 		var removed: Dictionary = messages.pop_front()

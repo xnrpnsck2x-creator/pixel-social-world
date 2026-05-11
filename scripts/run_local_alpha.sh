@@ -53,6 +53,7 @@ for file in "${required_web_files[@]}"; do
 		exit 1
 	fi
 done
+python3 "$ROOT_DIR/scripts/patch_web_shell.py" "$WEB_SRC_DIR/index.html" >/dev/null
 
 mkdir -p "$ARTIFACT_DIR" "$BACKEND_DIR/var/creator_packages" "$BACKEND_DIR/var/creator_runtime"
 WEB_DIR="$ARTIFACT_DIR/web"
@@ -81,7 +82,9 @@ cat >"$WEB_DIR/runtime_config.json" <<JSON
     "base_url": "http://127.0.0.1:$API_PORT",
     "websocket_url": "ws://127.0.0.1:$API_PORT/ws/city"
   },
-  "feature_flags": {}
+  "feature_flags": {
+    "trade_backend": true
+  }
 }
 JSON
 
@@ -98,7 +101,29 @@ trap cleanup EXIT
 kill_port "$WEB_PORT"
 kill_port "$API_PORT"
 
-python3 -m http.server "$WEB_PORT" --bind 127.0.0.1 --directory "$WEB_DIR" >"$WEB_LOG" 2>&1 &
+python3 - "$WEB_PORT" "$WEB_DIR" >"$WEB_LOG" 2>&1 <<'PY' &
+import functools
+import http.server
+import socketserver
+import sys
+
+port = int(sys.argv[1])
+directory = sys.argv[2]
+
+class NoCacheHandler(http.server.SimpleHTTPRequestHandler):
+	def end_headers(self):
+		self.send_header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
+		self.send_header("Pragma", "no-cache")
+		self.send_header("Expires", "0")
+		super().end_headers()
+
+handler = functools.partial(NoCacheHandler, directory=directory)
+class ReusableTCPServer(socketserver.TCPServer):
+    allow_reuse_address = True
+
+with ReusableTCPServer(("127.0.0.1", port), handler) as httpd:
+    httpd.serve_forever()
+PY
 web_pid=$!
 (cd "$BACKEND_DIR" && \
 	PSW_CONFIG="$BACKEND_DIR/configs/local.yaml" \
@@ -132,12 +157,16 @@ Useful direct panels:
   http://127.0.0.1:$WEB_PORT/index.html?psw_panel=creator
   http://127.0.0.1:$WEB_PORT/index.html?psw_route=liveops_console
 
-Backend:
+Backend API probes (not a UI page):
   http://127.0.0.1:$API_PORT/healthz
   http://127.0.0.1:$API_PORT/readyz
 
 Admin token for local LiveOps:
   $ADMIN_TOKEN
+
+How to use the token:
+  Open the LiveOps URL above, paste the token into the top Admin token field,
+  then press Refresh.
 
 Logs:
   $WEB_LOG

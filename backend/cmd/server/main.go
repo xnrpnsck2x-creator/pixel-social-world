@@ -14,12 +14,16 @@ import (
 	"pixel-social-world/backend/internal/economy"
 	"pixel-social-world/backend/internal/gateway"
 	"pixel-social-world/backend/internal/house"
+	"pixel-social-world/backend/internal/inventory"
+	"pixel-social-world/backend/internal/mapactivity"
 	"pixel-social-world/backend/internal/messaging"
 	"pixel-social-world/backend/internal/minigame"
 	"pixel-social-world/backend/internal/ops"
+	"pixel-social-world/backend/internal/player"
 	"pixel-social-world/backend/internal/presence"
 	"pixel-social-world/backend/internal/room"
 	"pixel-social-world/backend/internal/social"
+	"pixel-social-world/backend/internal/trade"
 	"pixel-social-world/backend/internal/utility"
 	"pixel-social-world/backend/pkg/db"
 	redisclient "pixel-social-world/backend/pkg/redis"
@@ -44,6 +48,20 @@ func main() {
 		DailySoftCap:    cfg.Economy.DailySoftCap,
 	}
 	deps.EconomyService = economy.NewMemoryServiceWithPolicy(economyPolicy)
+	deps.InventoryService = inventory.NewMemoryService()
+	deps.TradeService = trade.NewMemoryService(deps.EconomyService, deps.InventoryService)
+	mapActivityRules, err := mapactivity.LoadRuleset(
+		cfg.World.MapActivitiesConfigPath,
+		cfg.World.MapPointsConfigPath,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+	deps.MapActivityService = mapactivity.NewMemoryServiceWithRuleset(
+		deps.EconomyService,
+		cfg.Economy.StartingCoinBalance,
+		mapActivityRules,
+	)
 	deps.RetentionPolicy = ops.RetentionPolicy{
 		RoomChatHistoryDays:        cfg.Retention.RoomChatHistoryDays,
 		PrivateMessageDays:         cfg.Retention.PrivateMessageDays,
@@ -161,7 +179,19 @@ func main() {
 		if err := social.AutoMigrate(postgresDB); err != nil {
 			log.Fatal(err)
 		}
+		if err := player.AutoMigrate(postgresDB); err != nil {
+			log.Fatal(err)
+		}
 		if err := utility.AutoMigrate(postgresDB); err != nil {
+			log.Fatal(err)
+		}
+		if err := inventory.AutoMigrate(postgresDB); err != nil {
+			log.Fatal(err)
+		}
+		if err := trade.AutoMigrate(postgresDB); err != nil {
+			log.Fatal(err)
+		}
+		if err := mapactivity.AutoMigrate(postgresDB); err != nil {
 			log.Fatal(err)
 		}
 		deps.ChatService = chat.NewGormService(postgresDB)
@@ -172,8 +202,17 @@ func main() {
 			economyPolicy,
 		)
 		deps.HouseService = house.NewGormServiceWithCatalog(postgresDB, housingCatalog)
+		deps.PlayerService = player.NewGormService(postgresDB)
 		deps.SocialService = social.NewGormService(postgresDB)
 		deps.UtilityService = utility.NewGormService(postgresDB, utilityPanels)
+		deps.InventoryService = inventory.NewGormService(postgresDB)
+		deps.TradeService = trade.NewGormService(postgresDB, deps.EconomyService, deps.InventoryService)
+		deps.MapActivityService = mapactivity.NewGormServiceWithRuleset(
+			postgresDB,
+			deps.EconomyService,
+			cfg.Economy.StartingCoinBalance,
+			mapActivityRules,
+		)
 		deps.MinigameService = minigame.NewGormSubmissionService(
 			postgresDB,
 			deps.MinigameService,

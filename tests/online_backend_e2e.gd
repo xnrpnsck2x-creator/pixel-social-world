@@ -1,6 +1,8 @@
 extends SceneTree
 
 const Helpers := preload("res://tests/BackendE2EHelpers.gd")
+const HousingHelpers := preload("res://tests/BackendE2EHousingHelpers.gd")
+const TradeHelpers := preload("res://tests/BackendE2ETradeHelpers.gd")
 
 func _initialize() -> void:
 	call_deferred("_run")
@@ -90,76 +92,13 @@ func _run() -> void:
 	if not Helpers.ok(join_response):
 		failures.append("Minigame session join failed: %s" % str(join_response))
 
-	var place_response: Dictionary = await client.call(
-		"place_housing_item",
-		player_id,
-		"simple_chair",
-		Vector2i(1, 2),
-		0
-	)
-	if not Helpers.ok(place_response):
-		failures.append("Housing place failed: %s" % str(place_response))
-	var place_data: Dictionary = place_response.get("data", {}) as Dictionary
-	if int(place_data.get("balance", -1)) != 0:
-		failures.append("Housing place did not spend the starter 25 coins.")
+	var house_room_id := await HousingHelpers.verify_housing_inventory_flow(client, player_id, failures)
 
-	var moved_house_item := {
-		"item_id": "simple_chair",
-		"tile": {"x": 1, "y": 2},
-		"rotation": 0
-	}
-	var move_response: Dictionary = await client.call(
-		"move_housing_item",
-		player_id,
-		moved_house_item,
-		Vector2i(2, 2),
-		90
-	)
-	if not Helpers.ok(move_response):
-		failures.append("Housing move failed: %s" % str(move_response))
-	var moved_layout: Dictionary = (move_response.get("data", {}) as Dictionary).get("layout", {}) as Dictionary
-	var moved_items: Array = moved_layout.get("items", []) as Array
-	if moved_items.is_empty() or int((moved_items[0] as Dictionary).get("rotation", -1)) != 90:
-		failures.append("Housing move did not persist rotation.")
-
-	var house_invite: Dictionary = await client.call("create_housing_invite", player_id)
-	if not Helpers.ok(house_invite):
-		failures.append("Housing invite failed: %s" % str(house_invite))
-	var house_room_id := str((house_invite.get("data", {}) as Dictionary).get("room_id", ""))
-	if house_room_id != "home:%s" % player_id:
-		failures.append("Housing invite returned an unexpected room id: %s" % house_room_id)
-
-	var ledger: Dictionary = await client.call("fetch_coin_ledger", player_id)
-	if not Helpers.ok(ledger):
-		failures.append("Ledger fetch failed: %s" % str(ledger))
-	var events: Array = (ledger.get("data", {}) as Dictionary).get("events", []) as Array
-	if events.size() < 2:
-		failures.append("Backend ledger did not include init and housing spend events.")
-
-	var reject_response: Dictionary = await client.call(
-		"place_housing_item",
-		player_id,
-		"simple_chair",
-		Vector2i(4, 2),
-		0
-	)
-	if Helpers.ok(reject_response) or int(reject_response.get("status", 0)) != 402:
-		failures.append("Expected second housing place to fail with 402.")
-	if not bool(client.get("is_connected")):
-		failures.append("HTTP 402 should not mark OnlineClient disconnected.")
-
-	var remove_response: Dictionary = await client.call("remove_housing_item", player_id, {
-		"item_id": "simple_chair",
-		"tile": {"x": 2, "y": 2},
-		"rotation": 90
-	})
-	if not Helpers.ok(remove_response):
-		failures.append("Housing remove failed: %s" % str(remove_response))
-	var remove_data: Dictionary = remove_response.get("data", {}) as Dictionary
-	if int(remove_data.get("refund", 0)) != 12 or int(remove_data.get("balance", -1)) != 12:
-		failures.append("Housing remove did not grant configured sell refund.")
+	await Helpers.verify_map_activity_reward(root, client, player_id, save_system, failures)
+	await TradeHelpers.verify_dual_player_trade(root, client, player_id, save_system, failures)
 
 	var fishing_request_id := "e2e-fishing-%d" % Time.get_ticks_msec()
+	var pre_fishing_balance := int(save_system.call("get_coin_balance"))
 	var catch_response: Dictionary = await client.call("claim_fishing_catch", session_id, fishing_request_id)
 	if not Helpers.ok(catch_response):
 		failures.append("Fishing reward claim failed: %s" % str(catch_response))
@@ -179,7 +118,7 @@ func _run() -> void:
 		failures.append("Fishing reward replay changed wallet balance.")
 	var rewarded_profile: Dictionary = await client.call("fetch_profile")
 	var rewarded_wallet: Dictionary = (rewarded_profile.get("data", {}) as Dictionary).get("wallet", {}) as Dictionary
-	if int(rewarded_wallet.get("coin", -1)) != fishing_reward + 12:
+	if int(rewarded_wallet.get("coin", -1)) != fishing_reward + pre_fishing_balance:
 		failures.append("Fishing reward did not sync to the backend wallet.")
 	var rewarded_ledger: Dictionary = await client.call("fetch_coin_ledger", player_id)
 	if not Helpers.ledger_has_source_prefix(rewarded_ledger, "minigame.fishing."):
@@ -214,6 +153,7 @@ func _run() -> void:
 	}, access_token)
 	if int(public_reward.get("status", 0)) != 403:
 		failures.append("Public reward endpoint was not blocked.")
+	await Helpers.verify_first_session_reward(client, player_id, failures)
 
 	var creator_submit := Helpers.creator_admin_manifest()
 	var creator_draft := Helpers.creator_draft_manifest()
@@ -253,6 +193,17 @@ func _run() -> void:
 		if not ops_body.has("chat") or not ops_body.has("fishing_rewards"):
 			failures.append("Debug ops did not include chat and fishing reward stats.")
 	await Helpers.verify_creator_package_publish(root, failures)
+	var action_audit: Dictionary = await client.call("fetch_admin_action_audit_admin", "local-admin-token")
+	if not Helpers.ok(action_audit):
+		failures.append("Admin action audit fetch failed: %s" % str(action_audit))
+	else:
+		var audit_items: Array = (action_audit.get("data", {}) as Dictionary).get("items", []) as Array
+		var found_review_audit := false
+		for item in audit_items:
+			if typeof(item) == TYPE_DICTIONARY and str((item as Dictionary).get("action", "")) == "minigame.review":
+				found_review_audit = true
+		if not found_review_audit:
+			failures.append("Admin action audit did not include creator review actions.")
 
 	var visitor_login: Dictionary = await client.call("guest_login", "Visitor E2E")
 	if not Helpers.ok(visitor_login):
@@ -287,12 +238,10 @@ func _run() -> void:
 		failures.append("Visitor was allowed to mutate the owner's home.")
 	save_system.set("profile", original_profile)
 	save_system.call("save_profile")
-
 	if failures.is_empty():
 		print("online backend e2e passed")
 		quit(0)
 		return
-
 	for failure in failures:
 		push_error(failure)
 	quit(1)

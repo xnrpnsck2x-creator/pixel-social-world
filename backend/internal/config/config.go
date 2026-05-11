@@ -15,6 +15,7 @@ type Config struct {
 	Retention RetentionConfig `yaml:"retention"`
 	Housing   HousingConfig   `yaml:"housing"`
 	Minigames MinigamesConfig `yaml:"minigames"`
+	World     WorldConfig     `yaml:"world"`
 	Utility   UtilityConfig   `yaml:"utility"`
 	AIReview  AIReviewConfig  `yaml:"ai_review"`
 	Postgres  PostgresConfig  `yaml:"postgres"`
@@ -79,6 +80,11 @@ type HousingConfig struct {
 
 type MinigamesConfig struct {
 	FishingConfigPath string `yaml:"fishing_config_path"`
+}
+
+type WorldConfig struct {
+	MapActivitiesConfigPath string `yaml:"map_activities_config_path"`
+	MapPointsConfigPath     string `yaml:"map_points_config_path"`
 }
 
 type UtilityConfig struct {
@@ -175,7 +181,11 @@ func defaultConfig() Config {
 		},
 		Housing:   HousingConfig{ItemsConfigPath: "../configs/housing_items.json", SellRefundRate: 0.5},
 		Minigames: MinigamesConfig{FishingConfigPath: "../configs/fishing.json"},
-		Utility:   UtilityConfig{PanelsConfigPath: "../configs/utility_panels.json"},
+		World: WorldConfig{
+			MapActivitiesConfigPath: "../configs/map_activities.json",
+			MapPointsConfigPath:     "../configs/map_points.json",
+		},
+		Utility: UtilityConfig{PanelsConfigPath: "../configs/utility_panels.json"},
 		AIReview: AIReviewConfig{
 			Mode:           "local_policy",
 			BaseURL:        "http://127.0.0.1:1234/v1",

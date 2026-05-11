@@ -49,7 +49,9 @@ func request_json(
 		if bool(refreshed.get("ok", false)):
 			return await request_json(method, path, payload, false)
 
-	if response_code > 0 and result_code == OK:
+	if response_code == 401 or response_code == 403:
+		_client._mark_disconnected()
+	elif response_code > 0 and result_code == OK:
 		_client._mark_connected()
 	else:
 		_client._mark_disconnected()
@@ -65,8 +67,11 @@ func request_json(
 	}
 
 func _parse_json(body_bytes: PackedByteArray) -> Dictionary:
-	var body_text := body_bytes.get_string_from_utf8()
+	var body_text := body_bytes.get_string_from_utf8().strip_edges()
 	if body_text.is_empty():
 		return {}
-	var parsed: Variant = JSON.parse_string(body_text)
+	var parser := JSON.new()
+	if parser.parse(body_text) != OK:
+		return {}
+	var parsed: Variant = parser.data
 	return parsed as Dictionary if typeof(parsed) == TYPE_DICTIONARY else {}

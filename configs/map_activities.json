@@ -1,0 +1,337 @@
+{
+	"schema_version": 1,
+	"default_cooldown_seconds": 45,
+	"default_daily_reward_limit": 12,
+	"actions": {
+		"foraging": {
+			"title_key": "map_activity.foraging.title",
+			"success_key": "map_activity.foraging.success",
+			"reward_coins": 1,
+			"cooldown_seconds": 45,
+			"source_id": "map_activity.foraging",
+			"daily_reward_limit": 12,
+			"skill_id": "gathering",
+			"skill_xp": 3,
+			"drops": [
+				{
+					"item_id": "wild_herb",
+					"amount": 1,
+					"rarity": "common"
+				}
+			],
+			"rare_event": {
+				"event_id": "foraging_glimmer",
+				"title_key": "map_activity.rare.generic",
+				"chance_bps": 250
+			}
+		},
+		"mining": {
+			"title_key": "map_activity.mining.title",
+			"success_key": "map_activity.mining.success",
+			"reward_coins": 1,
+			"cooldown_seconds": 45,
+			"source_id": "map_activity.mining",
+			"daily_reward_limit": 12,
+			"skill_id": "mining",
+			"skill_xp": 3,
+			"drops": [
+				{
+					"item_id": "ore_shard",
+					"amount": 1,
+					"rarity": "common"
+				}
+			],
+			"rare_event": {
+				"event_id": "mining_spark",
+				"title_key": "map_activity.rare.generic",
+				"chance_bps": 250
+			}
+		},
+		"crafting": {
+			"title_key": "map_activity.crafting.title",
+			"success_key": "map_activity.crafting.success",
+			"reward_coins": 1,
+			"cooldown_seconds": 45,
+			"source_id": "map_activity.crafting",
+			"daily_reward_limit": 12,
+			"skill_id": "crafting",
+			"skill_xp": 3,
+			"drops": [
+				{
+					"item_id": "craft_chip",
+					"amount": 1,
+					"rarity": "common"
+				}
+			],
+			"rare_event": {
+				"event_id": "crafting_inspiration",
+				"title_key": "map_activity.rare.generic",
+				"chance_bps": 250
+			}
+		},
+		"smithing": {
+			"title_key": "map_activity.smithing.title",
+			"success_key": "map_activity.smithing.success",
+			"reward_coins": 1,
+			"cooldown_seconds": 45,
+			"source_id": "map_activity.smithing",
+			"daily_reward_limit": 12,
+			"skill_id": "smithing",
+			"skill_xp": 3,
+			"drops": [
+				{
+					"item_id": "iron_nail",
+					"amount": 1,
+					"rarity": "common"
+				}
+			],
+			"rare_event": {
+				"event_id": "smithing_spark",
+				"title_key": "map_activity.rare.generic",
+				"chance_bps": 250
+			}
+		},
+		"carpentry": {
+			"title_key": "map_activity.carpentry.title",
+			"success_key": "map_activity.carpentry.success",
+			"reward_coins": 1,
+			"cooldown_seconds": 45,
+			"source_id": "map_activity.carpentry",
+			"daily_reward_limit": 12,
+			"skill_id": "carpentry",
+			"skill_xp": 3,
+			"drops": [
+				{
+					"item_id": "timber_piece",
+					"amount": 1,
+					"rarity": "common"
+				}
+			],
+			"rare_event": {
+				"event_id": "carpentry_grain",
+				"title_key": "map_activity.rare.generic",
+				"chance_bps": 250
+			}
+		},
+		"gather_herb": {
+			"title_key": "map_activity.gather_herb.title",
+			"success_key": "map_activity.gather_herb.success",
+			"reward_coins": 1,
+			"cooldown_seconds": 45,
+			"source_id": "map_activity.gather_herb",
+			"daily_reward_limit": 12,
+			"skill_id": "gathering",
+			"skill_xp": 3,
+			"drops": [
+				{
+					"item_id": "medicinal_leaf",
+					"amount": 1,
+					"rarity": "common"
+				}
+			],
+			"rare_event": {
+				"event_id": "herb_glimmer",
+				"title_key": "map_activity.rare.generic",
+				"chance_bps": 250
+			}
+		},
+		"chop_wood": {
+			"title_key": "map_activity.chop_wood.title",
+			"success_key": "map_activity.chop_wood.success",
+			"reward_coins": 1,
+			"cooldown_seconds": 45,
+			"source_id": "map_activity.chop_wood",
+			"daily_reward_limit": 12,
+			"skill_id": "woodcutting",
+			"skill_xp": 3,
+			"drops": [
+				{
+					"item_id": "softwood_log",
+					"amount": 1,
+					"rarity": "common"
+				}
+			],
+			"rare_event": {
+				"event_id": "woodcutting_grain",
+				"title_key": "map_activity.rare.generic",
+				"chance_bps": 250
+			}
+		},
+		"harvest_crop": {
+			"title_key": "map_activity.harvest_crop.title",
+			"success_key": "map_activity.harvest_crop.success",
+			"reward_coins": 1,
+			"cooldown_seconds": 45,
+			"source_id": "map_activity.harvest_crop",
+			"daily_reward_limit": 12,
+			"skill_id": "farming",
+			"skill_xp": 3,
+			"drops": [
+				{
+					"item_id": "fresh_crop",
+					"amount": 1,
+					"rarity": "common"
+				}
+			],
+			"rare_event": {
+				"event_id": "farming_bounty",
+				"title_key": "map_activity.rare.generic",
+				"chance_bps": 250
+			}
+		},
+		"catch_insect": {
+			"title_key": "map_activity.catch_insect.title",
+			"success_key": "map_activity.catch_insect.success",
+			"reward_coins": 1,
+			"cooldown_seconds": 45,
+			"source_id": "map_activity.catch_insect",
+			"daily_reward_limit": 12,
+			"skill_id": "entomology",
+			"skill_xp": 3,
+			"drops": [
+				{
+					"item_id": "beetle_shell",
+					"amount": 1,
+					"rarity": "common"
+				}
+			],
+			"rare_event": {
+				"event_id": "insect_spark",
+				"title_key": "map_activity.rare.generic",
+				"chance_bps": 250
+			}
+		},
+		"dig_artifact": {
+			"title_key": "map_activity.dig_artifact.title",
+			"success_key": "map_activity.dig_artifact.success",
+			"reward_coins": 1,
+			"cooldown_seconds": 45,
+			"source_id": "map_activity.dig_artifact",
+			"daily_reward_limit": 12,
+			"skill_id": "archaeology",
+			"skill_xp": 3,
+			"drops": [
+				{
+					"item_id": "pottery_fragment",
+					"amount": 1,
+					"rarity": "common"
+				}
+			],
+			"rare_event": {
+				"event_id": "artifact_glimmer",
+				"title_key": "map_activity.rare.generic",
+				"chance_bps": 250
+			}
+		},
+		"cook_food": {
+			"title_key": "map_activity.cook_food.title",
+			"success_key": "map_activity.cook_food.success",
+			"reward_coins": 1,
+			"cooldown_seconds": 45,
+			"source_id": "map_activity.cook_food",
+			"daily_reward_limit": 12,
+			"skill_id": "cooking",
+			"skill_xp": 3,
+			"drops": [
+				{
+					"item_id": "picnic_bite",
+					"amount": 1,
+					"rarity": "common"
+				}
+			],
+			"rare_event": {
+				"event_id": "cooking_aroma",
+				"title_key": "map_activity.rare.generic",
+				"chance_bps": 250
+			}
+		},
+		"explore": {
+			"title_key": "map_activity.explore.title",
+			"success_key": "map_activity.explore.success",
+			"reward_coins": 1,
+			"cooldown_seconds": 35,
+			"source_id": "map_activity.explore",
+			"daily_reward_limit": 10,
+			"skill_id": "exploration",
+			"skill_xp": 2,
+			"drops": [
+				{
+					"item_id": "trail_token",
+					"amount": 1,
+					"rarity": "common"
+				}
+			],
+			"rare_event": {
+				"event_id": "hidden_trail",
+				"title_key": "map_activity.rare.generic",
+				"chance_bps": 250
+			}
+		},
+		"seasonal_event": {
+			"title_key": "map_activity.seasonal_event.title",
+			"success_key": "map_activity.seasonal_event.success",
+			"reward_coins": 2,
+			"cooldown_seconds": 60,
+			"source_id": "map_activity.seasonal_event",
+			"daily_reward_limit": 4,
+			"skill_id": "festival",
+			"skill_xp": 5,
+			"drops": [
+				{
+					"item_id": "festival_ticket",
+					"amount": 1,
+					"rarity": "uncommon"
+				}
+			],
+			"rare_event": {
+				"event_id": "festival_blessing",
+				"title_key": "map_activity.rare.generic",
+				"chance_bps": 500
+			}
+		},
+		"inn": {
+			"title_key": "map_activity.inn.title",
+			"success_key": "map_activity.inn.success",
+			"reward_coins": 0,
+			"cooldown_seconds": 20,
+			"source_id": "map_activity.inn",
+			"daily_reward_limit": 0,
+			"skill_id": "",
+			"skill_xp": 0,
+			"drops": []
+		},
+		"library": {
+			"title_key": "map_activity.library.title",
+			"success_key": "map_activity.library.success",
+			"reward_coins": 0,
+			"cooldown_seconds": 20,
+			"source_id": "map_activity.library",
+			"daily_reward_limit": 0,
+			"skill_id": "",
+			"skill_xp": 0,
+			"drops": []
+		},
+		"seasonal_board": {
+			"title_key": "map_activity.seasonal_board.title",
+			"success_key": "map_activity.seasonal_board.success",
+			"reward_coins": 0,
+			"cooldown_seconds": 20,
+			"source_id": "map_activity.seasonal_board",
+			"daily_reward_limit": 0,
+			"skill_id": "",
+			"skill_xp": 0,
+			"drops": []
+		},
+		"broker": {
+			"title_key": "map_activity.broker.title",
+			"success_key": "map_activity.broker.success",
+			"reward_coins": 0,
+			"cooldown_seconds": 20,
+			"source_id": "map_activity.broker",
+			"daily_reward_limit": 0,
+			"skill_id": "",
+			"skill_xp": 0,
+			"drops": []
+		}
+	}
+}

@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "facilities": {
+    "trade": {
+      "map_id": "social_trade_market_v1",
+      "status": "backend_ready",
+      "title_key": "facility.trade.title",
+      "body_key": "facility.trade.body",
+      "detail_key": "facility.trade.detail",
+      "icon_id": "icon.coin",
+      "rows": [
+        {
+          "id": "market_board",
+          "title_key": "facility.trade.board.title",
+          "body_key": "facility.trade.board.body",
+          "state_key": "facility.state.ready",
+          "icon_id": "icon.shop"
+        },
+        {
+          "id": "creator_stalls",
+          "title_key": "facility.trade.creator_stalls.title",
+          "body_key": "facility.trade.creator_stalls.body",
+          "state_key": "facility.state.ready",
+          "icon_id": "icon.gift"
+        }
+      ]
+    },
+    "guild": {
+      "map_id": "social_guild_garden_v1",
+      "status": "local_contract",
+      "title_key": "facility.guild.title",
+      "body_key": "facility.guild.body",
+      "detail_key": "facility.guild.detail",
+      "icon_id": "icon.friends",
+      "rows": [
+        {
+          "id": "guild_board",
+          "title_key": "facility.guild.board.title",
+          "body_key": "facility.guild.board.body",
+          "state_key": "facility.state.local",
+          "icon_id": "icon.quest"
+        },
+        {
+          "id": "group_photo",
+          "title_key": "facility.guild.group_photo.title",
+          "body_key": "facility.guild.group_photo.body",
+          "state_key": "facility.state.ready",
+          "icon_id": "icon.chat"
+        }
+      ]
+    }
+  }
+}

@@ -21,7 +21,18 @@ theme_override_constants/separation = 8
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="NameLabel" type="Label" parent="Margin/Rows/HeaderRow"]
+[node name="AvatarPreview" type="TextureRect" parent="Margin/Rows/HeaderRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(58, 58)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="HeaderTextRows" type="VBoxContainer" parent="Margin/Rows/HeaderRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="NameLabel" type="Label" parent="Margin/Rows/HeaderRow/HeaderTextRows"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -31,7 +42,12 @@ text_overrun_behavior = 3
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="IdLabel" type="Label" parent="Margin/Rows"]
+[node name="IdLabel" type="Label" parent="Margin/Rows/HeaderRow/HeaderTextRows"]
+unique_name_in_owner = true
+layout_mode = 2
+text_overrun_behavior = 3
+
+[node name="RoleLabel" type="Label" parent="Margin/Rows/HeaderRow/HeaderTextRows"]
 unique_name_in_owner = true
 layout_mode = 2
 text_overrun_behavior = 3

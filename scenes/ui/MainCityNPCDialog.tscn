@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/UI/Panels/MainCityNPCDialog.gd" id="1_dialog"]
 
 [node name="MainCityNPCDialog" type="PanelContainer"]
-custom_minimum_size = Vector2(360, 148)
+custom_minimum_size = Vector2(376, 204)
 script = ExtResource("1_dialog")
 
 [node name="Margin" type="MarginContainer" parent="."]
@@ -21,18 +21,58 @@ theme_override_constants/separation = 8
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="TitleLabel" type="Label" parent="Margin/Rows/HeaderRow"]
+[node name="PortraitFrame" type="PanelContainer" parent="Margin/Rows/HeaderRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(56, 64)
+layout_mode = 2
+
+[node name="PortraitMargin" type="MarginContainer" parent="Margin/Rows/HeaderRow/PortraitFrame"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="PortraitTexture" type="TextureRect" parent="Margin/Rows/HeaderRow/PortraitFrame/PortraitMargin"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HeaderTextRows" type="VBoxContainer" parent="Margin/Rows/HeaderRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 2
+
+[node name="TitleLine" type="HBoxContainer" parent="Margin/Rows/HeaderRow/HeaderTextRows"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="TitleLabel" type="Label" parent="Margin/Rows/HeaderRow/HeaderTextRows/TitleLine"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="CloseButton" type="Button" parent="Margin/Rows/HeaderRow"]
+[node name="CloseButton" type="Button" parent="Margin/Rows/HeaderRow/HeaderTextRows/TitleLine"]
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="RoleLabel" type="Label" parent="Margin/Rows/HeaderRow/HeaderTextRows"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.32, 0.2, 0.1, 1)
+autowrap_mode = 3
+
+[node name="DutyLabel" type="Label" parent="Margin/Rows/HeaderRow/HeaderTextRows"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.42, 0.3, 0.18, 1)
+autowrap_mode = 3
+
 [node name="BodyLabel" type="Label" parent="Margin/Rows"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 48)
+custom_minimum_size = Vector2(0, 42)
 layout_mode = 2
 autowrap_mode = 3
 

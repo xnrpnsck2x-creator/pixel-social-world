@@ -248,6 +248,20 @@
       "usage": "housing_catalog_and_room_sprite"
     },
     {
+      "id": "housing.item.cozy_rug.icon",
+      "type": "housing_icon",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_009.png",
+      "source_path": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "usage": "housing_catalog_and_room_sprite"
+    },
+    {
+      "id": "housing.item.wall_shelf.icon",
+      "type": "housing_icon",
+      "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_010.png",
+      "source_path": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
+      "usage": "housing_catalog_and_room_sprite"
+    },
+    {
       "id": "housing.item.arcade_cabinet.icon",
       "type": "housing_icon",
       "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_008.png",
@@ -274,6 +288,1001 @@
       "path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_014.png",
       "source_path": "res://assets/housing/generated/housing_fishing_props_v0_alpha.png",
       "usage": "fishing_reward_ui"
+    },
+    {
+      "id": "map.motherboard.city_forest_dawn.v1.candidate_a",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/city_forest_dawn_v1_candidate_a.png",
+      "source_path": "res://assets/maps/generated/city_forest_dawn_v1_candidate_a_source.png",
+      "usage": "main_city_motherboard_candidate",
+      "status": "art_density_reference",
+      "notes": "Closest to the approved forest-town reference board; kept as density and atmosphere reference for the playtest pass."
+    },
+    {
+      "id": "map.motherboard.city_forest_dawn.v1.candidate_b",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/city_forest_dawn_v1_candidate_b.png",
+      "source_path": "res://assets/maps/generated/city_forest_dawn_v1_candidate_b_source.png",
+      "usage": "main_city_motherboard_candidate",
+      "status": "reference_only",
+      "notes": "Good island-town composition, but includes baked characters; regenerate before production use."
+    },
+    {
+      "id": "map.motherboard.city_forest_dawn.v1.candidate_c",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/city_forest_dawn_v1_candidate_c.png",
+      "source_path": "res://assets/maps/generated/city_forest_dawn_v1_candidate_c_source.png",
+      "usage": "main_city_motherboard_candidate",
+      "status": "reference_only",
+      "notes": "Strong circular plaza and market read, but has baked characters and needs cleaner entrances."
+    },
+    {
+      "id": "map.motherboard.city_forest_dawn.v1.candidate_d",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/city_forest_dawn_v1_candidate_d.png",
+      "source_path": "res://assets/maps/generated/city_forest_dawn_v1_candidate_d_source.png",
+      "usage": "main_city_motherboard_candidate",
+      "status": "structure_reference",
+      "notes": "Previous main city test-install background; kept as road-structure and collision-readability reference."
+    },
+    {
+      "id": "map.motherboard.city_forest_dawn.v1.candidate_e",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/city_forest_dawn_v1_candidate_e.png",
+      "source_path": "res://assets/maps/generated/city_forest_dawn_v1_candidate_e_source.png",
+      "usage": "main_city_motherboard_candidate",
+      "status": "playtest_candidate",
+      "notes": "Current main city test-install background; combines candidate A's cozy art density with candidate D's clearer functional road layout."
+    },
+    {
+      "id": "map.motherboard.city_port_market.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/city_port_market_v1.png",
+      "source_path": "res://assets/maps/generated/city_port_market_v1_source.png",
+      "usage": "second_main_city_motherboard_candidate",
+      "status": "motherboard_ready",
+      "notes": "Image 2 generated harbor market motherboard for the first non-forest main-city candidate."
+    },
+    {
+      "id": "map.motherboard.life_fishing_riverbend.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/life_fishing_riverbend_v1.png",
+      "source_path": "res://assets/maps/generated/life_fishing_riverbend_v1_source.png",
+      "usage": "life_skill_fishing_map_motherboard",
+      "status": "playtest_candidate",
+      "notes": "Image 2 generated riverbend map for the fishing life-skill loop."
+    },
+    {
+      "id": "map.motherboard.social_housing_district.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/social_housing_district_v1.png",
+      "source_path": "res://assets/maps/generated/social_housing_district_v1_source.png",
+      "usage": "housing_district_motherboard",
+      "status": "playtest_candidate",
+      "notes": "Image 2 generated housing district map for social housing access."
+    },
+    {
+      "id": "map.motherboard.social_minigame_arcade_hall.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/social_minigame_arcade_hall_v1.png",
+      "source_path": "res://assets/maps/generated/social_minigame_arcade_hall_v1_source.png",
+      "usage": "minigame_hall_motherboard",
+      "status": "playtest_candidate",
+      "notes": "Image 2 generated indoor arcade hall map for minigame access."
+    },
+    {
+      "id": "map.motherboard.city_spring_workshop.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/city_spring_workshop_v1.png",
+      "source_path": "res://assets/maps/generated/city_spring_workshop_v1_source.png",
+      "usage": "main_city_motherboard",
+      "status": "playtest_candidate",
+      "notes": "Image 2 generated mountain workshop town motherboard for crafting and upgrade economy."
+    },
+    {
+      "id": "map.motherboard.life_crystal_mine.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/life_crystal_mine_v1.png",
+      "source_path": "res://assets/maps/generated/life_crystal_mine_v1_source.png",
+      "usage": "life_skill_motherboard",
+      "status": "playtest_candidate",
+      "notes": "Image 2 generated crystal mine motherboard for mining life-skill loop."
+    },
+    {
+      "id": "map.motherboard.social_trade_market.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/social_trade_market_v1.png",
+      "source_path": "res://assets/maps/generated/social_trade_market_v1_source.png",
+      "usage": "social_function_motherboard",
+      "status": "playtest_candidate",
+      "notes": "Image 2 generated trade market motherboard for social economy and player-to-player trading."
+    },
+    {
+      "id": "map.motherboard.social_guild_garden.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/social_guild_garden_v1.png",
+      "source_path": "res://assets/maps/generated/social_guild_garden_v1_source.png",
+      "usage": "social_function_motherboard",
+      "status": "playtest_candidate",
+      "notes": "Image 2 generated guild garden motherboard for guild social retention and group-photo flow."
+    },
+    {
+      "id": "map.motherboard.city_snowbell_village.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/city_snowbell_village_v1.png",
+      "source_path": "res://assets/maps/generated/city_snowbell_village_v1_source.png",
+      "usage": "main_city_motherboard",
+      "status": "playtest_candidate",
+      "notes": "Image 2 generated Snowbell Village motherboard."
+    },
+    {
+      "id": "map.motherboard.city_academy_plaza.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/city_academy_plaza_v1.png",
+      "source_path": "res://assets/maps/generated/city_academy_plaza_v1_source.png",
+      "usage": "main_city_motherboard",
+      "status": "playtest_candidate",
+      "notes": "Image 2 generated Academy Plaza motherboard."
+    },
+    {
+      "id": "map.motherboard.city_festival_night_market.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/city_festival_night_market_v1.png",
+      "source_path": "res://assets/maps/generated/city_festival_night_market_v1_source.png",
+      "usage": "main_city_motherboard",
+      "status": "playtest_candidate",
+      "notes": "Image 2 generated Festival Night Market motherboard."
+    },
+    {
+      "id": "map.motherboard.life_herb_forest.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/life_herb_forest_v1.png",
+      "source_path": "res://assets/maps/generated/life_herb_forest_v1_source.png",
+      "usage": "life_skill_motherboard",
+      "status": "playtest_candidate",
+      "notes": "Image 2 generated Herb Forest life-skill motherboard."
+    },
+    {
+      "id": "map.motherboard.life_lumber_grove.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/life_lumber_grove_v1.png",
+      "source_path": "res://assets/maps/generated/life_lumber_grove_v1_source.png",
+      "usage": "life_skill_motherboard",
+      "status": "playtest_candidate",
+      "notes": "Image 2 generated Lumber Grove life-skill motherboard."
+    },
+    {
+      "id": "map.motherboard.life_starter_farm.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/life_starter_farm_v1.png",
+      "source_path": "res://assets/maps/generated/life_starter_farm_v1_source.png",
+      "usage": "life_skill_motherboard",
+      "status": "playtest_candidate",
+      "notes": "Image 2 generated Starter Farm life-skill motherboard."
+    },
+    {
+      "id": "map.motherboard.life_insect_meadow.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/life_insect_meadow_v1.png",
+      "source_path": "res://assets/maps/generated/life_insect_meadow_v1_source.png",
+      "usage": "life_skill_motherboard",
+      "status": "playtest_candidate",
+      "notes": "Image 2 generated Insect Meadow life-skill motherboard."
+    },
+    {
+      "id": "map.motherboard.life_ruin_dig_site.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/life_ruin_dig_site_v1.png",
+      "source_path": "res://assets/maps/generated/life_ruin_dig_site_v1_source.png",
+      "usage": "life_skill_motherboard",
+      "status": "playtest_candidate",
+      "notes": "Image 2 generated Ruin Dig Site life-skill motherboard."
+    },
+    {
+      "id": "map.motherboard.life_cooking_market.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/life_cooking_market_v1.png",
+      "source_path": "res://assets/maps/generated/life_cooking_market_v1_source.png",
+      "usage": "life_skill_motherboard",
+      "status": "playtest_candidate",
+      "notes": "Image 2 generated Cooking Market life-skill motherboard."
+    },
+    {
+      "id": "map.motherboard.social_creator_gallery.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/social_creator_gallery_v1.png",
+      "source_path": "res://assets/maps/generated/social_creator_gallery_v1_source.png",
+      "usage": "social_function_motherboard",
+      "status": "playtest_candidate",
+      "notes": "Image 2 generated Creator Gallery social-function motherboard."
+    },
+    {
+      "id": "map.motherboard.social_mail_plaza.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/social_mail_plaza_v1.png",
+      "source_path": "res://assets/maps/generated/social_mail_plaza_v1_source.png",
+      "usage": "social_function_motherboard",
+      "status": "playtest_candidate",
+      "notes": "Image 2 generated Mail Plaza social-function motherboard."
+    },
+    {
+      "id": "map.motherboard.random_flower_valley.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/random_flower_valley_v1.png",
+      "source_path": "res://assets/maps/generated/random_flower_valley_v1_source.png",
+      "usage": "random_exploration_motherboard",
+      "status": "playtest_candidate",
+      "notes": "Image 2 generated Flower Valley random-exploration motherboard."
+    },
+    {
+      "id": "map.motherboard.random_mist_wetland.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/random_mist_wetland_v1.png",
+      "source_path": "res://assets/maps/generated/random_mist_wetland_v1_source.png",
+      "usage": "random_exploration_motherboard",
+      "status": "playtest_candidate",
+      "notes": "Image 2 generated Mist Wetland random-exploration motherboard."
+    },
+    {
+      "id": "map.motherboard.random_old_ruins.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/random_old_ruins_v1.png",
+      "source_path": "res://assets/maps/generated/random_old_ruins_v1_source.png",
+      "usage": "random_exploration_motherboard",
+      "status": "playtest_candidate",
+      "notes": "Image 2 generated Old Ruins random-exploration motherboard."
+    },
+    {
+      "id": "map.motherboard.random_autumn_road.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/random_autumn_road_v1.png",
+      "source_path": "res://assets/maps/generated/random_autumn_road_v1_source.png",
+      "usage": "random_exploration_motherboard",
+      "status": "playtest_candidate",
+      "notes": "Image 2 generated Autumn Road random-exploration motherboard."
+    },
+    {
+      "id": "map.motherboard.random_island_coast.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/random_island_coast_v1.png",
+      "source_path": "res://assets/maps/generated/random_island_coast_v1_source.png",
+      "usage": "random_exploration_motherboard",
+      "status": "playtest_candidate",
+      "notes": "Image 2 generated Island Coast random-exploration motherboard."
+    },
+    {
+      "id": "map.motherboard.random_lantern_forest.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/random_lantern_forest_v1.png",
+      "source_path": "res://assets/maps/generated/random_lantern_forest_v1_source.png",
+      "usage": "random_exploration_motherboard",
+      "status": "playtest_candidate",
+      "notes": "Image 2 generated Lantern Forest random-exploration motherboard."
+    },
+    {
+      "id": "map.motherboard.random_cliff_boardwalk.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/random_cliff_boardwalk_v1.png",
+      "source_path": "res://assets/maps/generated/random_cliff_boardwalk_v1_source.png",
+      "usage": "random_exploration_motherboard",
+      "status": "playtest_candidate",
+      "notes": "Image 2 generated Cliff Boardwalk random-exploration motherboard."
+    },
+    {
+      "id": "map.motherboard.random_ancient_tree_maze.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/random_ancient_tree_maze_v1.png",
+      "source_path": "res://assets/maps/generated/random_ancient_tree_maze_v1_source.png",
+      "usage": "random_exploration_motherboard",
+      "status": "playtest_candidate",
+      "notes": "Image 2 generated Ancient Tree Maze random-exploration motherboard."
+    },
+    {
+      "id": "map.motherboard.season_cherry_blossom_fair.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/season_cherry_blossom_fair_v1.png",
+      "source_path": "res://assets/maps/generated/season_cherry_blossom_fair_v1_source.png",
+      "usage": "seasonal_motherboard",
+      "status": "playtest_candidate",
+      "notes": "Image 2 generated Cherry Blossom Fair seasonal motherboard."
+    },
+    {
+      "id": "map.motherboard.season_snow_festival.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/season_snow_festival_v1.png",
+      "source_path": "res://assets/maps/generated/season_snow_festival_v1_source.png",
+      "usage": "seasonal_motherboard",
+      "status": "playtest_candidate",
+      "notes": "Image 2 generated Snow Festival seasonal motherboard."
+    },
+    {
+      "id": "map.motherboard.season_summer_fireworks_pier.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/season_summer_fireworks_pier_v1.png",
+      "source_path": "res://assets/maps/generated/season_summer_fireworks_pier_v1_source.png",
+      "usage": "seasonal_motherboard",
+      "status": "playtest_candidate",
+      "notes": "Image 2 generated Summer Fireworks Pier seasonal motherboard."
+    },
+    {
+      "id": "map.motherboard.season_pumpkin_lantern_square.v1",
+      "type": "generated_whole_map",
+      "path": "res://assets/maps/generated/season_pumpkin_lantern_square_v1.png",
+      "source_path": "res://assets/maps/generated/season_pumpkin_lantern_square_v1_source.png",
+      "usage": "seasonal_motherboard",
+      "status": "playtest_candidate",
+      "notes": "Image 2 generated Pumpkin Lantern Square seasonal motherboard."
+    },
+    {
+      "id": "sprite.sheet.npc_professions.v1",
+      "type": "generated_sheet",
+      "path": "res://assets/sprites/generated/npc_professions_v1_alpha.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_v1_source.png",
+      "usage": "formal_npc_profession_sheet"
+    },
+    {
+      "id": "sprite.slices.npc_professions.v1",
+      "type": "generated_slices",
+      "path": "res://assets/sprites/sliced/npc_professions_v1",
+      "source_path": "res://assets/sprites/generated/npc_professions_v1_alpha.png",
+      "usage": "main_city_npc_profession_frames"
+    },
+    {
+      "id": "npc.profession.fisher_v1",
+      "type": "npc_profession_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_v1/fisher_idle_down.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_v1_alpha.png",
+      "usage": "main_city_fishing_and_river_maps"
+    },
+    {
+      "id": "npc.profession.merchant_v1",
+      "type": "npc_profession_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_v1/merchant_idle_down.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_v1_alpha.png",
+      "usage": "main_city_trade_and_market_maps"
+    },
+    {
+      "id": "npc.profession.mail_courier_v1",
+      "type": "npc_profession_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_v1/mail_courier_idle_down.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_v1_alpha.png",
+      "usage": "main_city_mail_and_messaging"
+    },
+    {
+      "id": "npc.profession.game_host_v1",
+      "type": "npc_profession_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_v1/game_host_idle_down.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_v1_alpha.png",
+      "usage": "main_city_minigame_and_event_host"
+    },
+    {
+      "id": "npc.profession.home_keeper_v1",
+      "type": "npc_profession_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_v1/home_keeper_idle_down.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_v1_alpha.png",
+      "usage": "housing_and_cozy_service_maps"
+    },
+    {
+      "id": "npc.profession.academy_registrar_v1",
+      "type": "npc_profession_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_v1/academy_registrar_idle_down.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_v1_alpha.png",
+      "usage": "academy_creator_and_review_maps"
+    },
+    {
+      "id": "npc.profession.herbalist_v1",
+      "type": "npc_profession_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_v1/herbalist_idle_down.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_v1_alpha.png",
+      "usage": "life_skill_nature_maps"
+    },
+    {
+      "id": "npc.profession.chef_guide_v1",
+      "type": "npc_profession_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_v1/chef_guide_idle_down.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_v1_alpha.png",
+      "usage": "cooking_and_market_maps"
+    },
+    {
+      "id": "branding.icon.ios_1024",
+      "type": "app_icon",
+      "path": "res://assets/branding/generated/app_icon_forest_dawn_v1_1024.png",
+      "source_path": "res://assets/maps/generated/city_forest_dawn_v1_candidate_d.png",
+      "usage": "ios_store_and_device_icon",
+      "status": "mvp_derived_from_image2"
+    },
+    {
+      "id": "branding.icon.android_main_192",
+      "type": "launcher_icon",
+      "path": "res://assets/branding/generated/launcher_icon_forest_dawn_v1_192.png",
+      "source_path": "res://assets/maps/generated/city_forest_dawn_v1_candidate_d.png",
+      "usage": "android_launcher_icon",
+      "status": "mvp_derived_from_image2"
+    },
+    {
+      "id": "branding.icon.android_adaptive_foreground_432",
+      "type": "launcher_icon",
+      "path": "res://assets/branding/generated/adaptive_foreground_forest_dawn_v1_432.png",
+      "source_path": "res://assets/maps/generated/city_forest_dawn_v1_candidate_d.png",
+      "usage": "android_adaptive_foreground",
+      "status": "mvp_derived_from_image2"
+    },
+    {
+      "id": "branding.icon.android_adaptive_background_432",
+      "type": "launcher_icon",
+      "path": "res://assets/branding/generated/adaptive_background_forest_dawn_v1_432.png",
+      "source_path": "res://assets/maps/generated/city_forest_dawn_v1_candidate_d.png",
+      "usage": "android_adaptive_background",
+      "status": "mvp_derived_from_image2"
+    },
+    {
+      "id": "branding.splash.ios_2x",
+      "type": "launch_splash",
+      "path": "res://assets/branding/generated/launch_splash_forest_dawn_v1_2048x1152.png",
+      "source_path": "res://assets/maps/generated/city_forest_dawn_v1_candidate_d.png",
+      "usage": "ios_storyboard_launch_image_2x",
+      "status": "mvp_derived_from_image2"
+    },
+    {
+      "id": "branding.splash.ios_3x",
+      "type": "launch_splash",
+      "path": "res://assets/branding/generated/launch_splash_forest_dawn_v1_2732x1536.png",
+      "source_path": "res://assets/maps/generated/city_forest_dawn_v1_candidate_d.png",
+      "usage": "ios_storyboard_launch_image_3x",
+      "status": "mvp_derived_from_image2"
+    },
+    {
+      "id": "sprite.sheet.npc_professions.direction_v1",
+      "type": "generated_sheet",
+      "path": "res://assets/sprites/generated/npc_professions_direction_v1_alpha.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_direction_v1_source.png",
+      "usage": "formal_directional_npc_profession_sheet"
+    },
+    {
+      "id": "sprite.slices.npc_professions.direction_v1",
+      "type": "generated_slices",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1",
+      "source_path": "res://assets/sprites/generated/npc_professions_direction_v1_alpha.png",
+      "usage": "main_city_npc_profession_direction_frames"
+    },
+    {
+      "id": "npc.profession_direction.merchant_v1.down",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/merchant_idle_down.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_direction_v1_alpha.png",
+      "usage": "main_city_trade_and_market_maps"
+    },
+    {
+      "id": "npc.profession_direction.merchant_v1.left",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/merchant_idle_left.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_direction_v1_alpha.png",
+      "usage": "main_city_trade_and_market_maps"
+    },
+    {
+      "id": "npc.profession_direction.merchant_v1.up",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/merchant_idle_up.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_direction_v1_alpha.png",
+      "usage": "main_city_trade_and_market_maps"
+    },
+    {
+      "id": "npc.profession_direction.merchant_v1.right",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/merchant_idle_right.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_direction_v1_alpha.png",
+      "usage": "main_city_trade_and_market_maps"
+    },
+    {
+      "id": "npc.profession_direction.mail_courier_v1.down",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/mail_courier_idle_down.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_direction_v1_alpha.png",
+      "usage": "main_city_mail_and_messaging"
+    },
+    {
+      "id": "npc.profession_direction.mail_courier_v1.left",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/mail_courier_idle_left.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_direction_v1_alpha.png",
+      "usage": "main_city_mail_and_messaging"
+    },
+    {
+      "id": "npc.profession_direction.mail_courier_v1.up",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/mail_courier_idle_up.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_direction_v1_alpha.png",
+      "usage": "main_city_mail_and_messaging"
+    },
+    {
+      "id": "npc.profession_direction.mail_courier_v1.right",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/mail_courier_idle_right.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_direction_v1_alpha.png",
+      "usage": "main_city_mail_and_messaging"
+    },
+    {
+      "id": "npc.profession_direction.game_host_v1.down",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/game_host_idle_down.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_direction_v1_alpha.png",
+      "usage": "main_city_minigame_and_event_host"
+    },
+    {
+      "id": "npc.profession_direction.game_host_v1.left",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/game_host_idle_left.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_direction_v1_alpha.png",
+      "usage": "main_city_minigame_and_event_host"
+    },
+    {
+      "id": "npc.profession_direction.game_host_v1.up",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/game_host_idle_up.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_direction_v1_alpha.png",
+      "usage": "main_city_minigame_and_event_host"
+    },
+    {
+      "id": "npc.profession_direction.game_host_v1.right",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/game_host_idle_right.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_direction_v1_alpha.png",
+      "usage": "main_city_minigame_and_event_host"
+    },
+    {
+      "id": "npc.profession_direction.home_keeper_v1.down",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/home_keeper_idle_down.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_direction_v1_alpha.png",
+      "usage": "housing_and_cozy_service_maps"
+    },
+    {
+      "id": "npc.profession_direction.home_keeper_v1.left",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/home_keeper_idle_left.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_direction_v1_alpha.png",
+      "usage": "housing_and_cozy_service_maps"
+    },
+    {
+      "id": "npc.profession_direction.home_keeper_v1.up",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/home_keeper_idle_up.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_direction_v1_alpha.png",
+      "usage": "housing_and_cozy_service_maps"
+    },
+    {
+      "id": "npc.profession_direction.home_keeper_v1.right",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/home_keeper_idle_right.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_direction_v1_alpha.png",
+      "usage": "housing_and_cozy_service_maps"
+    },
+    {
+      "id": "npc.profession_direction.academy_registrar_v1.down",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/academy_registrar_idle_down.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_direction_v1_alpha.png",
+      "usage": "academy_creator_and_review_maps"
+    },
+    {
+      "id": "npc.profession_direction.academy_registrar_v1.left",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/academy_registrar_idle_left.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_direction_v1_alpha.png",
+      "usage": "academy_creator_and_review_maps"
+    },
+    {
+      "id": "npc.profession_direction.academy_registrar_v1.up",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/academy_registrar_idle_up.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_direction_v1_alpha.png",
+      "usage": "academy_creator_and_review_maps"
+    },
+    {
+      "id": "npc.profession_direction.academy_registrar_v1.right",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/academy_registrar_idle_right.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_direction_v1_alpha.png",
+      "usage": "academy_creator_and_review_maps"
+    },
+    {
+      "id": "sprite.sheet.npc_professions.life_direction_v1",
+      "type": "generated_sheet",
+      "path": "res://assets/sprites/generated/npc_professions_life_direction_v1_alpha.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_life_direction_v1_source.png",
+      "usage": "formal_life_npc_profession_direction_sheet"
+    },
+    {
+      "id": "sprite.slices.npc_professions.life_direction_v1",
+      "type": "generated_slices",
+      "path": "res://assets/sprites/sliced/npc_professions_life_direction_v1",
+      "source_path": "res://assets/sprites/generated/npc_professions_life_direction_v1_alpha.png",
+      "usage": "main_city_life_npc_profession_direction_frames"
+    },
+    {
+      "id": "npc.profession_direction.fisher_v1.down",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/fisher_idle_down.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_life_direction_v1_alpha.png",
+      "usage": "main_city_fishing_and_river_maps"
+    },
+    {
+      "id": "npc.profession_direction.fisher_v1.left",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/fisher_idle_left.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_life_direction_v1_alpha.png",
+      "usage": "main_city_fishing_and_river_maps"
+    },
+    {
+      "id": "npc.profession_direction.fisher_v1.up",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/fisher_idle_up.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_life_direction_v1_alpha.png",
+      "usage": "main_city_fishing_and_river_maps"
+    },
+    {
+      "id": "npc.profession_direction.fisher_v1.right",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/fisher_idle_right.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_life_direction_v1_alpha.png",
+      "usage": "main_city_fishing_and_river_maps"
+    },
+    {
+      "id": "npc.profession_direction.herbalist_v1.down",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/herbalist_idle_down.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_life_direction_v1_alpha.png",
+      "usage": "life_skill_nature_maps"
+    },
+    {
+      "id": "npc.profession_direction.herbalist_v1.left",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/herbalist_idle_left.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_life_direction_v1_alpha.png",
+      "usage": "life_skill_nature_maps"
+    },
+    {
+      "id": "npc.profession_direction.herbalist_v1.up",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/herbalist_idle_up.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_life_direction_v1_alpha.png",
+      "usage": "life_skill_nature_maps"
+    },
+    {
+      "id": "npc.profession_direction.herbalist_v1.right",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/herbalist_idle_right.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_life_direction_v1_alpha.png",
+      "usage": "life_skill_nature_maps"
+    },
+    {
+      "id": "npc.profession_direction.chef_guide_v1.down",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/chef_guide_idle_down.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_life_direction_v1_alpha.png",
+      "usage": "cooking_and_market_maps"
+    },
+    {
+      "id": "npc.profession_direction.chef_guide_v1.left",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/chef_guide_idle_left.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_life_direction_v1_alpha.png",
+      "usage": "cooking_and_market_maps"
+    },
+    {
+      "id": "npc.profession_direction.chef_guide_v1.up",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/chef_guide_idle_up.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_life_direction_v1_alpha.png",
+      "usage": "cooking_and_market_maps"
+    },
+    {
+      "id": "npc.profession_direction.chef_guide_v1.right",
+      "type": "npc_profession_direction_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/chef_guide_idle_right.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_life_direction_v1_alpha.png",
+      "usage": "cooking_and_market_maps"
+    },
+    {
+      "id": "sprite.sheet.npc_professions_action.v1",
+      "type": "generated_sheet",
+      "path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_source.png",
+      "usage": "npc_profession_ambient_action_animation"
+    },
+    {
+      "id": "sprite.slices.npc_professions_action.v1",
+      "type": "generated_slices",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "npc_profession_ambient_action_frames_main"
+    },
+    {
+      "id": "sprite.slices.npc_professions_life_action.v1",
+      "type": "generated_slices",
+      "path": "res://assets/sprites/sliced/npc_professions_life_direction_v1",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "npc_profession_ambient_action_frames_life"
+    },
+    {
+      "id": "npc.profession_action.merchant.present.down",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/merchant_present_down.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "merchant_v1_ambient_present_down"
+    },
+    {
+      "id": "npc.profession_action.merchant.present.right",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/merchant_present_right.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "merchant_v1_ambient_present_right"
+    },
+    {
+      "id": "npc.profession_action.merchant.present.up",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/merchant_present_up.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "merchant_v1_ambient_present_up"
+    },
+    {
+      "id": "npc.profession_action.merchant.present.left",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/merchant_present_left.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "merchant_v1_ambient_present_left"
+    },
+    {
+      "id": "npc.profession_action.merchant.ledger.down",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/merchant_ledger_down.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "merchant_v1_ambient_ledger_down"
+    },
+    {
+      "id": "npc.profession_action.merchant.ledger.right",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/merchant_ledger_right.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "merchant_v1_ambient_ledger_right"
+    },
+    {
+      "id": "npc.profession_action.merchant.ledger.up",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/merchant_ledger_up.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "merchant_v1_ambient_ledger_up"
+    },
+    {
+      "id": "npc.profession_action.merchant.ledger.left",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/merchant_ledger_left.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "merchant_v1_ambient_ledger_left"
+    },
+    {
+      "id": "npc.profession_action.mail_courier.letter.down",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/mail_courier_letter_down.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "mail_courier_v1_ambient_letter_down"
+    },
+    {
+      "id": "npc.profession_action.mail_courier.letter.right",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/mail_courier_letter_right.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "mail_courier_v1_ambient_letter_right"
+    },
+    {
+      "id": "npc.profession_action.mail_courier.letter.up",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/mail_courier_letter_up.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "mail_courier_v1_ambient_letter_up"
+    },
+    {
+      "id": "npc.profession_action.mail_courier.letter.left",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/mail_courier_letter_left.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "mail_courier_v1_ambient_letter_left"
+    },
+    {
+      "id": "npc.profession_action.mail_courier.parcel.down",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/mail_courier_parcel_down.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "mail_courier_v1_ambient_parcel_down"
+    },
+    {
+      "id": "npc.profession_action.mail_courier.parcel.right",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/mail_courier_parcel_right.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "mail_courier_v1_ambient_parcel_right"
+    },
+    {
+      "id": "npc.profession_action.mail_courier.parcel.up",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/mail_courier_parcel_up.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "mail_courier_v1_ambient_parcel_up"
+    },
+    {
+      "id": "npc.profession_action.mail_courier.parcel.left",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/mail_courier_parcel_left.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "mail_courier_v1_ambient_parcel_left"
+    },
+    {
+      "id": "npc.profession_action.fisher.rod.down",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/fisher_rod_down.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "fisher_v1_ambient_rod_down"
+    },
+    {
+      "id": "npc.profession_action.fisher.rod.right",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/fisher_rod_right.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "fisher_v1_ambient_rod_right"
+    },
+    {
+      "id": "npc.profession_action.fisher.rod.up",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/fisher_rod_up.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "fisher_v1_ambient_rod_up"
+    },
+    {
+      "id": "npc.profession_action.fisher.rod.left",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/fisher_rod_left.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "fisher_v1_ambient_rod_left"
+    },
+    {
+      "id": "npc.profession_action.fisher.bucket.down",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/fisher_bucket_down.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "fisher_v1_ambient_bucket_down"
+    },
+    {
+      "id": "npc.profession_action.fisher.bucket.right",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/fisher_bucket_right.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "fisher_v1_ambient_bucket_right"
+    },
+    {
+      "id": "npc.profession_action.fisher.bucket.up",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/fisher_bucket_up.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "fisher_v1_ambient_bucket_up"
+    },
+    {
+      "id": "npc.profession_action.fisher.bucket.left",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/fisher_bucket_left.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "fisher_v1_ambient_bucket_left"
+    },
+    {
+      "id": "npc.profession_action.chef_guide.stir.down",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/chef_guide_stir_down.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "chef_guide_v1_ambient_stir_down"
+    },
+    {
+      "id": "npc.profession_action.chef_guide.stir.right",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/chef_guide_stir_right.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "chef_guide_v1_ambient_stir_right"
+    },
+    {
+      "id": "npc.profession_action.chef_guide.stir.up",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/chef_guide_stir_up.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "chef_guide_v1_ambient_stir_up"
+    },
+    {
+      "id": "npc.profession_action.chef_guide.stir.left",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/chef_guide_stir_left.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "chef_guide_v1_ambient_stir_left"
+    },
+    {
+      "id": "npc.profession_action.chef_guide.dish.down",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/chef_guide_dish_down.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "chef_guide_v1_ambient_dish_down"
+    },
+    {
+      "id": "npc.profession_action.chef_guide.dish.right",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/chef_guide_dish_right.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "chef_guide_v1_ambient_dish_right"
+    },
+    {
+      "id": "npc.profession_action.chef_guide.dish.up",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/chef_guide_dish_up.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "chef_guide_v1_ambient_dish_up"
+    },
+    {
+      "id": "npc.profession_action.chef_guide.dish.left",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_life_direction_v1/chef_guide_dish_left.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "chef_guide_v1_ambient_dish_left"
+    },
+    {
+      "id": "npc.profession_action.academy_registrar.book.down",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/academy_registrar_book_down.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "academy_registrar_v1_ambient_book_down"
+    },
+    {
+      "id": "npc.profession_action.academy_registrar.book.right",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/academy_registrar_book_right.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "academy_registrar_v1_ambient_book_right"
+    },
+    {
+      "id": "npc.profession_action.academy_registrar.book.up",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/academy_registrar_book_up.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "academy_registrar_v1_ambient_book_up"
+    },
+    {
+      "id": "npc.profession_action.academy_registrar.book.left",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/academy_registrar_book_left.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "academy_registrar_v1_ambient_book_left"
+    },
+    {
+      "id": "npc.profession_action.academy_registrar.scroll.down",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/academy_registrar_scroll_down.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "academy_registrar_v1_ambient_scroll_down"
+    },
+    {
+      "id": "npc.profession_action.academy_registrar.scroll.right",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/academy_registrar_scroll_right.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "academy_registrar_v1_ambient_scroll_right"
+    },
+    {
+      "id": "npc.profession_action.academy_registrar.scroll.up",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/academy_registrar_scroll_up.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "academy_registrar_v1_ambient_scroll_up"
+    },
+    {
+      "id": "npc.profession_action.academy_registrar.scroll.left",
+      "type": "npc_action_sprite",
+      "path": "res://assets/sprites/sliced/npc_professions_direction_v1/academy_registrar_scroll_left.png",
+      "source_path": "res://assets/sprites/generated/npc_professions_action_v1_alpha.png",
+      "usage": "academy_registrar_v1_ambient_scroll_left"
     }
   ]
 }

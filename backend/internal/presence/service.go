@@ -10,17 +10,19 @@ const defaultRoomID = "world_town_square"
 const defaultPlayerID = "offline-player"
 
 type HeartbeatRequest struct {
-	PlayerID    string `json:"player_id"`
-	RoomID      string `json:"room_id"`
-	DisplayName string `json:"display_name"`
+	PlayerID           string `json:"player_id"`
+	RoomID             string `json:"room_id"`
+	DisplayName        string `json:"display_name"`
+	CharacterVariantID string `json:"character_variant_id,omitempty"`
 }
 
 type Presence struct {
-	PlayerID    string `json:"player_id"`
-	RoomID      string `json:"room_id"`
-	DisplayName string `json:"display_name"`
-	LastSeenAt  int64  `json:"last_seen_at"`
-	ExpiresAt   int64  `json:"expires_at"`
+	PlayerID           string `json:"player_id"`
+	RoomID             string `json:"room_id"`
+	DisplayName        string `json:"display_name"`
+	CharacterVariantID string `json:"character_variant_id,omitempty"`
+	LastSeenAt         int64  `json:"last_seen_at"`
+	ExpiresAt          int64  `json:"expires_at"`
 }
 
 type Service interface {
@@ -50,11 +52,12 @@ func (s *MemoryService) Heartbeat(_ context.Context, request HeartbeatRequest) (
 	request.PlayerID = normalize(request.PlayerID, defaultPlayerID)
 	now := time.Now()
 	record := Presence{
-		PlayerID:    request.PlayerID,
-		RoomID:      request.RoomID,
-		DisplayName: normalize(request.DisplayName, "Guest"),
-		LastSeenAt:  now.UnixMilli(),
-		ExpiresAt:   now.Add(s.ttl).UnixMilli(),
+		PlayerID:           request.PlayerID,
+		RoomID:             request.RoomID,
+		DisplayName:        normalize(request.DisplayName, "Guest"),
+		CharacterVariantID: request.CharacterVariantID,
+		LastSeenAt:         now.UnixMilli(),
+		ExpiresAt:          now.Add(s.ttl).UnixMilli(),
 	}
 	s.mu.Lock()
 	defer s.mu.Unlock()

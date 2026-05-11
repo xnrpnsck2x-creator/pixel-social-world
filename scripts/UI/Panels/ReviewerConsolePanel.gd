@@ -2,9 +2,10 @@ class_name ReviewerConsolePanel
 extends PanelContainer
 
 signal review_action_completed(game_id: String, action: String, status: String)
-
 const WorldHUDAssetsScript := preload("res://scripts/UI/HUD/WorldHUDAssets.gd")
 const ReviewerConsoleAuditScript := preload("res://scripts/UI/Panels/ReviewerConsoleAudit.gd")
+const PanelTextThemeScript := preload("res://scripts/UI/Panels/PanelTextTheme.gd")
+const PanelListFrameScript := preload("res://scripts/UI/Panels/PanelListFrame.gd")
 const MAX_ROWS := 6
 
 var compact_layout := false
@@ -98,6 +99,7 @@ func _build() -> void:
 
 	_status_label = Label.new()
 	_status_label.text = App.t_key("reviewer.console.empty")
+	_status_label.modulate = PanelTextThemeScript.MUTED
 	_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	rows.add_child(_status_label)
 
@@ -120,6 +122,7 @@ func _add_header_labels(header: HBoxContainer) -> void:
 	var detail := Label.new()
 	detail.text = App.t_key("reviewer.console.detail")
 	detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	PanelTextThemeScript.apply_pair([title], [detail])
 	labels.add_child(detail)
 
 func _add_refresh_button(header: HBoxContainer) -> void:
@@ -140,10 +143,7 @@ func _render_items(items: Array) -> void:
 			_add_dashboard_row(item as Dictionary)
 
 func _add_dashboard_row(item: Dictionary) -> void:
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 8)
-	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_items_rows.add_child(row)
+	var row := PanelListFrameScript.new().add_hbox(_items_rows, compact_layout)
 	_add_icon(row, "icon.quest", Vector2(30, 30))
 	_add_dashboard_labels(row, item)
 	_add_action_buttons(row, item)
@@ -162,6 +162,7 @@ func _add_dashboard_labels(row: HBoxContainer, item: Dictionary) -> void:
 	var detail := Label.new()
 	detail.text = _row_detail(item)
 	detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	PanelTextThemeScript.apply_pair([title], [detail])
 	labels.add_child(detail)
 
 func _add_action_buttons(row: HBoxContainer, item: Dictionary) -> void:
@@ -265,12 +266,11 @@ func _localized_name(item: Dictionary) -> String:
 	return str(name.get(App.current_locale, name.get("en", item.get("game_id", ""))))
 
 func _add_empty_row() -> void:
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 8)
-	_items_rows.add_child(row)
+	var row := PanelListFrameScript.new().add_hbox(_items_rows, compact_layout)
 	_add_icon(row, "icon.check", Vector2(30, 30))
 	var label := Label.new()
 	label.text = App.t_key("reviewer.console.empty")
+	label.modulate = PanelTextThemeScript.MUTED
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	row.add_child(label)
 

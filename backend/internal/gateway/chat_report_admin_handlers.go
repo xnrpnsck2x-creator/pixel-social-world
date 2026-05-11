@@ -52,5 +52,17 @@ func (s *Server) reviewChatReport(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	s.recordAdminAction(ctx, adminActionAuditEvent{
+		Action:     "chat_report.review",
+		TargetType: "chat_report",
+		TargetID:   report.ID,
+		Status:     report.Status,
+		Note:       request.Note,
+		Metadata: adminActionMetadata(map[string]any{
+			"message_id":        report.MessageID,
+			"message_sender_id": report.MessageSenderID,
+			"reporter_id":       report.ReporterID,
+		}),
+	})
 	ctx.JSON(http.StatusAccepted, report)
 }

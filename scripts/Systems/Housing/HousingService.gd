@@ -47,7 +47,10 @@ func place_item(item_id: String, tile: Vector2i) -> bool:
 
 	var item: Dictionary = catalog_by_id[item_id]
 	var price := int(item.get("price", 0))
-	if not bool(_save_system().call("spend_coins", price, "housing.%s" % item_id)):
+	if not can_afford_item(item_id):
+		placement_failed.emit("housing.error.not_enough_coins")
+		return false
+	if not _online_connected() and not bool(_save_system().call("spend_coins", price, "housing.%s" % item_id)):
 		placement_failed.emit("housing.error.not_enough_coins")
 		return false
 
@@ -84,6 +87,17 @@ func get_owner_id() -> String:
 
 func can_edit_room() -> bool:
 	return can_edit
+
+func has_online_connection() -> bool:
+	return _online_connected()
+
+func can_afford_item(item_id: String) -> bool:
+	var item: Dictionary = get_item(item_id)
+	if item.is_empty():
+		return false
+	if _online_connected() and _available_online_inventory(item_id) > 0:
+		return true
+	return int(item.get("price", 0)) <= int(_save_system().call("get_coin_balance"))
 
 func apply_remote_layout(layout: Dictionary) -> void:
 	_online_sync().apply_remote_layout(layout)
@@ -200,6 +214,18 @@ func _sell_refund_for_item(catalog_item: Dictionary) -> int:
 		return 0
 	var rate := float(_config_loader().call("get_value", "economy", ["housing", "sell_refund_rate"], 0.5))
 	return maxi(0, floori(float(price) * clampf(rate, 0.0, 1.0)))
+
+func _available_online_inventory(item_id: String) -> int:
+	var inventory: Variant = _save_system().call("get_profile_value", "online_inventory_items", [])
+	if typeof(inventory) != TYPE_ARRAY:
+		return 0
+	for entry in inventory:
+		if typeof(entry) != TYPE_DICTIONARY:
+			continue
+		var item: Dictionary = entry as Dictionary
+		if str(item.get("item_id", "")) == item_id:
+			return maxi(0, int(item.get("available", 0)))
+	return 0
 
 func _config_loader() -> Node:
 	return get_node("/root/ConfigLoader")

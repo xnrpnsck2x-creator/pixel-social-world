@@ -46,6 +46,9 @@ housing:
   sell_refund_rate: 0.5
 minigames:
   fishing_config_path: "../configs/fishing.json"
+world:
+  map_activities_config_path: "../configs/map_activities.json"
+  map_points_config_path: "../configs/map_points.json"
 utility:
   panels_config_path: "../configs/utility_panels.json"
 ai_review:

@@ -94,6 +94,44 @@
       ]
     },
     {
+      "id": "cozy_rug",
+      "name_key": "housing.item.cozy_rug.name",
+      "description_key": "housing.item.cozy_rug.description",
+      "item_type": "decor",
+      "category": "rug",
+      "icon_path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_009.png",
+      "size": {
+        "width": 2,
+        "height": 1
+      },
+      "placement": "floor",
+      "rotatable": true,
+      "price": 40,
+      "tags": [
+        "starter",
+        "decor"
+      ]
+    },
+    {
+      "id": "wall_shelf",
+      "name_key": "housing.item.wall_shelf.name",
+      "description_key": "housing.item.wall_shelf.description",
+      "item_type": "decor",
+      "category": "storage",
+      "icon_path": "res://assets/housing/sliced/housing_fishing_props_v0/housing_fishing_props_v0_010.png",
+      "size": {
+        "width": 1,
+        "height": 1
+      },
+      "placement": "wall",
+      "rotatable": false,
+      "price": 30,
+      "tags": [
+        "starter",
+        "decor"
+      ]
+    },
+    {
       "id": "arcade_cabinet",
       "name_key": "housing.item.arcade_cabinet.name",
       "description_key": "housing.item.arcade_cabinet.description",

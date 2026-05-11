@@ -53,7 +53,8 @@ func _add_member(member: Dictionary, local_id: String) -> void:
 	var index := members_list.get_item_count() - 1
 	members_list.set_item_metadata(index, {
 		"player_id": player_id,
-		"display_name": name
+		"display_name": name,
+		"character_variant_id": str(member.get("character_variant_id", ""))
 	})
 	members_list.set_item_disabled(index, is_self)
 	if _selected_peer_id.is_empty() and not is_self:

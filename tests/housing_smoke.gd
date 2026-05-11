@@ -10,7 +10,13 @@ func _initialize() -> void:
 func _run() -> void:
 	var failures: Array[String] = []
 	var save_system: Node = root.get_node("SaveSystem")
+	var online_client: Node = root.get_node("OnlineClient")
 	var original_profile: Dictionary = save_system.call("load_profile").duplicate(true)
+	var original_online_state := {
+		"is_connected": bool(online_client.get("is_connected")),
+		"access_token": str(online_client.get("access_token")),
+		"player_id": str(online_client.get("player_id"))
+	}
 	save_system.set("profile", {
 		"display_name": "Housing Test",
 		"locale": "en",
@@ -21,12 +27,17 @@ func _run() -> void:
 		"house_styles": {"wall": "starter_wallpaper", "floor": "wooden_floor"},
 		"house_items": []
 	})
+	online_client.set("is_connected", true)
+	online_client.set("access_token", "")
+	online_client.set("player_id", "offline-player")
 
 	var service: Node = HousingServiceScript.new()
 	root.add_child(service)
 	service.initialize()
 	if service.get("online_sync") == null:
 		failures.append("Housing service online sync boundary was not initialized.")
+	elif bool(service.get("online_sync").has_online_connection()):
+		failures.append("Housing accepted a stale online session without an access token.")
 
 	if not service.place_item("simple_chair", Vector2i(1, 1)):
 		failures.append("Failed to place simple_chair.")
@@ -70,6 +81,44 @@ func _run() -> void:
 	edit_controller.status_text_requested.connect(func(text: String) -> void:
 		status_texts.append(text)
 	)
+	var status_keys: Array[String] = []
+	edit_controller.status_key_requested.connect(func(key: String) -> void:
+		status_keys.append(key)
+	)
+	save_system.call("sync_coin_balance", 0, "test.empty_wallet")
+	edit_controller.handle_catalog_item("tiny_table")
+	if not edit_controller.selected_item_id.is_empty():
+		failures.append("Unaffordable catalog item stayed selected.")
+	if status_keys.is_empty() or status_keys.back() != "housing.error.not_enough_coins":
+		failures.append("Unaffordable catalog item did not report the coin error.")
+
+	online_client.set("access_token", "test-token")
+	save_system.call("sync_coin_balance", 25, "test.online_low_wallet")
+	save_system.call("set_profile_value", "online_inventory_items", [])
+	status_keys.clear()
+	edit_controller.handle_catalog_item("potted_plant")
+	if not edit_controller.selected_item_id.is_empty():
+		failures.append("Online unaffordable catalog item stayed selected without inventory.")
+	if status_keys.is_empty() or status_keys.back() != "housing.error.not_enough_coins":
+		failures.append("Online unaffordable catalog item did not report the coin error.")
+	if service.place_item("potted_plant", Vector2i(4, 4)):
+		failures.append("Online service allowed unaffordable placement without inventory.")
+	save_system.call("set_profile_value", "online_inventory_items", [{
+		"item_id": "potted_plant",
+		"owned": 1,
+		"available": 1,
+		"locked": 0
+	}])
+	edit_controller.handle_catalog_item("potted_plant")
+	if edit_controller.selected_item_id != "potted_plant":
+		failures.append("Online catalog item backed by inventory was not selected.")
+	elif not edit_controller.handle_tile(Vector2i(4, 4)):
+		failures.append("Online edit controller rejected a placement backed by available inventory.")
+	if not edit_controller.selected_item_id.is_empty():
+		failures.append("Edit controller kept furniture selected after successful placement.")
+	online_client.set("access_token", "")
+	save_system.call("set_profile_value", "online_inventory_items", [])
+	save_system.call("sync_coin_balance", 67, "test.restore_wallet")
 	edit_controller.select_placed_item(rotated_item)
 	if status_texts.is_empty() or not status_texts.back().contains("Undo covers"):
 		failures.append("Edit controller did not explain move affordance and one-step undo.")
@@ -113,6 +162,15 @@ func _run() -> void:
 		failures.append("Housing social services were not split into SocialController.")
 	if edit_room.find_child("EditController", true, false) == null:
 		failures.append("Housing edit services were not split into EditController.")
+	_assert_compact_layout_controls(edit_room.find_child("SocialPanel", true, false), edit_room.find_child("BottomPanel", true, false), failures)
+	var cancel_event := InputEventAction.new()
+	cancel_event.action = "ui_cancel"
+	cancel_event.pressed = true
+	edit_room.call("_unhandled_input", cancel_event)
+	await process_frame
+	await process_frame
+	if str(save_system.call("get_profile_value", "current_route", "")) != "main_city":
+		failures.append("Housing screen did not route back to main_city on ui_cancel.")
 	edit_room.free()
 
 	save_system.call("set_profile_value", "active_home_owner_id", "friend-player")
@@ -134,6 +192,9 @@ func _run() -> void:
 
 	save_system.set("profile", original_profile)
 	save_system.call("save_profile")
+	online_client.set("is_connected", original_online_state.get("is_connected", false))
+	online_client.set("access_token", original_online_state.get("access_token", ""))
+	online_client.set("player_id", original_online_state.get("player_id", "offline-player"))
 
 	if failures.is_empty():
 		print("housing smoke passed")
@@ -173,5 +234,27 @@ func _assert_compact_layout_controls(social_panel: Node, bottom_panel: Node, fai
 	if bottom_panel != null and bottom_panel.has_method("set_compact_layout"):
 		bottom_panel.call("set_compact_layout", true)
 		var catalog_scroll := bottom_panel.find_child("CatalogScroll", true, false)
-		if catalog_scroll == null or (catalog_scroll as Control).custom_minimum_size.y > 42.0:
+		if catalog_scroll == null or (catalog_scroll as Control).custom_minimum_size.y > 40.0:
 			failures.append("Housing compact catalog did not reduce scroll height.")
+		elif int(catalog_scroll.get("scroll_horizontal")) != 0:
+			failures.append("Housing compact catalog did not keep the first item aligned.")
+		elif int(catalog_scroll.get("horizontal_scroll_mode")) != ScrollContainer.SCROLL_MODE_SHOW_NEVER:
+			failures.append("Housing compact catalog did not hide the horizontal scrollbar.")
+		var catalog_row := bottom_panel.find_child("CatalogRow", true, false)
+		if catalog_row != null:
+			for child in catalog_row.get_children():
+				if child is Button and (child as Button).custom_minimum_size.y > 32.0:
+					failures.append("Housing compact catalog buttons stayed too tall.")
+					break
+				if child is Button and (child as Button).custom_minimum_size.x < 96.0:
+					failures.append("Housing compact catalog buttons are too narrow for readable item labels.")
+					break
+				if child is Button and (child as Button).text.length() > 10:
+					failures.append("Housing compact catalog buttons kept long full item names.")
+					break
+				if child is Button and (child as Button).text_overrun_behavior != TextServer.OVERRUN_TRIM_ELLIPSIS:
+					failures.append("Housing compact catalog buttons did not trim long labels.")
+					break
+				if child is Button and (child as Button).get_theme_font_size("font_size") > 10:
+					failures.append("Housing compact catalog buttons kept a large font.")
+					break

@@ -70,10 +70,6 @@ func visit_housing(owner_id: String) -> Dictionary:
 		"visitor_id": _client.player_id
 	})
 
-func fetch_coin_ledger(player_id_override: String = "") -> Dictionary:
-	var safe_player: String = _client._owner_or_player(player_id_override).uri_encode()
-	return await _client._request_json(HTTPClient.METHOD_GET, "/economy/ledger/%s" % safe_player)
-
 func send_chat(
 	room_id: String,
 	channel_id: String,
@@ -185,12 +181,15 @@ func mark_mail_read(mail_id: String) -> Dictionary:
 		{"player_id": _client.player_id}
 	)
 
-func send_presence(room_id: String, display_name: String) -> Dictionary:
-	return await _client._request_json(HTTPClient.METHOD_POST, "/presence/heartbeat", {
+func send_presence(room_id: String, display_name: String, character_variant_id: String = "") -> Dictionary:
+	var body := {
 		"player_id": _client.player_id,
 		"room_id": _client._room_or_default(room_id),
 		"display_name": display_name
-	})
+	}
+	if not character_variant_id.is_empty():
+		body["character_variant_id"] = character_variant_id
+	return await _client._request_json(HTTPClient.METHOD_POST, "/presence/heartbeat", body)
 
 func fetch_room_members(room_id: String) -> Dictionary:
 	var route := "/rooms/%s/members?player_id=%s" % [
@@ -267,3 +266,33 @@ func fetch_creator_submission_history(game_id: String) -> Dictionary:
 func fetch_utility_panels() -> Dictionary:
 	var route := "/utility/panels?player_id=%s" % _client.player_id.uri_encode()
 	return await _client._request_json(HTTPClient.METHOD_GET, route)
+
+func fetch_social_facilities() -> Dictionary:
+	var route := "/social/facilities?player_id=%s" % _client.player_id.uri_encode()
+	return await _client._request_json(HTTPClient.METHOD_GET, route)
+
+func fetch_trade_listings() -> Dictionary:
+	var route := "/trade/listings?player_id=%s" % _client.player_id.uri_encode()
+	return await _client._request_json(HTTPClient.METHOD_GET, route)
+func fetch_trade_inventory() -> Dictionary:
+	var route := "/trade/inventory?player_id=%s" % _client.player_id.uri_encode()
+	return await _client._request_json(HTTPClient.METHOD_GET, route)
+func purchase_trade_listing(listing_id: String) -> Dictionary:
+	return await _client._request_json(
+		HTTPClient.METHOD_POST,
+		"/trade/listings/%s/buy" % listing_id.uri_encode(),
+		{"buyer_id": _client.player_id}
+	)
+
+func create_trade_listing(item_id: String, price: int, metadata: Dictionary = {}) -> Dictionary:
+	var payload := metadata.duplicate()
+	payload["seller_id"] = _client.player_id
+	payload["item_id"] = item_id
+	payload["price"] = price
+	return await _client._request_json(HTTPClient.METHOD_POST, "/trade/listings", payload)
+func cancel_trade_listing(listing_id: String) -> Dictionary:
+	return await _client._request_json(
+		HTTPClient.METHOD_POST,
+		"/trade/listings/%s/cancel" % listing_id.uri_encode(),
+		{"seller_id": _client.player_id}
+	)

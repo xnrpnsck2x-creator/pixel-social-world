@@ -16,11 +16,21 @@ func bind(new_service: Node) -> void:
 	housing_service = new_service
 
 func handle_catalog_item(item_id: String) -> void:
+	if selected_item_id == item_id:
+		cancel_selection()
+		return
 	_clear_placed_selection()
 	var item: Dictionary = housing_service.get_item(item_id)
+	if item.is_empty():
+		return
+	if not _can_afford(item):
+		reset_selection()
+		status_key_requested.emit("housing.error.not_enough_coins")
+		return
 	if str(item.get("item_type", "")) == "surface":
 		if housing_service.place_item(item_id, Vector2i.ZERO):
 			coin_changed.emit()
+			status_text_requested.emit(_format_key("housing.style_applied_format", {"item": _t_key(str(item.get("name_key", "")))}))
 		return
 	selected_item_id = item_id
 	status_text_requested.emit(_format_key("housing.selected_format", {
@@ -37,8 +47,16 @@ func handle_tile(tile: Vector2i) -> bool:
 		return true
 	if selected_item_id.is_empty():
 		return false
+	var selected_item: Dictionary = housing_service.get_item(selected_item_id)
+	if not _can_afford(selected_item):
+		reset_selection()
+		status_key_requested.emit("housing.error.not_enough_coins")
+		return false
+	var placed_name := _t_key(str(selected_item.get("name_key", "")))
 	if housing_service.place_item(selected_item_id, tile):
+		selected_item_id = ""
 		coin_changed.emit()
+		status_text_requested.emit(_format_key("housing.placed_format", {"item": placed_name}))
 		selection_changed.emit()
 		return true
 	return false
@@ -122,6 +140,13 @@ func reset_selection() -> void:
 	selected_placed_item = {}
 	selection_changed.emit()
 
+func cancel_selection() -> bool:
+	if selected_item_id.is_empty() and selected_placed_item.is_empty():
+		return false
+	reset_selection()
+	status_key_requested.emit("housing.catalog_hint")
+	return true
+
 func _clear_placed_selection() -> void:
 	selected_placed_item = {}
 	selection_changed.emit()
@@ -148,3 +173,8 @@ func _t_key(key: String) -> String:
 
 func _format_key(key: String, values: Dictionary) -> String:
 	return str(get_node("/root/App").call("format_key", key, values))
+
+func _can_afford(item: Dictionary) -> bool:
+	if housing_service != null and housing_service.has_method("can_afford_item"):
+		return bool(housing_service.call("can_afford_item", str(item.get("id", ""))))
+	return int(item.get("price", 0)) <= int(get_node("/root/SaveSystem").call("get_coin_balance"))

@@ -25,11 +25,12 @@ func (s *RedisService) Heartbeat(ctx context.Context, request HeartbeatRequest) 
 	request.PlayerID = normalize(request.PlayerID, defaultPlayerID)
 	now := time.Now()
 	record := Presence{
-		PlayerID:    request.PlayerID,
-		RoomID:      request.RoomID,
-		DisplayName: normalize(request.DisplayName, "Guest"),
-		LastSeenAt:  now.UnixMilli(),
-		ExpiresAt:   now.Add(s.ttl).UnixMilli(),
+		PlayerID:           request.PlayerID,
+		RoomID:             request.RoomID,
+		DisplayName:        normalize(request.DisplayName, "Guest"),
+		CharacterVariantID: request.CharacterVariantID,
+		LastSeenAt:         now.UnixMilli(),
+		ExpiresAt:          now.Add(s.ttl).UnixMilli(),
 	}
 	encoded, err := json.Marshal(record)
 	if err != nil {

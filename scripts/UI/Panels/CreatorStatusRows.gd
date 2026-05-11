@@ -2,6 +2,8 @@ class_name CreatorStatusRows
 extends RefCounted
 
 const WorldHUDAssetsScript := preload("res://scripts/UI/HUD/WorldHUDAssets.gd")
+const PanelListFrameScript := preload("res://scripts/UI/Panels/PanelListFrame.gd")
+const PanelTextThemeScript := preload("res://scripts/UI/Panels/PanelTextTheme.gd")
 const HISTORY_KEY := "creator_submission_history"
 const STATUS_KEY := "creator_package_status"
 const PACKAGE_GAME_ID := "creator_package_probe"
@@ -10,10 +12,7 @@ var compact_layout := false
 
 func render(items_rows: VBoxContainer, compact: bool) -> void:
 	compact_layout = compact
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 8)
-	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	items_rows.add_child(row)
+	var row := PanelListFrameScript.new().add_hbox(items_rows, compact_layout)
 
 	var icon := TextureRect.new()
 	icon.custom_minimum_size = Vector2(30, 30) if compact_layout else Vector2(34, 34)
@@ -34,6 +33,7 @@ func render(items_rows: VBoxContainer, compact: bool) -> void:
 	var detail_label := Label.new()
 	detail_label.text = _history_text(_load_history(), _load_status())
 	detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	PanelTextThemeScript.apply_pair([title_label], [detail_label])
 	labels.add_child(detail_label)
 
 	var refresh_button := Button.new()

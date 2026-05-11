@@ -5,6 +5,8 @@ signal moderation_action_completed(target_player_id: String, action: String)
 
 const WorldHUDAssetsScript := preload("res://scripts/UI/HUD/WorldHUDAssets.gd")
 const ChatModerationAuditFiltersScript := preload("res://scripts/UI/Panels/ChatModerationAuditFilters.gd")
+const PanelTextThemeScript := preload("res://scripts/UI/Panels/PanelTextTheme.gd")
+const PanelListFrameScript := preload("res://scripts/UI/Panels/PanelListFrame.gd")
 const MAX_ROWS := 4
 
 var compact_layout := false
@@ -102,6 +104,7 @@ func _build() -> void:
 
 	_status_label = Label.new()
 	_status_label.text = App.t_key("moderation.console.empty_active")
+	_status_label.modulate = PanelTextThemeScript.MUTED
 	_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	rows.add_child(_status_label)
 
@@ -122,6 +125,7 @@ func _add_header(rows: VBoxContainer) -> void:
 	var detail := Label.new()
 	detail.text = App.t_key("moderation.console.detail")
 	detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	PanelTextThemeScript.apply_pair([title], [detail])
 	labels.add_child(detail)
 	_refresh_button = Button.new()
 	_refresh_button.text = App.t_key("ui.action.refresh")
@@ -150,6 +154,7 @@ func _export_csv() -> void:
 func _add_section(rows: VBoxContainer, title_key: String) -> VBoxContainer:
 	var title := Label.new()
 	title.text = App.t_key(title_key)
+	title.modulate = PanelTextThemeScript.PRIMARY
 	rows.add_child(title)
 	var scroll := ScrollContainer.new()
 	scroll.custom_minimum_size = Vector2(0, 86)
@@ -173,10 +178,7 @@ func _render_rows(container: VBoxContainer, items: Array, active: bool) -> void:
 			_add_action_row(container, item as Dictionary, active)
 
 func _add_action_row(container: VBoxContainer, item: Dictionary, active: bool) -> void:
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 8)
-	row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	container.add_child(row)
+	var row := PanelListFrameScript.new().add_hbox(container, compact_layout)
 	_add_icon(row, "icon.mail", Vector2(28, 28))
 	_add_action_labels(row, item, active)
 	if active and str(item.get("action", "")) != "restore":
@@ -201,6 +203,7 @@ func _add_action_labels(row: HBoxContainer, item: Dictionary, active: bool) -> v
 		"reason": str(item.get("reason", "-"))
 	})
 	detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	PanelTextThemeScript.apply_pair([title], [detail])
 	labels.add_child(detail)
 
 func _add_restore_button(row: HBoxContainer, item: Dictionary) -> void:
@@ -239,12 +242,11 @@ func _run_restore_action(item: Dictionary) -> void:
 		})
 
 func _add_empty_row(container: VBoxContainer, active: bool) -> void:
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 8)
-	container.add_child(row)
+	var row := PanelListFrameScript.new().add_hbox(container, compact_layout)
 	_add_icon(row, "icon.check", Vector2(28, 28))
 	var label := Label.new()
 	label.text = App.t_key("moderation.console.empty_active" if active else "moderation.console.empty_recent")
+	label.modulate = PanelTextThemeScript.MUTED
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	row.add_child(label)
 
@@ -276,6 +278,8 @@ func _apply_image2_style() -> void:
 	WorldHUDAssetsScript.configure_panel_frame(self)
 	if _refresh_button != null:
 		WorldHUDAssetsScript.configure_button_frame(_refresh_button)
+	if _token_input != null:
+		WorldHUDAssetsScript.configure_line_edit_frame(_token_input)
 	if _filters != null:
 		_filters.apply_image2_style()
 

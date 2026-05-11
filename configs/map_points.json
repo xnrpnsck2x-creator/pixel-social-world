@@ -1,0 +1,7242 @@
+{
+  "schema_version": 1,
+  "coordinate_space": "image_pixel",
+  "tile_size": 16,
+  "maps": {
+    "city_forest_dawn_v1": {
+      "canvas_size": [
+        1672,
+        941
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 836,
+          "y": 560
+        },
+        {
+          "id": "south_pier",
+          "x": 824,
+          "y": 806
+        },
+        {
+          "id": "games_hall",
+          "x": 1416,
+          "y": 393
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.mail_courier",
+          "x": 280,
+          "y": 470,
+          "action": "mail",
+          "facing": "right",
+          "ambience_poses": [
+            "letter"
+          ]
+        },
+        {
+          "id": "npc.home_keeper",
+          "x": 320,
+          "y": 702,
+          "action": "home",
+          "facing": "right"
+        },
+        {
+          "id": "npc.fisher",
+          "x": 784,
+          "y": 729,
+          "action": "fishing",
+          "facing": "up",
+          "ambience_poses": [
+            "rod"
+          ]
+        },
+        {
+          "id": "npc.merchant",
+          "x": 1208,
+          "y": 438,
+          "action": "shop",
+          "facing": "left",
+          "ambience_poses": [
+            "present"
+          ]
+        },
+        {
+          "id": "npc.game_host",
+          "x": 1418,
+          "y": 476,
+          "action": "games",
+          "facing": "left"
+        },
+        {
+          "id": "npc.event_guide",
+          "x": 930,
+          "y": 510,
+          "action": "notice",
+          "facing": "up"
+        }
+      ],
+      "life_skill_nodes": [
+        {
+          "id": "fishing.default",
+          "type": "fishing",
+          "x": 824,
+          "y": 806
+        },
+        {
+          "id": "foraging.flower_beds",
+          "type": "foraging",
+          "x": 610,
+          "y": 522
+        }
+      ],
+      "portals": [
+        {
+          "id": "to_housing_district",
+          "x": 316,
+          "y": 717,
+          "target_map": "social_housing_district_v1"
+        },
+        {
+          "id": "to_minigame_hall",
+          "x": 1416,
+          "y": 393,
+          "target_map": "social_minigame_arcade_hall_v1"
+        },
+        {
+          "id": "to_fishing_riverbend",
+          "x": 824,
+          "y": 806,
+          "target_map": "life_fishing_riverbend_v1"
+        },
+        {
+          "id": "to_port_market",
+          "x": 1170,
+          "y": 356,
+          "target_map": "city_port_market_v1"
+        },
+        {
+          "id": "to_trade_market",
+          "x": 1140,
+          "y": 680,
+          "target_map": "social_trade_market_v1"
+        },
+        {
+          "id": "to_guild_garden",
+          "x": 360,
+          "y": 338,
+          "target_map": "social_guild_garden_v1"
+        },
+        {
+          "id": "to_spring_workshop",
+          "x": 930,
+          "y": 245,
+          "target_map": "city_spring_workshop_v1"
+        },
+        {
+          "id": "to_crystal_mine",
+          "x": 760,
+          "y": 245,
+          "target_map": "life_crystal_mine_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "home",
+          "x": 316,
+          "y": 717,
+          "action": "home",
+          "touch_rect": {
+            "x": 220,
+            "y": 600,
+            "width": 230,
+            "height": 210
+          }
+        },
+        {
+          "id": "fishing",
+          "x": 824,
+          "y": 806,
+          "action": "fishing",
+          "touch_rect": {
+            "x": 720,
+            "y": 650,
+            "width": 220,
+            "height": 235
+          }
+        },
+        {
+          "id": "games",
+          "x": 1416,
+          "y": 393,
+          "action": "games",
+          "touch_rect": {
+            "x": 1280,
+            "y": 235,
+            "width": 350,
+            "height": 305
+          }
+        },
+        {
+          "id": "shop",
+          "x": 1170,
+          "y": 356,
+          "action": "shop",
+          "touch_rect": {
+            "x": 1035,
+            "y": 250,
+            "width": 295,
+            "height": 210
+          }
+        },
+        {
+          "id": "trade",
+          "x": 1140,
+          "y": 680,
+          "action": "trade",
+          "touch_rect": {
+            "x": 1035,
+            "y": 625,
+            "width": 320,
+            "height": 120
+          }
+        },
+        {
+          "id": "guild",
+          "x": 360,
+          "y": 338,
+          "action": "guild",
+          "touch_rect": {
+            "x": 210,
+            "y": 130,
+            "width": 330,
+            "height": 285
+          }
+        },
+        {
+          "id": "workshop",
+          "x": 930,
+          "y": 245,
+          "action": "workshop",
+          "touch_rect": {
+            "x": 850,
+            "y": 130,
+            "width": 215,
+            "height": 205
+          }
+        },
+        {
+          "id": "mine",
+          "x": 760,
+          "y": 245,
+          "action": "mine",
+          "touch_rect": {
+            "x": 690,
+            "y": 130,
+            "width": 190,
+            "height": 210
+          }
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "central_plaza",
+          "x": 500,
+          "y": 210,
+          "width": 672,
+          "height": 390
+        },
+        {
+          "id": "north_road",
+          "x": 770,
+          "y": 0,
+          "width": 130,
+          "height": 350
+        },
+        {
+          "id": "west_road",
+          "x": 0,
+          "y": 330,
+          "width": 650,
+          "height": 170
+        },
+        {
+          "id": "east_road",
+          "x": 1000,
+          "y": 330,
+          "width": 640,
+          "height": 180
+        },
+        {
+          "id": "shop_path",
+          "x": 1040,
+          "y": 300,
+          "width": 250,
+          "height": 95
+        },
+        {
+          "id": "lower_loop",
+          "x": 250,
+          "y": 590,
+          "width": 1130,
+          "height": 150
+        },
+        {
+          "id": "pier_access",
+          "x": 750,
+          "y": 690,
+          "width": 180,
+          "height": 180
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "central_plaza",
+          "x": 585,
+          "y": 285,
+          "width": 500,
+          "height": 250,
+          "capacity": 20
+        },
+        {
+          "id": "south_pier",
+          "x": 700,
+          "y": 720,
+          "width": 270,
+          "height": 120,
+          "capacity": 8
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1672,
+        "height": 941
+      },
+      "blocked_rects": [
+        {
+          "id": "guild_hall",
+          "x": 190,
+          "y": 60,
+          "width": 330,
+          "height": 210
+        },
+        {
+          "id": "mail_office_roof",
+          "x": 48,
+          "y": 360,
+          "width": 205,
+          "height": 105
+        },
+        {
+          "id": "mail_hut",
+          "x": 70,
+          "y": 510,
+          "width": 190,
+          "height": 150
+        },
+        {
+          "id": "inn_roof",
+          "x": 300,
+          "y": 560,
+          "width": 260,
+          "height": 90
+        },
+        {
+          "id": "shop_roof",
+          "x": 1070,
+          "y": 50,
+          "width": 310,
+          "height": 130
+        },
+        {
+          "id": "minigame_hall_roof",
+          "x": 1370,
+          "y": 250,
+          "width": 220,
+          "height": 125
+        },
+        {
+          "id": "market_stalls",
+          "x": 1240,
+          "y": 570,
+          "width": 290,
+          "height": 155
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 20,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390",
+          "375x240"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1672,
+          "height": 941
+        }
+      ],
+      "metadata_status": "playtest_metadata"
+    },
+    "social_housing_district_v1": {
+      "canvas_size": [
+        1254,
+        1254
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 627,
+          "y": 1085
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.home_keeper",
+          "x": 590,
+          "y": 1042,
+          "action": "home",
+          "facing": "right"
+        },
+        {
+          "id": "npc.mail_courier",
+          "x": 690,
+          "y": 1042,
+          "action": "mail",
+          "facing": "left",
+          "ambience_poses": [
+            "parcel"
+          ]
+        }
+      ],
+      "life_skill_nodes": [],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 627,
+          "y": 1135,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "home",
+          "x": 590,
+          "y": 1042,
+          "action": "home"
+        },
+        {
+          "id": "mail",
+          "x": 760,
+          "y": 1042,
+          "action": "mail"
+        },
+        {
+          "id": "neighbor_notice",
+          "x": 560,
+          "y": 1050,
+          "action": "home"
+        },
+        {
+          "id": "courier_stop",
+          "x": 720,
+          "y": 1050,
+          "action": "mail"
+        },
+        {
+          "id": "to_city",
+          "x": 627,
+          "y": 1135,
+          "action": "portal",
+          "touch_rect": {
+            "x": 447,
+            "y": 945,
+            "width": 360,
+            "height": 260
+          }
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "central_cross_vertical",
+          "x": 515,
+          "y": 140,
+          "width": 225,
+          "height": 1010
+        },
+        {
+          "id": "central_cross_horizontal",
+          "x": 160,
+          "y": 430,
+          "width": 935,
+          "height": 260
+        },
+        {
+          "id": "south_approach",
+          "x": 470,
+          "y": 920,
+          "width": 320,
+          "height": 250
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "shared_square",
+          "x": 485,
+          "y": 525,
+          "width": 285,
+          "height": 230,
+          "capacity": 12
+        },
+        {
+          "id": "neighbor_board_circle",
+          "x": 485,
+          "y": 1000,
+          "width": 285,
+          "height": 130,
+          "capacity": 8
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1254,
+        "height": 1254
+      },
+      "blocked_rects": [
+        {
+          "id": "north_cottage_row",
+          "x": 245,
+          "y": 160,
+          "width": 780,
+          "height": 210
+        },
+        {
+          "id": "west_gardens",
+          "x": 50,
+          "y": 520,
+          "width": 260,
+          "height": 250
+        },
+        {
+          "id": "east_gardens",
+          "x": 940,
+          "y": 520,
+          "width": 260,
+          "height": 250
+        },
+        {
+          "id": "south_cottage_row",
+          "x": 145,
+          "y": 820,
+          "width": 970,
+          "height": 170
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 12,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1254,
+          "height": 1254
+        }
+      ],
+      "metadata_status": "playtest_metadata"
+    },
+    "life_fishing_riverbend_v1": {
+      "canvas_size": [
+        1536,
+        1024
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 760,
+          "y": 520
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.fisher",
+          "x": 620,
+          "y": 560,
+          "action": "fishing",
+          "facing": "right",
+          "ambience_poses": [
+            "rod",
+            "bucket"
+          ]
+        }
+      ],
+      "life_skill_nodes": [
+        {
+          "id": "fishing.riverbend_01",
+          "type": "fishing",
+          "x": 1040,
+          "y": 560
+        },
+        {
+          "id": "fishing.riverbend_02",
+          "type": "fishing",
+          "x": 900,
+          "y": 760
+        },
+        {
+          "id": "fishing.riverbend_03",
+          "type": "fishing",
+          "x": 620,
+          "y": 805
+        }
+      ],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 1350,
+          "y": 910,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "fishing",
+          "x": 1040,
+          "y": 560,
+          "action": "fishing"
+        },
+        {
+          "id": "picnic_bank",
+          "x": 760,
+          "y": 610,
+          "action": "fishing"
+        },
+        {
+          "id": "lower_bank_cast",
+          "x": 900,
+          "y": 760,
+          "action": "fishing"
+        },
+        {
+          "id": "to_city",
+          "x": 1350,
+          "y": 910,
+          "action": "portal",
+          "touch_rect": {
+            "x": 1170,
+            "y": 720,
+            "width": 360,
+            "height": 260
+          }
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "central_camp",
+          "x": 520,
+          "y": 390,
+          "width": 480,
+          "height": 260
+        },
+        {
+          "id": "left_bank",
+          "x": 120,
+          "y": 230,
+          "width": 560,
+          "height": 250
+        },
+        {
+          "id": "upper_path",
+          "x": 700,
+          "y": 190,
+          "width": 650,
+          "height": 180
+        },
+        {
+          "id": "right_bank",
+          "x": 980,
+          "y": 420,
+          "width": 430,
+          "height": 300
+        },
+        {
+          "id": "lower_path",
+          "x": 350,
+          "y": 650,
+          "width": 1040,
+          "height": 300
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "camp_bank",
+          "x": 575,
+          "y": 425,
+          "width": 370,
+          "height": 190,
+          "capacity": 12
+        },
+        {
+          "id": "picnic_bank",
+          "x": 700,
+          "y": 555,
+          "width": 260,
+          "height": 150,
+          "capacity": 8
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1536,
+        "height": 1024
+      },
+      "blocked_rects": [
+        {
+          "id": "river_upper",
+          "x": 640,
+          "y": 0,
+          "width": 230,
+          "height": 300
+        },
+        {
+          "id": "river_left_pool",
+          "x": 0,
+          "y": 475,
+          "width": 310,
+          "height": 230
+        },
+        {
+          "id": "river_right_pool",
+          "x": 1060,
+          "y": 90,
+          "width": 270,
+          "height": 250
+        },
+        {
+          "id": "bait_hut",
+          "x": 285,
+          "y": 220,
+          "width": 190,
+          "height": 115
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 12,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 1024
+        }
+      ],
+      "metadata_status": "playtest_metadata"
+    },
+    "social_minigame_arcade_hall_v1": {
+      "canvas_size": [
+        1254,
+        1254
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 627,
+          "y": 1080
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.game_host",
+          "x": 760,
+          "y": 1037,
+          "action": "games",
+          "facing": "left"
+        },
+        {
+          "id": "npc.booth_keeper",
+          "x": 495,
+          "y": 1037,
+          "action": "games",
+          "facing": "right",
+          "ambience_poses": [
+            "present"
+          ]
+        }
+      ],
+      "life_skill_nodes": [],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 627,
+          "y": 800,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "games",
+          "x": 720,
+          "y": 1057,
+          "action": "games"
+        },
+        {
+          "id": "left_cabinet_row",
+          "x": 420,
+          "y": 590,
+          "action": "games"
+        },
+        {
+          "id": "right_cabinet_row",
+          "x": 820,
+          "y": 590,
+          "action": "games"
+        },
+        {
+          "id": "to_city",
+          "x": 627,
+          "y": 800,
+          "action": "portal",
+          "touch_rect": {
+            "x": 447,
+            "y": 610,
+            "width": 360,
+            "height": 260
+          }
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "arcade_floor",
+          "x": 120,
+          "y": 190,
+          "width": 1010,
+          "height": 890
+        },
+        {
+          "id": "center_lobby",
+          "x": 430,
+          "y": 360,
+          "width": 400,
+          "height": 520
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "lobby",
+          "x": 445,
+          "y": 590,
+          "width": 365,
+          "height": 250,
+          "capacity": 16
+        },
+        {
+          "id": "entry_queue",
+          "x": 485,
+          "y": 990,
+          "width": 285,
+          "height": 120,
+          "capacity": 10
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1254,
+        "height": 1254
+      },
+      "blocked_rects": [
+        {
+          "id": "reception_back",
+          "x": 415,
+          "y": 130,
+          "width": 430,
+          "height": 240
+        },
+        {
+          "id": "left_arcade_bank",
+          "x": 70,
+          "y": 80,
+          "width": 360,
+          "height": 220
+        },
+        {
+          "id": "right_arcade_bank",
+          "x": 820,
+          "y": 80,
+          "width": 360,
+          "height": 220
+        },
+        {
+          "id": "center_left_lantern_stand",
+          "x": 515,
+          "y": 860,
+          "width": 72,
+          "height": 145
+        },
+        {
+          "id": "center_right_lantern_stand",
+          "x": 668,
+          "y": 850,
+          "width": 72,
+          "height": 155
+        },
+        {
+          "id": "lower_exhibits_left",
+          "x": 70,
+          "y": 855,
+          "width": 330,
+          "height": 265
+        },
+        {
+          "id": "lower_exhibits_right",
+          "x": 850,
+          "y": 855,
+          "width": 330,
+          "height": 265
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 16,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1254,
+          "height": 1254
+        }
+      ],
+      "metadata_status": "playtest_metadata"
+    },
+    "city_port_market_v1": {
+      "canvas_size": [
+        1536,
+        1024
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 768,
+          "y": 540
+        },
+        {
+          "id": "south_dock",
+          "x": 760,
+          "y": 925
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.merchant",
+          "x": 1040,
+          "y": 425,
+          "action": "shop",
+          "facing": "left",
+          "ambience_poses": [
+            "ledger",
+            "present"
+          ]
+        },
+        {
+          "id": "npc.mail_courier",
+          "x": 420,
+          "y": 420,
+          "action": "mail",
+          "facing": "right",
+          "ambience_poses": [
+            "parcel"
+          ]
+        },
+        {
+          "id": "npc.fisher",
+          "x": 720,
+          "y": 875,
+          "action": "fishing",
+          "facing": "up",
+          "ambience_poses": [
+            "bucket"
+          ]
+        }
+      ],
+      "life_skill_nodes": [
+        {
+          "id": "fishing.harbor_01",
+          "type": "fishing",
+          "x": 760,
+          "y": 925
+        }
+      ],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 760,
+          "y": 690,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "shop",
+          "x": 1040,
+          "y": 425,
+          "action": "shop"
+        },
+        {
+          "id": "mail",
+          "x": 430,
+          "y": 500,
+          "action": "mail"
+        },
+        {
+          "id": "to_city",
+          "x": 760,
+          "y": 690,
+          "action": "portal",
+          "touch_rect": {
+            "x": 580,
+            "y": 500,
+            "width": 360,
+            "height": 260
+          }
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "central_market",
+          "x": 360,
+          "y": 240,
+          "width": 820,
+          "height": 500
+        },
+        {
+          "id": "dock_walk",
+          "x": 520,
+          "y": 700,
+          "width": 520,
+          "height": 270
+        },
+        {
+          "id": "west_lane",
+          "x": 120,
+          "y": 320,
+          "width": 360,
+          "height": 360
+        },
+        {
+          "id": "east_lane",
+          "x": 980,
+          "y": 320,
+          "width": 390,
+          "height": 330
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "market_square",
+          "x": 620,
+          "y": 430,
+          "width": 360,
+          "height": 220,
+          "capacity": 16
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1536,
+        "height": 1024
+      },
+      "blocked_rects": [
+        {
+          "id": "ocean_north",
+          "x": 880,
+          "y": 0,
+          "width": 656,
+          "height": 190
+        },
+        {
+          "id": "ocean_south_left",
+          "x": 0,
+          "y": 780,
+          "width": 500,
+          "height": 244
+        },
+        {
+          "id": "ocean_south_right",
+          "x": 1030,
+          "y": 760,
+          "width": 506,
+          "height": 264
+        },
+        {
+          "id": "guild_roof",
+          "x": 210,
+          "y": 70,
+          "width": 340,
+          "height": 190
+        },
+        {
+          "id": "market_roofs",
+          "x": 1030,
+          "y": 205,
+          "width": 330,
+          "height": 160
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 16,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 1024
+        }
+      ],
+      "metadata_status": "playtest_metadata"
+    },
+    "city_spring_workshop_v1": {
+      "metadata_status": "playtest_metadata",
+      "canvas_size": [
+        1536,
+        1024
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 768,
+          "y": 840
+        },
+        {
+          "id": "work_plaza",
+          "x": 768,
+          "y": 490
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.workshop_master",
+          "x": 780,
+          "y": 520,
+          "action": "workshop",
+          "facing": "up",
+          "ambience_poses": [
+            "ledger"
+          ]
+        }
+      ],
+      "life_skill_nodes": [
+        {
+          "id": "crafting.workbench_01",
+          "type": "crafting",
+          "x": 740,
+          "y": 470
+        },
+        {
+          "id": "crafting.smithy_01",
+          "type": "smithing",
+          "x": 360,
+          "y": 350
+        },
+        {
+          "id": "crafting.carpentry_01",
+          "type": "carpentry",
+          "x": 1120,
+          "y": 390
+        }
+      ],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 930,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 930,
+          "action": "portal",
+          "touch_rect": {
+            "x": 588,
+            "y": 740,
+            "width": 360,
+            "height": 260
+          }
+        },
+        {
+          "id": "workshop",
+          "x": 740,
+          "y": 470,
+          "action": "workshop"
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "central_work_plaza",
+          "x": 560,
+          "y": 350,
+          "width": 430,
+          "height": 250
+        },
+        {
+          "id": "south_work_road",
+          "x": 665,
+          "y": 560,
+          "width": 230,
+          "height": 390
+        },
+        {
+          "id": "west_workshop_lane",
+          "x": 260,
+          "y": 270,
+          "width": 460,
+          "height": 310
+        },
+        {
+          "id": "east_workshop_lane",
+          "x": 830,
+          "y": 270,
+          "width": 500,
+          "height": 320
+        },
+        {
+          "id": "lower_loop",
+          "x": 240,
+          "y": 650,
+          "width": 1080,
+          "height": 280
+        },
+        {
+          "id": "north_spring_path",
+          "x": 600,
+          "y": 120,
+          "width": 360,
+          "height": 260
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "work_plaza",
+          "x": 610,
+          "y": 405,
+          "width": 330,
+          "height": 180,
+          "capacity": 12
+        },
+        {
+          "id": "south_gate",
+          "x": 660,
+          "y": 745,
+          "width": 240,
+          "height": 130,
+          "capacity": 8
+        },
+        {
+          "id": "east_craft_bench",
+          "x": 940,
+          "y": 405,
+          "width": 240,
+          "height": 150,
+          "capacity": 8
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1536,
+        "height": 1024
+      },
+      "blocked_rects": [
+        {
+          "id": "smithy_roof",
+          "x": 80,
+          "y": 70,
+          "width": 340,
+          "height": 190
+        },
+        {
+          "id": "carpentry_roof",
+          "x": 945,
+          "y": 80,
+          "width": 365,
+          "height": 190
+        },
+        {
+          "id": "waterwheel_building",
+          "x": 1085,
+          "y": 610,
+          "width": 320,
+          "height": 190
+        },
+        {
+          "id": "left_hot_spring_pool",
+          "x": 45,
+          "y": 560,
+          "width": 310,
+          "height": 160
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 12,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 1024
+        }
+      ]
+    },
+    "life_crystal_mine_v1": {
+      "metadata_status": "playtest_metadata",
+      "canvas_size": [
+        1536,
+        1024
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 768,
+          "y": 890
+        },
+        {
+          "id": "central_camp",
+          "x": 740,
+          "y": 520
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.mine_foreman",
+          "x": 740,
+          "y": 520,
+          "action": "mine",
+          "facing": "up",
+          "ambience_poses": [
+            "bucket"
+          ]
+        }
+      ],
+      "life_skill_nodes": [
+        {
+          "id": "mining.crystal_west_01",
+          "type": "mining",
+          "x": 295,
+          "y": 275
+        },
+        {
+          "id": "mining.crystal_east_01",
+          "type": "mining",
+          "x": 1095,
+          "y": 360
+        },
+        {
+          "id": "mining.crystal_south_01",
+          "type": "mining",
+          "x": 850,
+          "y": 780
+        }
+      ],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 920,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 920,
+          "action": "portal",
+          "touch_rect": {
+            "x": 588,
+            "y": 730,
+            "width": 360,
+            "height": 260
+          }
+        },
+        {
+          "id": "mine",
+          "x": 850,
+          "y": 780,
+          "action": "mine"
+        },
+        {
+          "id": "east_ore_vein",
+          "x": 1095,
+          "y": 360,
+          "action": "mine"
+        },
+        {
+          "id": "survey_table",
+          "x": 950,
+          "y": 520,
+          "action": "mine"
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "central_camp",
+          "x": 520,
+          "y": 365,
+          "width": 500,
+          "height": 285
+        },
+        {
+          "id": "west_tunnel_loop",
+          "x": 130,
+          "y": 180,
+          "width": 555,
+          "height": 285
+        },
+        {
+          "id": "north_tunnel",
+          "x": 620,
+          "y": 145,
+          "width": 780,
+          "height": 210
+        },
+        {
+          "id": "east_tunnel_loop",
+          "x": 900,
+          "y": 250,
+          "width": 470,
+          "height": 430
+        },
+        {
+          "id": "south_exit_path",
+          "x": 575,
+          "y": 625,
+          "width": 410,
+          "height": 315
+        },
+        {
+          "id": "southwest_mine_path",
+          "x": 110,
+          "y": 650,
+          "width": 520,
+          "height": 285
+        },
+        {
+          "id": "southeast_mine_path",
+          "x": 880,
+          "y": 655,
+          "width": 470,
+          "height": 260
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "central_camp",
+          "x": 610,
+          "y": 435,
+          "width": 310,
+          "height": 180,
+          "capacity": 12
+        },
+        {
+          "id": "ore_sorting_loop",
+          "x": 805,
+          "y": 445,
+          "width": 200,
+          "height": 145,
+          "capacity": 8
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1536,
+        "height": 1024
+      },
+      "blocked_rects": [
+        {
+          "id": "central_dark_rock_left",
+          "x": 360,
+          "y": 450,
+          "width": 140,
+          "height": 150
+        },
+        {
+          "id": "central_dark_rock_right",
+          "x": 1010,
+          "y": 410,
+          "width": 130,
+          "height": 150
+        },
+        {
+          "id": "lower_left_pit",
+          "x": 340,
+          "y": 790,
+          "width": 120,
+          "height": 110
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 12,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 1024
+        }
+      ]
+    },
+    "social_trade_market_v1": {
+      "metadata_status": "playtest_metadata",
+      "canvas_size": [
+        1536,
+        1024
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 768,
+          "y": 870
+        },
+        {
+          "id": "market_square",
+          "x": 768,
+          "y": 700
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.trade_broker",
+          "x": 760,
+          "y": 700,
+          "action": "trade",
+          "facing": "up",
+          "ambience_poses": [
+            "ledger",
+            "present"
+          ]
+        },
+        {
+          "id": "npc.stage_manager",
+          "x": 640,
+          "y": 380,
+          "action": "notice",
+          "facing": "right"
+        }
+      ],
+      "life_skill_nodes": [
+        {
+          "id": "trade.market_board_01",
+          "type": "trade",
+          "x": 768,
+          "y": 700
+        },
+        {
+          "id": "trade.broker_counter_01",
+          "type": "broker",
+          "x": 760,
+          "y": 305
+        }
+      ],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 920,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 920,
+          "action": "portal",
+          "touch_rect": {
+            "x": 588,
+            "y": 730,
+            "width": 360,
+            "height": 260
+          }
+        },
+        {
+          "id": "trade",
+          "x": 768,
+          "y": 700,
+          "action": "trade"
+        },
+        {
+          "id": "notice",
+          "x": 640,
+          "y": 380,
+          "action": "notice"
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "central_trade_square",
+          "x": 380,
+          "y": 265,
+          "width": 775,
+          "height": 505
+        },
+        {
+          "id": "south_gate_road",
+          "x": 650,
+          "y": 730,
+          "width": 245,
+          "height": 245
+        },
+        {
+          "id": "west_market_lane",
+          "x": 130,
+          "y": 300,
+          "width": 455,
+          "height": 420
+        },
+        {
+          "id": "east_market_lane",
+          "x": 950,
+          "y": 300,
+          "width": 455,
+          "height": 420
+        },
+        {
+          "id": "north_counter_lane",
+          "x": 510,
+          "y": 165,
+          "width": 520,
+          "height": 205
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "central_trade_floor",
+          "x": 485,
+          "y": 575,
+          "width": 565,
+          "height": 170,
+          "capacity": 16
+        },
+        {
+          "id": "counter_queue",
+          "x": 610,
+          "y": 320,
+          "width": 310,
+          "height": 130,
+          "capacity": 8
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1536,
+        "height": 1024
+      },
+      "blocked_rects": [
+        {
+          "id": "north_auction_stage",
+          "x": 600,
+          "y": 45,
+          "width": 340,
+          "height": 170
+        },
+        {
+          "id": "west_lower_stalls",
+          "x": 45,
+          "y": 665,
+          "width": 320,
+          "height": 245
+        },
+        {
+          "id": "east_lower_stalls",
+          "x": 1140,
+          "y": 650,
+          "width": 330,
+          "height": 255
+        },
+        {
+          "id": "upper_left_stalls",
+          "x": 65,
+          "y": 85,
+          "width": 390,
+          "height": 210
+        },
+        {
+          "id": "upper_right_stalls",
+          "x": 1085,
+          "y": 80,
+          "width": 385,
+          "height": 210
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 16,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 1024
+        }
+      ]
+    },
+    "social_guild_garden_v1": {
+      "metadata_status": "playtest_metadata",
+      "canvas_size": [
+        1254,
+        1254
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 627,
+          "y": 1115
+        },
+        {
+          "id": "guild_courtyard",
+          "x": 627,
+          "y": 925
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.guild_coordinator",
+          "x": 627,
+          "y": 925,
+          "action": "guild",
+          "facing": "up",
+          "ambience_poses": [
+            "scroll"
+          ]
+        },
+        {
+          "id": "npc.event_guide",
+          "x": 500,
+          "y": 930,
+          "action": "notice",
+          "facing": "right"
+        }
+      ],
+      "life_skill_nodes": [],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 627,
+          "y": 1145,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "to_city",
+          "x": 627,
+          "y": 1145,
+          "action": "portal",
+          "touch_rect": {
+            "x": 447,
+            "y": 955,
+            "width": 360,
+            "height": 260
+          }
+        },
+        {
+          "id": "guild",
+          "x": 627,
+          "y": 925,
+          "action": "guild"
+        },
+        {
+          "id": "notice_board",
+          "x": 720,
+          "y": 735,
+          "action": "guild"
+        },
+        {
+          "id": "duel_lawn",
+          "x": 345,
+          "y": 735,
+          "action": "guild"
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "central_garden_axis",
+          "x": 455,
+          "y": 260,
+          "width": 345,
+          "height": 920
+        },
+        {
+          "id": "lower_gate_path",
+          "x": 550,
+          "y": 930,
+          "width": 155,
+          "height": 270
+        },
+        {
+          "id": "west_garden_lane",
+          "x": 110,
+          "y": 250,
+          "width": 365,
+          "height": 775
+        },
+        {
+          "id": "east_garden_lane",
+          "x": 780,
+          "y": 250,
+          "width": 365,
+          "height": 775
+        },
+        {
+          "id": "upper_courtyard",
+          "x": 270,
+          "y": 205,
+          "width": 715,
+          "height": 250
+        },
+        {
+          "id": "lower_courtyard",
+          "x": 330,
+          "y": 680,
+          "width": 595,
+          "height": 280
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "group_photo_courtyard",
+          "x": 420,
+          "y": 735,
+          "width": 415,
+          "height": 185,
+          "capacity": 16
+        },
+        {
+          "id": "meeting_tables",
+          "x": 210,
+          "y": 700,
+          "width": 830,
+          "height": 150,
+          "capacity": 12
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1254,
+        "height": 1254
+      },
+      "blocked_rects": [
+        {
+          "id": "guild_hall_roof",
+          "x": 345,
+          "y": 0,
+          "width": 565,
+          "height": 190
+        },
+        {
+          "id": "guild_hall_entry_mass",
+          "x": 420,
+          "y": 105,
+          "width": 410,
+          "height": 120
+        },
+        {
+          "id": "center_fountain",
+          "x": 540,
+          "y": 515,
+          "width": 175,
+          "height": 175
+        },
+        {
+          "id": "west_flower_beds",
+          "x": 70,
+          "y": 1035,
+          "width": 395,
+          "height": 150
+        },
+        {
+          "id": "east_flower_beds",
+          "x": 790,
+          "y": 1035,
+          "width": 395,
+          "height": 150
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 16,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1254,
+          "height": 1254
+        }
+      ]
+    },
+    "city_snowbell_village_v1": {
+      "metadata_status": "playtest_metadata",
+      "canvas_size": [
+        1536,
+        1024
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 768,
+          "y": 850
+        },
+        {
+          "id": "snow_plaza",
+          "x": 768,
+          "y": 520
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.snow_guide",
+          "x": 768,
+          "y": 315,
+          "action": "notice",
+          "facing": "down"
+        },
+        {
+          "id": "npc.winter_innkeeper",
+          "x": 1055,
+          "y": 520,
+          "action": "inn",
+          "facing": "left"
+        }
+      ],
+      "life_skill_nodes": [],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 800,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 800,
+          "action": "portal",
+          "touch_rect": {
+            "x": 588,
+            "y": 610,
+            "width": 360,
+            "height": 260
+          }
+        },
+        {
+          "id": "notice",
+          "x": 768,
+          "y": 315,
+          "action": "notice"
+        },
+        {
+          "id": "inn",
+          "x": 1055,
+          "y": 520,
+          "action": "inn"
+        },
+        {
+          "id": "seasonal_board",
+          "x": 1015,
+          "y": 420,
+          "action": "seasonal_board"
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "south_gate_road",
+          "x": 650,
+          "y": 705,
+          "width": 245,
+          "height": 220
+        },
+        {
+          "id": "central_snow_plaza",
+          "x": 520,
+          "y": 372,
+          "width": 500,
+          "height": 390
+        },
+        {
+          "id": "north_bell_path",
+          "x": 675,
+          "y": 250,
+          "width": 190,
+          "height": 160
+        },
+        {
+          "id": "west_village_lane",
+          "x": 180,
+          "y": 250,
+          "width": 470,
+          "height": 290
+        },
+        {
+          "id": "east_market_lane",
+          "x": 920,
+          "y": 260,
+          "width": 430,
+          "height": 360
+        },
+        {
+          "id": "lower_social_lane",
+          "x": 360,
+          "y": 585,
+          "width": 520,
+          "height": 180
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "snow_plaza_gathering",
+          "x": 565,
+          "y": 405,
+          "width": 415,
+          "height": 215,
+          "capacity": 20
+        },
+        {
+          "id": "campfire_social_corner",
+          "x": 420,
+          "y": 600,
+          "width": 260,
+          "height": 150,
+          "capacity": 10
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1536,
+        "height": 1024
+      },
+      "blocked_rects": [
+        {
+          "id": "frozen_pond",
+          "x": 0,
+          "y": 0,
+          "width": 360,
+          "height": 210
+        },
+        {
+          "id": "bell_tower_mass",
+          "x": 680,
+          "y": 80,
+          "width": 175,
+          "height": 165
+        },
+        {
+          "id": "northwest_cottage",
+          "x": 330,
+          "y": 150,
+          "width": 245,
+          "height": 170
+        },
+        {
+          "id": "northeast_lodge",
+          "x": 1035,
+          "y": 130,
+          "width": 260,
+          "height": 160
+        },
+        {
+          "id": "southwest_cottages",
+          "x": 120,
+          "y": 500,
+          "width": 290,
+          "height": 170
+        },
+        {
+          "id": "southeast_cliff_and_building",
+          "x": 1195,
+          "y": 525,
+          "width": 320,
+          "height": 260
+        },
+        {
+          "id": "lower_left_pool",
+          "x": 60,
+          "y": 795,
+          "width": 280,
+          "height": 205
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 20,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 1024
+        }
+      ]
+    },
+    "city_academy_plaza_v1": {
+      "metadata_status": "playtest_metadata",
+      "canvas_size": [
+        1536,
+        1024
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 768,
+          "y": 835
+        },
+        {
+          "id": "fountain_plaza",
+          "x": 768,
+          "y": 650
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.academy_registrar",
+          "x": 768,
+          "y": 372,
+          "action": "notice",
+          "facing": "down",
+          "ambience_poses": [
+            "book",
+            "scroll"
+          ]
+        },
+        {
+          "id": "npc.creator_tutor",
+          "x": 560,
+          "y": 560,
+          "action": "creator_help",
+          "facing": "right",
+          "ambience_poses": [
+            "book"
+          ]
+        }
+      ],
+      "life_skill_nodes": [],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 805,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 805,
+          "action": "portal",
+          "touch_rect": {
+            "x": 588,
+            "y": 615,
+            "width": 360,
+            "height": 260
+          }
+        },
+        {
+          "id": "notice",
+          "x": 768,
+          "y": 345,
+          "action": "notice"
+        },
+        {
+          "id": "creator_help",
+          "x": 560,
+          "y": 560,
+          "action": "creator_help"
+        },
+        {
+          "id": "library",
+          "x": 768,
+          "y": 315,
+          "action": "library"
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "south_gate_path",
+          "x": 690,
+          "y": 705,
+          "width": 170,
+          "height": 230
+        },
+        {
+          "id": "central_fountain_courtyard",
+          "x": 490,
+          "y": 360,
+          "width": 560,
+          "height": 385
+        },
+        {
+          "id": "north_library_steps",
+          "x": 625,
+          "y": 250,
+          "width": 290,
+          "height": 180
+        },
+        {
+          "id": "west_classroom_lane",
+          "x": 220,
+          "y": 265,
+          "width": 335,
+          "height": 385
+        },
+        {
+          "id": "east_classroom_lane",
+          "x": 980,
+          "y": 265,
+          "width": 335,
+          "height": 385
+        },
+        {
+          "id": "lower_study_loop",
+          "x": 365,
+          "y": 620,
+          "width": 820,
+          "height": 170
+        },
+        {
+          "id": "west_portal_walk",
+          "x": 65,
+          "y": 190,
+          "width": 245,
+          "height": 640
+        },
+        {
+          "id": "east_portal_walk",
+          "x": 1225,
+          "y": 190,
+          "width": 245,
+          "height": 640
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "fountain_study_circle",
+          "x": 585,
+          "y": 635,
+          "width": 370,
+          "height": 130,
+          "capacity": 20
+        },
+        {
+          "id": "creator_tutor_corner",
+          "x": 405,
+          "y": 540,
+          "width": 260,
+          "height": 170,
+          "capacity": 10
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1536,
+        "height": 1024
+      },
+      "blocked_rects": [
+        {
+          "id": "north_library_mass",
+          "x": 560,
+          "y": 15,
+          "width": 415,
+          "height": 220
+        },
+        {
+          "id": "central_fountain",
+          "x": 650,
+          "y": 405,
+          "width": 240,
+          "height": 205
+        },
+        {
+          "id": "west_upper_classroom",
+          "x": 220,
+          "y": 225,
+          "width": 245,
+          "height": 190
+        },
+        {
+          "id": "east_upper_classroom",
+          "x": 1070,
+          "y": 225,
+          "width": 245,
+          "height": 190
+        },
+        {
+          "id": "west_lower_classroom",
+          "x": 120,
+          "y": 545,
+          "width": 330,
+          "height": 215
+        },
+        {
+          "id": "east_lower_classroom",
+          "x": 1085,
+          "y": 545,
+          "width": 330,
+          "height": 215
+        },
+        {
+          "id": "northwest_portal_pool",
+          "x": 50,
+          "y": 45,
+          "width": 220,
+          "height": 160
+        },
+        {
+          "id": "northeast_portal_pool",
+          "x": 1265,
+          "y": 45,
+          "width": 220,
+          "height": 160
+        },
+        {
+          "id": "southwest_portal_pool",
+          "x": 40,
+          "y": 820,
+          "width": 230,
+          "height": 160
+        },
+        {
+          "id": "southeast_portal_pool",
+          "x": 1265,
+          "y": 820,
+          "width": 230,
+          "height": 160
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 20,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 1024
+        }
+      ]
+    },
+    "city_festival_night_market_v1": {
+      "metadata_status": "playtest_metadata",
+      "canvas_size": [
+        1536,
+        1024
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 768,
+          "y": 720
+        },
+        {
+          "id": "lantern_plaza",
+          "x": 768,
+          "y": 500
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.festival_host",
+          "x": 620,
+          "y": 430,
+          "action": "notice",
+          "facing": "right"
+        },
+        {
+          "id": "npc.booth_keeper",
+          "x": 1035,
+          "y": 405,
+          "action": "games",
+          "facing": "left",
+          "ambience_poses": [
+            "present"
+          ]
+        },
+        {
+          "id": "npc.stage_manager",
+          "x": 300,
+          "y": 500,
+          "action": "seasonal_board",
+          "facing": "right"
+        }
+      ],
+      "life_skill_nodes": [],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 700,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 700,
+          "action": "portal",
+          "touch_rect": {
+            "x": 588,
+            "y": 510,
+            "width": 360,
+            "height": 260
+          }
+        },
+        {
+          "id": "notice",
+          "x": 620,
+          "y": 430,
+          "action": "notice"
+        },
+        {
+          "id": "games",
+          "x": 1035,
+          "y": 405,
+          "action": "games"
+        },
+        {
+          "id": "seasonal_board",
+          "x": 300,
+          "y": 500,
+          "action": "seasonal_board"
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "south_gate_path",
+          "x": 690,
+          "y": 625,
+          "width": 170,
+          "height": 225
+        },
+        {
+          "id": "central_lantern_plaza",
+          "x": 520,
+          "y": 250,
+          "width": 520,
+          "height": 370
+        },
+        {
+          "id": "west_stage_lane",
+          "x": 80,
+          "y": 310,
+          "width": 430,
+          "height": 260
+        },
+        {
+          "id": "east_booth_lane",
+          "x": 960,
+          "y": 250,
+          "width": 420,
+          "height": 300
+        },
+        {
+          "id": "north_market_loop",
+          "x": 300,
+          "y": 120,
+          "width": 930,
+          "height": 170
+        },
+        {
+          "id": "lower_market_loop",
+          "x": 320,
+          "y": 560,
+          "width": 650,
+          "height": 150
+        },
+        {
+          "id": "west_dock_walk",
+          "x": 95,
+          "y": 630,
+          "width": 300,
+          "height": 205
+        },
+        {
+          "id": "east_fireworks_pier_walk",
+          "x": 1080,
+          "y": 590,
+          "width": 350,
+          "height": 250
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "lantern_plaza_gathering",
+          "x": 560,
+          "y": 350,
+          "width": 420,
+          "height": 210,
+          "capacity": 20
+        },
+        {
+          "id": "stage_audience",
+          "x": 165,
+          "y": 460,
+          "width": 310,
+          "height": 110,
+          "capacity": 12
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1536,
+        "height": 1024
+      },
+      "blocked_rects": [
+        {
+          "id": "west_stage_platform",
+          "x": 95,
+          "y": 325,
+          "width": 360,
+          "height": 125
+        },
+        {
+          "id": "central_lantern_mast",
+          "x": 705,
+          "y": 300,
+          "width": 125,
+          "height": 125
+        },
+        {
+          "id": "north_center_hall",
+          "x": 595,
+          "y": 0,
+          "width": 315,
+          "height": 145
+        },
+        {
+          "id": "northwest_building",
+          "x": 100,
+          "y": 60,
+          "width": 260,
+          "height": 160
+        },
+        {
+          "id": "northeast_booth_pool",
+          "x": 1160,
+          "y": 125,
+          "width": 285,
+          "height": 130
+        },
+        {
+          "id": "southeast_lodge",
+          "x": 1200,
+          "y": 350,
+          "width": 250,
+          "height": 155
+        },
+        {
+          "id": "southwest_shop",
+          "x": 95,
+          "y": 565,
+          "width": 225,
+          "height": 90
+        },
+        {
+          "id": "waterfront_void",
+          "x": 0,
+          "y": 835,
+          "width": 1536,
+          "height": 189
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 20,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 1024
+        }
+      ]
+    },
+    "life_herb_forest_v1": {
+      "metadata_status": "playtest_metadata",
+      "canvas_size": [
+        1536,
+        1024
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 768,
+          "y": 850
+        },
+        {
+          "id": "central_clearing",
+          "x": 760,
+          "y": 565
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.herbalist",
+          "x": 595,
+          "y": 585,
+          "action": "notice",
+          "facing": "right"
+        }
+      ],
+      "life_skill_nodes": [
+        {
+          "id": "herb.west_lilac",
+          "x": 420,
+          "y": 315,
+          "action": "gather_herb"
+        },
+        {
+          "id": "herb.east_crystal_bloom",
+          "x": 1110,
+          "y": 430,
+          "action": "gather_herb"
+        },
+        {
+          "id": "herb.stream_mint",
+          "x": 590,
+          "y": 675,
+          "action": "gather_herb"
+        }
+      ],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 820,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 820,
+          "action": "portal",
+          "touch_rect": {
+            "x": 588,
+            "y": 630,
+            "width": 360,
+            "height": 260
+          }
+        },
+        {
+          "id": "notice",
+          "x": 595,
+          "y": 585,
+          "action": "notice"
+        },
+        {
+          "id": "gather_herb",
+          "x": 1110,
+          "y": 430,
+          "action": "gather_herb"
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "south_gate_path",
+          "x": 675,
+          "y": 725,
+          "width": 195,
+          "height": 210
+        },
+        {
+          "id": "central_clearing_loop",
+          "x": 455,
+          "y": 420,
+          "width": 650,
+          "height": 340
+        },
+        {
+          "id": "west_herb_path",
+          "x": 170,
+          "y": 240,
+          "width": 455,
+          "height": 390
+        },
+        {
+          "id": "east_herb_path",
+          "x": 900,
+          "y": 250,
+          "width": 460,
+          "height": 410
+        },
+        {
+          "id": "north_shrine_path",
+          "x": 650,
+          "y": 135,
+          "width": 260,
+          "height": 285
+        },
+        {
+          "id": "stream_bridge_walk",
+          "x": 445,
+          "y": 640,
+          "width": 610,
+          "height": 150
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "central_herb_clearing",
+          "x": 610,
+          "y": 505,
+          "width": 320,
+          "height": 185,
+          "capacity": 12
+        },
+        {
+          "id": "stream_rest_spot",
+          "x": 490,
+          "y": 620,
+          "width": 250,
+          "height": 100,
+          "capacity": 8
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1536,
+        "height": 1024
+      },
+      "blocked_rects": [
+        {
+          "id": "north_shrine_mass",
+          "x": 690,
+          "y": 40,
+          "width": 180,
+          "height": 120
+        },
+        {
+          "id": "central_tree_ring",
+          "x": 705,
+          "y": 455,
+          "width": 125,
+          "height": 90
+        },
+        {
+          "id": "south_stream",
+          "x": 0,
+          "y": 720,
+          "width": 660,
+          "height": 110
+        },
+        {
+          "id": "east_stream",
+          "x": 925,
+          "y": 730,
+          "width": 610,
+          "height": 115
+        },
+        {
+          "id": "northwest_pond",
+          "x": 70,
+          "y": 120,
+          "width": 205,
+          "height": 135
+        },
+        {
+          "id": "dense_north_forest",
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 90
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 12,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 1024
+        }
+      ]
+    },
+    "life_lumber_grove_v1": {
+      "metadata_status": "playtest_metadata",
+      "canvas_size": [
+        1536,
+        1024
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 768,
+          "y": 830
+        },
+        {
+          "id": "stump_clearing",
+          "x": 760,
+          "y": 520
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.lumber_foreman",
+          "x": 1030,
+          "y": 370,
+          "action": "notice",
+          "facing": "left",
+          "ambience_poses": [
+            "bucket"
+          ]
+        }
+      ],
+      "life_skill_nodes": [
+        {
+          "id": "wood.west_stumps",
+          "x": 415,
+          "y": 360,
+          "action": "chop_wood"
+        },
+        {
+          "id": "wood.central_stump",
+          "x": 760,
+          "y": 532,
+          "action": "chop_wood"
+        },
+        {
+          "id": "wood.southeast_logs",
+          "x": 1165,
+          "y": 700,
+          "action": "chop_wood"
+        }
+      ],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 800,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 800,
+          "action": "portal",
+          "touch_rect": {
+            "x": 588,
+            "y": 610,
+            "width": 360,
+            "height": 260
+          }
+        },
+        {
+          "id": "notice",
+          "x": 1030,
+          "y": 370,
+          "action": "notice"
+        },
+        {
+          "id": "chop_wood",
+          "x": 760,
+          "y": 532,
+          "action": "chop_wood"
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "south_gate_path",
+          "x": 675,
+          "y": 710,
+          "width": 205,
+          "height": 220
+        },
+        {
+          "id": "south_to_central_connector",
+          "x": 675,
+          "y": 650,
+          "width": 205,
+          "height": 85
+        },
+        {
+          "id": "central_stump_clearing",
+          "x": 540,
+          "y": 405,
+          "width": 430,
+          "height": 265
+        },
+        {
+          "id": "west_lumber_loop",
+          "x": 170,
+          "y": 265,
+          "width": 425,
+          "height": 430
+        },
+        {
+          "id": "east_shed_loop",
+          "x": 900,
+          "y": 235,
+          "width": 440,
+          "height": 450
+        },
+        {
+          "id": "north_forest_road",
+          "x": 360,
+          "y": 110,
+          "width": 760,
+          "height": 270
+        },
+        {
+          "id": "southeast_lumber_lane",
+          "x": 935,
+          "y": 630,
+          "width": 370,
+          "height": 175
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "stump_clearing_group",
+          "x": 610,
+          "y": 445,
+          "width": 300,
+          "height": 175,
+          "capacity": 12
+        },
+        {
+          "id": "shed_work_area",
+          "x": 925,
+          "y": 335,
+          "width": 260,
+          "height": 165,
+          "capacity": 8
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1536,
+        "height": 1024
+      },
+      "blocked_rects": [
+        {
+          "id": "lumber_shed_mass",
+          "x": 930,
+          "y": 105,
+          "width": 315,
+          "height": 205
+        },
+        {
+          "id": "center_stump_cluster",
+          "x": 715,
+          "y": 455,
+          "width": 95,
+          "height": 50
+        },
+        {
+          "id": "west_dense_tree_wall",
+          "x": 0,
+          "y": 0,
+          "width": 135,
+          "height": 1024
+        },
+        {
+          "id": "east_dense_tree_wall",
+          "x": 1375,
+          "y": 0,
+          "width": 160,
+          "height": 1024
+        },
+        {
+          "id": "north_dense_tree_wall",
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 85
+        },
+        {
+          "id": "southwest_log_stack",
+          "x": 135,
+          "y": 590,
+          "width": 230,
+          "height": 115
+        },
+        {
+          "id": "southeast_log_stack",
+          "x": 1080,
+          "y": 730,
+          "width": 245,
+          "height": 95
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 12,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 1024
+        }
+      ]
+    },
+    "life_starter_farm_v1": {
+      "metadata_status": "playtest_metadata",
+      "canvas_size": [
+        1536,
+        1024
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 768,
+          "y": 845
+        },
+        {
+          "id": "farmyard",
+          "x": 768,
+          "y": 535
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.farm_keeper",
+          "x": 740,
+          "y": 372,
+          "action": "notice",
+          "facing": "down"
+        }
+      ],
+      "life_skill_nodes": [
+        {
+          "id": "crop.wheat_patch",
+          "x": 245,
+          "y": 575,
+          "action": "harvest_crop"
+        },
+        {
+          "id": "crop.vegetable_rows",
+          "x": 1110,
+          "y": 475,
+          "action": "harvest_crop"
+        },
+        {
+          "id": "crop.pumpkin_patch",
+          "x": 1085,
+          "y": 615,
+          "action": "harvest_crop"
+        }
+      ],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 815,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 815,
+          "action": "portal",
+          "touch_rect": {
+            "x": 588,
+            "y": 625,
+            "width": 360,
+            "height": 260
+          }
+        },
+        {
+          "id": "notice",
+          "x": 740,
+          "y": 372,
+          "action": "notice"
+        },
+        {
+          "id": "harvest_crop",
+          "x": 1110,
+          "y": 475,
+          "action": "harvest_crop"
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "south_gate_path",
+          "x": 690,
+          "y": 720,
+          "width": 165,
+          "height": 220
+        },
+        {
+          "id": "central_farmyard_loop",
+          "x": 520,
+          "y": 330,
+          "width": 475,
+          "height": 405
+        },
+        {
+          "id": "west_crop_lane",
+          "x": 160,
+          "y": 350,
+          "width": 360,
+          "height": 365
+        },
+        {
+          "id": "east_crop_lane",
+          "x": 975,
+          "y": 350,
+          "width": 360,
+          "height": 365
+        },
+        {
+          "id": "north_building_lane",
+          "x": 330,
+          "y": 155,
+          "width": 860,
+          "height": 210
+        },
+        {
+          "id": "pond_and_picnic_lane",
+          "x": 85,
+          "y": 120,
+          "width": 260,
+          "height": 245
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "farmyard_gathering",
+          "x": 600,
+          "y": 455,
+          "width": 330,
+          "height": 190,
+          "capacity": 12
+        },
+        {
+          "id": "picnic_corner",
+          "x": 1160,
+          "y": 640,
+          "width": 230,
+          "height": 130,
+          "capacity": 8
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1536,
+        "height": 1024
+      },
+      "blocked_rects": [
+        {
+          "id": "farmhouse_mass",
+          "x": 575,
+          "y": 105,
+          "width": 285,
+          "height": 215
+        },
+        {
+          "id": "barn_mass",
+          "x": 280,
+          "y": 95,
+          "width": 245,
+          "height": 185
+        },
+        {
+          "id": "tool_shed_mass",
+          "x": 1090,
+          "y": 110,
+          "width": 240,
+          "height": 155
+        },
+        {
+          "id": "pond_water",
+          "x": 0,
+          "y": 45,
+          "width": 300,
+          "height": 245
+        },
+        {
+          "id": "south_rock_wall",
+          "x": 0,
+          "y": 895,
+          "width": 1536,
+          "height": 129
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 12,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 1024
+        }
+      ]
+    },
+    "life_insect_meadow_v1": {
+      "metadata_status": "playtest_metadata",
+      "canvas_size": [
+        1536,
+        1024
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 768,
+          "y": 855
+        },
+        {
+          "id": "meadow_loop",
+          "x": 770,
+          "y": 560
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.bug_keeper",
+          "x": 315,
+          "y": 545,
+          "action": "notice",
+          "facing": "right"
+        }
+      ],
+      "life_skill_nodes": [
+        {
+          "id": "insect.west_net",
+          "x": 255,
+          "y": 745,
+          "action": "catch_insect"
+        },
+        {
+          "id": "insect.central_butterflies",
+          "x": 770,
+          "y": 575,
+          "action": "catch_insect"
+        },
+        {
+          "id": "insect.east_bush",
+          "x": 1210,
+          "y": 430,
+          "action": "catch_insect"
+        },
+        {
+          "id": "insect.north_flowers",
+          "x": 980,
+          "y": 230,
+          "action": "catch_insect"
+        }
+      ],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 815,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 815,
+          "action": "portal",
+          "touch_rect": {
+            "x": 588,
+            "y": 625,
+            "width": 360,
+            "height": 260
+          }
+        },
+        {
+          "id": "notice",
+          "x": 315,
+          "y": 545,
+          "action": "notice"
+        },
+        {
+          "id": "catch_insect",
+          "x": 770,
+          "y": 575,
+          "action": "catch_insect"
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "south_gate_path",
+          "x": 690,
+          "y": 760,
+          "width": 170,
+          "height": 205
+        },
+        {
+          "id": "central_meadow_loop",
+          "x": 400,
+          "y": 430,
+          "width": 740,
+          "height": 260
+        },
+        {
+          "id": "west_bug_lane",
+          "x": 120,
+          "y": 420,
+          "width": 430,
+          "height": 430
+        },
+        {
+          "id": "east_flower_lane",
+          "x": 990,
+          "y": 250,
+          "width": 390,
+          "height": 520
+        },
+        {
+          "id": "north_creek_bridge",
+          "x": 500,
+          "y": 160,
+          "width": 540,
+          "height": 300
+        },
+        {
+          "id": "upper_meadow_lane",
+          "x": 300,
+          "y": 90,
+          "width": 990,
+          "height": 220
+        },
+        {
+          "id": "lower_meadow_lane",
+          "x": 330,
+          "y": 650,
+          "width": 880,
+          "height": 170
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "central_bug_circle",
+          "x": 610,
+          "y": 485,
+          "width": 330,
+          "height": 180,
+          "capacity": 12
+        },
+        {
+          "id": "west_net_corner",
+          "x": 205,
+          "y": 690,
+          "width": 210,
+          "height": 120,
+          "capacity": 8
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1536,
+        "height": 1024
+      },
+      "blocked_rects": [
+        {
+          "id": "north_tree_wall",
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 70
+        },
+        {
+          "id": "west_tree_wall",
+          "x": 0,
+          "y": 0,
+          "width": 70,
+          "height": 1024
+        },
+        {
+          "id": "east_tree_wall",
+          "x": 1450,
+          "y": 0,
+          "width": 86,
+          "height": 1024
+        },
+        {
+          "id": "northwest_keeper_hut",
+          "x": 70,
+          "y": 75,
+          "width": 190,
+          "height": 155
+        },
+        {
+          "id": "west_creek_water",
+          "x": 0,
+          "y": 235,
+          "width": 650,
+          "height": 120
+        },
+        {
+          "id": "east_creek_water",
+          "x": 850,
+          "y": 250,
+          "width": 520,
+          "height": 125
+        },
+        {
+          "id": "bottom_flower_edge",
+          "x": 0,
+          "y": 930,
+          "width": 1536,
+          "height": 94
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 12,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 1024
+        }
+      ]
+    },
+    "life_ruin_dig_site_v1": {
+      "metadata_status": "playtest_metadata",
+      "canvas_size": [
+        1536,
+        1024
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 768,
+          "y": 850
+        },
+        {
+          "id": "dig_camp",
+          "x": 760,
+          "y": 535
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.archaeologist",
+          "x": 700,
+          "y": 532,
+          "action": "notice",
+          "facing": "up",
+          "ambience_poses": [
+            "book",
+            "scroll"
+          ]
+        }
+      ],
+      "life_skill_nodes": [
+        {
+          "id": "dig.west_trench",
+          "x": 335,
+          "y": 300,
+          "action": "dig_artifact"
+        },
+        {
+          "id": "dig.east_tablet",
+          "x": 1190,
+          "y": 310,
+          "action": "dig_artifact"
+        },
+        {
+          "id": "dig.southwest_pit",
+          "x": 250,
+          "y": 690,
+          "action": "dig_artifact"
+        },
+        {
+          "id": "dig.southeast_pit",
+          "x": 1220,
+          "y": 700,
+          "action": "dig_artifact"
+        }
+      ],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 820,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 820,
+          "action": "portal",
+          "touch_rect": {
+            "x": 588,
+            "y": 630,
+            "width": 360,
+            "height": 260
+          }
+        },
+        {
+          "id": "notice",
+          "x": 700,
+          "y": 532,
+          "action": "notice"
+        },
+        {
+          "id": "dig_artifact",
+          "x": 1190,
+          "y": 310,
+          "action": "dig_artifact"
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "south_gate_path",
+          "x": 690,
+          "y": 760,
+          "width": 170,
+          "height": 205
+        },
+        {
+          "id": "central_camp_loop",
+          "x": 520,
+          "y": 360,
+          "width": 500,
+          "height": 330
+        },
+        {
+          "id": "west_dig_lane",
+          "x": 120,
+          "y": 250,
+          "width": 480,
+          "height": 500
+        },
+        {
+          "id": "east_dig_lane",
+          "x": 950,
+          "y": 250,
+          "width": 450,
+          "height": 500
+        },
+        {
+          "id": "north_ruin_lane",
+          "x": 430,
+          "y": 90,
+          "width": 680,
+          "height": 300
+        },
+        {
+          "id": "lower_ruin_lane",
+          "x": 300,
+          "y": 650,
+          "width": 920,
+          "height": 170
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "central_archaeology_camp",
+          "x": 610,
+          "y": 455,
+          "width": 320,
+          "height": 185,
+          "capacity": 12
+        },
+        {
+          "id": "east_tablet_circle",
+          "x": 1080,
+          "y": 270,
+          "width": 230,
+          "height": 125,
+          "capacity": 8
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1536,
+        "height": 1024
+      },
+      "blocked_rects": [
+        {
+          "id": "north_tree_wall",
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 70
+        },
+        {
+          "id": "west_tree_wall",
+          "x": 0,
+          "y": 0,
+          "width": 80,
+          "height": 1024
+        },
+        {
+          "id": "east_tree_wall",
+          "x": 1460,
+          "y": 0,
+          "width": 76,
+          "height": 1024
+        },
+        {
+          "id": "west_water",
+          "x": 0,
+          "y": 125,
+          "width": 185,
+          "height": 355
+        },
+        {
+          "id": "central_tent_mass",
+          "x": 650,
+          "y": 365,
+          "width": 240,
+          "height": 115
+        },
+        {
+          "id": "north_ruin_platform",
+          "x": 650,
+          "y": 90,
+          "width": 240,
+          "height": 135
+        },
+        {
+          "id": "right_stair_mass",
+          "x": 1320,
+          "y": 70,
+          "width": 185,
+          "height": 210
+        },
+        {
+          "id": "bottom_rock_edge",
+          "x": 0,
+          "y": 940,
+          "width": 1536,
+          "height": 84
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 12,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 1024
+        }
+      ]
+    },
+    "life_cooking_market_v1": {
+      "metadata_status": "playtest_metadata",
+      "canvas_size": [
+        1536,
+        1024
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 768,
+          "y": 850
+        },
+        {
+          "id": "cooking_plaza",
+          "x": 920,
+          "y": 560
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.chef_guide",
+          "x": 760,
+          "y": 320,
+          "action": "notice",
+          "facing": "down",
+          "ambience_poses": [
+            "stir",
+            "dish"
+          ]
+        }
+      ],
+      "life_skill_nodes": [
+        {
+          "id": "cook.west_stall",
+          "x": 330,
+          "y": 360,
+          "action": "cook_food"
+        },
+        {
+          "id": "cook.central_prep",
+          "x": 600,
+          "y": 560,
+          "action": "cook_food"
+        },
+        {
+          "id": "cook.east_oven",
+          "x": 1210,
+          "y": 410,
+          "action": "cook_food"
+        },
+        {
+          "id": "cook.south_table",
+          "x": 1010,
+          "y": 710,
+          "action": "cook_food"
+        }
+      ],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 815,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 815,
+          "action": "portal",
+          "touch_rect": {
+            "x": 588,
+            "y": 625,
+            "width": 360,
+            "height": 260
+          }
+        },
+        {
+          "id": "notice",
+          "x": 760,
+          "y": 320,
+          "action": "notice"
+        },
+        {
+          "id": "cook_food",
+          "x": 600,
+          "y": 560,
+          "action": "cook_food"
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "south_gate_path",
+          "x": 690,
+          "y": 760,
+          "width": 170,
+          "height": 205
+        },
+        {
+          "id": "central_plaza_loop",
+          "x": 430,
+          "y": 300,
+          "width": 680,
+          "height": 400
+        },
+        {
+          "id": "west_stall_lane",
+          "x": 120,
+          "y": 210,
+          "width": 450,
+          "height": 500
+        },
+        {
+          "id": "east_stall_lane",
+          "x": 980,
+          "y": 230,
+          "width": 420,
+          "height": 500
+        },
+        {
+          "id": "north_market_lane",
+          "x": 340,
+          "y": 100,
+          "width": 860,
+          "height": 260
+        },
+        {
+          "id": "lower_market_lane",
+          "x": 300,
+          "y": 650,
+          "width": 940,
+          "height": 180
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "central_cooking_plaza",
+          "x": 610,
+          "y": 570,
+          "width": 310,
+          "height": 120,
+          "capacity": 12
+        },
+        {
+          "id": "south_picnic_corner",
+          "x": 890,
+          "y": 655,
+          "width": 260,
+          "height": 130,
+          "capacity": 8
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1536,
+        "height": 1024
+      },
+      "blocked_rects": [
+        {
+          "id": "north_tree_wall",
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 60
+        },
+        {
+          "id": "west_tree_wall",
+          "x": 0,
+          "y": 0,
+          "width": 70,
+          "height": 1024
+        },
+        {
+          "id": "east_tree_wall",
+          "x": 1465,
+          "y": 0,
+          "width": 71,
+          "height": 1024
+        },
+        {
+          "id": "central_cauldron",
+          "x": 670,
+          "y": 455,
+          "width": 170,
+          "height": 95
+        },
+        {
+          "id": "north_stall_mass",
+          "x": 600,
+          "y": 90,
+          "width": 320,
+          "height": 155
+        },
+        {
+          "id": "west_deck_mass",
+          "x": 100,
+          "y": 75,
+          "width": 330,
+          "height": 130
+        },
+        {
+          "id": "east_oven_mass",
+          "x": 1220,
+          "y": 165,
+          "width": 220,
+          "height": 225
+        },
+        {
+          "id": "southwest_water",
+          "x": 0,
+          "y": 780,
+          "width": 320,
+          "height": 200
+        },
+        {
+          "id": "southeast_water",
+          "x": 1260,
+          "y": 730,
+          "width": 276,
+          "height": 230
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 12,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 1024
+        }
+      ]
+    },
+    "social_creator_gallery_v1": {
+      "metadata_status": "playtest_metadata",
+      "canvas_size": [
+        1536,
+        1024
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 768,
+          "y": 865
+        },
+        {
+          "id": "gallery_loop",
+          "x": 768,
+          "y": 710
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.creator_tutor",
+          "x": 768,
+          "y": 710,
+          "action": "creator_help",
+          "facing": "up",
+          "ambience_poses": [
+            "scroll",
+            "book"
+          ]
+        }
+      ],
+      "life_skill_nodes": [],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 890,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 890,
+          "action": "portal",
+          "touch_rect": {
+            "x": 588,
+            "y": 700,
+            "width": 360,
+            "height": 260
+          }
+        },
+        {
+          "id": "creator_help",
+          "x": 768,
+          "y": 710,
+          "action": "creator_help"
+        },
+        {
+          "id": "demo_booths",
+          "x": 340,
+          "y": 510,
+          "action": "creator_help"
+        },
+        {
+          "id": "featured_wall",
+          "x": 768,
+          "y": 260,
+          "action": "creator_help"
+        },
+        {
+          "id": "review_wall",
+          "x": 1090,
+          "y": 510,
+          "action": "creator_help"
+        },
+        {
+          "id": "mentor_corner",
+          "x": 430,
+          "y": 510,
+          "action": "creator_help"
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "south_gate_path",
+          "x": 685,
+          "y": 735,
+          "width": 180,
+          "height": 245
+        },
+        {
+          "id": "central_gallery_loop",
+          "x": 420,
+          "y": 350,
+          "width": 700,
+          "height": 360
+        },
+        {
+          "id": "west_demo_lane",
+          "x": 115,
+          "y": 280,
+          "width": 455,
+          "height": 455
+        },
+        {
+          "id": "east_demo_lane",
+          "x": 965,
+          "y": 280,
+          "width": 455,
+          "height": 455
+        },
+        {
+          "id": "north_curator_lane",
+          "x": 520,
+          "y": 150,
+          "width": 510,
+          "height": 210
+        },
+        {
+          "id": "lower_gallery_lane",
+          "x": 360,
+          "y": 650,
+          "width": 820,
+          "height": 190
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "central_showcase_circle",
+          "x": 565,
+          "y": 600,
+          "width": 405,
+          "height": 120,
+          "capacity": 16
+        },
+        {
+          "id": "demo_booth_walk",
+          "x": 240,
+          "y": 585,
+          "width": 1055,
+          "height": 120,
+          "capacity": 12
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1536,
+        "height": 1024
+      },
+      "blocked_rects": [
+        {
+          "id": "north_tree_wall",
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 70
+        },
+        {
+          "id": "west_tree_wall",
+          "x": 0,
+          "y": 0,
+          "width": 70,
+          "height": 1024
+        },
+        {
+          "id": "east_tree_wall",
+          "x": 1460,
+          "y": 0,
+          "width": 76,
+          "height": 1024
+        },
+        {
+          "id": "top_curator_stage",
+          "x": 610,
+          "y": 80,
+          "width": 320,
+          "height": 65
+        },
+        {
+          "id": "central_fountain",
+          "x": 700,
+          "y": 470,
+          "width": 140,
+          "height": 115
+        },
+        {
+          "id": "west_upper_display",
+          "x": 330,
+          "y": 175,
+          "width": 205,
+          "height": 130
+        },
+        {
+          "id": "east_upper_display",
+          "x": 1000,
+          "y": 175,
+          "width": 205,
+          "height": 130
+        },
+        {
+          "id": "west_lower_display",
+          "x": 200,
+          "y": 545,
+          "width": 245,
+          "height": 145
+        },
+        {
+          "id": "east_lower_display",
+          "x": 1090,
+          "y": 545,
+          "width": 245,
+          "height": 145
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 16,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 1024
+        }
+      ]
+    },
+    "social_mail_plaza_v1": {
+      "metadata_status": "playtest_metadata",
+      "canvas_size": [
+        1536,
+        1024
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 768,
+          "y": 865
+        },
+        {
+          "id": "mail_loop",
+          "x": 768,
+          "y": 710
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.mail_courier",
+          "x": 790,
+          "y": 710,
+          "action": "mail",
+          "facing": "up",
+          "ambience_poses": [
+            "letter",
+            "parcel"
+          ]
+        }
+      ],
+      "life_skill_nodes": [],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 900,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 900,
+          "action": "portal",
+          "touch_rect": {
+            "x": 588,
+            "y": 710,
+            "width": 360,
+            "height": 260
+          }
+        },
+        {
+          "id": "mail",
+          "x": 790,
+          "y": 710,
+          "action": "mail"
+        },
+        {
+          "id": "mailbox_circle",
+          "x": 768,
+          "y": 710,
+          "action": "mail"
+        },
+        {
+          "id": "post_counter",
+          "x": 768,
+          "y": 245,
+          "action": "mail"
+        },
+        {
+          "id": "stamp_counter",
+          "x": 930,
+          "y": 445,
+          "action": "mail"
+        },
+        {
+          "id": "parcel_sorting",
+          "x": 610,
+          "y": 445,
+          "action": "mail"
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "south_gate_path",
+          "x": 685,
+          "y": 750,
+          "width": 180,
+          "height": 230
+        },
+        {
+          "id": "central_mail_loop",
+          "x": 420,
+          "y": 390,
+          "width": 700,
+          "height": 335
+        },
+        {
+          "id": "west_kiosk_lane",
+          "x": 110,
+          "y": 300,
+          "width": 470,
+          "height": 455
+        },
+        {
+          "id": "east_kiosk_lane",
+          "x": 960,
+          "y": 300,
+          "width": 470,
+          "height": 455
+        },
+        {
+          "id": "north_post_lane",
+          "x": 510,
+          "y": 190,
+          "width": 520,
+          "height": 215
+        },
+        {
+          "id": "lower_mail_lane",
+          "x": 350,
+          "y": 640,
+          "width": 850,
+          "height": 190
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "central_mail_circle",
+          "x": 560,
+          "y": 445,
+          "width": 420,
+          "height": 215,
+          "capacity": 16
+        },
+        {
+          "id": "parcel_queue",
+          "x": 600,
+          "y": 255,
+          "width": 350,
+          "height": 130,
+          "capacity": 8
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1536,
+        "height": 1024
+      },
+      "blocked_rects": [
+        {
+          "id": "north_tree_wall",
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 55
+        },
+        {
+          "id": "west_tree_wall",
+          "x": 0,
+          "y": 0,
+          "width": 70,
+          "height": 1024
+        },
+        {
+          "id": "east_tree_wall",
+          "x": 1460,
+          "y": 0,
+          "width": 76,
+          "height": 1024
+        },
+        {
+          "id": "post_office_roof",
+          "x": 500,
+          "y": 60,
+          "width": 540,
+          "height": 125
+        },
+        {
+          "id": "central_mailboxes",
+          "x": 680,
+          "y": 440,
+          "width": 175,
+          "height": 105
+        },
+        {
+          "id": "west_lower_kiosk",
+          "x": 85,
+          "y": 585,
+          "width": 255,
+          "height": 190
+        },
+        {
+          "id": "east_lower_kiosk",
+          "x": 1190,
+          "y": 585,
+          "width": 255,
+          "height": 190
+        },
+        {
+          "id": "upper_left_booth",
+          "x": 270,
+          "y": 230,
+          "width": 220,
+          "height": 140
+        },
+        {
+          "id": "upper_right_booth",
+          "x": 1040,
+          "y": 230,
+          "width": 220,
+          "height": 140
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 16,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 1024
+        }
+      ]
+    },
+    "random_flower_valley_v1": {
+      "metadata_status": "playtest_metadata",
+      "canvas_size": [
+        1536,
+        1024
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 768,
+          "y": 910
+        },
+        {
+          "id": "valley_loop",
+          "x": 760,
+          "y": 610
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.herbalist",
+          "x": 560,
+          "y": 610,
+          "action": "notice",
+          "facing": "right"
+        }
+      ],
+      "life_skill_nodes": [
+        {
+          "id": "explore.flower_valley.central_meadow",
+          "x": 760,
+          "y": 605,
+          "action": "explore"
+        },
+        {
+          "id": "explore.flower_valley.west_bridge",
+          "x": 315,
+          "y": 405,
+          "action": "explore"
+        },
+        {
+          "id": "explore.flower_valley.east_ruin",
+          "x": 1215,
+          "y": 610,
+          "action": "explore"
+        }
+      ],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 905,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 905,
+          "action": "portal",
+          "touch_rect": {
+            "x": 588,
+            "y": 715,
+            "width": 360,
+            "height": 260
+          }
+        },
+        {
+          "id": "explore",
+          "x": 760,
+          "y": 605,
+          "action": "explore"
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "south_gate_path",
+          "x": 690,
+          "y": 800,
+          "width": 170,
+          "height": 180
+        },
+        {
+          "id": "central_valley_loop",
+          "x": 420,
+          "y": 350,
+          "width": 720,
+          "height": 395
+        },
+        {
+          "id": "west_bridge_lane",
+          "x": 95,
+          "y": 280,
+          "width": 510,
+          "height": 470
+        },
+        {
+          "id": "east_stream_lane",
+          "x": 945,
+          "y": 220,
+          "width": 470,
+          "height": 540
+        },
+        {
+          "id": "north_lookout_lane",
+          "x": 555,
+          "y": 95,
+          "width": 440,
+          "height": 280
+        },
+        {
+          "id": "lower_meadow_crossing",
+          "x": 300,
+          "y": 690,
+          "width": 930,
+          "height": 150
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "central_flower_meadow",
+          "x": 560,
+          "y": 500,
+          "width": 420,
+          "height": 215,
+          "capacity": 12
+        },
+        {
+          "id": "west_bridge_rest",
+          "x": 205,
+          "y": 365,
+          "width": 260,
+          "height": 150,
+          "capacity": 8
+        },
+        {
+          "id": "east_bloom_rest",
+          "x": 1170,
+          "y": 600,
+          "width": 210,
+          "height": 130,
+          "capacity": 8
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1536,
+        "height": 1024
+      },
+      "blocked_rects": [
+        {
+          "id": "north_tree_wall",
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 65
+        },
+        {
+          "id": "west_tree_wall",
+          "x": 0,
+          "y": 0,
+          "width": 70,
+          "height": 1024
+        },
+        {
+          "id": "east_tree_wall",
+          "x": 1460,
+          "y": 0,
+          "width": 76,
+          "height": 1024
+        },
+        {
+          "id": "west_stream_water",
+          "x": 0,
+          "y": 120,
+          "width": 250,
+          "height": 300
+        },
+        {
+          "id": "east_stream_water",
+          "x": 1030,
+          "y": 60,
+          "width": 235,
+          "height": 520
+        },
+        {
+          "id": "north_lookout_cliff",
+          "x": 600,
+          "y": 135,
+          "width": 330,
+          "height": 105
+        },
+        {
+          "id": "center_flower_bed",
+          "x": 690,
+          "y": 470,
+          "width": 165,
+          "height": 120
+        },
+        {
+          "id": "bottom_flower_edge",
+          "x": 0,
+          "y": 960,
+          "width": 1536,
+          "height": 64
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 12,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 1024
+        }
+      ]
+    },
+    "random_mist_wetland_v1": {
+      "metadata_status": "playtest_metadata",
+      "canvas_size": [
+        1536,
+        1024
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 768,
+          "y": 875
+        },
+        {
+          "id": "boardwalk_loop",
+          "x": 765,
+          "y": 572
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.herbalist",
+          "x": 765,
+          "y": 572,
+          "action": "notice",
+          "facing": "up"
+        }
+      ],
+      "life_skill_nodes": [
+        {
+          "id": "explore.wetland.central_island",
+          "x": 765,
+          "y": 572,
+          "action": "explore"
+        },
+        {
+          "id": "explore.wetland.west_watch",
+          "x": 290,
+          "y": 305,
+          "action": "explore"
+        },
+        {
+          "id": "explore.wetland.east_hut",
+          "x": 1125,
+          "y": 640,
+          "action": "explore"
+        }
+      ],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 880,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 880,
+          "action": "portal",
+          "touch_rect": {
+            "x": 588,
+            "y": 690,
+            "width": 360,
+            "height": 260
+          }
+        },
+        {
+          "id": "explore",
+          "x": 765,
+          "y": 572,
+          "action": "explore"
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "south_gate_boardwalk",
+          "x": 690,
+          "y": 760,
+          "width": 170,
+          "height": 205
+        },
+        {
+          "id": "central_boardwalk_loop",
+          "x": 360,
+          "y": 330,
+          "width": 820,
+          "height": 390
+        },
+        {
+          "id": "west_boardwalk_lane",
+          "x": 165,
+          "y": 230,
+          "width": 470,
+          "height": 455
+        },
+        {
+          "id": "east_boardwalk_lane",
+          "x": 910,
+          "y": 255,
+          "width": 470,
+          "height": 455
+        },
+        {
+          "id": "north_island_lane",
+          "x": 560,
+          "y": 95,
+          "width": 420,
+          "height": 285
+        },
+        {
+          "id": "lower_boardwalk_crossing",
+          "x": 300,
+          "y": 620,
+          "width": 940,
+          "height": 180
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "central_dry_island",
+          "x": 575,
+          "y": 480,
+          "width": 390,
+          "height": 190,
+          "capacity": 12
+        },
+        {
+          "id": "north_willow_rest",
+          "x": 610,
+          "y": 190,
+          "width": 300,
+          "height": 140,
+          "capacity": 8
+        },
+        {
+          "id": "east_reed_platform",
+          "x": 1010,
+          "y": 570,
+          "width": 260,
+          "height": 130,
+          "capacity": 8
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1536,
+        "height": 1024
+      },
+      "blocked_rects": [
+        {
+          "id": "north_water",
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 90
+        },
+        {
+          "id": "west_deep_water",
+          "x": 0,
+          "y": 85,
+          "width": 165,
+          "height": 790
+        },
+        {
+          "id": "east_deep_water",
+          "x": 1375,
+          "y": 75,
+          "width": 161,
+          "height": 795
+        },
+        {
+          "id": "central_willow",
+          "x": 670,
+          "y": 350,
+          "width": 190,
+          "height": 170
+        },
+        {
+          "id": "west_reed_bed",
+          "x": 85,
+          "y": 575,
+          "width": 215,
+          "height": 180
+        },
+        {
+          "id": "east_hut_mass",
+          "x": 1180,
+          "y": 410,
+          "width": 190,
+          "height": 155
+        },
+        {
+          "id": "bottom_water_edge",
+          "x": 0,
+          "y": 960,
+          "width": 1536,
+          "height": 64
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 12,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 1024
+        }
+      ]
+    },
+    "random_old_ruins_v1": {
+      "metadata_status": "playtest_metadata",
+      "canvas_size": [
+        1536,
+        1024
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 768,
+          "y": 885
+        },
+        {
+          "id": "ruin_plaza",
+          "x": 768,
+          "y": 657
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.archaeologist",
+          "x": 768,
+          "y": 657,
+          "action": "notice",
+          "facing": "up",
+          "ambience_poses": [
+            "scroll"
+          ]
+        }
+      ],
+      "life_skill_nodes": [
+        {
+          "id": "explore.ruins.central_mosaic",
+          "x": 768,
+          "y": 657,
+          "action": "explore"
+        },
+        {
+          "id": "explore.ruins.west_relic",
+          "x": 320,
+          "y": 650,
+          "action": "explore"
+        },
+        {
+          "id": "explore.ruins.east_camp",
+          "x": 1220,
+          "y": 430,
+          "action": "explore"
+        }
+      ],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 885,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 885,
+          "action": "portal",
+          "touch_rect": {
+            "x": 588,
+            "y": 695,
+            "width": 360,
+            "height": 260
+          }
+        },
+        {
+          "id": "explore",
+          "x": 768,
+          "y": 657,
+          "action": "explore"
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "south_gate_path",
+          "x": 690,
+          "y": 745,
+          "width": 170,
+          "height": 225
+        },
+        {
+          "id": "central_ruin_plaza",
+          "x": 430,
+          "y": 330,
+          "width": 700,
+          "height": 390
+        },
+        {
+          "id": "west_ruin_lane",
+          "x": 110,
+          "y": 250,
+          "width": 520,
+          "height": 520
+        },
+        {
+          "id": "east_ruin_lane",
+          "x": 930,
+          "y": 250,
+          "width": 500,
+          "height": 520
+        },
+        {
+          "id": "north_relic_platform_lane",
+          "x": 560,
+          "y": 105,
+          "width": 425,
+          "height": 270
+        },
+        {
+          "id": "lower_ruin_crossing",
+          "x": 300,
+          "y": 650,
+          "width": 930,
+          "height": 175
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "central_mosaic_circle",
+          "x": 565,
+          "y": 600,
+          "width": 405,
+          "height": 115,
+          "capacity": 14
+        },
+        {
+          "id": "west_relic_clear",
+          "x": 210,
+          "y": 575,
+          "width": 270,
+          "height": 155,
+          "capacity": 8
+        },
+        {
+          "id": "east_relic_clear",
+          "x": 995,
+          "y": 575,
+          "width": 270,
+          "height": 155,
+          "capacity": 8
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1536,
+        "height": 1024
+      },
+      "blocked_rects": [
+        {
+          "id": "north_tree_wall",
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 80
+        },
+        {
+          "id": "west_water_edge",
+          "x": 0,
+          "y": 60,
+          "width": 90,
+          "height": 920
+        },
+        {
+          "id": "east_water_edge",
+          "x": 1450,
+          "y": 60,
+          "width": 86,
+          "height": 920
+        },
+        {
+          "id": "north_relic_platform",
+          "x": 650,
+          "y": 100,
+          "width": 245,
+          "height": 120
+        },
+        {
+          "id": "west_column_cluster",
+          "x": 240,
+          "y": 240,
+          "width": 210,
+          "height": 145
+        },
+        {
+          "id": "east_column_cluster",
+          "x": 1090,
+          "y": 240,
+          "width": 210,
+          "height": 145
+        },
+        {
+          "id": "central_low_column",
+          "x": 725,
+          "y": 515,
+          "width": 90,
+          "height": 90
+        },
+        {
+          "id": "bottom_ruin_fence",
+          "x": 0,
+          "y": 955,
+          "width": 1536,
+          "height": 69
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 14,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 1024
+        }
+      ]
+    },
+    "random_autumn_road_v1": {
+      "metadata_status": "playtest_metadata",
+      "canvas_size": [
+        1536,
+        1024
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 768,
+          "y": 895
+        },
+        {
+          "id": "autumn_crossing",
+          "x": 770,
+          "y": 565
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.lumber_foreman",
+          "x": 770,
+          "y": 565,
+          "action": "notice",
+          "facing": "up"
+        }
+      ],
+      "life_skill_nodes": [
+        {
+          "id": "explore.autumn.central_crossing",
+          "x": 770,
+          "y": 565,
+          "action": "explore"
+        },
+        {
+          "id": "explore.autumn.west_bridge",
+          "x": 275,
+          "y": 520,
+          "action": "explore"
+        },
+        {
+          "id": "explore.autumn.north_camp",
+          "x": 880,
+          "y": 250,
+          "action": "explore"
+        }
+      ],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 890,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 890,
+          "action": "portal",
+          "touch_rect": {
+            "x": 588,
+            "y": 700,
+            "width": 360,
+            "height": 260
+          }
+        },
+        {
+          "id": "explore",
+          "x": 770,
+          "y": 565,
+          "action": "explore"
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "south_gate_path",
+          "x": 690,
+          "y": 760,
+          "width": 170,
+          "height": 210
+        },
+        {
+          "id": "central_autumn_crossing",
+          "x": 430,
+          "y": 370,
+          "width": 700,
+          "height": 365
+        },
+        {
+          "id": "west_bridge_lane",
+          "x": 115,
+          "y": 385,
+          "width": 500,
+          "height": 380
+        },
+        {
+          "id": "east_road_lane",
+          "x": 915,
+          "y": 315,
+          "width": 500,
+          "height": 430
+        },
+        {
+          "id": "north_camp_lane",
+          "x": 520,
+          "y": 105,
+          "width": 520,
+          "height": 300
+        },
+        {
+          "id": "lower_autumn_road",
+          "x": 290,
+          "y": 670,
+          "width": 940,
+          "height": 165
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "central_leaf_crossing",
+          "x": 570,
+          "y": 470,
+          "width": 400,
+          "height": 205,
+          "capacity": 12
+        },
+        {
+          "id": "north_camp_rest",
+          "x": 800,
+          "y": 245,
+          "width": 200,
+          "height": 120,
+          "capacity": 8
+        },
+        {
+          "id": "east_maple_rest",
+          "x": 930,
+          "y": 540,
+          "width": 180,
+          "height": 130,
+          "capacity": 8
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1536,
+        "height": 1024
+      },
+      "blocked_rects": [
+        {
+          "id": "north_rock_wall",
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 65
+        },
+        {
+          "id": "west_water_edge",
+          "x": 0,
+          "y": 250,
+          "width": 250,
+          "height": 350
+        },
+        {
+          "id": "east_tree_wall",
+          "x": 1455,
+          "y": 0,
+          "width": 81,
+          "height": 1024
+        },
+        {
+          "id": "central_shrine",
+          "x": 610,
+          "y": 310,
+          "width": 145,
+          "height": 120
+        },
+        {
+          "id": "north_campfire",
+          "x": 700,
+          "y": 145,
+          "width": 120,
+          "height": 90
+        },
+        {
+          "id": "west_rock_cluster",
+          "x": 365,
+          "y": 190,
+          "width": 150,
+          "height": 260
+        },
+        {
+          "id": "east_leaf_wall",
+          "x": 1120,
+          "y": 460,
+          "width": 220,
+          "height": 175
+        },
+        {
+          "id": "bottom_fence",
+          "x": 0,
+          "y": 950,
+          "width": 1536,
+          "height": 74
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 12,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 1024
+        }
+      ]
+    },
+    "random_island_coast_v1": {
+      "metadata_status": "playtest_metadata",
+      "canvas_size": [
+        1536,
+        1024
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 768,
+          "y": 875
+        },
+        {
+          "id": "north_camp",
+          "x": 710,
+          "y": 240
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.fisher",
+          "x": 1130,
+          "y": 360,
+          "action": "fishing",
+          "facing": "left"
+        }
+      ],
+      "life_skill_nodes": [
+        {
+          "id": "explore.island.north_camp",
+          "x": 710,
+          "y": 240,
+          "action": "explore"
+        },
+        {
+          "id": "explore.island.west_cave",
+          "x": 260,
+          "y": 230,
+          "action": "explore"
+        },
+        {
+          "id": "explore.island.east_shrine",
+          "x": 1130,
+          "y": 310,
+          "action": "explore"
+        }
+      ],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 875,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 875,
+          "action": "portal",
+          "touch_rect": {
+            "x": 588,
+            "y": 685,
+            "width": 360,
+            "height": 260
+          }
+        },
+        {
+          "id": "explore",
+          "x": 710,
+          "y": 240,
+          "action": "explore"
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "south_dock_beach",
+          "x": 600,
+          "y": 760,
+          "width": 350,
+          "height": 200
+        },
+        {
+          "id": "central_beach_loop",
+          "x": 360,
+          "y": 380,
+          "width": 850,
+          "height": 390
+        },
+        {
+          "id": "west_beach_path",
+          "x": 120,
+          "y": 170,
+          "width": 440,
+          "height": 600
+        },
+        {
+          "id": "east_beach_path",
+          "x": 955,
+          "y": 175,
+          "width": 430,
+          "height": 600
+        },
+        {
+          "id": "north_camp_path",
+          "x": 555,
+          "y": 120,
+          "width": 410,
+          "height": 250
+        },
+        {
+          "id": "lower_beach_crossing",
+          "x": 210,
+          "y": 690,
+          "width": 1100,
+          "height": 170
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "central_shell_cove",
+          "x": 650,
+          "y": 650,
+          "width": 300,
+          "height": 110,
+          "capacity": 16
+        },
+        {
+          "id": "north_camp_rest",
+          "x": 590,
+          "y": 160,
+          "width": 310,
+          "height": 145,
+          "capacity": 8
+        },
+        {
+          "id": "south_dock_queue",
+          "x": 660,
+          "y": 800,
+          "width": 250,
+          "height": 120,
+          "capacity": 8
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1536,
+        "height": 1024
+      },
+      "blocked_rects": [
+        {
+          "id": "north_ocean",
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 70
+        },
+        {
+          "id": "west_ocean_edge",
+          "x": 0,
+          "y": 0,
+          "width": 70,
+          "height": 1024
+        },
+        {
+          "id": "east_ocean_edge",
+          "x": 1460,
+          "y": 0,
+          "width": 76,
+          "height": 1024
+        },
+        {
+          "id": "central_lagoon_water",
+          "x": 555,
+          "y": 395,
+          "width": 390,
+          "height": 240
+        },
+        {
+          "id": "west_cliff_mass",
+          "x": 185,
+          "y": 85,
+          "width": 215,
+          "height": 115
+        },
+        {
+          "id": "east_rock_pool",
+          "x": 1190,
+          "y": 405,
+          "width": 210,
+          "height": 145
+        },
+        {
+          "id": "bottom_ocean_edge",
+          "x": 0,
+          "y": 965,
+          "width": 1536,
+          "height": 59
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 16,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 1024
+        }
+      ]
+    },
+    "random_lantern_forest_v1": {
+      "metadata_status": "playtest_metadata",
+      "canvas_size": [
+        1536,
+        1024
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 768,
+          "y": 890
+        },
+        {
+          "id": "lantern_clearing",
+          "x": 770,
+          "y": 587
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.festival_host",
+          "x": 770,
+          "y": 587,
+          "action": "notice",
+          "facing": "up"
+        }
+      ],
+      "life_skill_nodes": [
+        {
+          "id": "explore.lantern.central_clearing",
+          "x": 770,
+          "y": 587,
+          "action": "explore"
+        },
+        {
+          "id": "explore.lantern.west_boat",
+          "x": 245,
+          "y": 585,
+          "action": "explore"
+        },
+        {
+          "id": "explore.lantern.north_shrine",
+          "x": 740,
+          "y": 300,
+          "action": "explore"
+        }
+      ],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 890,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 890,
+          "action": "portal",
+          "touch_rect": {
+            "x": 588,
+            "y": 700,
+            "width": 360,
+            "height": 260
+          }
+        },
+        {
+          "id": "explore",
+          "x": 770,
+          "y": 587,
+          "action": "explore"
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "south_lantern_gate",
+          "x": 690,
+          "y": 785,
+          "width": 170,
+          "height": 180
+        },
+        {
+          "id": "central_lantern_loop",
+          "x": 360,
+          "y": 330,
+          "width": 800,
+          "height": 400
+        },
+        {
+          "id": "west_river_lane",
+          "x": 80,
+          "y": 420,
+          "width": 520,
+          "height": 400
+        },
+        {
+          "id": "east_glade_lane",
+          "x": 930,
+          "y": 320,
+          "width": 500,
+          "height": 430
+        },
+        {
+          "id": "north_shrine_lane",
+          "x": 530,
+          "y": 120,
+          "width": 480,
+          "height": 300
+        },
+        {
+          "id": "lower_lantern_loop",
+          "x": 280,
+          "y": 690,
+          "width": 980,
+          "height": 180
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "central_lantern_clearing",
+          "x": 580,
+          "y": 470,
+          "width": 390,
+          "height": 205,
+          "capacity": 16
+        },
+        {
+          "id": "west_river_rest",
+          "x": 170,
+          "y": 525,
+          "width": 260,
+          "height": 150,
+          "capacity": 8
+        },
+        {
+          "id": "east_glade_rest",
+          "x": 1010,
+          "y": 510,
+          "width": 260,
+          "height": 150,
+          "capacity": 8
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1536,
+        "height": 1024
+      },
+      "blocked_rects": [
+        {
+          "id": "north_tree_wall",
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 80
+        },
+        {
+          "id": "west_tree_edge",
+          "x": 0,
+          "y": 0,
+          "width": 60,
+          "height": 1024
+        },
+        {
+          "id": "east_tree_edge",
+          "x": 1465,
+          "y": 0,
+          "width": 71,
+          "height": 1024
+        },
+        {
+          "id": "west_deep_water",
+          "x": 0,
+          "y": 430,
+          "width": 220,
+          "height": 250
+        },
+        {
+          "id": "north_shrine_roof",
+          "x": 675,
+          "y": 150,
+          "width": 155,
+          "height": 105
+        },
+        {
+          "id": "central_lantern_planter",
+          "x": 700,
+          "y": 455,
+          "width": 140,
+          "height": 80
+        },
+        {
+          "id": "bottom_tree_edge",
+          "x": 0,
+          "y": 965,
+          "width": 1536,
+          "height": 59
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 16,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 1024
+        }
+      ]
+    },
+    "random_cliff_boardwalk_v1": {
+      "metadata_status": "playtest_metadata",
+      "canvas_size": [
+        1536,
+        1024
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 560,
+          "y": 840
+        },
+        {
+          "id": "central_lookout",
+          "x": 768,
+          "y": 610
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.lumber_foreman",
+          "x": 768,
+          "y": 610,
+          "action": "notice",
+          "facing": "up"
+        }
+      ],
+      "life_skill_nodes": [
+        {
+          "id": "explore.cliff.central_lookout",
+          "x": 768,
+          "y": 610,
+          "action": "explore"
+        },
+        {
+          "id": "explore.cliff.west_boardwalk",
+          "x": 250,
+          "y": 350,
+          "action": "explore"
+        },
+        {
+          "id": "explore.cliff.east_pavilion",
+          "x": 1160,
+          "y": 360,
+          "action": "explore"
+        }
+      ],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 560,
+          "y": 840,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "to_city",
+          "x": 560,
+          "y": 840,
+          "action": "portal",
+          "touch_rect": {
+            "x": 380,
+            "y": 650,
+            "width": 360,
+            "height": 260
+          }
+        },
+        {
+          "id": "explore",
+          "x": 768,
+          "y": 610,
+          "action": "explore"
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "lower_boardwalk_gate",
+          "x": 280,
+          "y": 765,
+          "width": 530,
+          "height": 190
+        },
+        {
+          "id": "central_lookout_ring",
+          "x": 520,
+          "y": 360,
+          "width": 500,
+          "height": 300
+        },
+        {
+          "id": "west_boardwalk_lane",
+          "x": 95,
+          "y": 210,
+          "width": 600,
+          "height": 350
+        },
+        {
+          "id": "east_boardwalk_lane",
+          "x": 925,
+          "y": 200,
+          "width": 470,
+          "height": 440
+        },
+        {
+          "id": "north_platform_lane",
+          "x": 585,
+          "y": 95,
+          "width": 500,
+          "height": 260
+        },
+        {
+          "id": "lower_cliff_path",
+          "x": 360,
+          "y": 660,
+          "width": 600,
+          "height": 180
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "central_scenic_lookout",
+          "x": 610,
+          "y": 510,
+          "width": 320,
+          "height": 140,
+          "capacity": 16
+        },
+        {
+          "id": "north_rest_platform",
+          "x": 650,
+          "y": 120,
+          "width": 300,
+          "height": 135,
+          "capacity": 8
+        },
+        {
+          "id": "east_view_platform",
+          "x": 940,
+          "y": 430,
+          "width": 200,
+          "height": 140,
+          "capacity": 8
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1536,
+        "height": 1024
+      },
+      "blocked_rects": [
+        {
+          "id": "north_cloud_band",
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 60
+        },
+        {
+          "id": "west_sky_edge",
+          "x": 0,
+          "y": 0,
+          "width": 85,
+          "height": 1024
+        },
+        {
+          "id": "east_cliff_edge",
+          "x": 1430,
+          "y": 0,
+          "width": 106,
+          "height": 1024
+        },
+        {
+          "id": "central_compass_marker",
+          "x": 710,
+          "y": 485,
+          "width": 115,
+          "height": 65
+        },
+        {
+          "id": "east_pavilion_roof",
+          "x": 1260,
+          "y": 220,
+          "width": 140,
+          "height": 110
+        },
+        {
+          "id": "right_waterfall_drop",
+          "x": 1160,
+          "y": 520,
+          "width": 230,
+          "height": 250
+        },
+        {
+          "id": "bottom_cloud_edge",
+          "x": 0,
+          "y": 955,
+          "width": 1536,
+          "height": 69
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 16,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 1024
+        }
+      ]
+    },
+    "random_ancient_tree_maze_v1": {
+      "metadata_status": "playtest_metadata",
+      "canvas_size": [
+        1536,
+        1024
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 768,
+          "y": 890
+        },
+        {
+          "id": "ancient_tree_front",
+          "x": 760,
+          "y": 520
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.archaeologist",
+          "x": 760,
+          "y": 520,
+          "action": "notice",
+          "facing": "up",
+          "ambience_poses": [
+            "scroll"
+          ]
+        }
+      ],
+      "life_skill_nodes": [
+        {
+          "id": "explore.tree.central_tree",
+          "x": 760,
+          "y": 520,
+          "action": "explore"
+        },
+        {
+          "id": "explore.tree.west_orb",
+          "x": 230,
+          "y": 420,
+          "action": "explore"
+        },
+        {
+          "id": "explore.tree.east_roots",
+          "x": 1180,
+          "y": 430,
+          "action": "explore"
+        }
+      ],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 890,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 890,
+          "action": "portal",
+          "touch_rect": {
+            "x": 588,
+            "y": 700,
+            "width": 360,
+            "height": 260
+          }
+        },
+        {
+          "id": "explore",
+          "x": 760,
+          "y": 520,
+          "action": "explore"
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "south_root_gate",
+          "x": 680,
+          "y": 790,
+          "width": 180,
+          "height": 190
+        },
+        {
+          "id": "central_tree_clearing",
+          "x": 420,
+          "y": 390,
+          "width": 720,
+          "height": 320
+        },
+        {
+          "id": "west_maze_lane",
+          "x": 80,
+          "y": 220,
+          "width": 540,
+          "height": 520
+        },
+        {
+          "id": "east_maze_lane",
+          "x": 940,
+          "y": 220,
+          "width": 520,
+          "height": 520
+        },
+        {
+          "id": "north_root_lane",
+          "x": 540,
+          "y": 90,
+          "width": 480,
+          "height": 330
+        },
+        {
+          "id": "lower_maze_crossing",
+          "x": 280,
+          "y": 660,
+          "width": 980,
+          "height": 190
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "central_ancient_tree_front",
+          "x": 600,
+          "y": 455,
+          "width": 340,
+          "height": 190,
+          "capacity": 16
+        },
+        {
+          "id": "west_glowing_orb_rest",
+          "x": 155,
+          "y": 350,
+          "width": 250,
+          "height": 155,
+          "capacity": 8
+        },
+        {
+          "id": "east_root_rest",
+          "x": 960,
+          "y": 520,
+          "width": 220,
+          "height": 150,
+          "capacity": 8
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1536,
+        "height": 1024
+      },
+      "blocked_rects": [
+        {
+          "id": "north_tree_wall",
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 75
+        },
+        {
+          "id": "west_root_edge",
+          "x": 0,
+          "y": 0,
+          "width": 70,
+          "height": 1024
+        },
+        {
+          "id": "east_root_edge",
+          "x": 1460,
+          "y": 0,
+          "width": 76,
+          "height": 1024
+        },
+        {
+          "id": "ancient_tree_crown",
+          "x": 575,
+          "y": 120,
+          "width": 390,
+          "height": 260
+        },
+        {
+          "id": "central_root_stump",
+          "x": 700,
+          "y": 315,
+          "width": 130,
+          "height": 80
+        },
+        {
+          "id": "east_root_mass",
+          "x": 1235,
+          "y": 520,
+          "width": 190,
+          "height": 160
+        },
+        {
+          "id": "bottom_root_edge",
+          "x": 0,
+          "y": 965,
+          "width": 1536,
+          "height": 59
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 16,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 1024
+        }
+      ]
+    },
+    "season_cherry_blossom_fair_v1": {
+      "metadata_status": "playtest_metadata",
+      "canvas_size": [
+        1536,
+        1024
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 768,
+          "y": 820
+        },
+        {
+          "id": "blossom_plaza",
+          "x": 770,
+          "y": 587
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.festival_host",
+          "x": 770,
+          "y": 587,
+          "action": "notice",
+          "facing": "up"
+        }
+      ],
+      "life_skill_nodes": [
+        {
+          "id": "event.cherry.central_plaza",
+          "x": 770,
+          "y": 587,
+          "action": "seasonal_event"
+        },
+        {
+          "id": "event.cherry.west_picnic",
+          "x": 315,
+          "y": 520,
+          "action": "seasonal_event"
+        },
+        {
+          "id": "event.cherry.riverbank",
+          "x": 1110,
+          "y": 430,
+          "action": "seasonal_event"
+        }
+      ],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 820,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 820,
+          "action": "portal",
+          "touch_rect": {
+            "x": 588,
+            "y": 630,
+            "width": 360,
+            "height": 260
+          }
+        },
+        {
+          "id": "seasonal_event",
+          "x": 770,
+          "y": 587,
+          "action": "seasonal_event"
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "south_blossom_gate",
+          "x": 690,
+          "y": 770,
+          "width": 170,
+          "height": 200
+        },
+        {
+          "id": "central_blossom_plaza",
+          "x": 430,
+          "y": 350,
+          "width": 710,
+          "height": 385
+        },
+        {
+          "id": "west_picnic_lane",
+          "x": 120,
+          "y": 300,
+          "width": 520,
+          "height": 455
+        },
+        {
+          "id": "east_riverbank_lane",
+          "x": 900,
+          "y": 250,
+          "width": 500,
+          "height": 500
+        },
+        {
+          "id": "north_stall_lane",
+          "x": 520,
+          "y": 110,
+          "width": 520,
+          "height": 300
+        },
+        {
+          "id": "lower_fair_crossing",
+          "x": 285,
+          "y": 690,
+          "width": 970,
+          "height": 175
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "central_blossom_plaza",
+          "x": 570,
+          "y": 470,
+          "width": 400,
+          "height": 210,
+          "capacity": 16
+        },
+        {
+          "id": "west_picnic_rest",
+          "x": 210,
+          "y": 450,
+          "width": 280,
+          "height": 160,
+          "capacity": 8
+        },
+        {
+          "id": "east_riverbank_rest",
+          "x": 1010,
+          "y": 520,
+          "width": 260,
+          "height": 150,
+          "capacity": 8
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1536,
+        "height": 1024
+      },
+      "blocked_rects": [
+        {
+          "id": "north_pink_tree_wall",
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 70
+        },
+        {
+          "id": "west_tree_edge",
+          "x": 0,
+          "y": 0,
+          "width": 75,
+          "height": 1024
+        },
+        {
+          "id": "east_river_edge",
+          "x": 1460,
+          "y": 0,
+          "width": 76,
+          "height": 1024
+        },
+        {
+          "id": "central_picnic_blanket",
+          "x": 705,
+          "y": 455,
+          "width": 125,
+          "height": 80
+        },
+        {
+          "id": "west_cherry_tree",
+          "x": 230,
+          "y": 230,
+          "width": 180,
+          "height": 150
+        },
+        {
+          "id": "east_river_water",
+          "x": 1210,
+          "y": 160,
+          "width": 220,
+          "height": 330
+        },
+        {
+          "id": "bottom_tree_edge",
+          "x": 0,
+          "y": 965,
+          "width": 1536,
+          "height": 59
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 16,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 1024
+        }
+      ]
+    },
+    "season_snow_festival_v1": {
+      "metadata_status": "playtest_metadata",
+      "canvas_size": [
+        1536,
+        1024
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 768,
+          "y": 820
+        },
+        {
+          "id": "snow_square",
+          "x": 768,
+          "y": 560
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.snow_guide",
+          "x": 768,
+          "y": 615,
+          "action": "notice",
+          "facing": "up"
+        }
+      ],
+      "life_skill_nodes": [
+        {
+          "id": "event.snow.central_square",
+          "x": 768,
+          "y": 560,
+          "action": "seasonal_event"
+        },
+        {
+          "id": "event.snow.west_sculpture",
+          "x": 330,
+          "y": 520,
+          "action": "seasonal_event"
+        },
+        {
+          "id": "event.snow.east_stall",
+          "x": 1160,
+          "y": 430,
+          "action": "seasonal_event"
+        }
+      ],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 820,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 820,
+          "action": "portal",
+          "touch_rect": {
+            "x": 588,
+            "y": 630,
+            "width": 360,
+            "height": 260
+          }
+        },
+        {
+          "id": "seasonal_event",
+          "x": 768,
+          "y": 560,
+          "action": "seasonal_event"
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "south_snow_gate",
+          "x": 690,
+          "y": 770,
+          "width": 170,
+          "height": 200
+        },
+        {
+          "id": "central_snow_square",
+          "x": 420,
+          "y": 350,
+          "width": 720,
+          "height": 390
+        },
+        {
+          "id": "west_sculpture_lane",
+          "x": 110,
+          "y": 285,
+          "width": 540,
+          "height": 470
+        },
+        {
+          "id": "east_stall_lane",
+          "x": 900,
+          "y": 260,
+          "width": 500,
+          "height": 500
+        },
+        {
+          "id": "north_lantern_lane",
+          "x": 520,
+          "y": 105,
+          "width": 520,
+          "height": 300
+        },
+        {
+          "id": "lower_snow_crossing",
+          "x": 285,
+          "y": 690,
+          "width": 970,
+          "height": 175
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "central_snow_celebration",
+          "x": 570,
+          "y": 470,
+          "width": 400,
+          "height": 210,
+          "capacity": 16
+        },
+        {
+          "id": "west_snow_rest",
+          "x": 220,
+          "y": 445,
+          "width": 280,
+          "height": 165,
+          "capacity": 8
+        },
+        {
+          "id": "east_stall_rest",
+          "x": 1010,
+          "y": 520,
+          "width": 260,
+          "height": 150,
+          "capacity": 8
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1536,
+        "height": 1024
+      },
+      "blocked_rects": [
+        {
+          "id": "north_snow_wall",
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 70
+        },
+        {
+          "id": "west_snow_edge",
+          "x": 0,
+          "y": 0,
+          "width": 75,
+          "height": 1024
+        },
+        {
+          "id": "east_snow_edge",
+          "x": 1460,
+          "y": 0,
+          "width": 76,
+          "height": 1024
+        },
+        {
+          "id": "central_snow_sculpture",
+          "x": 700,
+          "y": 455,
+          "width": 135,
+          "height": 90
+        },
+        {
+          "id": "west_big_sculpture",
+          "x": 230,
+          "y": 250,
+          "width": 190,
+          "height": 150
+        },
+        {
+          "id": "east_warm_stall_roof",
+          "x": 1210,
+          "y": 300,
+          "width": 180,
+          "height": 130
+        },
+        {
+          "id": "bottom_snow_edge",
+          "x": 0,
+          "y": 965,
+          "width": 1536,
+          "height": 59
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 16,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 1024
+        }
+      ]
+    },
+    "season_summer_fireworks_pier_v1": {
+      "metadata_status": "playtest_metadata",
+      "canvas_size": [
+        1536,
+        1024
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 768,
+          "y": 820
+        },
+        {
+          "id": "fireworks_pier",
+          "x": 768,
+          "y": 587
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.booth_keeper",
+          "x": 768,
+          "y": 587,
+          "action": "games",
+          "facing": "up",
+          "ambience_poses": [
+            "present"
+          ]
+        }
+      ],
+      "life_skill_nodes": [
+        {
+          "id": "event.fireworks.central_pier",
+          "x": 768,
+          "y": 587,
+          "action": "seasonal_event"
+        },
+        {
+          "id": "event.fireworks.west_view",
+          "x": 330,
+          "y": 520,
+          "action": "seasonal_event"
+        },
+        {
+          "id": "event.fireworks.east_booth",
+          "x": 1160,
+          "y": 430,
+          "action": "seasonal_event"
+        }
+      ],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 820,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 820,
+          "action": "portal",
+          "touch_rect": {
+            "x": 588,
+            "y": 630,
+            "width": 360,
+            "height": 260
+          }
+        },
+        {
+          "id": "seasonal_event",
+          "x": 768,
+          "y": 587,
+          "action": "seasonal_event"
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "south_pier_gate",
+          "x": 690,
+          "y": 760,
+          "width": 170,
+          "height": 210
+        },
+        {
+          "id": "central_open_pier",
+          "x": 420,
+          "y": 345,
+          "width": 720,
+          "height": 400
+        },
+        {
+          "id": "west_viewing_pier",
+          "x": 120,
+          "y": 285,
+          "width": 540,
+          "height": 480
+        },
+        {
+          "id": "east_booth_pier",
+          "x": 900,
+          "y": 255,
+          "width": 500,
+          "height": 500
+        },
+        {
+          "id": "north_lantern_pier",
+          "x": 520,
+          "y": 100,
+          "width": 520,
+          "height": 300
+        },
+        {
+          "id": "lower_pier_crossing",
+          "x": 285,
+          "y": 685,
+          "width": 970,
+          "height": 180
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "central_fireworks_pier",
+          "x": 570,
+          "y": 470,
+          "width": 400,
+          "height": 210,
+          "capacity": 16
+        },
+        {
+          "id": "west_viewing_rest",
+          "x": 220,
+          "y": 445,
+          "width": 280,
+          "height": 165,
+          "capacity": 8
+        },
+        {
+          "id": "east_booth_rest",
+          "x": 1010,
+          "y": 520,
+          "width": 260,
+          "height": 150,
+          "capacity": 8
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1536,
+        "height": 1024
+      },
+      "blocked_rects": [
+        {
+          "id": "north_water",
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 70
+        },
+        {
+          "id": "west_water_edge",
+          "x": 0,
+          "y": 0,
+          "width": 75,
+          "height": 1024
+        },
+        {
+          "id": "east_water_edge",
+          "x": 1460,
+          "y": 0,
+          "width": 76,
+          "height": 1024
+        },
+        {
+          "id": "central_lantern_crate",
+          "x": 705,
+          "y": 455,
+          "width": 125,
+          "height": 80
+        },
+        {
+          "id": "west_boat_water",
+          "x": 190,
+          "y": 590,
+          "width": 180,
+          "height": 140
+        },
+        {
+          "id": "east_water_gap",
+          "x": 1210,
+          "y": 520,
+          "width": 190,
+          "height": 190
+        },
+        {
+          "id": "bottom_water_edge",
+          "x": 0,
+          "y": 965,
+          "width": 1536,
+          "height": 59
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 16,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 1024
+        }
+      ]
+    },
+    "season_pumpkin_lantern_square_v1": {
+      "metadata_status": "playtest_metadata",
+      "canvas_size": [
+        1536,
+        1024
+      ],
+      "spawn_points": [
+        {
+          "id": "default",
+          "x": 768,
+          "y": 820
+        },
+        {
+          "id": "pumpkin_square",
+          "x": 768,
+          "y": 560
+        }
+      ],
+      "npc_points": [
+        {
+          "id": "npc.stage_manager",
+          "x": 768,
+          "y": 615,
+          "action": "notice",
+          "facing": "up"
+        }
+      ],
+      "life_skill_nodes": [
+        {
+          "id": "event.pumpkin.central_square",
+          "x": 768,
+          "y": 560,
+          "action": "seasonal_event"
+        },
+        {
+          "id": "event.pumpkin.west_patch",
+          "x": 330,
+          "y": 520,
+          "action": "seasonal_event"
+        },
+        {
+          "id": "event.pumpkin.east_lantern_stall",
+          "x": 1160,
+          "y": 430,
+          "action": "seasonal_event"
+        }
+      ],
+      "portals": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 820,
+          "target_map": "city_forest_dawn_v1"
+        }
+      ],
+      "interaction_points": [
+        {
+          "id": "to_city",
+          "x": 768,
+          "y": 820,
+          "action": "portal",
+          "touch_rect": {
+            "x": 588,
+            "y": 630,
+            "width": 360,
+            "height": 260
+          }
+        },
+        {
+          "id": "seasonal_event",
+          "x": 768,
+          "y": 560,
+          "action": "seasonal_event"
+        }
+      ],
+      "walkable_rects": [
+        {
+          "id": "south_pumpkin_gate",
+          "x": 690,
+          "y": 770,
+          "width": 170,
+          "height": 200
+        },
+        {
+          "id": "central_pumpkin_square",
+          "x": 420,
+          "y": 350,
+          "width": 720,
+          "height": 390
+        },
+        {
+          "id": "west_pumpkin_lane",
+          "x": 110,
+          "y": 285,
+          "width": 540,
+          "height": 470
+        },
+        {
+          "id": "east_lantern_lane",
+          "x": 900,
+          "y": 260,
+          "width": 500,
+          "height": 500
+        },
+        {
+          "id": "north_stall_lane",
+          "x": 520,
+          "y": 105,
+          "width": 520,
+          "height": 300
+        },
+        {
+          "id": "lower_pumpkin_crossing",
+          "x": 285,
+          "y": 690,
+          "width": 970,
+          "height": 175
+        }
+      ],
+      "gathering_zones": [
+        {
+          "id": "central_lantern_square",
+          "x": 570,
+          "y": 470,
+          "width": 400,
+          "height": 210,
+          "capacity": 16
+        },
+        {
+          "id": "west_pumpkin_rest",
+          "x": 220,
+          "y": 445,
+          "width": 280,
+          "height": 165,
+          "capacity": 8
+        },
+        {
+          "id": "east_lantern_rest",
+          "x": 1010,
+          "y": 520,
+          "width": 260,
+          "height": 150,
+          "capacity": 8
+        }
+      ],
+      "camera_bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1536,
+        "height": 1024
+      },
+      "blocked_rects": [
+        {
+          "id": "north_autumn_wall",
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 70
+        },
+        {
+          "id": "west_tree_edge",
+          "x": 0,
+          "y": 0,
+          "width": 75,
+          "height": 1024
+        },
+        {
+          "id": "east_tree_edge",
+          "x": 1460,
+          "y": 0,
+          "width": 76,
+          "height": 1024
+        },
+        {
+          "id": "central_pumpkin_display",
+          "x": 695,
+          "y": 450,
+          "width": 145,
+          "height": 95
+        },
+        {
+          "id": "west_pumpkin_cart",
+          "x": 230,
+          "y": 250,
+          "width": 190,
+          "height": 150
+        },
+        {
+          "id": "east_stall_roof",
+          "x": 1210,
+          "y": 300,
+          "width": 180,
+          "height": 130
+        },
+        {
+          "id": "bottom_fence_edge",
+          "x": 0,
+          "y": 965,
+          "width": 1536,
+          "height": 59
+        }
+      ],
+      "qa_gates": {
+        "main_road_avatar_width": 3,
+        "central_gathering_capacity": 16,
+        "hud_safe_viewports": [
+          "960x540",
+          "844x390"
+        ]
+      },
+      "camera_regions": [
+        {
+          "id": "default_view",
+          "spawn_ids": [
+            "*"
+          ],
+          "x": 0,
+          "y": 0,
+          "width": 1536,
+          "height": 1024
+        }
+      ]
+    }
+  }
+}

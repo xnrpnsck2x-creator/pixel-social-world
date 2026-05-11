@@ -6,12 +6,14 @@ signal initialized
 
 const DEFAULT_LOCALE := "en"
 const LOCALIZATION_ROOT := "res://localization/"
+const RuntimeConfigServiceScript := preload("res://scripts/Core/RuntimeConfigService.gd")
 
 var app_config: Dictionary = {}
 var current_locale := DEFAULT_LOCALE
 var is_initialized := false
 var supported_locales: PackedStringArray = PackedStringArray([DEFAULT_LOCALE])
 var _strings: Dictionary = {}
+var _runtime_config_service_fallback: Node
 
 func _ready() -> void:
 	app_config = await _load_resolved_app_config()
@@ -93,9 +95,18 @@ func get_runtime_gate() -> Dictionary:
 
 func _load_resolved_app_config() -> Dictionary:
 	var config := ConfigLoader.load_config("app")
-	if has_node("/root/RuntimeConfigService"):
-		config = await get_node("/root/RuntimeConfigService").call("resolve_app_config", config)
+	var service := get_node_or_null("/root/RuntimeConfigService")
+	if service == null:
+		service = _get_runtime_config_service_fallback()
+	if service != null:
+		config = await service.call("resolve_app_config", config)
 	return config
+
+func _get_runtime_config_service_fallback() -> Node:
+	if _runtime_config_service_fallback == null:
+		_runtime_config_service_fallback = RuntimeConfigServiceScript.new()
+		add_child(_runtime_config_service_fallback)
+	return _runtime_config_service_fallback
 
 func _compare_versions(left: String, right: String) -> int:
 	var left_parts := left.split(".")

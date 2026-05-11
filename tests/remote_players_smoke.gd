@@ -33,8 +33,8 @@ func _run() -> void:
 
 	instance.call("_on_presence_updated", [
 		{"player_id": "local-test-player", "display_name": "Local Test"},
-		{"player_id": "remote-a", "display_name": "Remote A"},
-		{"player_id": "remote-b", "display_name": "Remote B"}
+		{"player_id": "remote-a", "display_name": "Remote A", "character_variant_id": "female_magic_v0"},
+		{"player_id": "remote-b", "display_name": "Remote B", "character_variant_id": "male_ranged_v0"}
 	], false, -1)
 	await process_frame
 
@@ -58,10 +58,12 @@ func _run() -> void:
 			failures.append("Remote avatar spawned outside the playable safe rect.")
 		if child.global_position.y < -16.0:
 			failures.append("Remote avatar spawned too close to the mobile top HUD.")
+		if not ["female_magic_v0", "male_ranged_v0"].has(str(child.get("character_variant_id"))):
+			failures.append("Remote avatar did not apply its presence character variant.")
 
 	instance.call("_on_presence_updated", [
 		{"player_id": "local-test-player", "display_name": "Local Test"},
-		{"player_id": "remote-a", "display_name": "Remote A"}
+		{"player_id": "remote-a", "display_name": "Remote A", "character_variant_id": "female_magic_v0"}
 	], false, -1)
 	await process_frame
 	if remote_root.get_child_count() != 1:

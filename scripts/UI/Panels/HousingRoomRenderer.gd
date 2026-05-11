@@ -156,8 +156,7 @@ func _draw_placement_preview(
 	)
 
 func _viewport_size(canvas: Node2D) -> Vector2:
-	if use_safe_layout:
-		var window_size := Vector2(DisplayServer.window_get_size())
-		if window_size.x > 0.0 and window_size.y > 0.0:
-			return window_size
-	return canvas.get_viewport_rect().size
+	var viewport_size := canvas.get_viewport_rect().size
+	if viewport_size.x > 0.0 and viewport_size.y > 0.0:
+		return viewport_size
+	return Vector2(DisplayServer.window_get_size())

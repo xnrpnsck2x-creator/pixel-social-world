@@ -16,9 +16,10 @@ func TestRedisServiceHeartbeatAndTTL(t *testing.T) {
 	ctx := context.Background()
 
 	if _, err := service.Heartbeat(ctx, HeartbeatRequest{
-		PlayerID:    "player_1",
-		RoomID:      "town",
-		DisplayName: "One",
+		PlayerID:           "player_1",
+		RoomID:             "town",
+		DisplayName:        "One",
+		CharacterVariantID: "male_ranged_v0",
 	}); err != nil {
 		t.Fatalf("Heartbeat returned error: %v", err)
 	}
@@ -28,6 +29,9 @@ func TestRedisServiceHeartbeatAndTTL(t *testing.T) {
 	}
 	if len(members) != 1 || members[0].PlayerID != "player_1" {
 		t.Fatalf("expected redis member before ttl, got %#v", members)
+	}
+	if members[0].CharacterVariantID != "male_ranged_v0" {
+		t.Fatalf("expected redis character variant to round-trip, got %#v", members[0])
 	}
 
 	redisServer.FastForward(2 * time.Second)

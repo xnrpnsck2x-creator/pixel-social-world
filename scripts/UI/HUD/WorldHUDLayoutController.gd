@@ -13,6 +13,7 @@ var presence_label: Label
 var online_room_panel: Control
 var utility_panel: Control
 var social_messages_panel: Control
+var social_facility_panel: Control
 var player_profile_card: Control
 var _compact := false
 
@@ -24,6 +25,7 @@ func bind_ui(
 	new_online_room_panel: Control,
 	new_utility_panel: Control,
 	new_social_messages_panel: Control,
+	new_social_facility_panel: Control,
 	new_player_profile_card: Control
 ) -> void:
 	title_label = new_title_label
@@ -33,27 +35,34 @@ func bind_ui(
 	online_room_panel = new_online_room_panel
 	utility_panel = new_utility_panel
 	social_messages_panel = new_social_messages_panel
+	social_facility_panel = new_social_facility_panel
 	player_profile_card = new_player_profile_card
 	for label in [title_label, player_label, coin_label, presence_label]:
 		label.clip_text = true
 		label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 
 func layout_overlay_panels(viewport_size: Vector2) -> void:
-	var compact := viewport_size.y <= 480.0
+	var compact := viewport_size.y <= 540.0
 	var right_margin := 12.0 if compact else 16.0
 	var top_offset := 52.0 if compact else 68.0
-	var room_bottom_safe := 104.0 if compact else 16.0
+	var room_bottom_safe := 104.0 if compact else 184.0
 	var utility_bottom_safe := 104.0 if compact else 208.0
+	var facility_bottom_safe := 104.0 if compact else 116.0
 	var panel_width := 260.0 if compact else 344.0
 	if viewport_size.x < 720.0:
 		panel_width = min(panel_width, max(228.0, viewport_size.x - 24.0))
 	_layout_side_panel(online_room_panel, panel_width, right_margin, top_offset, room_bottom_safe)
-	_layout_side_panel(utility_panel, panel_width, right_margin, top_offset, utility_bottom_safe)
+	if _is_fullscreen_panel(utility_panel):
+		_layout_fullscreen_panel(utility_panel, viewport_size, compact)
+	else:
+		_layout_side_panel(utility_panel, panel_width, right_margin, top_offset, utility_bottom_safe)
 	_layout_side_panel(social_messages_panel, panel_width, right_margin, top_offset, utility_bottom_safe)
+	_layout_side_panel(social_facility_panel, panel_width, right_margin, top_offset, facility_bottom_safe)
 	_layout_profile_card(player_profile_card, panel_width, right_margin, top_offset, compact)
 	_apply_compact_layout(online_room_panel, compact)
 	_apply_compact_layout(utility_panel, compact)
 	_apply_compact_layout(social_messages_panel, compact)
+	_apply_compact_layout(social_facility_panel, compact)
 	_apply_compact_layout(player_profile_card, compact)
 	_apply_top_bar_layout(compact)
 	if _compact != compact:
@@ -98,6 +107,24 @@ func _layout_side_panel(
 	panel.offset_right = -right_margin
 	panel.offset_top = top_offset
 	panel.offset_bottom = -bottom_safe
+
+func _is_fullscreen_panel(panel: Control) -> bool:
+	return panel != null and bool(panel.get("visible")) and str(panel.get("active_panel_id")) == "map_atlas"
+
+func _layout_fullscreen_panel(panel: Control, viewport_size: Vector2, compact: bool) -> void:
+	if panel == null:
+		return
+	var side_margin: float = 18.0 if compact else maxf(24.0, viewport_size.x * 0.08)
+	var max_width := 650.0 if compact else 940.0
+	var panel_width := minf(viewport_size.x - side_margin * 2.0, max_width)
+	panel.anchor_left = 0.0
+	panel.anchor_right = 0.0
+	panel.anchor_top = 0.0
+	panel.anchor_bottom = 1.0
+	panel.offset_left = side_margin
+	panel.offset_right = side_margin + panel_width
+	panel.offset_top = 48.0 if compact else 64.0
+	panel.offset_bottom = -60.0 if compact else -88.0
 
 func _layout_profile_card(
 	panel: Control,

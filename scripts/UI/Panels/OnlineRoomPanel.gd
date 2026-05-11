@@ -6,12 +6,14 @@ signal home_invite_requested
 signal home_visit_requested(owner_id: String)
 signal emote_requested(emote_id: String)
 signal profile_requested(profile: Dictionary)
+signal minigame_launch_requested
 
 const WorldHUDAssetsScript := preload("res://scripts/UI/HUD/WorldHUDAssets.gd")
 const Formatter := preload("res://scripts/UI/Panels/OnlineRoomPanelFormatter.gd")
 const Actions := preload("res://scripts/UI/Panels/OnlineRoomPanelActions.gd")
 const Members := preload("res://scripts/UI/Panels/OnlineRoomPanelMembers.gd")
 const Layout := preload("res://scripts/UI/Panels/OnlineRoomPanelLayout.gd")
+const PanelTextThemeScript := preload("res://scripts/UI/Panels/PanelTextTheme.gd")
 
 var presence_service: Node
 var chat_service: Node
@@ -54,7 +56,7 @@ var _layout := Layout.new()
 func _ready() -> void:
 	_bind_layout()
 	_apply_image2_style()
-	_layout.apply_session_text_limits()
+	_layout.set_compact(false)
 	for label in [members_label, chat_preview_label, game_catalog_label, sessions_label]:
 		label.clip_text = true
 	refresh_button.pressed.connect(_refresh_now)
@@ -75,6 +77,7 @@ func _ready() -> void:
 	_actions.emote_requested.connect(func(emote_id: String) -> void: emote_requested.emit(emote_id))
 	_actions.home_invite_requested.connect(func() -> void: home_invite_requested.emit())
 	_actions.home_visit_requested.connect(func(owner_id: String) -> void: home_visit_requested.emit(owner_id))
+	_actions.minigame_launch_requested.connect(func() -> void: minigame_launch_requested.emit())
 	_members.bind(members_label, members_list, private_member_button)
 	_members.profile_requested.connect(func(profile: Dictionary) -> void: profile_requested.emit(profile))
 	App.locale_changed.connect(_on_locale_changed)
@@ -111,6 +114,7 @@ func _refresh_all() -> void:
 	_refresh_chat_preview()
 	_refresh_game_catalog()
 	_refresh_sessions()
+	call_deferred("_mark_debug_rects")
 
 func _refresh_text() -> void:
 	title_label.text = App.t_key("world.room_panel.title")
@@ -139,6 +143,7 @@ func set_compact_layout(enabled: bool) -> void:
 	if not _layout.set_compact(enabled):
 		return
 	_refresh_all()
+	call_deferred("_mark_debug_rects")
 
 func _bind_layout() -> void:
 	_layout.bind(
@@ -146,10 +151,11 @@ func _bind_layout() -> void:
 		[members_title_label, chat_title_label, games_title_label, home_title_label],
 		chat_preview_label,
 		game_catalog_label,
-		panel_invite_button,
-		room_chat_row,
-		quick_emote_row,
-		members_label,
+			panel_invite_button,
+			room_chat_row,
+			quick_emote_row,
+			[laugh_emote_button, heart_emote_button, exclamation_emote_button],
+			members_label,
 		room_chat_input,
 		sessions_label,
 		[
@@ -181,9 +187,12 @@ func _apply_image2_style() -> void:
 	WorldHUDAssetsScript.configure_button_frame(join_session_button)
 	WorldHUDAssetsScript.configure_button_frame(invite_home_button)
 	WorldHUDAssetsScript.configure_button_frame(visit_home_button)
+	PanelTextThemeScript.apply_primary([title_label, members_title_label, chat_title_label, games_title_label, home_title_label, member_count_label])
+	PanelTextThemeScript.apply_muted([heartbeat_label, members_label, chat_preview_label, game_catalog_label, sessions_label])
 
 func _refresh_presence() -> void:
-	var online: bool = presence_service != null and presence_service.is_online()
+	var seconds: int = presence_service.seconds_since_heartbeat() if presence_service != null else -1
+	var online: bool = seconds >= 0
 	var stale: bool = online and presence_service.has_method("is_stale") and bool(presence_service.call("is_stale"))
 	if online and stale:
 		status_dot.color = Color(0.95, 0.72, 0.22, 1.0)
@@ -193,7 +202,6 @@ func _refresh_presence() -> void:
 		status_dot.color = Color(0.54, 0.55, 0.55, 1.0)
 	var members: Array = presence_service.get_members() if presence_service != null else []
 	member_count_label.text = App.format_key("world.members_format", {"count": members.size()})
-	var seconds: int = presence_service.seconds_since_heartbeat() if presence_service != null else -1
 	heartbeat_label.text = Formatter.heartbeat_text(seconds)
 	var state_key := "ui.status.stale" if online and stale else ("ui.status.online" if online else "ui.status.offline")
 	var tooltip := App.format_key("world.presence_tooltip_format", {
@@ -269,3 +277,6 @@ func _on_chat_message_added(_message: Dictionary) -> void:
 
 func _on_locale_changed(_locale: String) -> void:
 	_refresh_text()
+
+func _mark_debug_rects() -> void:
+	WorldHUDAssetsScript.mark_debug_control_rect("room_host_fishing_button", host_fishing_button)

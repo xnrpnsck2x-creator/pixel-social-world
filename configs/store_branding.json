@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "brand_id": "pixel_social_world_forest_dawn_v1",
+  "source_asset_id": "map.motherboard.city_forest_dawn.candidate_d",
+  "source_path": "res://assets/maps/generated/city_forest_dawn_v1_candidate_d.png",
+  "generation_policy": {
+    "tool": "Image 2",
+    "method": "derived_crop_resize",
+    "notes": "MVP store assets are derived from the approved Image 2 forest dawn city motherboard. Replace with dedicated Image 2 branding renders before store submission if the store review pass needs a more icon-focused composition."
+  },
+  "assets": [
+    {
+      "id": "branding.icon.ios_1024",
+      "type": "app_icon",
+      "path": "res://assets/branding/generated/app_icon_forest_dawn_v1_1024.png",
+      "source_path": "res://assets/maps/generated/city_forest_dawn_v1_candidate_d.png",
+      "width": 1024,
+      "height": 1024,
+      "usage": "ios_app_store_icon"
+    },
+    {
+      "id": "branding.icon.android_main_192",
+      "type": "launcher_icon",
+      "path": "res://assets/branding/generated/launcher_icon_forest_dawn_v1_192.png",
+      "source_path": "res://assets/maps/generated/city_forest_dawn_v1_candidate_d.png",
+      "width": 192,
+      "height": 192,
+      "usage": "android_launcher_main"
+    },
+    {
+      "id": "branding.icon.android_adaptive_foreground_432",
+      "type": "launcher_icon",
+      "path": "res://assets/branding/generated/adaptive_foreground_forest_dawn_v1_432.png",
+      "source_path": "res://assets/maps/generated/city_forest_dawn_v1_candidate_d.png",
+      "width": 432,
+      "height": 432,
+      "usage": "android_adaptive_foreground"
+    },
+    {
+      "id": "branding.icon.android_adaptive_background_432",
+      "type": "launcher_icon",
+      "path": "res://assets/branding/generated/adaptive_background_forest_dawn_v1_432.png",
+      "source_path": "res://assets/maps/generated/city_forest_dawn_v1_candidate_d.png",
+      "width": 432,
+      "height": 432,
+      "usage": "android_adaptive_background"
+    },
+    {
+      "id": "branding.splash.ios_2x",
+      "type": "launch_splash",
+      "path": "res://assets/branding/generated/launch_splash_forest_dawn_v1_2048x1152.png",
+      "source_path": "res://assets/maps/generated/city_forest_dawn_v1_candidate_d.png",
+      "width": 2048,
+      "height": 1152,
+      "usage": "ios_storyboard_2x"
+    },
+    {
+      "id": "branding.splash.ios_3x",
+      "type": "launch_splash",
+      "path": "res://assets/branding/generated/launch_splash_forest_dawn_v1_2732x1536.png",
+      "source_path": "res://assets/maps/generated/city_forest_dawn_v1_candidate_d.png",
+      "width": 2732,
+      "height": 1536,
+      "usage": "ios_storyboard_3x"
+    }
+  ]
+}

@@ -24,18 +24,74 @@
       "usage": "production_sheet"
     },
     {
-      "id": "ui.panel.pixel",
-      "type": "panel",
-      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_013.png",
-      "source_path": "res://assets/ui/generated/ui_kit_v0_alpha.png",
-      "usage": "image2_panel_source"
+      "id": "ui.sheet.panel_frame.v1",
+      "type": "generated_panel",
+      "path": "res://assets/ui/generated/ui_panel_frame_v1_alpha.png",
+      "source_path": "res://assets/ui/generated/ui_panel_frame_v1_source.png",
+      "usage": "production_9slice_panel"
+    },
+        {
+            "id": "ui.sheet.hud_bar_frame.v1",
+            "type": "generated_panel",
+            "path": "res://assets/ui/generated/ui_hud_bar_frame_v1_alpha.png",
+            "source_path": "res://assets/ui/generated/ui_hud_bar_frame_v1_source.png",
+            "usage": "production_9slice_hud_bar"
+        },
+        {
+            "id": "ui.sheet.hud_strip_frame.v2",
+            "type": "generated_panel",
+            "path": "res://assets/ui/generated/ui_hud_strip_frame_v2_alpha.png",
+            "source_path": "res://assets/ui/generated/ui_hud_strip_frame_v2_source.png",
+            "usage": "production_9slice_hud_strip"
+        },
+        {
+            "id": "ui.sheet.controls.v1",
+            "type": "generated_sheet",
+            "path": "res://assets/ui/generated/ui_controls_v1_alpha.png",
+            "source_path": "res://assets/ui/generated/ui_controls_v1_source.png",
+      "usage": "production_controls_sheet"
     },
     {
-      "id": "ui.button.pixel",
-      "type": "button",
-      "path": "res://assets/ui/sliced/ui_kit_v0/ui_kit_v0_033.png",
-      "source_path": "res://assets/ui/generated/ui_kit_v0_alpha.png",
-      "usage": "image2_button_source"
+      "id": "ui.panel.pixel",
+      "type": "panel",
+      "path": "res://assets/ui/generated/ui_panel_frame_v1_alpha.png",
+      "source_path": "res://assets/ui/generated/ui_panel_frame_v1_source.png",
+      "usage": "image2_panel_frame_v1_9slice"
+    },
+        {
+            "id": "ui.panel.hud_bar.pixel",
+            "type": "panel",
+            "path": "res://assets/ui/generated/ui_hud_bar_frame_v1_alpha.png",
+            "source_path": "res://assets/ui/generated/ui_hud_bar_frame_v1_source.png",
+            "usage": "image2_hud_bar_frame_v1_9slice"
+        },
+        {
+            "id": "ui.panel.hud_strip.pixel",
+            "type": "panel",
+            "path": "res://assets/ui/generated/ui_hud_strip_frame_v2_alpha.png",
+            "source_path": "res://assets/ui/generated/ui_hud_strip_frame_v2_source.png",
+            "usage": "image2_hud_strip_frame_v2_9slice"
+        },
+        {
+            "id": "ui.button.pixel",
+            "type": "button",
+            "path": "res://assets/ui/generated/ui_controls_v1_button.png",
+      "source_path": "res://assets/ui/generated/ui_controls_v1_source.png",
+      "usage": "image2_controls_v1_9slice_button"
+    },
+    {
+      "id": "ui.input.pixel",
+      "type": "input",
+      "path": "res://assets/ui/generated/ui_controls_v1_input.png",
+      "source_path": "res://assets/ui/generated/ui_controls_v1_source.png",
+      "usage": "image2_controls_v1_9slice_input"
+    },
+    {
+      "id": "ui.panel.compact.pixel",
+      "type": "panel",
+      "path": "res://assets/ui/generated/ui_controls_v1_compact_panel.png",
+      "source_path": "res://assets/ui/generated/ui_controls_v1_source.png",
+      "usage": "image2_controls_v1_9slice_compact_panel"
     },
     {
       "id": "icon.chat",

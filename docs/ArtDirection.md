@@ -44,6 +44,12 @@ original pixel art UI kit for a cute fantasy forest-town social MMORPG, inspired
 top-down pixel art forest town tileset, 16x16 seamless tiles, grass, dirt path, stone plaza, flower patches, wooden signs, trees, bushes, pond edge, cozy MMO town square, crisp edges, transparent/chroma-key background, no text
 ```
 
+### Whole-Map Motherboard v1
+
+```text
+original top-down 2D pixel art whole-map background for a cozy fantasy forest social MMO, warm dawn forest town, circular stone plaza and fountain, guild hall, item shop, inn, mail hut, housing gate, minigame hall, wooden pier, market stalls, flower beds, lamps, benches, broad readable walking paths, dense but readable composition matching the approved forest-town reference board, small-avatar scale, no UI, no text, no labels, no logos, no watermark, game-ready map background
+```
+
 ### Character and NPC Sheet v0
 
 ```text
@@ -89,6 +95,15 @@ Current generated sheets:
 - `assets/sprites/generated/characters_npcs_v0_alpha.png`
 - `assets/sprites/generated/player_adventurer_actions_v0_alpha.png`
 - `assets/housing/generated/housing_fishing_props_v0_alpha.png`
+
+Planned whole-map Image 2 motherboards are tracked in:
+
+- `docs/MapProductionPlan.md`
+- `docs/Image2MapPromptBook.md`
+- `configs/map_catalog.json`
+- `configs/map_points.json`
+- Runtime map point contracts must include spawn points, NPC points, interaction points, portals, walkable rectangles, gathering zones, blocked rectangles, camera bounds, and QA gates before a map can move beyond `prompt_ready`.
+- Playtest maps must bind those contracts to runtime movement validation before promotion; bitmap-only maps may remain prompt candidates but cannot become playable.
 
 Source images are kept next to each alpha output with `_source.png` filenames for audit and re-processing.
 

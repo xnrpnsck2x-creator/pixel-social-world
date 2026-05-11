@@ -132,7 +132,7 @@ func adminRoleRank(role string) int {
 }
 
 func adminCapabilities(role string) []string {
-	all := []string{"read_ops"}
+	all := []string{"read_ops", "read_admin_action_audit", "read_trade_history", "read_creator_payouts"}
 	if adminRoleAllows(role, AdminRoleModerator) {
 		all = append(all, "review_chat_reports", "mute_chat", "restore_chat")
 	}

@@ -1,0 +1,519 @@
+{
+  "schema_version": 1,
+  "style_reference": "approved_forest_social_mmo_board",
+  "asset_policy": {
+    "official_maps_require_image2": true,
+    "runtime_assets_must_live_under": "res://assets/maps/",
+    "no_baked_text": true,
+    "svg_is_placeholder_only": true
+  },
+  "maps": [
+    {
+      "id": "city_forest_dawn_v1",
+      "name": {
+        "en": "Forest Dawn Town",
+        "zh": "森林晨曦镇",
+        "ja": "森の暁町"
+      },
+      "category": "main_city",
+      "priority": "mvp_candidate",
+      "status": "playtest_candidate",
+      "asset_path": "res://assets/maps/generated/city_forest_dawn_v1_candidate_e.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 0.88,
+      "unlock_hint_key": "world.map.unlock.default",
+      "candidates": [
+        {
+          "id": "candidate_a",
+          "asset_path": "res://assets/maps/generated/city_forest_dawn_v1_candidate_a.png",
+          "status": "art_density_reference"
+        },
+        {
+          "id": "candidate_b",
+          "asset_path": "res://assets/maps/generated/city_forest_dawn_v1_candidate_b.png",
+          "status": "reference_only"
+        },
+        {
+          "id": "candidate_c",
+          "asset_path": "res://assets/maps/generated/city_forest_dawn_v1_candidate_c.png",
+          "status": "reference_only"
+        },
+        {
+          "id": "candidate_d",
+          "asset_path": "res://assets/maps/generated/city_forest_dawn_v1_candidate_d.png",
+          "status": "structure_reference"
+        },
+        {
+          "id": "candidate_e",
+          "asset_path": "res://assets/maps/generated/city_forest_dawn_v1_candidate_e.png",
+          "status": "playtest_candidate"
+        }
+      ]
+    },
+    {
+      "id": "city_port_market_v1",
+      "name": {
+        "en": "Port Market",
+        "zh": "港口市场",
+        "ja": "港市場"
+      },
+      "category": "main_city",
+      "priority": "mvp_route",
+      "status": "route_exposed",
+      "asset_path": "res://assets/maps/generated/city_port_market_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 0.88,
+      "unlock_hint_key": "world.map.unlock.port_market"
+    },
+    {
+      "id": "city_spring_workshop_v1",
+      "name": {
+        "en": "Spring Workshop Town",
+        "zh": "山泉工坊镇",
+        "ja": "泉の工房町"
+      },
+      "category": "main_city",
+      "priority": "mvp_route",
+      "status": "route_exposed",
+      "asset_path": "res://assets/maps/generated/city_spring_workshop_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 0.88,
+      "unlock_hint_key": "world.map.unlock.spring_workshop"
+    },
+    {
+      "id": "city_snowbell_village_v1",
+      "name": {
+        "en": "Snowbell Village",
+        "zh": "雪境村",
+        "ja": "雪鈴村"
+      },
+      "category": "main_city",
+      "priority": "batch_1",
+      "status": "playtest_candidate",
+      "asset_path": "res://assets/maps/generated/city_snowbell_village_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 0.88,
+      "unlock_hint_key": "world.map.unlock.snowbell_village"
+    },
+    {
+      "id": "city_academy_plaza_v1",
+      "name": {
+        "en": "Academy Plaza",
+        "zh": "学园广场",
+        "ja": "学院広場"
+      },
+      "category": "main_city",
+      "priority": "batch_1",
+      "status": "playtest_candidate",
+      "asset_path": "res://assets/maps/generated/city_academy_plaza_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 0.88,
+      "unlock_hint_key": "world.map.unlock.academy_plaza"
+    },
+    {
+      "id": "city_festival_night_market_v1",
+      "name": {
+        "en": "Festival Night Market",
+        "zh": "节庆夜市",
+        "ja": "祝祭夜市"
+      },
+      "category": "main_city",
+      "priority": "batch_1",
+      "status": "playtest_candidate",
+      "asset_path": "res://assets/maps/generated/city_festival_night_market_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 0.88,
+      "unlock_hint_key": "world.map.unlock.festival_night_market"
+    },
+    {
+      "id": "life_fishing_riverbend_v1",
+      "name": {
+        "en": "Fishing Riverbend",
+        "zh": "钓鱼河湾",
+        "ja": "釣り川辺"
+      },
+      "category": "life_skill",
+      "priority": "mvp_candidate",
+      "status": "playtest_candidate",
+      "asset_path": "res://assets/maps/generated/life_fishing_riverbend_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 0.88,
+      "unlock_hint_key": "world.map.unlock.fishing_riverbend"
+    },
+    {
+      "id": "life_crystal_mine_v1",
+      "name": {
+        "en": "Crystal Mine",
+        "zh": "矿洞",
+        "ja": "水晶鉱山"
+      },
+      "category": "life_skill",
+      "priority": "mvp_route",
+      "status": "route_exposed",
+      "asset_path": "res://assets/maps/generated/life_crystal_mine_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 0.88,
+      "unlock_hint_key": "world.map.unlock.crystal_mine"
+    },
+    {
+      "id": "life_herb_forest_v1",
+      "name": {
+        "en": "Herb Forest",
+        "zh": "采药林",
+        "ja": "薬草の森"
+      },
+      "category": "life_skill",
+      "priority": "batch_1",
+      "status": "playtest_candidate",
+      "asset_path": "res://assets/maps/generated/life_herb_forest_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 0.88,
+      "unlock_hint_key": "world.map.unlock.herb_forest"
+    },
+    {
+      "id": "life_lumber_grove_v1",
+      "name": {
+        "en": "Lumber Grove",
+        "zh": "伐木场",
+        "ja": "伐採林"
+      },
+      "category": "life_skill",
+      "priority": "batch_1",
+      "status": "playtest_candidate",
+      "asset_path": "res://assets/maps/generated/life_lumber_grove_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 0.88,
+      "unlock_hint_key": "world.map.unlock.lumber_grove"
+    },
+    {
+      "id": "life_starter_farm_v1",
+      "name": {
+        "en": "Starter Farm",
+        "zh": "农场",
+        "ja": "はじまり農場"
+      },
+      "category": "life_skill",
+      "priority": "batch_1",
+      "status": "playtest_candidate",
+      "asset_path": "res://assets/maps/generated/life_starter_farm_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 0.88,
+      "unlock_hint_key": "world.map.unlock.starter_farm"
+    },
+    {
+      "id": "life_insect_meadow_v1",
+      "name": {
+        "en": "Insect Meadow",
+        "zh": "昆虫草地",
+        "ja": "虫とり草原"
+      },
+      "category": "life_skill",
+      "priority": "batch_1",
+      "status": "playtest_candidate",
+      "asset_path": "res://assets/maps/generated/life_insect_meadow_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 0.88,
+      "unlock_hint_key": "world.map.unlock.insect_meadow"
+    },
+    {
+      "id": "life_ruin_dig_site_v1",
+      "name": {
+        "en": "Ruin Dig Site",
+        "zh": "遗迹考古",
+        "ja": "遺跡発掘地"
+      },
+      "category": "life_skill",
+      "priority": "batch_1",
+      "status": "playtest_candidate",
+      "asset_path": "res://assets/maps/generated/life_ruin_dig_site_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 0.88,
+      "unlock_hint_key": "world.map.unlock.ruin_dig_site"
+    },
+    {
+      "id": "life_cooking_market_v1",
+      "name": {
+        "en": "Cooking Market",
+        "zh": "料理集市",
+        "ja": "料理市場"
+      },
+      "category": "life_skill",
+      "priority": "batch_1",
+      "status": "playtest_candidate",
+      "asset_path": "res://assets/maps/generated/life_cooking_market_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 0.88,
+      "unlock_hint_key": "world.map.unlock.cooking_market"
+    },
+    {
+      "id": "random_flower_valley_v1",
+      "name": {
+        "en": "Flower Valley",
+        "zh": "花谷",
+        "ja": "花の谷"
+      },
+      "category": "random_exploration",
+      "priority": "batch_1",
+      "status": "playtest_candidate",
+      "asset_path": "res://assets/maps/generated/random_flower_valley_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 0.88,
+      "unlock_hint_key": "world.map.unlock.flower_valley"
+    },
+    {
+      "id": "random_mist_wetland_v1",
+      "name": {
+        "en": "Mist Wetland",
+        "zh": "湿地",
+        "ja": "霧の湿地"
+      },
+      "category": "random_exploration",
+      "priority": "batch_1",
+      "status": "playtest_candidate",
+      "asset_path": "res://assets/maps/generated/random_mist_wetland_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 0.88,
+      "unlock_hint_key": "world.map.unlock.mist_wetland"
+    },
+    {
+      "id": "random_old_ruins_v1",
+      "name": {
+        "en": "Old Ruins",
+        "zh": "废墟",
+        "ja": "古い廃墟"
+      },
+      "category": "random_exploration",
+      "priority": "batch_1",
+      "status": "playtest_candidate",
+      "asset_path": "res://assets/maps/generated/random_old_ruins_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 0.88,
+      "unlock_hint_key": "world.map.unlock.old_ruins"
+    },
+    {
+      "id": "random_autumn_road_v1",
+      "name": {
+        "en": "Autumn Road",
+        "zh": "秋林路",
+        "ja": "秋林の道"
+      },
+      "category": "random_exploration",
+      "priority": "batch_1",
+      "status": "playtest_candidate",
+      "asset_path": "res://assets/maps/generated/random_autumn_road_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 0.88,
+      "unlock_hint_key": "world.map.unlock.autumn_road"
+    },
+    {
+      "id": "random_island_coast_v1",
+      "name": {
+        "en": "Island Coast",
+        "zh": "海岛岸边",
+        "ja": "島の海辺"
+      },
+      "category": "random_exploration",
+      "priority": "batch_1",
+      "status": "playtest_candidate",
+      "asset_path": "res://assets/maps/generated/random_island_coast_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 0.88,
+      "unlock_hint_key": "world.map.unlock.island_coast"
+    },
+    {
+      "id": "random_lantern_forest_v1",
+      "name": {
+        "en": "Lantern Forest",
+        "zh": "夜灯森林",
+        "ja": "夜灯の森"
+      },
+      "category": "random_exploration",
+      "priority": "batch_1",
+      "status": "playtest_candidate",
+      "asset_path": "res://assets/maps/generated/random_lantern_forest_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 0.88,
+      "unlock_hint_key": "world.map.unlock.lantern_forest"
+    },
+    {
+      "id": "random_cliff_boardwalk_v1",
+      "name": {
+        "en": "Cliff Boardwalk",
+        "zh": "山崖栈道",
+        "ja": "崖の木道"
+      },
+      "category": "random_exploration",
+      "priority": "batch_1",
+      "status": "playtest_candidate",
+      "asset_path": "res://assets/maps/generated/random_cliff_boardwalk_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 0.88,
+      "unlock_hint_key": "world.map.unlock.cliff_boardwalk"
+    },
+    {
+      "id": "random_ancient_tree_maze_v1",
+      "name": {
+        "en": "Ancient Tree Maze",
+        "zh": "古树迷宫",
+        "ja": "古樹の迷宮"
+      },
+      "category": "random_exploration",
+      "priority": "batch_1",
+      "status": "playtest_candidate",
+      "asset_path": "res://assets/maps/generated/random_ancient_tree_maze_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 0.88,
+      "unlock_hint_key": "world.map.unlock.ancient_tree_maze"
+    },
+    {
+      "id": "social_guild_garden_v1",
+      "name": {
+        "en": "Guild Garden",
+        "zh": "公会区",
+        "ja": "ギルド庭園"
+      },
+      "category": "social_function",
+      "priority": "batch_2_next",
+      "status": "playtest_candidate",
+      "asset_path": "res://assets/maps/generated/social_guild_garden_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 1,
+      "unlock_hint_key": "world.map.unlock.guild_garden"
+    },
+    {
+      "id": "social_housing_district_v1",
+      "name": {
+        "en": "Housing District",
+        "zh": "房屋街区",
+        "ja": "住宅街"
+      },
+      "category": "social_function",
+      "priority": "mvp_candidate",
+      "status": "playtest_candidate",
+      "asset_path": "res://assets/maps/generated/social_housing_district_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 1,
+      "unlock_hint_key": "world.map.unlock.housing_district"
+    },
+    {
+      "id": "social_minigame_arcade_hall_v1",
+      "name": {
+        "en": "Minigame Arcade Hall",
+        "zh": "小游戏大厅",
+        "ja": "ミニゲームホール"
+      },
+      "category": "social_function",
+      "priority": "mvp_candidate",
+      "status": "playtest_candidate",
+      "asset_path": "res://assets/maps/generated/social_minigame_arcade_hall_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 1,
+      "unlock_hint_key": "world.map.unlock.arcade_hall"
+    },
+    {
+      "id": "social_trade_market_v1",
+      "name": {
+        "en": "Trade Market",
+        "zh": "交易集市",
+        "ja": "取引市場"
+      },
+      "category": "social_function",
+      "priority": "batch_2_next",
+      "status": "playtest_candidate",
+      "asset_path": "res://assets/maps/generated/social_trade_market_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 0.88,
+      "unlock_hint_key": "world.map.unlock.trade_market"
+    },
+    {
+      "id": "social_mail_plaza_v1",
+      "name": {
+        "en": "Mail Plaza",
+        "zh": "邮件广场",
+        "ja": "郵便広場"
+      },
+      "category": "social_function",
+      "priority": "batch_1",
+      "status": "playtest_candidate",
+      "asset_path": "res://assets/maps/generated/social_mail_plaza_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 0.88,
+      "unlock_hint_key": "world.map.unlock.mail_plaza"
+    },
+    {
+      "id": "social_creator_gallery_v1",
+      "name": {
+        "en": "Creator Gallery",
+        "zh": "创作者展厅",
+        "ja": "クリエイター展示場"
+      },
+      "category": "social_function",
+      "priority": "batch_1",
+      "status": "playtest_candidate",
+      "asset_path": "res://assets/maps/generated/social_creator_gallery_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 0.88,
+      "unlock_hint_key": "world.map.unlock.creator_gallery"
+    },
+    {
+      "id": "season_cherry_blossom_fair_v1",
+      "name": {
+        "en": "Cherry Blossom Fair",
+        "zh": "樱花节",
+        "ja": "桜まつり"
+      },
+      "category": "seasonal",
+      "priority": "batch_1",
+      "status": "playtest_candidate",
+      "asset_path": "res://assets/maps/generated/season_cherry_blossom_fair_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 0.88,
+      "unlock_hint_key": "world.map.unlock.cherry_blossom_fair"
+    },
+    {
+      "id": "season_snow_festival_v1",
+      "name": {
+        "en": "Snow Festival",
+        "zh": "雪祭",
+        "ja": "雪まつり"
+      },
+      "category": "seasonal",
+      "priority": "batch_1",
+      "status": "playtest_candidate",
+      "asset_path": "res://assets/maps/generated/season_snow_festival_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 0.88,
+      "unlock_hint_key": "world.map.unlock.snow_festival"
+    },
+    {
+      "id": "season_summer_fireworks_pier_v1",
+      "name": {
+        "en": "Summer Fireworks Pier",
+        "zh": "夏夜烟火",
+        "ja": "夏夜の花火桟橋"
+      },
+      "category": "seasonal",
+      "priority": "batch_1",
+      "status": "playtest_candidate",
+      "asset_path": "res://assets/maps/generated/season_summer_fireworks_pier_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 0.88,
+      "unlock_hint_key": "world.map.unlock.summer_fireworks_pier"
+    },
+    {
+      "id": "season_pumpkin_lantern_square_v1",
+      "name": {
+        "en": "Pumpkin Lantern Square",
+        "zh": "万圣灯会",
+        "ja": "かぼちゃ灯会"
+      },
+      "category": "seasonal",
+      "priority": "batch_1",
+      "status": "playtest_candidate",
+      "asset_path": "res://assets/maps/generated/season_pumpkin_lantern_square_v1.png",
+      "metadata_path": "res://configs/map_points.json",
+      "camera_zoom": 0.88,
+      "unlock_hint_key": "world.map.unlock.pumpkin_lantern_square"
+    }
+  ]
+}

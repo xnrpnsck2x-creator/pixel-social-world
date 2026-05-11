@@ -76,6 +76,20 @@ func (s *Server) applyChatModeration(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	s.recordAdminAction(ctx, adminActionAuditEvent{
+		Action:     "chat_moderation.apply",
+		TargetType: "player",
+		TargetID:   action.TargetPlayerID,
+		Status:     action.Action,
+		Note:       request.Reason,
+		Confirmed:  request.Confirm,
+		Metadata: adminActionMetadata(map[string]any{
+			"scope":            action.Scope,
+			"room_id":          action.RoomID,
+			"duration_seconds": request.DurationSeconds,
+			"report_id":        action.ReportID,
+		}),
+	})
 	ctx.JSON(http.StatusAccepted, action)
 }
 

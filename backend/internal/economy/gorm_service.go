@@ -21,6 +21,7 @@ type LedgerRecord struct {
 	EventID          string `gorm:"uniqueIndex;size:140"`
 	PlayerID         string `gorm:"index;size:80"`
 	Type             string `gorm:"size:40"`
+	GameID           string `gorm:"index;size:100"`
 	SourceID         string `gorm:"size:120"`
 	SinkID           string `gorm:"size:120"`
 	Delta            int
@@ -96,6 +97,39 @@ func (s *GormService) Grant(ctx context.Context, request GrantRequest) GrantResp
 		wallet, _, err := s.walletForUpdate(tx, request.PlayerID, 0)
 		if err != nil {
 			return err
+		}
+		amount := s.cappedGrantAmount(tx, request.PlayerID, request.Amount, time.Now().Unix())
+		wallet.Balance += amount
+		if err := tx.Save(&wallet).Error; err != nil {
+			return err
+		}
+		response.Balance = wallet.Balance
+		response.Delta = amount
+		return s.appendRecord(tx, LedgerEvent{
+			PlayerID:     request.PlayerID,
+			Type:         "grant",
+			SourceID:     request.SourceID,
+			Delta:        amount,
+			BalanceAfter: wallet.Balance,
+		})
+	})
+	return response
+}
+
+func (s *GormService) GrantOnce(ctx context.Context, request GrantRequest) GrantResponse {
+	request.PlayerID = normalizePlayerID(request.PlayerID)
+	if request.Amount < 0 {
+		request.Amount = 0
+	}
+	response := GrantResponse{PlayerID: request.PlayerID}
+	_ = s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		wallet, _, err := s.walletForUpdate(tx, request.PlayerID, 0)
+		if err != nil {
+			return err
+		}
+		response.Balance = wallet.Balance
+		if request.SourceID != "" && hasLedgerEvent(tx, request.PlayerID, "grant", request.SourceID) {
+			return nil
 		}
 		amount := s.cappedGrantAmount(tx, request.PlayerID, request.Amount, time.Now().Unix())
 		wallet.Balance += amount
@@ -204,6 +238,7 @@ func (s *GormService) appendRecord(tx *gorm.DB, event LedgerEvent) error {
 		EventID:          event.ID,
 		PlayerID:         event.PlayerID,
 		Type:             event.Type,
+		GameID:           event.GameID,
 		SourceID:         event.SourceID,
 		SinkID:           event.SinkID,
 		Delta:            event.Delta,
@@ -219,6 +254,7 @@ func (r LedgerRecord) toEvent() LedgerEvent {
 		ID:               r.EventID,
 		PlayerID:         r.PlayerID,
 		Type:             r.Type,
+		GameID:           r.GameID,
 		SourceID:         r.SourceID,
 		SinkID:           r.SinkID,
 		Delta:            r.Delta,

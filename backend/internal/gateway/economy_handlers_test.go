@@ -88,6 +88,78 @@ func TestCreatorShareRewardIsOwnerOnlyAndWritesLedgers(t *testing.T) {
 		int(stats["creator_revenue_coins"].(float64)) != 10 {
 		t.Fatalf("debug ops did not expose creator economy stats: %#v", stats)
 	}
+	opsPayouts := ops["creator_payouts"].(map[string]any)
+	if int(opsPayouts["total_revenue_coins"].(float64)) != 10 ||
+		int(opsPayouts["total_creators"].(float64)) != 1 {
+		t.Fatalf("debug ops did not expose creator payout drilldown: %#v", opsPayouts)
+	}
+	opsPayoutItems := opsPayouts["items"].([]any)
+	if len(opsPayoutItems) != 1 ||
+		opsPayoutItems[0].(map[string]any)["game_id"] != "creator_duel" {
+		t.Fatalf("debug ops payout row lost game detail: %#v", opsPayoutItems)
+	}
+
+	payoutRequest := httptest.NewRequest(http.MethodGet, "/admin/economy/creator-payouts?limit=4", nil)
+	payoutRequest.Header.Set("X-Admin-Token", "view-token")
+	payoutRecorder := httptest.NewRecorder()
+	server.router.ServeHTTP(payoutRecorder, payoutRequest)
+	if payoutRecorder.Code != http.StatusOK {
+		t.Fatalf("creator payout request failed: %d %s", payoutRecorder.Code, payoutRecorder.Body.String())
+	}
+	payouts := decodeJSONBody(t, payoutRecorder.Body.Bytes())
+	if int(payouts["total_revenue_coins"].(float64)) != 10 ||
+		int(payouts["count"].(float64)) != 1 {
+		t.Fatalf("creator payout endpoint returned wrong totals: %#v", payouts)
+	}
+	payoutItems := payouts["items"].([]any)
+	payoutRow := payoutItems[0].(map[string]any)
+	if payoutRow["creator_id"] != creatorID ||
+		payoutRow["game_id"] != "creator_duel" ||
+		int(payoutRow["revenue_events"].(float64)) != 1 ||
+		int(payoutRow["revenue_coins"].(float64)) != 10 {
+		t.Fatalf("creator payout endpoint lost row detail: %#v", payoutRow)
+	}
+}
+
+func TestFirstSessionRewardIsAuthorizedCompleteAndIdempotent(t *testing.T) {
+	server := NewServerWithDependencies(DefaultMemoryDependencies())
+	player := testGuestLogin(t, server, "First Session")
+	playerID := player["player_id"].(string)
+	token := player["access_token"].(string)
+	payload := map[string]any{
+		"player_id": playerID,
+		"completed_step_ids": []string{
+			"npc_met",
+			"map_opened",
+			"trade_opened",
+			"games_opened",
+			"chat_sent",
+		},
+	}
+
+	testPostJSON(t, server, "/economy/first-session/claim", "", payload, http.StatusUnauthorized)
+	incomplete := testPostJSON(t, server, "/economy/first-session/claim", token, map[string]any{
+		"player_id":          playerID,
+		"completed_step_ids": []string{"npc_met"},
+	}, http.StatusBadRequest)
+	if incomplete["error"] != "first_session_incomplete" {
+		t.Fatalf("expected incomplete error, got %#v", incomplete)
+	}
+
+	first := testPostJSON(t, server, "/economy/first-session/claim", token, payload, http.StatusOK)
+	replay := testPostJSON(t, server, "/economy/first-session/claim", token, payload, http.StatusOK)
+	if int(first["delta"].(float64)) != firstSessionRewardAmount ||
+		int(first["balance"].(float64)) != startingCoinBalance+firstSessionRewardAmount {
+		t.Fatalf("first session reward returned wrong wallet: %#v", first)
+	}
+	if int(replay["delta"].(float64)) != 0 ||
+		int(replay["balance"].(float64)) != int(first["balance"].(float64)) {
+		t.Fatalf("first session reward replay should be idempotent: first=%#v replay=%#v", first, replay)
+	}
+	events := server.economyService.Ledger(context.Background(), playerID)
+	if ledgerSourceCount(events, firstSessionRewardSource) != 1 {
+		t.Fatalf("first session reward should write one source event: %#v", events)
+	}
 }
 
 func ledgerHasType(events []economy.LedgerEvent, eventType string) bool {
@@ -98,6 +170,16 @@ func ledgerTypeCount(events []economy.LedgerEvent, eventType string) int {
 	count := 0
 	for _, event := range events {
 		if event.Type == eventType {
+			count++
+		}
+	}
+	return count
+}
+
+func ledgerSourceCount(events []economy.LedgerEvent, sourceID string) int {
+	count := 0
+	for _, event := range events {
+		if event.SourceID == sourceID {
 			count++
 		}
 	}

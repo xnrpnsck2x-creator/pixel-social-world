@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -12,34 +13,49 @@ import (
 	"pixel-social-world/backend/internal/auth"
 	"pixel-social-world/backend/internal/chat"
 	"pixel-social-world/backend/internal/economy"
+	"pixel-social-world/backend/internal/facility"
 	"pixel-social-world/backend/internal/house"
+	"pixel-social-world/backend/internal/inventory"
+	"pixel-social-world/backend/internal/mapactivity"
 	"pixel-social-world/backend/internal/messaging"
 	"pixel-social-world/backend/internal/minigame"
 	"pixel-social-world/backend/internal/ops"
+	"pixel-social-world/backend/internal/player"
 	"pixel-social-world/backend/internal/presence"
 	"pixel-social-world/backend/internal/room"
 	"pixel-social-world/backend/internal/social"
+	"pixel-social-world/backend/internal/trade"
 	"pixel-social-world/backend/internal/utility"
 )
 
 type Server struct {
-	router                *gin.Engine
-	authService           auth.Service
-	chatService           chat.Service
-	messagingService      messaging.Service
-	economyService        economy.Service
-	houseService          house.Service
-	minigameService       minigame.Service
-	utilityService        utility.Service
-	presenceService       presence.Service
-	socialService         social.Service
-	retentionPolicy       ops.RetentionPolicy
-	roomHub               *room.Hub
-	upgrader              websocket.Upgrader
-	startingCoinBalance   int
-	housingSellRefundRate float64
-	adminToken            string
-	fishingRewards        minigame.FishingRewardService
+	router                 *gin.Engine
+	authService            auth.Service
+	chatService            chat.Service
+	messagingService       messaging.Service
+	economyService         economy.Service
+	mapActivityService     mapactivity.Service
+	houseService           house.Service
+	minigameService        minigame.Service
+	utilityService         utility.Service
+	facilityService        facility.Service
+	inventoryService       inventory.Service
+	tradeService           trade.Service
+	presenceService        presence.Service
+	playerService          player.Service
+	socialService          social.Service
+	retentionPolicy        ops.RetentionPolicy
+	roomHub                *room.Hub
+	upgrader               websocket.Upgrader
+	startingCoinBalance    int
+	housingSellRefundRate  float64
+	adminToken             string
+	adminActionAuditMu     sync.Mutex
+	adminActionAuditSeq    int64
+	adminActionAuditEvents []adminActionAuditEvent
+	tradeRiskMu            sync.Mutex
+	tradeRiskCounters      tradeRiskCounters
+	fishingRewards         minigame.FishingRewardService
 }
 
 const startingCoinBalance = 25
@@ -116,6 +132,7 @@ func (s *Server) routes() {
 	s.router.GET("/readyz", s.ready)
 	s.router.GET("/debug/rooms", s.debugRooms)
 	s.router.GET("/debug/ops", s.debugOps)
+	s.router.GET("/debug/ops/alerts", s.debugOpsAlerts)
 	s.router.GET("/admin/session", s.adminSession)
 	s.router.GET("/admin/reviewer-dashboard", s.reviewerDashboard)
 	s.router.GET("/admin/reviewer-audit/:id", s.reviewerAudit)
@@ -123,7 +140,11 @@ func (s *Server) routes() {
 	s.router.POST("/admin/chat-reports/:id/review", s.reviewChatReport)
 	s.router.GET("/admin/chat-moderation/actions", s.chatModerationActions)
 	s.router.POST("/admin/chat-moderation/actions", s.applyChatModeration)
+	s.router.GET("/admin/action-audit", s.adminActionAudit)
+	s.router.GET("/admin/inventory/audit", s.adminInventoryAudit)
+	s.router.GET("/admin/economy/creator-payouts", s.creatorPayouts)
 	s.router.PUT("/admin/utility/panels", s.updateUtilityPanels)
+	s.router.POST("/admin/players/maps/discovered", s.adminDiscoverMap)
 	s.router.POST("/auth/guest", s.guestLogin)
 	s.router.POST("/auth/refresh", s.refreshAccessToken)
 	s.router.POST("/auth/upgrade", s.upgradeGuestAccount)
@@ -142,6 +163,20 @@ func (s *Server) routes() {
 	s.router.POST("/private-messages/read/:peer_id", s.markPrivateRead)
 	s.router.POST("/private-messages/report", s.reportPrivateMessage)
 	s.router.GET("/social/state/:target_player_id", s.socialState)
+	s.router.POST("/map-activities/claim", s.claimMapActivity)
+	s.router.GET("/players/maps/discovered", s.discoveredMaps)
+	s.router.POST("/players/maps/discovered", s.discoverMap)
+	s.router.POST("/players/maps/discovered/sync", s.syncDiscoveredMaps)
+	s.router.GET("/social/facilities", s.socialFacilities)
+	s.router.GET("/social/facilities/:id", s.socialFacility)
+	s.router.GET("/inventory", s.inventoryItems)
+	s.router.GET("/admin/trade/history", s.adminTradeHistory)
+	s.router.GET("/trade/listings", s.tradeListings)
+	s.router.GET("/trade/history", s.tradeHistory)
+	s.router.GET("/trade/inventory", s.tradeInventory)
+	s.router.POST("/trade/listings", s.createTradeListing)
+	s.router.POST("/trade/listings/:id/buy", s.purchaseTradeListing)
+	s.router.POST("/trade/listings/:id/cancel", s.cancelTradeListing)
 	s.router.GET("/social/following", s.socialFollowing)
 	s.router.POST("/social/follow", s.followPlayer)
 	s.router.POST("/social/unfollow", s.unfollowPlayer)
@@ -170,6 +205,7 @@ func (s *Server) routes() {
 	s.router.POST("/minigame-sessions/:session_id/end", s.endMinigameSession)
 	s.router.POST("/minigames/fishing/catch", s.claimFishingCatch)
 	s.router.POST("/economy/reward", s.grantReward)
+	s.router.POST("/economy/first-session/claim", s.claimFirstSessionReward)
 	s.router.GET("/economy/policy", s.economyPolicy)
 	s.router.POST("/economy/creator-share", s.grantCreatorShare)
 	s.router.POST("/economy/spend", s.spendCoins)
@@ -201,9 +237,14 @@ func (s *Server) ready(ctx *gin.Context) {
 			"chat":            true,
 			"economy":         true,
 			"fishing_rewards": true,
+			"map_activities":  true,
+			"inventory":       true,
+			"trade":           true,
+			"facilities":      true,
 			"messaging":       true,
 			"minigame":        true,
 			"presence":        true,
+			"player":          true,
 			"realtime":        true,
 			"social":          true,
 			"utility":         true,

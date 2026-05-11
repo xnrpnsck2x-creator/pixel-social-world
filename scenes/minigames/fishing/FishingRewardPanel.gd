@@ -16,6 +16,8 @@ var _coin_amount := 0
 @onready var coin_label: Label = %RewardCoinLabel
 @onready var hint_label: Label = %RewardHintLabel
 @onready var cast_again_button: Button = %CastAgainButton
+@onready var reward_margin: MarginContainer = $RewardMargin
+@onready var reward_rows: VBoxContainer = $RewardMargin/RewardRows
 
 func _ready() -> void:
 	visible = false
@@ -46,6 +48,16 @@ func hide_reward() -> void:
 func set_busy(is_busy: bool) -> void:
 	cast_again_button.disabled = is_busy
 
+func set_compact_layout(enabled: bool) -> void:
+	custom_minimum_size = Vector2(0, 78) if enabled else Vector2(0, 108)
+	fish_icon.custom_minimum_size = Vector2(40, 30) if enabled else Vector2(54, 40)
+	cast_again_button.custom_minimum_size = Vector2(0, 28) if enabled else Vector2(0, 36)
+	hint_label.visible = not enabled
+	var margin := 6 if enabled else 10
+	for key in ["margin_left", "margin_top", "margin_right", "margin_bottom"]:
+		reward_margin.add_theme_constant_override(key, margin)
+	reward_rows.add_theme_constant_override("separation", 1 if enabled else 4)
+
 func _refresh_text() -> void:
 	title_label.text = App.t_key("fishing.reward_title")
 	fish_label.text = App.t_key(_fish_name_key) if not _fish_name_key.is_empty() else ""
@@ -60,6 +72,10 @@ func _refresh_text() -> void:
 func _apply_image2_style() -> void:
 	WorldHUDAssetsScript.configure_panel_frame(self)
 	WorldHUDAssetsScript.configure_button_frame(cast_again_button)
+	title_label.add_theme_color_override("font_color", Color(0.24, 0.16, 0.09, 1.0))
+	fish_label.add_theme_color_override("font_color", Color(0.24, 0.16, 0.09, 1.0))
+	coin_label.add_theme_color_override("font_color", Color(0.42, 0.32, 0.22, 1.0))
+	hint_label.add_theme_color_override("font_color", Color(0.42, 0.32, 0.22, 1.0))
 
 func _load_texture(path: String) -> Texture2D:
 	if path.is_empty():

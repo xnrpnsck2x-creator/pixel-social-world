@@ -16,7 +16,7 @@ Runtime stack:
 Storage modes:
 
 - `memory`: default fast iteration mode.
-- `postgres`: persists economy wallet/ledger and housing layout.
+- `postgres`: persists economy wallet/ledger, housing layout, player world-map discovery, map activity cooldowns, map activity daily reward fatigue, inventory escrow, trade listings, and trade event history.
 - `redis` realtime mode stores auth sessions, presence, and minigame session TTL.
 
 ## REST
@@ -56,6 +56,91 @@ Response:
 ### `GET /me`
 
 Returns profile, wallet, starter inventory, and moderation status. Requires `Authorization: Bearer <access_token>` matching the `player_id` query.
+
+### `GET /players/maps/discovered?player_id=...`
+
+Returns the authenticated player's discovered world-map ids and unlock records.
+Requires a bearer token matching `player_id`. The backend always includes the
+starter map `city_forest_dawn_v1`.
+
+Response:
+
+```json
+{
+  "player_id": "player_123",
+  "map_ids": ["city_forest_dawn_v1", "city_port_market_v1"],
+  "maps": [
+    {
+      "map_id": "city_forest_dawn_v1",
+      "source": "default",
+      "discovered_at": 1777545600
+    },
+    {
+      "map_id": "city_port_market_v1",
+      "source": "arrival",
+      "discovered_at": 1777545700
+    }
+  ],
+  "updated_at": 1777545700
+}
+```
+
+### `POST /players/maps/discovered`
+
+Marks one world map as discovered for the authenticated player. Requires a
+bearer token matching `player_id`. `map_id` accepts catalog ids only in the
+lowercase `a-z`, `0-9`, `_`, and `-` shape. Player-facing unlock sources are
+`arrival`, `npc`, `item`, and `event`; `default`, `sync`, and `admin` are
+reserved for system migration and operator tooling.
+
+Request:
+
+```json
+{
+  "player_id": "player_123",
+  "map_id": "city_port_market_v1",
+  "source": "arrival"
+}
+```
+
+### `POST /players/maps/discovered/sync`
+
+Merges the client's local discovered-map cache into the backend and returns the
+server-authoritative union. Godot should call this when entering the main city;
+offline clients keep `discovered_world_map_ids` as a local fallback and replay
+it on the next online session. The first stored source wins; later arrival or
+sync calls do not overwrite a route originally unlocked by NPC, item, event, or
+admin tooling.
+
+Request:
+
+```json
+{
+  "player_id": "player_123",
+  "map_ids": ["city_forest_dawn_v1", "life_fishing_riverbend_v1"],
+  "source": "sync"
+}
+```
+
+### `POST /admin/players/maps/discovered`
+
+Owner-only LiveOps grant for a player's world-map route. Requires an owner admin
+token and `confirm: true`; it writes the route with source `admin` without
+requiring the target player's bearer token.
+
+Request:
+
+```json
+{
+  "player_id": "player_123",
+  "map_id": "social_trade_market_v1",
+  "confirm": true,
+  "note": "alpha route grant"
+}
+```
+
+Response wraps the updated discovery payload plus an `operator_id` fingerprint;
+raw admin tokens are never echoed.
 
 ### `POST /auth/refresh`
 
@@ -573,9 +658,59 @@ Roles are hierarchical: `viewer < moderator < reviewer < owner`.
 - `reviewer`: creator package review actions such as approve/reject.
 - `owner`: publish/rollback/unpublish creator packages, ban chat, and edit live-ops configuration.
 
+### `GET /admin/action-audit?action=&target_type=&target_id=&role=&limit=100&offset=0`
+
+Returns the unified in-process admin action audit stream. Requires `viewer` or
+stronger via `X-Admin-Token: <token>` or
+`Authorization: Bearer <admin-token>`.
+
+The endpoint is intentionally a compact LiveOps/support index, not a durable
+compliance store. It keeps the newest 200 successful high-risk actions for the
+running process and never stores or returns raw admin tokens. Operator identity
+is represented as the same `admin:<hash>` fingerprint used by reviewer and
+moderation audit rows.
+
+Covered MVP actions:
+
+- `chat_moderation.apply`: mute, restore, and ban operations.
+- `chat_report.review`: chat report status review.
+- `minigame.review`: creator package review, publish, rollback, and unpublish.
+- `economy.creator_share.grant`: owner-triggered creator settlement grants.
+- `player_map.discover`: owner LiveOps map grants.
+- `utility_panels.update`: owner live utility panel registry updates.
+
+Response:
+
+```json
+{
+  "items": [
+    {
+      "id": "admin_action_000001",
+      "action": "player_map.discover",
+      "actor_id": "admin:3e9f4a2c1b00",
+      "role": "owner",
+      "source": "liveops-console",
+      "target_type": "player_map",
+      "target_id": "player_123:social_trade_market_v1",
+      "status": "unlocked",
+      "note": "manual grant for alpha test",
+      "confirmed": true,
+      "request_id": "ops-req-123",
+      "created_at": 1777940000,
+      "metadata": {"player_id": "player_123", "map_id": "social_trade_market_v1"}
+    }
+  ],
+  "count": 1,
+  "matched": 1,
+  "limit": 100,
+  "offset": 0,
+  "server_time": 1777940000
+}
+```
+
 ### `GET /admin/session`
 
-Returns the authenticated admin role, capability list, and actions that require explicit confirmation. Requires any valid admin token. Godot/H5 tooling calls this through `OnlineClient.fetch_admin_session(admin_token)`.
+Returns the authenticated admin role, capability list, and actions that require explicit confirmation. Viewer capabilities include `read_ops`, `read_admin_action_audit`, `read_trade_history`, and `read_creator_payouts`. Requires any valid admin token. Godot/H5 tooling calls this through `OnlineClient.fetch_admin_session(admin_token)`.
 
 ### `GET /admin/reviewer-dashboard`
 
@@ -767,6 +902,69 @@ Request:
 }
 ```
 
+### `POST /map-activities/claim`
+
+Claims a server-authoritative map activity reward and cooldown. Requires a
+bearer token matching `player_id`. The backend validates that `action_id` is
+allowed on `map_id`, applies per-player/per-map/per-action cooldown, applies
+per-player/per-day/per-action reward fatigue for coin-bearing activities, and
+returns the wallet balance from the economy service.
+
+The route is config-driven in both memory and PostgreSQL modes: activity
+rules load from `configs/map_activities.json`, and map/action scope loads from
+`configs/map_points.json`. Backend startup and preflight must fail if these
+contracts cannot be parsed, so generated map metadata and economy rewards do
+not silently drift apart.
+
+Request:
+
+```json
+{
+  "player_id": "player_123",
+  "map_id": "random_flower_valley_v1",
+  "action_id": "explore"
+}
+```
+
+Response:
+
+```json
+{
+  "player_id": "player_123",
+  "map_id": "random_flower_valley_v1",
+  "action_id": "explore",
+  "reward_coins": 1,
+  "skill_id": "exploration",
+  "skill_xp": 2,
+  "drops": [{"item_id": "trail_token", "amount": 1, "rarity": "common"}],
+  "cooldown_seconds": 35,
+  "daily_reward_limit": 10,
+  "daily_reward_count": 1,
+  "ready_at": 1777545635,
+  "ready_in_seconds": 35,
+  "server_time": 1777545600,
+  "claimed": true,
+  "wallet": {"player_id": "player_123", "balance": 26, "delta": 1},
+  "inventory_items": [
+    {"player_id": "player_123", "item_id": "trail_token", "owned": 1, "locked": 0, "available": 1}
+  ]
+}
+```
+
+Cooldown returns `429 activity_cooldown` with the same timing fields. Daily
+fatigue returns `429 activity_daily_limit` with `daily_reward_limit` and
+`daily_reward_count`, does not grant coins, and does not write a new cooldown.
+Invalid map/action pairs return `400 activity_not_on_map`; unknown actions
+return `400 unknown_activity`.
+
+Map activity gameplay rewards are config-driven through
+`configs/map_activities.json`: `skill_id`, `skill_xp`, `drops`, and optional
+deterministic `rare_event` are returned only on successful claims. Successful
+online claims also grant configured drops into the backend inventory service and
+return the affected `inventory_items` rows. Coins stay server-authoritative
+through `wallet.balance`; drop counts are server-authoritative for online
+sessions and can be rendered locally from `inventory_items`.
+
 ### `GET /economy/policy`
 
 Admin read-only endpoint exposing current economy policy knobs. MVP includes
@@ -800,6 +998,40 @@ a `50` coin player reward. If the player's `daily_soft_cap` leaves only `20`
 coins available, the player receives `20` and the creator share is recalculated
 from that capped grant.
 
+Creator reward ledger rows store `game_id` for both the player's
+`creator.play_reward` event and the creator's `creator.revenue_share` event,
+so LiveOps can drill into payout totals by creator and minigame.
+
+### `GET /admin/economy/creator-payouts`
+
+Admin read-only creator payout drilldown. Requires a viewer-or-higher admin
+token and accepts `limit` with a max of 50. The response groups
+`creator.revenue_share` ledger events by `creator_id` and `game_id`, ordered by
+revenue coins descending.
+
+```json
+{
+  "request_id": "psw-...",
+  "server_time": 1777545600,
+  "items": [
+    {
+      "creator_id": "player_creator",
+      "game_id": "creator_duel",
+      "revenue_events": 3,
+      "revenue_coins": 15,
+      "last_revenue_at": 1777545590,
+      "recent_source_id": "creator.play.creator_duel.3"
+    }
+  ],
+  "count": 1,
+  "matched": 1,
+  "limit": 8,
+  "total_creators": 1,
+  "total_revenue_events": 3,
+  "total_revenue_coins": 15
+}
+```
+
 ### `POST /economy/spend`
 
 Spends coins against a server-authoritative sink. Client UI may display prices, but the backend decides final spend rules. Requires a bearer token matching `player_id`.
@@ -819,6 +1051,272 @@ Insufficient funds return `402` with `error: "insufficient_funds"`.
 ### `GET /economy/ledger/:player_id`
 
 Returns append-only coin events with balance-after values and checksum chaining for audit/debug. Requires a bearer token matching `player_id`.
+
+### `GET /inventory`
+
+Returns the authenticated player's shared inventory escrow state. Requires a
+bearer token matching the `player_id` query. This is the authoritative MVP
+inventory surface for starter items, map-activity drops, and future minigame or
+housing rewards. Items expose `owned`, `locked`, and `available`; marketplace
+listing creation locks one `available` count through the inventory service.
+
+Response:
+
+```json
+{
+  "server_time": 1777545600,
+  "items": [
+    {
+      "player_id": "player_123",
+      "item_id": "trail_token",
+      "owned": 1,
+      "locked": 0,
+      "available": 1
+    }
+  ]
+}
+```
+
+### `GET /trade/listings`
+
+Returns player listings for the trade market. Requires a bearer token matching
+the `player_id` query. V1 listings are server-authoritative; clients may render
+price and status, but they must not mutate wallet balances locally.
+Active listings have `escrow_status: "locked"`, sold listings have
+`"delivered"`, and cancelled listings have `"returned"`.
+
+Response:
+
+```json
+{
+  "server_time": 1777545600,
+  "items": [
+    {
+      "id": "trade_player_123_1777545600000",
+      "seller_id": "player_123",
+      "item_id": "simple_chair",
+      "title_key": "facility.trade.listing.simple_chair.title",
+      "body_key": "facility.trade.listing.simple_chair.body",
+      "icon_id": "icon.home",
+      "price": 7,
+      "status": "active",
+      "escrow_status": "locked",
+      "created_unix": 1777545600,
+      "updated_unix": 1777545600
+    }
+  ]
+}
+```
+
+### `GET /trade/inventory`
+
+Compatibility alias for `GET /inventory`, kept for the trade market UI. New
+clients should prefer `GET /inventory` and let trade-specific UI consume that
+same authoritative item state.
+
+Response:
+
+```json
+{
+  "server_time": 1777545600,
+  "items": [
+    {
+      "player_id": "player_123",
+      "item_id": "simple_chair",
+      "owned": 1,
+      "locked": 0,
+      "available": 1
+    }
+  ]
+}
+```
+
+### `GET /trade/history`
+
+Returns the recent server-authoritative trade event stream for compact market
+confidence UI. Requires a bearer token matching the `player_id` query.
+`limit` defaults to 10 and is capped at 50. Events are created when a listing is
+posted, sold, or cancelled; clients render this as read-only history and must
+not infer wallet state from it.
+
+Response:
+
+```json
+{
+  "server_time": 1777545600,
+  "items": [
+    {
+      "id": "trade_event_01777545600000000000_sold_trade_player_123",
+      "type": "sold",
+      "listing_id": "trade_player_123_1777545600000",
+      "seller_id": "player_123",
+      "buyer_id": "player_456",
+      "item_id": "simple_chair",
+      "title_key": "facility.trade.listing.simple_chair.title",
+      "icon_id": "icon.home",
+      "price": 7,
+      "created_unix": 1777545600
+    }
+  ]
+}
+```
+
+### `GET /admin/trade/history`
+
+Owner/viewer LiveOps read path for the same trade event stream. Requires an
+admin bearer token. Supported filters: `type`, `player_id`, `seller_id`,
+`buyer_id`, `item_id`, `listing_id`, `limit`, and `offset`. This endpoint is
+read-only and must never expose raw admin tokens or mutate player inventory.
+Add `format=csv` to export the filtered page as CSV for LiveOps support handoff.
+CSV export uses the same capped pagination as JSON, so production operators
+must page large investigations instead of dumping the full event table.
+
+Response:
+
+```json
+{
+  "server_time": 1777545600,
+  "count": 1,
+  "matched": 1,
+  "limit": 25,
+  "offset": 0,
+  "items": [
+    {
+      "id": "trade_event_01777545600000000000_sold_trade_player_123",
+      "type": "sold",
+      "listing_id": "trade_player_123_1777545600000",
+      "seller_id": "player_123",
+      "buyer_id": "player_456",
+      "item_id": "simple_chair",
+      "title_key": "facility.trade.listing.simple_chair.title",
+      "icon_id": "icon.home",
+      "price": 7,
+      "created_unix": 1777545600
+    }
+  ]
+}
+```
+
+### `POST /trade/listings`
+
+Creates a server-side listing. Requires a bearer token matching `seller_id`.
+The backend locks one available inventory item at listing creation. A player
+cannot list the same one-count item twice; unavailable inventory returns
+`409 item_unavailable`.
+
+Request:
+
+```json
+{
+  "seller_id": "player_123",
+  "item_id": "simple_chair",
+  "title_key": "facility.trade.listing.simple_chair.title",
+  "body_key": "facility.trade.listing.simple_chair.body",
+  "icon_id": "icon.home",
+  "price": 7
+}
+```
+
+Response:
+
+```json
+{
+  "listing": {
+    "id": "trade_player_123_1777545600000",
+    "seller_id": "player_123",
+    "item_id": "simple_chair",
+    "price": 7,
+    "status": "active",
+    "escrow_status": "locked"
+  }
+}
+```
+
+Invalid listings return `400 invalid_listing`.
+
+### `POST /trade/listings/:id/buy`
+
+Purchases an active listing through backend escrow. Requires a bearer token
+matching `buyer_id`. The server rejects self-purchase, inactive listings, and
+insufficient funds. Successful purchase atomically writes:
+
+- buyer ledger event: `transfer.out`
+- seller ledger event: `transfer.in`
+- listing status: `sold`
+- seller locked inventory decremented and owned count reduced
+- buyer owned inventory incremented
+
+Request:
+
+```json
+{
+  "buyer_id": "player_456"
+}
+```
+
+Response:
+
+```json
+{
+  "listing": {
+    "id": "trade_player_123_1777545600000",
+    "seller_id": "player_123",
+    "buyer_id": "player_456",
+    "item_id": "simple_chair",
+    "price": 7,
+    "status": "sold",
+    "escrow_status": "delivered"
+  },
+  "transfer": {
+    "from": {"player_id": "player_456", "balance": 18, "delta": -7},
+    "to": {"player_id": "player_123", "balance": 32, "delta": 7},
+    "amount": 7
+  },
+  "item_transfer": {
+    "item_id": "simple_chair",
+    "quantity": 1,
+    "from": {"player_id": "player_123", "item_id": "simple_chair", "owned": 0, "locked": 0, "available": 0},
+    "to": {"player_id": "player_456", "item_id": "simple_chair", "owned": 2, "locked": 0, "available": 2}
+  }
+}
+```
+
+Error statuses:
+
+- `402 insufficient_funds`
+- `403 self_purchase_forbidden`
+- `404 listing_not_found`
+- `409 item_unavailable` or `listing_inactive`
+
+### `POST /trade/listings/:id/cancel`
+
+Cancels an active listing. Requires a bearer token matching `seller_id`.
+Cancelled or sold listings cannot be purchased. Cancelling returns the locked
+item to the seller inventory by decrementing `locked` and restoring
+`available`.
+
+Request:
+
+```json
+{
+  "seller_id": "player_123"
+}
+```
+
+Response:
+
+```json
+{
+  "listing": {
+    "id": "trade_player_123_1777545600000",
+    "seller_id": "player_123",
+    "item_id": "simple_chair",
+    "price": 7,
+    "status": "cancelled",
+    "escrow_status": "returned"
+  }
+}
+```
 
 ### `GET /housing/layout/:owner_id`
 
@@ -994,9 +1492,45 @@ Response includes:
 - `chat`: message totals by room/channel, report totals by room, moderation action counts, active moderation counts, and soft rate-limit rejection counts.
 - `fishing_rewards`: trusted reward grants, replays, caps, pending requests, errors, active counters, and stored request count.
 - `economy`: ledger event totals, grant/spend counters, reward cap hits, creator play reward count, creator revenue-share count, and creator revenue coins.
+- `creator_payouts`: compact creator/game payout drilldown equivalent to `/admin/economy/creator-payouts?limit=5`.
 - `economy_policy`: creator share basis points and daily reward soft cap.
+- `admin_action_audit`: in-process action audit count, max retained events, and last event ID.
+- `alerts`: Public Alpha threshold snapshot with `highest_severity`, `count`, `items`, `open_reports`, `admin_missing_notes`, `movement_culled_rate`, `trade`, and `thresholds_version`. The `trade` block includes gateway counters for inactive buys, insufficient funds, settlement failures, and recent event-derived cancel/high-price listing stats.
 - `retention_policy`: room-chat, private-message, mailbox, report, ledger, creator-audit, and artifact-staging retention windows.
 - `retention_cleanup_plan`: non-destructive cleanup task metadata for ops tooling; room chat is marked `memory_only` / `ephemeral`, while durable stores expose table, cutoff column, and parameterized SQL shape.
+
+### `GET /debug/ops/alerts`
+
+Returns the same Public Alpha alert snapshot as `/debug/ops.alerts` without the heavier room, chat, economy, and cleanup payloads. Requires the same admin token rules as `/debug/ops`.
+
+Response:
+
+```json
+{
+  "request_id": "psw-...",
+  "alerts": {
+    "generated_at": 1777392000,
+    "thresholds_version": "public-alpha-2026-05-05",
+    "highest_severity": "warning",
+    "count": 1,
+    "open_reports": 21,
+    "admin_missing_notes": 0,
+    "movement_culled_rate": 0,
+    "items": [
+      {
+        "area": "moderation",
+        "code": "open_chat_reports",
+        "severity": "warning",
+        "value": 21,
+        "warning": 20,
+        "critical": 50
+      }
+    ]
+  }
+}
+```
+
+`GET /debug/ops/alerts?format=prometheus` returns a text metrics view for a lightweight poller. When active alerts exist, the endpoint also writes a structured `liveops_alert_snapshot` JSON line to the normal server log; `emit_log=1` forces a log line even when severity is `ok`.
 
 ## WebSocket Envelope
 
@@ -1066,7 +1600,7 @@ pub/sub so `player.move` and `chat.message` cross instance boundaries.
 
 ## Verified Local E2E
 
-Local E2E: start backend on `:18787`, then run `tests/auth_upgrade_backend_e2e.gd`, `tests/reviewer_console_backend_e2e.gd`, `tests/online_backend_e2e.gd`, and `tests/realtime_backend_e2e.gd`; checks cover H5 guest account upgrade, reviewer dashboard/action flow, refresh, admin gates, `/debug/ops`, spoof rejection, owner checks, room-scoped realtime chat broadcast, housing invite/visit, house presence/chat, trusted fishing rewards, request-id replay, backend ledger writes, and blocked public rewards.
+Local E2E: start backend on `:18787`, then run `tests/auth_upgrade_backend_e2e.gd`, `tests/reviewer_console_backend_e2e.gd`, `tests/online_backend_e2e.gd`, and `tests/realtime_backend_e2e.gd`; checks cover H5 guest account upgrade, reviewer dashboard/action flow, refresh, admin gates, `/debug/ops`, spoof rejection, owner checks, room-scoped realtime chat broadcast, housing invite/visit, house presence/chat, trusted fishing rewards, map activity rewards/cooldowns, request-id replay, backend ledger writes, and blocked public rewards.
 
 Gateway Redis smoke: `TestRedisRealtimeFanoutCrossesGatewayInstances` starts
 two independent gateway instances against miniredis and verifies cross-instance

@@ -1,7 +1,6 @@
 package gateway
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -73,26 +72,27 @@ func (s *Server) placeHousingItem(ctx *gin.Context) {
 		s.writeHousingError(ctx, err, "invalid_placement", nil)
 		return
 	}
-	balance, ok := s.economyService.Spend(ctx.Request.Context(), economy.SpendRequest{
-		PlayerID: playerID,
-		SinkID:   "housing." + request.ItemID,
-		Amount:   price,
-	})
+	reservation, ok := s.reserveHousingInventory(ctx, playerID, request.ItemID, price)
 	if !ok {
-		ctx.JSON(http.StatusPaymentRequired, gin.H{
-			"error":   "insufficient_funds",
-			"balance": balance.Balance,
-		})
 		return
 	}
+	placeRequest.InventoryLocked = reservation.InventoryLocked
+	placeRequest.InventorySource = reservation.InventorySource
+	placeRequest.ReservationID = reservation.ReservationID
 	layout, err := s.houseService.PlaceItem(ctx.Request.Context(), placeRequest)
 	if err != nil {
-		refund := s.refundHousingSpend(ctx, playerID, "housing.refund."+request.ItemID, price)
-		s.writeHousingError(ctx, err, "place_failed", &refund.Balance)
+		reservation.InventoryItems = s.rollbackHousingReservation(ctx, playerID, reservation)
+		s.writeHousingError(ctx, err, "place_failed", &reservation.Balance)
 		return
 	}
 	s.broadcastHousingLayout(playerID, "place", layout)
-	ctx.JSON(http.StatusOK, gin.H{"layout": layout, "balance": balance.Balance})
+	ctx.JSON(http.StatusOK, gin.H{
+		"layout":           layout,
+		"balance":          reservation.Balance,
+		"inventory_items":  reservation.InventoryItems,
+		"inventory_source": reservation.InventorySource,
+		"reservation_id":   reservation.ReservationID,
+	})
 }
 
 func (s *Server) applyHousingStyle(ctx *gin.Context) {
@@ -196,7 +196,19 @@ func (s *Server) removeHousingItem(ctx *gin.Context) {
 	}
 	refundAmount := s.housingRefundAmount(removed.ItemID)
 	balance := s.economyService.Balance(ctx.Request.Context(), playerID)
-	if refundAmount > 0 {
+	inventoryItems := []any{}
+	if removed.InventoryLocked {
+		items, err := s.releaseHousingInventory(ctx, playerID, removed.ItemID, removed.ReservationID)
+		if err != nil {
+			s.writeInventoryError(ctx, err)
+			return
+		}
+		inventoryItems = make([]any, 0, len(items))
+		for _, item := range items {
+			inventoryItems = append(inventoryItems, item)
+		}
+		refundAmount = 0
+	} else if refundAmount > 0 {
 		balance = s.economyService.Grant(ctx.Request.Context(), economy.GrantRequest{
 			PlayerID: playerID,
 			SourceID: "housing.sell." + removed.ItemID,
@@ -205,32 +217,11 @@ func (s *Server) removeHousingItem(ctx *gin.Context) {
 	}
 	s.broadcastHousingLayout(playerID, "remove", layout)
 	ctx.JSON(http.StatusOK, gin.H{
-		"layout":  layout,
-		"balance": balance.Balance,
-		"refund":  refundAmount,
+		"layout":          layout,
+		"balance":         balance.Balance,
+		"refund":          refundAmount,
+		"inventory_items": inventoryItems,
 	})
-}
-
-func (s *Server) authorizeHousingMutation(
-	ctx *gin.Context,
-	ownerID string,
-	playerID string,
-) (string, bool) {
-	if playerID == "" {
-		playerID = ownerID
-	}
-	playerID, ok := s.requireAuthorizedPlayer(ctx, playerID)
-	if !ok {
-		return "", false
-	}
-	if ownerID == "" {
-		ownerID = playerID
-	}
-	if ownerID != playerID {
-		ctx.JSON(http.StatusForbidden, gin.H{"error": "owner_mismatch"})
-		return "", false
-	}
-	return playerID, true
 }
 
 func (s *Server) refundHousingSpend(
@@ -259,36 +250,4 @@ func (s *Server) housingRefundAmount(itemID string) int {
 		rate = 1
 	}
 	return int(float64(price) * rate)
-}
-
-func (s *Server) writeHousingError(
-	ctx *gin.Context,
-	err error,
-	fallback string,
-	balance *int,
-) {
-	status := http.StatusInternalServerError
-	code := fallback
-	switch {
-	case errors.Is(err, house.ErrUnknownItem):
-		status = http.StatusBadRequest
-		code = "unknown_item"
-	case errors.Is(err, house.ErrInvalidPlacement):
-		status = http.StatusBadRequest
-		code = "invalid_placement"
-	case errors.Is(err, house.ErrOccupiedTile):
-		status = http.StatusConflict
-		code = "occupied_tile"
-	case errors.Is(err, house.ErrInvalidStyle):
-		status = http.StatusBadRequest
-		code = "invalid_style"
-	case errors.Is(err, house.ErrItemNotPlaced):
-		status = http.StatusNotFound
-		code = "item_not_placed"
-	}
-	payload := gin.H{"error": code}
-	if balance != nil {
-		payload["balance"] = *balance
-	}
-	ctx.JSON(status, payload)
 }

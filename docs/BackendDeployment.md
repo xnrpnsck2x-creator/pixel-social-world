@@ -26,13 +26,16 @@ From the repo root:
 backend/scripts/build-linux-amd64.sh
 ```
 
-The binary is written to:
+The binaries are written to:
 
 ```text
 backend/bin/pixel-social-world-server
 backend/bin/pixel-social-world-preflight
 backend/bin/pixel-social-world-retention-cleanup
 ```
+
+The LiveOps alert probe is shipped as a deploy script and installed into
+`/opt/pixel-social-world/backend/bin/pixel-social-world-liveops-alert-probe`.
 
 ## Install Layout
 
@@ -43,6 +46,7 @@ Recommended server layout:
 ├── bin/pixel-social-world-server
 ├── bin/pixel-social-world-preflight
 ├── bin/pixel-social-world-retention-cleanup
+├── bin/pixel-social-world-liveops-alert-probe
 ├── configs/production.yaml
 └── deploy/
 /opt/pixel-social-world/configs/
@@ -74,6 +78,11 @@ PSW_REALTIME=redis
 PSW_STARTING_COINS=25
 PSW_CREATOR_SHARE_BPS=1000
 PSW_DAILY_SOFT_CAP=400
+PSW_ADMIN_TOKEN=CHANGE_ME_LONG_RANDOM_SECRET
+PSW_LIVEOPS_ALERT_ENDPOINT=http://127.0.0.1:8787/debug/ops/alerts
+PSW_LIVEOPS_ALERT_TOKEN=
+PSW_LIVEOPS_ALERT_FORMAT=json
+PSW_LIVEOPS_ALERT_TIMEOUT_SECONDS=5
 PSW_POSTGRES_DSN=postgres://pixel:CHANGE_ME@127.0.0.1:5432/pixel_social_world?sslmode=disable
 PSW_POSTGRES_MAX_OPEN_CONNS=40
 PSW_POSTGRES_MAX_IDLE_CONNS=20
@@ -104,11 +113,16 @@ Install:
 sudo cp backend/deploy/pixel-social-world.service /etc/systemd/system/pixel-social-world.service
 sudo cp backend/deploy/pixel-social-world-retention-cleanup.service /etc/systemd/system/pixel-social-world-retention-cleanup.service
 sudo cp backend/deploy/pixel-social-world-retention-cleanup.timer /etc/systemd/system/pixel-social-world-retention-cleanup.timer
+sudo cp backend/deploy/pixel-social-world-liveops-alert-probe.sh /opt/pixel-social-world/backend/bin/pixel-social-world-liveops-alert-probe
+sudo chmod 0755 /opt/pixel-social-world/backend/bin/pixel-social-world-liveops-alert-probe
+sudo cp backend/deploy/pixel-social-world-liveops-alerts.service /etc/systemd/system/pixel-social-world-liveops-alerts.service
+sudo cp backend/deploy/pixel-social-world-liveops-alerts.timer /etc/systemd/system/pixel-social-world-liveops-alerts.timer
 sudo systemctl daemon-reload
 sudo -u pixelsocial /opt/pixel-social-world/backend/bin/pixel-social-world-preflight -env-file /etc/pixel-social-world/backend.env -strict
 sudo -u pixelsocial /opt/pixel-social-world/backend/bin/pixel-social-world-retention-cleanup -env-file /etc/pixel-social-world/backend.env
 sudo systemctl enable --now pixel-social-world
 sudo systemctl enable --now pixel-social-world-retention-cleanup.timer
+sudo systemctl enable --now pixel-social-world-liveops-alerts.timer
 ```
 
 Check:
@@ -116,6 +130,7 @@ Check:
 ```bash
 systemctl status pixel-social-world
 journalctl -u pixel-social-world -f
+journalctl -u pixel-social-world-liveops-alerts -n 30
 curl http://127.0.0.1:8787/healthz
 curl http://127.0.0.1:8787/readyz
 ```
@@ -149,6 +164,15 @@ The retention cleanup command defaults to dry-run and prints matched row counts:
 The systemd timer runs the same command with `-execute` once daily. Room chat is
 not touched by this job because it remains live-only memory/Redis state; the job
 only prunes durable PostgreSQL tables declared by the retention plan.
+
+The LiveOps alert probe timer runs once per minute and polls
+`/debug/ops/alerts?emit_log=1` with the admin token from
+`/etc/pixel-social-world/backend.env`. Set `PSW_LIVEOPS_ALERT_TOKEN` if the
+probe should use a separate operator token; otherwise it falls back to
+`PSW_ADMIN_TOKEN`. Set `PSW_LIVEOPS_ALERT_FORMAT=prometheus` when a local
+collector should scrape text metrics from the probe output. The timer does not
+mutate game state, and its output lands in journald under
+`pixel-social-world-liveops-alerts.service`.
 
 ## Single-Host Sizing
 
@@ -196,7 +220,7 @@ Reference configs:
 
 - `backend/deploy/Caddyfile.funyoru.example` serves `/opt/pixel-social-world/web` on `127.0.0.1:8080`.
 - `backend/deploy/cloudflared-funyoru.yml.example` maps `funyoru.com`, `www.funyoru.com`, and `api.funyoru.com` to local services.
-- `backend/deploy/install-funyoru-origin.sh` installs an expanded release bundle into `/opt/pixel-social-world`, `/etc/pixel-social-world`, and systemd without auto-starting services.
+- `backend/deploy/install-funyoru-origin.sh` installs an expanded release bundle into `/opt/pixel-social-world`, `/etc/pixel-social-world`, Caddy examples, cloudflared examples, the backend systemd unit, the retention cleanup timer, and the LiveOps alert probe timer without auto-starting services.
 - `backend/scripts/package-cloudflare-free-launch.sh` builds the Linux amd64 backend and packages the current H5 export, backend config, shared JSON configs, and deploy samples.
 - `backend/scripts/smoke-funyoru-public.sh` verifies the public H5 shell and `api.funyoru.com/healthz`; set `RUN_BROWSER_SMOKE=1` for the Playwright viewport smoke.
 

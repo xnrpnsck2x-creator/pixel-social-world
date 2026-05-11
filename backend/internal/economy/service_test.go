@@ -27,6 +27,31 @@ func TestMemoryGrantHonorsDailySoftCap(t *testing.T) {
 	}
 }
 
+func TestMemoryGrantOnceIsIdempotent(t *testing.T) {
+	ctx := context.Background()
+	service := NewMemoryServiceWithPolicy(Policy{CreatorShareBps: 1000, DailySoftCap: 20})
+	service.EnsurePlayer(ctx, "player_once", 25)
+	first := service.GrantOnce(ctx, GrantRequest{
+		PlayerID: "player_once",
+		SourceID: "first_session.guide_complete",
+		Amount:   5,
+	})
+	replay := service.GrantOnce(ctx, GrantRequest{
+		PlayerID: "player_once",
+		SourceID: "first_session.guide_complete",
+		Amount:   5,
+	})
+	if first.Delta != 5 || first.Balance != 30 {
+		t.Fatalf("first grant-once should grant 5 coins: %#v", first)
+	}
+	if replay.Delta != 0 || replay.Balance != 30 {
+		t.Fatalf("grant-once replay should be idempotent: %#v", replay)
+	}
+	if countLedgerType(service.Ledger(ctx, "player_once"), "grant") != 1 {
+		t.Fatalf("grant-once replay duplicated ledger event: %#v", service.Ledger(ctx, "player_once"))
+	}
+}
+
 func TestMemoryCreatorRewardUsesDailySoftCapAndIdempotency(t *testing.T) {
 	ctx := context.Background()
 	service := NewMemoryServiceWithPolicy(Policy{CreatorShareBps: 2000, DailySoftCap: 30})
@@ -58,4 +83,52 @@ func TestMemoryCreatorRewardUsesDailySoftCapAndIdempotency(t *testing.T) {
 	if stats.CreatorPlayRewards != 1 || stats.CreatorRevenueShares != 1 || stats.CreatorRevenueCoins != 1 {
 		t.Fatalf("creator stats should expose reward and revenue counters: %#v", stats)
 	}
+	payouts := service.CreatorPayouts(ctx, 8)
+	if payouts.Count != 1 || payouts.TotalCreators != 1 || payouts.TotalRevenueCoins != 1 {
+		t.Fatalf("creator payout drilldown should summarize creator revenue: %#v", payouts)
+	}
+	if payouts.Items[0].CreatorID != "creator_a" ||
+		payouts.Items[0].GameID != "creator_duel" ||
+		payouts.Items[0].RevenueEvents != 1 ||
+		payouts.Items[0].RecentSourceID != "creator.duel.1" {
+		t.Fatalf("creator payout row lost creator/game/source detail: %#v", payouts.Items[0])
+	}
+}
+
+func TestMemoryTransferIsUncappedAndRecordsBothLedgers(t *testing.T) {
+	ctx := context.Background()
+	service := NewMemoryServiceWithPolicy(Policy{CreatorShareBps: 1000, DailySoftCap: 10})
+	service.EnsurePlayer(ctx, "buyer", 20)
+	service.EnsurePlayer(ctx, "seller", 0)
+	response, ok := service.Transfer(ctx, TransferRequest{
+		FromPlayerID: "buyer",
+		ToPlayerID:   "seller",
+		SourceID:     "trade.sale.one",
+		SinkID:       "trade.sale.one",
+		Amount:       15,
+	})
+	if !ok {
+		t.Fatal("transfer should succeed")
+	}
+	if response.From.Balance != 5 || response.To.Balance != 15 {
+		t.Fatalf("transfer returned wrong balances: %#v", response)
+	}
+	buyerLedger := service.Ledger(ctx, "buyer")
+	sellerLedger := service.Ledger(ctx, "seller")
+	if buyerLedger[len(buyerLedger)-1].Type != "transfer.out" {
+		t.Fatalf("buyer ledger missing transfer out: %#v", buyerLedger)
+	}
+	if sellerLedger[len(sellerLedger)-1].Type != "transfer.in" {
+		t.Fatalf("seller ledger missing transfer in: %#v", sellerLedger)
+	}
+}
+
+func countLedgerType(events []LedgerEvent, eventType string) int {
+	count := 0
+	for _, event := range events {
+		if event.Type == eventType {
+			count++
+		}
+	}
+	return count
 }

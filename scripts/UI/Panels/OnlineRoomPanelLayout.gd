@@ -11,6 +11,7 @@ var game_catalog_label: Label
 var panel_invite_button: Button
 var room_chat_row: Control
 var quick_emote_row: BoxContainer
+var quick_emote_buttons: Array[Button] = []
 var members_label: Label
 var room_chat_input: LineEdit
 var sessions_label: Label
@@ -26,6 +27,7 @@ func bind(
 	new_panel_invite_button: Button,
 	new_room_chat_row: Control,
 	new_quick_emote_row: BoxContainer,
+	new_quick_emote_buttons: Array[Button],
 	new_members_label: Label,
 	new_room_chat_input: LineEdit,
 	new_sessions_label: Label,
@@ -38,6 +40,7 @@ func bind(
 	panel_invite_button = new_panel_invite_button
 	room_chat_row = new_room_chat_row
 	quick_emote_row = new_quick_emote_row
+	quick_emote_buttons = new_quick_emote_buttons
 	members_label = new_members_label
 	room_chat_input = new_room_chat_input
 	sessions_label = new_sessions_label
@@ -74,29 +77,33 @@ func apply_session_text_limits() -> void:
 
 func _apply() -> void:
 	if panel != null:
-		panel.custom_minimum_size = Vector2(252, 226) if _compact else Vector2(328, 420)
+		panel.custom_minimum_size = Vector2(252, 218) if _compact else Vector2(328, 388)
 	for title in title_labels:
 		title.visible = false
 	if chat_preview_label != null:
 		chat_preview_label.visible = not _compact
-		chat_preview_label.custom_minimum_size = Vector2(0, 0) if _compact else Vector2(0, 46)
+		chat_preview_label.custom_minimum_size = Vector2(0, 0) if _compact else Vector2(0, 32)
 	if game_catalog_label != null:
 		game_catalog_label.visible = not _compact
-		game_catalog_label.custom_minimum_size = Vector2(0, 20) if _compact else Vector2(0, 28)
+		game_catalog_label.custom_minimum_size = Vector2(0, 18) if _compact else Vector2(0, 22)
 	if panel_invite_button != null:
-		panel_invite_button.custom_minimum_size = Vector2(0, 32) if _compact else Vector2(0, 36)
+		panel_invite_button.custom_minimum_size = Vector2(0, 28) if _compact else Vector2(0, 30)
 	if room_chat_row != null:
 		room_chat_row.visible = true
 	if quick_emote_row != null:
 		quick_emote_row.alignment = BoxContainer.ALIGNMENT_END if _compact else BoxContainer.ALIGNMENT_BEGIN
+		quick_emote_row.add_theme_constant_override("separation", 6 if _compact else 8)
+	for button in quick_emote_buttons:
+		if button != null:
+			button.custom_minimum_size = Vector2(32, 32) if _compact else Vector2(36, 36)
 	if members_label != null:
-		members_label.custom_minimum_size = Vector2(0, 0) if _compact else Vector2(0, 52)
+		members_label.custom_minimum_size = Vector2(0, 0) if _compact else Vector2(0, 34)
 	if room_chat_input != null:
-		room_chat_input.custom_minimum_size = Vector2(0, 26) if _compact else Vector2(0, 40)
+		room_chat_input.custom_minimum_size = Vector2(0, 24) if _compact else Vector2(0, 34)
 	if sessions_label != null:
-		sessions_label.custom_minimum_size = Vector2(0, 28) if _compact else Vector2(0, 52)
+		sessions_label.custom_minimum_size = Vector2(0, 24) if _compact else Vector2(0, 34)
 	apply_session_text_limits()
 	for button in compact_buttons:
 		if button != null:
-			button.custom_minimum_size = Vector2(0, 28) if _compact else Vector2(0, 40)
+			button.custom_minimum_size = Vector2(0, 26) if _compact else Vector2(0, 32)
 	apply_text()

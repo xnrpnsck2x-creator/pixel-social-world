@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://admin_action_audit_panel"]
+
+[ext_resource type="Script" path="res://scripts/UI/Panels/AdminActionAuditPanel.gd" id="1_panel"]
+
+[node name="AdminActionAuditPanel" type="PanelContainer"]
+script = ExtResource("1_panel")

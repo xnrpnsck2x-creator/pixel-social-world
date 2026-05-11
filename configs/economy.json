@@ -18,6 +18,10 @@
       "target_first_session_spend": 60
     }
   ],
+  "first_session": {
+    "completion_reward_coins": 5,
+    "reward_source": "first_session.guide_complete"
+  },
   "housing": {
     "sell_refund_rate": 0.5
   }

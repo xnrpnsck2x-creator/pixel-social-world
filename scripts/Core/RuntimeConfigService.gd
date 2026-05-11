@@ -100,9 +100,23 @@ func _load_json_path(path: String) -> Dictionary:
 func _normalize_url(url: String) -> String:
 	if url.begins_with("http://") or url.begins_with("https://"):
 		return url
-	if url.begins_with("/") and OS.has_feature("web") and Engine.has_singleton("JavaScriptBridge"):
-		var bridge := Engine.get_singleton("JavaScriptBridge")
-		var origin: Variant = bridge.call("eval", "window.location.origin", true)
-		if typeof(origin) == TYPE_STRING and not str(origin).is_empty():
-			return str(origin).trim_suffix("/") + url
+	if url.begins_with("/"):
+		var origin := _get_web_origin()
+		if not origin.is_empty():
+			return origin.trim_suffix("/") + url
+		if _can_try_relative_web_url():
+			return url
 	return ""
+
+func _get_web_origin() -> String:
+	if OS.get_name() != "Web":
+		return ""
+	if not ClassDB.class_exists("JavaScriptBridge"):
+		return ""
+	var origin: Variant = JavaScriptBridge.eval("window.location.origin", true)
+	if typeof(origin) == TYPE_STRING:
+		return str(origin)
+	return ""
+
+func _can_try_relative_web_url() -> bool:
+	return OS.get_name() == "Web"

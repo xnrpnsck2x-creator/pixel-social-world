@@ -8,6 +8,8 @@ const ARTIFACT_DIR = path.resolve(process.env.PSW_H5_ARTIFACT_DIR || ".tools/art
 const ignoredConsolePatterns = [
   /GL Driver Message.*ReadPixels/,
   /WebGL: CONTEXT_LOST_WEBGL/,
+  /Virtual keyboard not supported by this display server/,
+  /virtual_keyboard_get_height \(servers\/display\/display_server\.cpp:1121\)/,
 ];
 
 const playwright = await importPlaywright();

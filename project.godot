@@ -3,8 +3,10 @@ config_version=5
 [application]
 
 config/name="Pixel Social World"
+config/version="0.1.0"
 run/main_scene="res://scenes/boot/Boot.tscn"
 config/features=PackedStringArray("4.3", "Mobile")
+config/quit_on_go_back=false
 
 [autoload]
 
