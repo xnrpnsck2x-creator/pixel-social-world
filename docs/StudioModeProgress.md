@@ -14,6 +14,17 @@ Accelerated content execution now lives in `docs/AcceleratedContentRoute.md`.
 
 ## Progress
 
+### Android Device Regression Gate V1
+
+Status: Implemented and Android-device verified on `c7e94055` on 2026-05-11.
+
+- Added `scripts/run_android_device_regression.sh` as the single true-device regression entry point after a local MVP/H5 gate is green.
+- The wrapper installs and launches the debug APK by default, then runs the Android player path sweep, Android UI panel sweep, and full 32-map Android sweep into one artifact root.
+- It keeps fast iteration as the default by using the existing APK when present, while still allowing `PSW_ANDROID_REGRESSION_EXPORT=1` for a fresh export and `PSW_ANDROID_REGRESSION_SKIP_READINESS=0` / `PSW_ANDROID_REGRESSION_SKIP_PREFLIGHT_MAP=0` for a heavier handoff gate.
+- The wrapper writes `android-device-regression.json` summarizing device id, artifact folders, 7 player-path cases, 4 UI-panel cases, and 32 map screenshots.
+- Verified the new wrapper on Android device `c7e94055` with `builds/android/pixel_social_world-debug.apk`; APK asset budget stayed at 147.3 MB against the 220 MB budget.
+- Evidence: `.tools/android-regression-current/android-device-regression.json`, `.tools/android-regression-current/player-path/minigame-fishing.png`, `.tools/android-regression-current/ui-panel/trade-facility.png`, and `.tools/android-regression-current/map-sweep/contact-sheet.png`.
+
 ### Android Map UI Device Sweep V2
 
 Status: Implemented, re-exported, reinstalled, and Android-device verified on `c7e94055` on 2026-05-11.
