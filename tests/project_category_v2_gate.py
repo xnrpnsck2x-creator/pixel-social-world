@@ -145,6 +145,7 @@ def run_check(check_name):
         "map_catalog_32_category_counts": check_map_catalog_32_category_counts,
         "map_points_all_catalog_maps": check_map_points_all_catalog_maps,
         "map_points_have_qa_gates": check_map_points_have_qa_gates,
+        "store_auth_provider_handoff_contract_pass": check_store_auth_provider_handoff_contract_pass,
         "npc_profession_roles_min_8": check_npc_profession_roles_min_8,
         "main_city_npcs_min_20": check_main_city_npcs_min_20,
         "player_variants_2x3": check_player_variants_2x3,
@@ -223,6 +224,23 @@ def check_map_points_have_qa_gates():
     if missing:
         return fail(f"maps missing qa_gates: {missing}")
     return ok(f"{len(point_maps)} maps have qa_gates")
+
+
+def check_store_auth_provider_handoff_contract_pass():
+    checker = ROOT / "scripts" / "check_store_auth_provider_handoff.sh"
+    result = subprocess.run(
+        [str(checker)],
+        cwd=str(ROOT),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        return fail({
+            "stdout": result.stdout.strip(),
+            "stderr": result.stderr.strip(),
+        })
+    return ok(result.stdout.strip().splitlines())
 
 
 def check_npc_profession_roles_min_8():

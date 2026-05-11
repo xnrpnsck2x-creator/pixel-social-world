@@ -202,6 +202,17 @@ Production env:
 - `PSW_APPLE_CLIENT_IDS=<sign-in-with-apple-service-or-bundle-id>`
 - `PSW_GOOGLE_CLIENT_IDS=<google-ios-android-or-web-client-id>`
 
+Store auth provider release handoff:
+
+- `docs/StoreAuthProviderHandoff.md` is the release checklist for Apple/Google
+  production auth.
+- `scripts/check_store_auth_provider_handoff.sh` verifies the checklist,
+  no-secret contract, strict `oidc_jwt` env requirements, and fail-closed
+  behavior when provider env is absent.
+- On the release machine, set `PSW_STORE_AUTH_PROVIDER_REQUIRED=1` with
+  `PSW_AUTH_PROVIDER_VERIFICATION=oidc_jwt`, `PSW_APPLE_CLIENT_IDS`, and
+  `PSW_GOOGLE_CLIENT_IDS` before public alpha auth is enabled.
+
 ### `GET /city/state`
 
 Returns the current main city snapshot for initial entry and reconnect.

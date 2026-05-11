@@ -57,6 +57,12 @@ exists.
 The local project category v2 gate passes with 14 categories and no failures.
 The current local H5 category v2 summary also passes, covering maps, NPC
 ambience, avatar variants, and avatar actions.
+The auth/profile category now requires the store auth provider handoff:
+`store_auth_provider_handoff_contract_pass` validates
+`docs/StoreAuthProviderHandoff.md`, the `/auth/upgrade` backend contract,
+production `oidc_jwt` config, Apple/Google client ID env names, no committed
+provider secrets, and strict-mode fail-closed behavior when provider env is
+absent.
 The mobile native category now requires iOS release readiness, Android export,
 APK asset budget, Android release readiness, native release handoff, stability
 probe, runtime budget, and device regression scripts.

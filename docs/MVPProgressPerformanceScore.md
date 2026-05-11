@@ -18,7 +18,7 @@ Scoring:
 
 | Chain | MVP progress | Current state | Main blocker to v1 |
 | --- | ---: | --- | --- |
-| Guest auth + session refresh | 82% | Guest login, token refresh, H5 session restore, REST/WS auth gates verified. | Apple/Google provider production setup and store review data handling. |
+| Guest auth + session refresh | 84% | Guest login, token refresh, H5 session restore, REST/WS auth gates, guest account upgrade, production OIDC verifier contract, and store auth provider handoff gate are verified. | Strict Apple/Google client ID env on the release machine, native identity-token wiring pass, and store review data handling. |
 | Main city walking + HUD | 78% | Main scene, Image2 HUD, action buttons, NPC/hotspot entry, name reveal, H5 landscape guard verified. | Final map collision polish and mobile/touch movement ergonomics. |
 | Presence + room members | 79% | Heartbeat, room member list, remote avatars, profile card entry, stale state visible, per-room caps visible in debug state. | True disconnect edge cases and room-shard load tests. |
 | WebSocket movement + emotes | 86% | Authenticated WS join, room fanout, movement interpolation, RO-style overhead emotes, repeatable 24/50/100-client load smoke, Redis cross-gateway movement/chat smoke, Redis multi-client two-gateway load profile, slow/failed write metrics, failed-write close policy, dense-room move interval backoff, and distance-based movement culling. | Interest-radius playtest calibration and OS/socket tuning on the Ubuntu target. |
@@ -80,6 +80,7 @@ Most likely client bottlenecks:
 Current baseline is a functional smoke, not a capacity benchmark:
 - Default CI-sized profile: 24 authenticated WebSocket clients join one room through the gateway test server.
 - Developer stress profiles: `PSW_WS_LOAD_SMOKE_CLIENTS=50` and `PSW_WS_LOAD_SMOKE_CLIENTS=100` both pass locally.
+- Store auth provider handoff v1 is now documented in `docs/StoreAuthProviderHandoff.md` and checked by `scripts/check_store_auth_provider_handoff.sh`, including strict-mode fail-closed behavior when Apple/Google provider env is absent.
 - iOS release signing contract preflight verifies the iOS preset, Xcode, iphoneos SDK, `codesign`, keychain tooling, and no committed Team ID/provisioning/code-sign values before real signing env is introduced.
 - Android true-device smoke on `c7e94055`: landscape login, online auth/presence/WS through `adb reverse`, main city, housing, fishing cast/finish reward, Trade Market open/post/cancel, tap-to-move/hotspot travel, soft-keyboard guard, strict package crash/script log scan, Android runtime perf v1.1, Android asset budget v1, Android UI interaction polish v1, and Android device interaction QA v2 pass locally. Main-city screenshots are stored under `.tools/android-device-smoke/current/`, latest polish screenshots under `.tools/android-ui-polish-v1-*.png`, and v2 screenshots under `.tools/android-v2-qa/`.
 - Android native render throttle v1 on `c7e94055` passes a 240-second route stability probe and full device regression after reinstall. Stability evidence is under `.tools/android-stability-render-throttle-v1/`; regression evidence is under `.tools/android-regression-render-throttle-v1/`.
@@ -131,8 +132,9 @@ Current baseline is a functional smoke, not a capacity benchmark:
 ## Next Performance Tasks
 
 1. Broaden H5/mobile device coverage beyond the current Android Chrome true-device keyboard pass, especially alternate keyboard layouts and lower-height landscape viewports.
-2. Run the Android release readiness script in strict mode with the external keystore env on the release machine.
-3. Run the iOS release readiness script in strict mode with external signing/profile env, then run the iOS true-device pass.
-4. Run release-mode Android and iOS device soaks once store signing and physical iOS access are available.
-5. Wire the systemd LiveOps alert probe output to the final external monitoring receiver.
-6. Run `PSW_POSTGRES_TEST_DSN=... go test ./internal/trade -run 'TestPostgresTradePurchasePersistsLedgerInventoryAndReplayGuards|TestPostgresConcurrentPurchaseAllowsOneBuyer' -v` against the Ubuntu/Postgres target before public alpha.
+2. Run `scripts/check_store_auth_provider_handoff.sh` in strict mode with external Apple/Google provider env on the release machine.
+3. Run the Android release readiness script in strict mode with the external keystore env on the release machine.
+4. Run the iOS release readiness script in strict mode with external signing/profile env, then run the iOS true-device pass.
+5. Run release-mode Android and iOS device soaks once store signing and physical iOS access are available.
+6. Wire the systemd LiveOps alert probe output to the final external monitoring receiver.
+7. Run `PSW_POSTGRES_TEST_DSN=... go test ./internal/trade -run 'TestPostgresTradePurchasePersistsLedgerInventoryAndReplayGuards|TestPostgresConcurrentPurchaseAllowsOneBuyer' -v` against the Ubuntu/Postgres target before public alpha.

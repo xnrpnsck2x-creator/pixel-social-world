@@ -2,7 +2,7 @@
   "schema_version": 2,
   "goal_id": "project_categories_v2",
   "quality_level": "v2_project_gate",
-  "updated": "2026-05-11",
+  "updated": "2026-05-12",
   "reference_doc": "docs/ProjectCategoryV2.md",
   "categories": [
     {
@@ -11,12 +11,12 @@
       "status": "implemented",
       "mvp_chain": "Guest auth + session refresh",
       "agents": ["Backend Engineer", "Godot Engineer", "QA"],
-      "required_docs": ["docs/BackendContract.md", "docs/MVPProgressPerformanceScore.md"],
+      "required_docs": ["docs/BackendContract.md", "docs/MVPProgressPerformanceScore.md", "docs/StoreAuthProviderHandoff.md"],
       "required_configs": ["configs/app.json", "configs/runtime_overrides.json"],
       "required_tests": ["tests/online_client_smoke.gd", "tests/auth_upgrade_backend_e2e.gd", "backend/internal/auth/service_test.go"],
-      "required_scripts": ["scripts/run_backend_e2e.sh"],
-      "checks": ["backend_package:auth", "localization_equal_keys"],
-      "acceptance": ["guest session works locally", "token refresh and restore are covered", "provider upgrade path is contracted"]
+      "required_scripts": ["scripts/run_backend_e2e.sh", "scripts/check_store_auth_provider_handoff.sh"],
+      "checks": ["backend_package:auth", "store_auth_provider_handoff_contract_pass", "localization_equal_keys"],
+      "acceptance": ["guest session works locally", "token refresh and restore are covered", "provider upgrade path is contracted", "store auth provider handoff is gated and fails closed without provider env"]
     },
     {
       "id": "main_city_maps",

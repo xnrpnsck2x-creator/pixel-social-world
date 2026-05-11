@@ -14,6 +14,16 @@ Accelerated content execution now lives in `docs/AcceleratedContentRoute.md`.
 
 ## Progress
 
+### Store Auth Provider Handoff V1
+
+Status: Implemented and locally verified on 2026-05-12.
+
+- Added `docs/StoreAuthProviderHandoff.md` as the release handoff source of truth for Apple/Google guest-account upgrade, strict backend OIDC env, store review evidence, stop conditions, and rollback.
+- Added `scripts/check_store_auth_provider_handoff.sh` to validate the handoff doc, `/auth/upgrade` backend contract, production `oidc_jwt` config, required Apple/Google env names, no committed provider secret assignments, and strict-mode fail-closed behavior when provider env is absent.
+- Wired the handoff check into `auth_profile` through `store_auth_provider_handoff_contract_pass`, so the project category v2 gate now checks store auth readiness alongside backend auth package coverage and localization key coverage.
+- Updated the backend contract and MVP progress docs to reflect the new gated handoff while keeping real Apple/Google credentials outside committed config.
+- Verified: `scripts/check_store_auth_provider_handoff.sh`, Python syntax parse for `tests/project_category_v2_gate.py`, JSON syntax for `configs/project_categories_v2.json`, and `scripts/run_project_category_v2_gate.sh`.
+
 ### Native Release Handoff Runbook V1
 
 Status: Implemented and locally verified on 2026-05-12.
