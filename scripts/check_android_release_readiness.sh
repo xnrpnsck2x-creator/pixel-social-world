@@ -8,6 +8,7 @@ ANDROID_BUILD_TOOLS_VERSION="${ANDROID_BUILD_TOOLS_VERSION:-35.0.1}"
 ANDROID_BUILD_TOOLS_DIR="${ANDROID_BUILD_TOOLS_DIR:-$ANDROID_SDK_ROOT_VALUE/build-tools/$ANDROID_BUILD_TOOLS_VERSION}"
 RELEASE_FORMAT="${PSW_ANDROID_RELEASE_FORMAT:-apk}"
 SIGNING_REQUIRED="${PSW_ANDROID_RELEASE_SIGNING_REQUIRED:-0}"
+TARGET_SDK="${PSW_ANDROID_TARGET_SDK:-35}"
 
 fail_count=0
 warn_count=0
@@ -80,6 +81,7 @@ check_android_preset_contract() {
 		aab)
 			has_preset_value '^gradle_build/use_gradle_build=true$' && pass "Gradle build is enabled for AAB" || fail "AAB export requires gradle_build/use_gradle_build=true"
 			has_preset_value '^gradle_build/export_format=1$' && pass "Android export format is AAB" || fail "AAB export requires gradle_build/export_format=1"
+			has_preset_value "^gradle_build/target_sdk=$TARGET_SDK$" && pass "Android AAB target SDK is $TARGET_SDK" || fail "Android AAB target SDK is not $TARGET_SDK"
 			has_preset_value '^export_path="builds/android/[^"]+\.aab"$' && pass "release export path targets AAB" || fail "release export path is not an AAB"
 			;;
 		*)

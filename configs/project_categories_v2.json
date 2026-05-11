@@ -180,12 +180,12 @@
       "status": "predevice_ready",
       "mvp_chain": "H5 mobile landscape + iOS / Android export",
       "agents": ["Producer", "Godot Engineer", "UI/UX", "QA"],
-      "required_docs": ["docs/MobileExportReadiness.md", "docs/AndroidToolchainSetup.md", "docs/ClientPlatformStrategy.md", "docs/NativeReleaseHandoffRunbook.md"],
+      "required_docs": ["docs/MobileExportReadiness.md", "docs/AndroidToolchainSetup.md", "docs/ClientPlatformStrategy.md", "docs/NativeReleaseHandoffRunbook.md", "docs/StorePublishHandoff.md"],
       "required_configs": ["configs/store_branding.json", "export_presets.cfg"],
       "required_tests": ["tests/h5_semantic_smoke.mjs", "tests/mobile_input_controller_smoke.gd"],
-      "required_scripts": ["scripts/check_mobile_export_readiness.sh", "scripts/check_ios_release_readiness.sh", "scripts/export_android_debug_local.sh", "scripts/check_android_asset_budget.sh", "scripts/check_android_release_readiness.sh", "scripts/check_native_release_handoff.sh", "scripts/run_android_stability_probe.sh", "scripts/check_android_runtime_budget.sh", "scripts/run_android_device_regression.sh", "scripts/run_h5_matrix.sh"],
-      "checks": ["store_branding_assets_present", "ios_release_readiness_contract_pass", "android_release_readiness_contract_pass", "native_release_handoff_contract_pass", "android_runtime_budget_reports_pass"],
-      "acceptance": ["H5 screenshot matrix exists", "iOS release signing preflight is scripted without committed secrets", "Android debug export path is scripted", "Android release signing preflight is scripted without committed secrets", "Native release handoff runbook is gated and fails closed without signing env", "Android true-device stability and regression gates are scripted", "native release signing remains outside committed config"]
+      "required_scripts": ["scripts/check_mobile_export_readiness.sh", "scripts/check_ios_release_readiness.sh", "scripts/export_android_debug_local.sh", "scripts/check_android_asset_budget.sh", "scripts/check_android_release_readiness.sh", "scripts/check_native_release_handoff.sh", "scripts/check_store_publish_handoff.sh", "scripts/run_android_stability_probe.sh", "scripts/check_android_runtime_budget.sh", "scripts/run_android_device_regression.sh", "scripts/run_h5_matrix.sh"],
+      "checks": ["store_branding_assets_present", "ios_release_readiness_contract_pass", "android_release_readiness_contract_pass", "native_release_handoff_contract_pass", "store_publish_handoff_contract_pass", "android_runtime_budget_reports_pass"],
+      "acceptance": ["H5 screenshot matrix exists", "iOS release signing preflight is scripted without committed secrets", "Android debug export path is scripted", "Android release signing preflight is scripted without committed secrets", "Android Play AAB export preset is gated for Google Play upload readiness", "Native release handoff runbook is gated and fails closed without signing env", "App Store / Google Play publish handoff is gated and fails closed without store console env", "Android true-device stability and regression gates are scripted", "native release signing remains outside committed config"]
     }
   ]
 }

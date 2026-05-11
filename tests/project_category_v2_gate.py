@@ -156,6 +156,7 @@ def run_check(check_name):
         "ios_release_readiness_contract_pass": check_ios_release_readiness_contract_pass,
         "android_release_readiness_contract_pass": check_android_release_readiness_contract_pass,
         "native_release_handoff_contract_pass": check_native_release_handoff_contract_pass,
+        "store_publish_handoff_contract_pass": check_store_publish_handoff_contract_pass,
         "android_runtime_budget_reports_pass": check_android_runtime_budget_reports_pass,
         "utility_panels_min_3": check_utility_panels_min_3,
         "economy_has_caps": check_economy_has_caps,
@@ -400,6 +401,23 @@ def check_ios_release_readiness_contract_pass():
 
 def check_native_release_handoff_contract_pass():
     checker = ROOT / "scripts" / "check_native_release_handoff.sh"
+    result = subprocess.run(
+        [str(checker)],
+        cwd=str(ROOT),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        return fail({
+            "stdout": result.stdout.strip(),
+            "stderr": result.stderr.strip(),
+        })
+    return ok(result.stdout.strip().splitlines())
+
+
+def check_store_publish_handoff_contract_pass():
+    checker = ROOT / "scripts" / "check_store_publish_handoff.sh"
     result = subprocess.run(
         [str(checker)],
         cwd=str(ROOT),

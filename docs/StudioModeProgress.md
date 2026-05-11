@@ -14,6 +14,16 @@ Accelerated content execution now lives in `docs/AcceleratedContentRoute.md`.
 
 ## Progress
 
+### App Store / Google Play Publish Handoff V1
+
+Status: Implemented and locally verified on 2026-05-12.
+
+- Added `docs/StorePublishHandoff.md` as the store submission handoff source of truth for Apple TestFlight/App Store and Google Play internal/closed/production tracks.
+- Added a dedicated `Android Play AAB` export preset targeting `builds/android/pixel_social_world.aab` with Gradle enabled and target SDK 35, while keeping the existing APK preset for local/debug/device handoff.
+- Added `scripts/check_store_publish_handoff.sh` to validate official Apple/Google requirement sources, store branding assets, Android AAB readiness, no committed store secrets, and strict-mode fail-closed behavior when App Store Connect / Play Console evidence env is absent.
+- Wired the publish check into `mobile_h5_native` through `store_publish_handoff_contract_pass`, so the project category v2 gate now covers store-publish readiness alongside native release signing, Android runtime budget, and true-device evidence.
+- Updated native release, mobile export, project category, and MVP progress docs so "can publish to Apple/Google" is treated as a gated handoff, not a loose checklist.
+
 ### Production Data Backup Handoff V1
 
 Status: Implemented and locally verified on 2026-05-12.

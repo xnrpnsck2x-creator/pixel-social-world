@@ -110,7 +110,8 @@ check_runbook_contract() {
 	require_runbook_text "ANDROID_RELEASE_KEYSTORE_USER" "Android release alias env"
 	require_runbook_text "ANDROID_RELEASE_KEYSTORE_PASSWORD" "Android release store password env"
 	require_runbook_text "ANDROID_RELEASE_KEY_PASSWORD" "Android release key password env"
-	require_runbook_text "PSW_ANDROID_RELEASE_FORMAT=aab" "Android AAB fail-closed note"
+	require_runbook_text "PSW_ANDROID_RELEASE_FORMAT=aab" "Android AAB release flag"
+	require_runbook_text "Android Play AAB" "Android Play AAB preset note"
 	require_runbook_text "scripts/run_android_stability_probe.sh" "Android stability command"
 	require_runbook_text "scripts/run_android_device_regression.sh" "Android regression command"
 	require_runbook_text "scripts/check_android_runtime_budget.sh" "Android runtime budget command"
@@ -121,6 +122,7 @@ check_runbook_contract() {
 check_runbook_contract
 run_required_command "iOS release readiness default contract" "$ROOT_DIR/scripts/check_ios_release_readiness.sh"
 run_required_command "Android release readiness default contract" "$ROOT_DIR/scripts/check_android_release_readiness.sh"
+run_required_command "Android AAB release readiness default contract" env PSW_ANDROID_RELEASE_FORMAT=aab "$ROOT_DIR/scripts/check_android_release_readiness.sh"
 check_strict_modes_fail_closed_when_unset
 
 if [[ "$fail_count" -eq 0 && "$warn_count" -eq 0 ]]; then

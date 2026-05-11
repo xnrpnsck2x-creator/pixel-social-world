@@ -1,8 +1,8 @@
 # Mobile Export Readiness
 
-Status: Toolchain, store-branding, Android debug export, device gates,
-iOS/Android release signing contract scans, and native release handoff gate are
-in place as of 2026-05-12.
+Status: Toolchain, store-branding, Android debug export, Android Play AAB
+export preset, device gates, iOS/Android release signing contract scans, native
+release handoff, and store publish handoff gates are in place as of 2026-05-12.
 
 This document tracks the gap between the current H5 MVP and the first iOS/Android
 device build. The project logic is pre-device ready, and the current Mac now has
@@ -23,6 +23,10 @@ Observed on the current machine:
 - Godot 4.6.2 binary and matching export templates are present.
 - Web, iOS, and Android export presets now exist. Native presets contain only
   non-secret package/build metadata; signing values remain outside the repo.
+- The Android APK preset remains the debug/device handoff path, while the
+  dedicated `Android Play AAB` preset targets
+  `builds/android/pixel_social_world.aab` with Gradle enabled and target SDK 35
+  for Google Play upload readiness.
 - Full Xcode is installed at `/Applications/Xcode.app`; the readiness script can
   use it without changing the global `xcode-select` setting.
 - iOS export is still blocked by signing configuration and true-device access,
@@ -58,6 +62,12 @@ Observed on the current machine:
   `scripts/check_native_release_handoff.sh`. The handoff gate validates the
   runbook, default release readiness scripts, and strict-mode fail-closed
   behavior when signing env is absent.
+- App Store / Google Play publish handoff is captured in
+  `docs/StorePublishHandoff.md` and checked by
+  `scripts/check_store_publish_handoff.sh`. The gate validates official store
+  requirement sources, Android AAB readiness, store branding assets, no
+  committed store secrets, and strict-mode fail-closed behavior when store
+  console metadata env is absent.
 - Dedicated MVP app icon and splash assets now exist under
   `assets/branding/generated/`. They are PNG outputs derived from the approved
   Image 2 forest dawn city motherboard and registered in
@@ -98,8 +108,11 @@ Observed on the current machine:
      `ANDROID_RELEASE_KEY_PASSWORD`.
 4. Run the native release handoff gate before introducing release credentials:
    - `scripts/check_native_release_handoff.sh`
+   - `scripts/check_store_publish_handoff.sh`
    - `scripts/run_project_category_v2_gate.sh`
-5. Before store submission, review whether the MVP derived icon/splash should be
+5. Before store submission, run `scripts/check_store_publish_handoff.sh` in
+   strict mode with App Store Connect / Google Play Console evidence env set.
+6. Before store submission, review whether the MVP derived icon/splash should be
    replaced by dedicated Image 2 branding renders. The current assets are valid
    for local export wiring and device-test readiness.
 
@@ -109,7 +122,9 @@ Observed on the current machine:
 scripts/check_mobile_export_readiness.sh
 scripts/check_ios_release_readiness.sh
 scripts/check_android_release_readiness.sh
+PSW_ANDROID_RELEASE_FORMAT=aab scripts/check_android_release_readiness.sh
 scripts/check_native_release_handoff.sh
+scripts/check_store_publish_handoff.sh
 PSW_ANDROID_PREFLIGHT_EXPORT=0 scripts/run_android_device_preflight.sh
 ./.tools/godot-standard/Godot.app/Contents/MacOS/Godot --headless --path . --export-pack "iOS" .tools/native-preset-parse/ios-main.pck
 ./.tools/godot-standard/Godot.app/Contents/MacOS/Godot --headless --path . --export-pack "Android" .tools/native-preset-parse/android-main.pck
@@ -134,6 +149,8 @@ subset should run inside the same preflight.
   tokens into `export_presets.cfg`.
 - Treat `docs/NativeReleaseHandoffRunbook.md` as the release handoff source of
   truth until real store credentials and true-device iOS evidence exist.
+- Treat `docs/StorePublishHandoff.md` as the App Store / Google Play publish
+  source of truth until App Store Connect and Play Console evidence exists.
 - Keep H5 smoke and semantic screenshot gates passing before every native export.
 - Keep official app icon/splash assets as Image 2 PNG/WebP outputs, not SVG
   placeholders.

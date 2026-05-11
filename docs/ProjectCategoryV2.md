@@ -91,6 +91,11 @@ The native release handoff contract is executed by
 `docs/NativeReleaseHandoffRunbook.md`, required signing env names, local release
 commands, evidence locations, and strict-mode fail-closed behavior when signing
 env is absent.
+The App Store / Google Play publish contract is executed by
+`store_publish_handoff_contract_pass`, which verifies
+`docs/StorePublishHandoff.md`, official store requirement sources, Android Play
+AAB readiness, store branding assets, no committed store secrets, and
+strict-mode fail-closed behavior when store console metadata env is absent.
 The runtime budget gate is validated against the current 240-second Android
 render-throttle report and the 600-second Android soak report. This validation
 is executed by the `android_runtime_budget_reports_pass` category check, not
@@ -99,7 +104,8 @@ only documented as a manual step.
 ## Notes
 
 This is a local-plus-Android-device v2 gate. iOS true-device checks, release
-signing, store auth providers, and production monitoring remain outside the
-local gate until device and deployment credentials are available.
+signing, strict store-console submission, store auth providers, and production
+monitoring remain outside the local gate until device, store, and deployment
+credentials are available.
 Use `PSW_PROJECT_CATEGORY_V2_SKIP_ANDROID_RUNTIME=1` only for environments that
 intentionally lack Android stability report artifacts.

@@ -39,7 +39,9 @@ Run these from the repository root before using release credentials:
 scripts/check_mobile_export_readiness.sh
 scripts/check_ios_release_readiness.sh
 scripts/check_android_release_readiness.sh
+PSW_ANDROID_RELEASE_FORMAT=aab scripts/check_android_release_readiness.sh
 scripts/check_native_release_handoff.sh
+scripts/check_store_publish_handoff.sh
 scripts/run_project_category_v2_gate.sh
 ```
 
@@ -51,8 +53,14 @@ Expected local result:
   unset.
 - `check_android_release_readiness.sh` must pass in default mode with signing
   values unset.
+- `PSW_ANDROID_RELEASE_FORMAT=aab scripts/check_android_release_readiness.sh`
+  must pass through the dedicated `Android Play AAB` preset before a Google
+  Play upload.
 - `check_native_release_handoff.sh` must pass and prove strict mode fails closed
   when signing values are absent.
+- `check_store_publish_handoff.sh` must pass and prove strict store publish
+  mode fails closed when App Store Connect / Google Play Console values are
+  absent.
 - `run_project_category_v2_gate.sh` must pass without skipping Android runtime
   budget evidence on this development machine.
 
@@ -87,8 +95,9 @@ If Google Play requires an AAB for the first public build, run:
 PSW_ANDROID_RELEASE_FORMAT=aab scripts/check_android_release_readiness.sh
 ```
 
-The current committed Android preset targets APK. AAB mode is expected to fail
-until the Gradle/AAB export preset is intentionally added and verified.
+The committed `Android` preset remains the APK/debug-device path. The committed
+`Android Play AAB` preset is the Google Play upload path and must stay green in
+AAB mode before any Play Console release.
 
 ## iOS Strict Release Handoff
 
