@@ -21,6 +21,7 @@ if [[ ! -x "$GODOT_BIN" ]]; then
 	echo "Godot binary not found: $GODOT_BIN" >&2
 	exit 1
 fi
+"$ROOT_DIR/scripts/ensure_adb_server_for_godot.sh"
 
 run_step() {
 	local name="$1"

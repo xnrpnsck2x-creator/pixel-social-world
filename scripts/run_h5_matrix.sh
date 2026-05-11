@@ -25,6 +25,7 @@ mkdir -p "$ARTIFACT_DIR"
 if [[ ! -x "$GO_BIN" ]]; then
 	GO_BIN="go"
 fi
+"$ROOT_DIR/scripts/ensure_adb_server_for_godot.sh"
 
 ensure_playwright() {
 	if [[ -f "$PLAYWRIGHT_DIR/node_modules/playwright/index.mjs" ]]; then

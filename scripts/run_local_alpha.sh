@@ -43,6 +43,7 @@ cleanup() {
 }
 
 if [[ "$EXPORT_WEB" == "1" ]]; then
+	"$ROOT_DIR/scripts/ensure_adb_server_for_godot.sh"
 	"$GODOT_BIN" --headless --path "$ROOT_DIR" --export-release Web "$WEB_SRC_DIR/index.html"
 fi
 
