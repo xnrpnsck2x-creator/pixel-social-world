@@ -1,7 +1,7 @@
 # Mobile Export Readiness
 
 Status: Toolchain, store-branding, Android debug export, device gates, and
-Android release signing contract scans are in place as of 2026-05-11.
+iOS/Android release signing contract scans are in place as of 2026-05-11.
 
 This document tracks the gap between the current H5 MVP and the first iOS/Android
 device build. The project logic is pre-device ready, and the current Mac now has
@@ -24,8 +24,14 @@ Observed on the current machine:
   non-secret package/build metadata; signing values remain outside the repo.
 - Full Xcode is installed at `/Applications/Xcode.app`; the readiness script can
   use it without changing the global `xcode-select` setting.
-- iOS export is still blocked by signing configuration, not by SDK availability
-  on this machine.
+- iOS export is still blocked by signing configuration and true-device access,
+  not by SDK availability on this machine.
+- iOS release handoff now has `scripts/check_ios_release_readiness.sh`. In
+  default local mode it verifies the no-secret signing contract, iOS export
+  preset, Xcode, iphoneos SDK, `codesign`, and keychain tooling. On the release
+  machine, set `PSW_IOS_RELEASE_SIGNING_REQUIRED=1` plus the release signing env
+  values to make missing Team ID, bundle id, code-sign identity, or provisioning
+  profile configuration fail the gate.
 - Android command-line tooling is now installed locally via Homebrew:
   `openjdk@21`, Android command-line tools, platform-tools, `platforms;android-35`,
   `build-tools;35.0.1`, `cmake;3.10.2.4988404`, `ndk;28.1.13356709`,
@@ -73,7 +79,12 @@ Observed on the current machine:
   - `platforms;android-35`, `build-tools;35.0.1`, `cmake;3.10.2.4988404`,
      `ndk;28.1.13356709`, and SDK license files exist.
 3. Configure signing outside the repo:
-   - iOS team ID and bundle ID through local environment or Godot editor export UI.
+   - iOS team ID, bundle ID, distribution signing identity, and release
+     provisioning profile through local environment or Godot editor export UI.
+     The scripted env contract is `IOS_TEAM_ID`, `IOS_BUNDLE_ID`,
+     `IOS_CODE_SIGN_IDENTITY_RELEASE`, and either
+     `IOS_PROVISIONING_PROFILE_UUID_RELEASE` or
+     `IOS_PROVISIONING_PROFILE_SPECIFIER_RELEASE`.
    - Android release keystore path, alias, and passwords through local environment
      or Godot editor export UI. The scripted env contract is
      `ANDROID_RELEASE_KEYSTORE`, `ANDROID_RELEASE_KEYSTORE_USER`,
@@ -87,6 +98,7 @@ Observed on the current machine:
 
 ```bash
 scripts/check_mobile_export_readiness.sh
+scripts/check_ios_release_readiness.sh
 scripts/check_android_release_readiness.sh
 PSW_ANDROID_PREFLIGHT_EXPORT=0 scripts/run_android_device_preflight.sh
 ./.tools/godot-standard/Godot.app/Contents/MacOS/Godot --headless --path . --export-pack "iOS" .tools/native-preset-parse/ios-main.pck

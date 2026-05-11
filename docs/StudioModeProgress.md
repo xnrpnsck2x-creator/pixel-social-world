@@ -14,6 +14,17 @@ Accelerated content execution now lives in `docs/AcceleratedContentRoute.md`.
 
 ## Progress
 
+### iOS Release Signing Readiness V1
+
+Status: Implemented and locally verified on 2026-05-11.
+
+- Added `scripts/check_ios_release_readiness.sh` as the iOS release preflight for the native handoff path.
+- The script verifies the iOS export preset, zip export path, arm64, stable bundle id, short/build versions, minimum iOS version, store icon wiring, full Xcode, `xcodebuild`, iphoneos SDK, `codesign`, and the keychain `security` tool.
+- Signing values stay outside the repo: the preflight fails if `export_presets.cfg` contains Team ID, provisioning profile, or code-sign identity values.
+- The strict mode `PSW_IOS_RELEASE_SIGNING_REQUIRED=1` is reserved for the actual release machine; default local mode passes as a no-secret contract check when iOS signing env is intentionally unset.
+- Wired the iOS release readiness contract into the project category v2 gate through `ios_release_readiness_contract_pass`, so `mobile_h5_native` now verifies iOS and Android release signing hygiene together.
+- Verified: `scripts/check_ios_release_readiness.sh`, strict-mode negative check, partial-env negative check, Python syntax parse for `tests/project_category_v2_gate.py`, JSON syntax for `configs/project_categories_v2.json`, and `scripts/run_project_category_v2_gate.sh`.
+
 ### Android Release Signing Readiness V1
 
 Status: Implemented and locally verified on 2026-05-11.

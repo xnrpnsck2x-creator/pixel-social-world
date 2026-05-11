@@ -152,6 +152,7 @@ def run_check(check_name):
         "ui_v2_assets_present": check_ui_v2_assets_present,
         "art_assets_min_100": check_art_assets_min_100,
         "store_branding_assets_present": check_store_branding_assets_present,
+        "ios_release_readiness_contract_pass": check_ios_release_readiness_contract_pass,
         "android_release_readiness_contract_pass": check_android_release_readiness_contract_pass,
         "android_runtime_budget_reports_pass": check_android_runtime_budget_reports_pass,
         "utility_panels_min_3": check_utility_panels_min_3,
@@ -344,6 +345,23 @@ def check_android_runtime_budget_reports_pass():
 
 def check_android_release_readiness_contract_pass():
     checker = ROOT / "scripts" / "check_android_release_readiness.sh"
+    result = subprocess.run(
+        [str(checker)],
+        cwd=str(ROOT),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        return fail({
+            "stdout": result.stdout.strip(),
+            "stderr": result.stderr.strip(),
+        })
+    return ok(result.stdout.strip().splitlines())
+
+
+def check_ios_release_readiness_contract_pass():
+    checker = ROOT / "scripts" / "check_ios_release_readiness.sh"
     result = subprocess.run(
         [str(checker)],
         cwd=str(ROOT),

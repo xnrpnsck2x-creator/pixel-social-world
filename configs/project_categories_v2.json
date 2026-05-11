@@ -183,9 +183,9 @@
       "required_docs": ["docs/MobileExportReadiness.md", "docs/AndroidToolchainSetup.md", "docs/ClientPlatformStrategy.md"],
       "required_configs": ["configs/store_branding.json", "export_presets.cfg"],
       "required_tests": ["tests/h5_semantic_smoke.mjs", "tests/mobile_input_controller_smoke.gd"],
-      "required_scripts": ["scripts/check_mobile_export_readiness.sh", "scripts/export_android_debug_local.sh", "scripts/check_android_asset_budget.sh", "scripts/check_android_release_readiness.sh", "scripts/run_android_stability_probe.sh", "scripts/check_android_runtime_budget.sh", "scripts/run_android_device_regression.sh", "scripts/run_h5_matrix.sh"],
-      "checks": ["store_branding_assets_present", "android_release_readiness_contract_pass", "android_runtime_budget_reports_pass"],
-      "acceptance": ["H5 screenshot matrix exists", "Android debug export path is scripted", "Android release signing preflight is scripted without committed secrets", "Android true-device stability and regression gates are scripted", "native release signing remains outside committed config"]
+      "required_scripts": ["scripts/check_mobile_export_readiness.sh", "scripts/check_ios_release_readiness.sh", "scripts/export_android_debug_local.sh", "scripts/check_android_asset_budget.sh", "scripts/check_android_release_readiness.sh", "scripts/run_android_stability_probe.sh", "scripts/check_android_runtime_budget.sh", "scripts/run_android_device_regression.sh", "scripts/run_h5_matrix.sh"],
+      "checks": ["store_branding_assets_present", "ios_release_readiness_contract_pass", "android_release_readiness_contract_pass", "android_runtime_budget_reports_pass"],
+      "acceptance": ["H5 screenshot matrix exists", "iOS release signing preflight is scripted without committed secrets", "Android debug export path is scripted", "Android release signing preflight is scripted without committed secrets", "Android true-device stability and regression gates are scripted", "native release signing remains outside committed config"]
     }
   ]
 }
