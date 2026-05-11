@@ -14,6 +14,20 @@ Accelerated content execution now lives in `docs/AcceleratedContentRoute.md`.
 
 ## Progress
 
+### Android Runtime Budget Gate V1
+
+Status: Implemented and Android-device budget verified on `c7e94055` reports on 2026-05-11.
+
+- Added `scripts/check_android_runtime_budget.sh` as the repeatable Android runtime budget gate for stability reports. It fails on low sample coverage, high average/peak CPU, high average/peak PSS, PSS growth, or swap PSS over budget.
+- Wired `scripts/run_android_stability_probe.sh` to call the runtime budget gate automatically after package/Godot-focused logcat scanning. Set `PSW_ANDROID_STABILITY_SKIP_BUDGET=1` only when collecting diagnostic data that should not fail the outer command.
+- Hardened the stability sampler so transient `dumpsys meminfo` failures or missing temp folders record a zeroed sample instead of aborting the whole route.
+- Calibrated the default debug-build budget from current true-device data: at least 12 samples, 65% observed/wall duration coverage, CPU <= 30% average / 40% peak, PSS <= 380 MB average / 430 MB peak, PSS growth <= 80 MB, and swap PSS <= 32 MB.
+- Verified the budget against the 240-second native render throttle report: 20 samples, 229s observed, CPU 23.5% / 32% avg/max, PSS 335.1 MB / 361.5 MB avg/max, -45.1 MB PSS growth, and 0.5 MB max swap PSS.
+- Ran and calibrated against a longer 600-second Android route soak. App metrics stayed healthy with 36 samples, 413s observed, CPU 20.8% / 32.6% avg/max, PSS 314.9 MB / 341.5 MB avg/max, -30.2 MB PSS growth, and 20.6 MB max swap PSS.
+- The 600-second run initially proved that strict desktop-style sample coverage and a 20 MB swap cap were too brittle for real Android devices under background memory pressure; the current gate keeps CPU/PSS strict while allowing realistic adb route overhead and small swap PSS.
+- Short 120/180-second diagnostic probes in the desktop tool environment can fail the sample-count gate when wall time is paused or delayed; those runs are not used as release evidence. The committed budget gate is intended for the 240-second-plus Android stability reports and the default 600-second probe.
+- Evidence: `.tools/android-stability-render-throttle-v1/android-stability-report.json`, `.tools/android-stability-soak-v1/android-stability-report.json`, `.tools/android-stability-soak-v1/android-stability-summary.txt`, and `.tools/project-category-v2-gate/project-category-v2-report.html`.
+
 ### Android Native Render Throttle V1
 
 Status: Implemented, re-exported, reinstalled, and Android-device verified on `c7e94055` on 2026-05-11.

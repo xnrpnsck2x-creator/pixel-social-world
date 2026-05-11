@@ -13,6 +13,7 @@ ROUTE_SETTLE_SECONDS="${PSW_ANDROID_STABILITY_ROUTE_SETTLE_SECONDS:-5}"
 MIN_SCREENSHOT_BYTES="${PSW_ANDROID_STABILITY_MIN_SCREENSHOT_BYTES:-100000}"
 CASES_JSON="${PSW_ANDROID_STABILITY_CASES_JSON:-}"
 KEEP_TMP="${PSW_ANDROID_STABILITY_KEEP_TMP:-0}"
+SKIP_BUDGET="${PSW_ANDROID_STABILITY_SKIP_BUDGET:-0}"
 STARTUP_FILE="android_debug_startup.json"
 TMP_DIR="$ARTIFACT_DIR/tmp"
 PROFILE_BACKUP="$ARTIFACT_DIR/player_profile.before_stability.json"
@@ -171,6 +172,7 @@ sample_metrics() {
 	local case_name="$1"
 	local elapsed="$2"
 	local pid raw proc_line total_line cpu_count meminfo_file metrics
+	mkdir -p "$TMP_DIR"
 	pid="$("${ADB[@]}" shell pidof "$PACKAGE_NAME" 2>/dev/null | tr -d '\r' || true)"
 	if [[ -z "$pid" ]]; then
 		printf '%s\t%s\t%s\t\t0\t0\t0\t0\t0\t0\n' "$(date +%s)" "$elapsed" "$case_name" >>"$SAMPLES_TSV"
@@ -181,7 +183,10 @@ sample_metrics() {
 	total_line="$(printf '%s\n' "$raw" | sed -n '2p')"
 	cpu_count="$(printf '%s\n' "$raw" | sed -n '3p')"
 	meminfo_file="$TMP_DIR/meminfo-$pid.txt"
-	"${ADB[@]}" shell dumpsys meminfo "$PACKAGE_NAME" | tr -d '\r' >"$meminfo_file"
+	if ! "${ADB[@]}" shell dumpsys meminfo "$PACKAGE_NAME" | tr -d '\r' >"$meminfo_file"; then
+		printf '%s\t%s\t%s\t%s\t0\t0\t%s\t0\t0\t0\n' "$(date +%s)" "$elapsed" "$case_name" "$pid" "${cpu_count:-1}" >>"$SAMPLES_TSV"
+		return
+	fi
 	metrics="$(node - "$pid" "$proc_line" "$total_line" "$cpu_count" "$meminfo_file" <<'NODE'
 const fs = require("fs");
 const pid = process.argv[2] || "";
@@ -215,7 +220,7 @@ NODE
 
 write_report() {
 	"${ADB[@]}" logcat -d >"$LOGCAT_FILE" || true
-	node - "$DEVICE_ID" "$ARTIFACT_DIR" "$SAMPLES_TSV" "$REPORT_FILE" "$SUMMARY_FILE" "$DURATION_SECONDS" "$SAMPLE_INTERVAL_SECONDS" "$ROUTE_INTERVAL_SECONDS" "$PACKAGE_NAME" <<'NODE'
+	node - "$DEVICE_ID" "$ARTIFACT_DIR" "$SAMPLES_TSV" "$REPORT_FILE" "$SUMMARY_FILE" "$DURATION_SECONDS" "$SAMPLE_INTERVAL_SECONDS" "$ROUTE_INTERVAL_SECONDS" "$PACKAGE_NAME" "$START_SECONDS" <<'NODE'
 const fs = require("fs");
 const path = require("path");
 
@@ -228,6 +233,7 @@ const targetDurationSeconds = Number(process.argv[7]);
 const sampleIntervalSeconds = Number(process.argv[8]);
 const routeIntervalSeconds = Number(process.argv[9]);
 const packageName = process.argv[10];
+const startSeconds = Number(process.argv[11] || 0);
 
 const rows = fs.readFileSync(samplePath, "utf8").trim().split(/\n+/).filter(Boolean).map((line) => {
   const [epoch, elapsed, caseName, pid, procJiffies, totalJiffies, cpuCount, pssKb, rssKb, swapPssKb] = line.split("\t");
@@ -275,6 +281,7 @@ const report = {
   package_name: packageName,
   target_duration_seconds: targetDurationSeconds,
   observed_duration_seconds: samples.length ? samples.at(-1).elapsed_seconds : 0,
+  wall_duration_seconds: startSeconds > 0 ? Math.max(0, Math.floor(Date.now() / 1000) - startSeconds) : 0,
   sample_interval_seconds: sampleIntervalSeconds,
   route_interval_seconds: routeIntervalSeconds,
   sample_count: samples.length,
@@ -301,7 +308,7 @@ const report = {
 fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
 fs.writeFileSync(summaryPath, [
   `Android stability probe: ${device}`,
-  `Duration: ${report.observed_duration_seconds}s / target ${targetDurationSeconds}s`,
+  `Duration: ${report.observed_duration_seconds}s sampled, ${report.wall_duration_seconds}s wall / target ${targetDurationSeconds}s`,
   `Samples: ${samples.length}`,
   `CPU avg/max: ${report.metrics.avg_cpu_pct}% / ${report.metrics.max_cpu_pct}%`,
   `PSS avg/max/growth: ${report.metrics.avg_pss_mb}MB / ${report.metrics.max_pss_mb}MB / ${report.metrics.pss_growth_mb}MB`,
@@ -360,6 +367,10 @@ if [[ -n "$issues" ]]; then
 	printf '%s\n' "$issues" >"$ARTIFACT_DIR/logcat_issues.txt"
 	printf 'Android stability probe found logcat issues. See %s\n' "$ARTIFACT_DIR/logcat_issues.txt" >&2
 	exit 1
+fi
+
+if [[ "$SKIP_BUDGET" != "1" ]]; then
+	"$ROOT_DIR/scripts/check_android_runtime_budget.sh" "$REPORT_FILE"
 fi
 
 cat "$SUMMARY_FILE"

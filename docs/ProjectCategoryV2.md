@@ -1,6 +1,6 @@
 # Project Category v2 Gate
 
-Date: 2026-05-08
+Date: 2026-05-11
 
 This document defines the project-level v2 category gate. It is the umbrella
 contract above the existing MVP 100 gate and H5 screenshot patrols.
@@ -57,9 +57,13 @@ exists.
 The local project category v2 gate passes with 14 categories and no failures.
 The current local H5 category v2 summary also passes, covering maps, NPC
 ambience, avatar variants, and avatar actions.
+The mobile native category now requires the Android export, APK asset budget,
+stability probe, runtime budget, and device regression scripts.
+The runtime budget gate is validated against the current 240-second Android
+render-throttle report and the 600-second Android soak report.
 
 ## Notes
 
-This is a pre-device v2 gate. True-device iOS/Android input, keyboard, signing,
-store auth providers, and production monitoring remain outside the local gate
-until device and deployment credentials are available.
+This is a local-plus-Android-device v2 gate. iOS true-device checks, release
+signing, store auth providers, and production monitoring remain outside the
+local gate until device and deployment credentials are available.
