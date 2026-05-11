@@ -29,6 +29,7 @@ run_godot_smoke() {
 }
 
 run_step "UI v2 runtime asset contract" python3 "$ROOT_DIR/tests/ui_v2_contract_smoke.py" "$ARTIFACT_DIR"
+run_step "Godot import cache warmup" "$GODOT_BIN" --headless --path "$ROOT_DIR" --import
 run_step "Godot UI frame contract smoke" run_godot_smoke "$ROOT_DIR/tests/ui_frame_contract_smoke.gd"
 run_step "Godot world utility panel UI smoke" run_godot_smoke "$ROOT_DIR/tests/world_utility_panel_ui_smoke.gd"
 run_step "Godot housing responsive layout smoke" run_godot_smoke "$ROOT_DIR/tests/housing_responsive_layout_smoke.gd"

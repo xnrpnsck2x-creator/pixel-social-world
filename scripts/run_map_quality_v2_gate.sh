@@ -52,6 +52,7 @@ run_godot_smoke() {
 }
 
 run_step "content contract validation" python3 "$ROOT_DIR/tests/validate_content.py"
+run_step "Godot import cache warmup" "$GODOT_BIN" --headless --path "$ROOT_DIR" --import
 for script in "${GODOT_MAP_TESTS[@]}"; do
 	run_step "Godot ${script#tests/}" run_godot_smoke "$script"
 done

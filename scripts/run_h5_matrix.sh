@@ -15,6 +15,8 @@ MATRIX_LOG="$ARTIFACT_DIR/h5-matrix.json"
 RUNTIME_GATE_LOG="$ARTIFACT_DIR/h5-runtime-gate.json"
 WEB_EXPORT_DIR="$ROOT_DIR/builds/web"
 WEB_SERVE_DIR="$ARTIFACT_DIR/web"
+PLAYWRIGHT_DIR="$ROOT_DIR/.tools/browser-smoke"
+PLAYWRIGHT_VERSION="${PSW_PLAYWRIGHT_VERSION:-1.59.1}"
 BACKEND_CORS_ALLOWED_ORIGINS="${PSW_CORS_ALLOWED_ORIGINS:-http://127.0.0.1:$WEB_PORT,http://localhost:$WEB_PORT,http://127.0.0.1:$API_PORT,http://localhost:$API_PORT}"
 required_web_files=(index.html index.js index.wasm index.pck)
 
@@ -25,8 +27,19 @@ if [[ ! -x "$GO_BIN" ]]; then
 fi
 
 ensure_playwright() {
-	if [[ ! -f "$ROOT_DIR/.tools/browser-smoke/node_modules/playwright/index.mjs" ]]; then
-		npm ci --prefix "$ROOT_DIR/.tools/browser-smoke"
+	if [[ -f "$PLAYWRIGHT_DIR/node_modules/playwright/index.mjs" ]]; then
+		return
+	fi
+	mkdir -p "$PLAYWRIGHT_DIR"
+	if [[ ! -f "$PLAYWRIGHT_DIR/package.json" ]]; then
+		cat >"$PLAYWRIGHT_DIR/package.json" <<JSON
+{"private":true,"devDependencies":{"playwright":"$PLAYWRIGHT_VERSION"}}
+JSON
+	fi
+	if [[ -f "$PLAYWRIGHT_DIR/package-lock.json" ]]; then
+		npm ci --prefix "$PLAYWRIGHT_DIR"
+	else
+		npm install --prefix "$PLAYWRIGHT_DIR" --no-audit --no-fund "playwright@$PLAYWRIGHT_VERSION"
 	fi
 }
 

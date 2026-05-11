@@ -7,6 +7,7 @@ GODOT_BIN="${PSW_GODOT_BIN:-$ROOT_DIR/.tools/godot-standard/Godot.app/Contents/M
 ARTIFACT_DIR="${PSW_MVP_GATE_ARTIFACT_DIR:-$ROOT_DIR/.tools/mvp-100-gate}"
 H5_ARTIFACT_DIR="$ARTIFACT_DIR/h5"
 PLAYWRIGHT_DIR="$ROOT_DIR/.tools/browser-smoke"
+PLAYWRIGHT_VERSION="${PSW_PLAYWRIGHT_VERSION:-1.59.1}"
 
 DEFAULT_H5_CASES="h5-desktop-world-base,h5-mobile-landscape-world-base,h5-mobile-landscape-name-reveal,h5-mobile-landscape-hotspot-feedback,h5-mobile-landscape-tap-move-feedback,h5-desktop-map-panel,h5-mobile-landscape-map-atlas-wilds-filter,h5-desktop-creator-panel,h5-mobile-landscape-creator-panel,h5-desktop-trade-facility-panel,h5-mobile-landscape-trade-price-keyboard-guard,h5-mobile-landscape-guild-facility-panel,h5-desktop-mail-panel,h5-desktop-messages-panel,h5-mobile-landscape-chat-keyboard-guard,h5-mobile-landscape-private-keyboard-guard,h5-mobile-landscape-inventory-panel,h5-mobile-landscape-inventory-activity-rewards,h5-desktop-profile-card,h5-mobile-landscape-profile-card,h5-desktop-housing-selected,h5-mobile-landscape-housing-selected,h5-desktop-minigame-host,h5-mobile-landscape-minigame-host,h5-liveops-375x240-ops-tab,h5-mobile-portrait-guard"
 H5_CASES="${PSW_MVP_GATE_H5_CASES:-$DEFAULT_H5_CASES}"
@@ -33,12 +34,29 @@ run_godot_smoke() {
 	"$GODOT_BIN" --headless --path "$ROOT_DIR" --script "$script"
 }
 
+ensure_playwright() {
+	if [[ -f "$PLAYWRIGHT_DIR/node_modules/playwright/index.mjs" ]]; then
+		return
+	fi
+	mkdir -p "$PLAYWRIGHT_DIR"
+	if [[ ! -f "$PLAYWRIGHT_DIR/package.json" ]]; then
+		cat >"$PLAYWRIGHT_DIR/package.json" <<JSON
+{"private":true,"devDependencies":{"playwright":"$PLAYWRIGHT_VERSION"}}
+JSON
+	fi
+	if [[ -f "$PLAYWRIGHT_DIR/package-lock.json" ]]; then
+		npm ci --prefix "$PLAYWRIGHT_DIR"
+	else
+		npm install --prefix "$PLAYWRIGHT_DIR" --no-audit --no-fund "playwright@$PLAYWRIGHT_VERSION"
+	fi
+}
+
 run_step "backend go test" bash -lc "cd '$ROOT_DIR/backend' && '$GO_BIN' test ./..."
 run_step "content contract validation" python3 "$ROOT_DIR/tests/validate_content.py"
+run_step "Godot import cache warmup" "$GODOT_BIN" --headless --path "$ROOT_DIR" --import
 run_step "UI v2 gate" bash -lc "PSW_UI_V2_SKIP_H5=1 PSW_UI_V2_ARTIFACT_DIR='$ARTIFACT_DIR/ui-v2' '$ROOT_DIR/scripts/run_ui_v2_gate.sh'"
 run_step "project category v2 gate" bash -lc "PSW_PROJECT_CATEGORY_V2_SKIP_H5=1 PSW_PROJECT_CATEGORY_V2_ARTIFACT_DIR='$ARTIFACT_DIR/project-category-v2' '$ROOT_DIR/scripts/run_project_category_v2_gate.sh'"
 run_step "localization JSON syntax" bash -lc "python3 -m json.tool '$ROOT_DIR/localization/en.json' >/dev/null && python3 -m json.tool '$ROOT_DIR/localization/ja.json' >/dev/null && python3 -m json.tool '$ROOT_DIR/localization/zh-Hans.json' >/dev/null"
-run_step "Godot import cache warmup" "$GODOT_BIN" --headless --path "$ROOT_DIR" --import
 
 run_step "Godot core smoke" run_godot_smoke "$ROOT_DIR/tests/godot_smoke.gd"
 run_step "Godot login character selection smoke" run_godot_smoke "$ROOT_DIR/tests/login_character_selection_smoke.gd"
@@ -78,9 +96,7 @@ run_step "map quality v2 gate" bash -lc "PSW_MAP_QUALITY_V2_SKIP_H5=1 PSW_MAP_QU
 
 run_step "backend Godot E2E suite" "$ROOT_DIR/scripts/run_backend_e2e.sh"
 
-if [[ ! -f "$PLAYWRIGHT_DIR/node_modules/playwright/index.mjs" ]]; then
-	run_step "browser smoke npm ci" npm ci --prefix "$PLAYWRIGHT_DIR"
-fi
+run_step "browser smoke dependency bootstrap" ensure_playwright
 
 run_step "H5 priority screenshot matrix" bash -lc "PSW_H5_EXPORT_WEB=1 PSW_H5_RUNTIME_GATE=1 PSW_H5_ARTIFACT_DIR='$H5_ARTIFACT_DIR' PSW_H5_CASE='$H5_CASES' '$ROOT_DIR/scripts/run_h5_matrix.sh'"
 run_step "H5 screenshot semantic smoke" bash -lc "PSW_H5_SEMANTIC_MATRIX='$H5_ARTIFACT_DIR/h5-matrix.json' PSW_H5_SEMANTIC_CASES='$H5_CASES' node '$ROOT_DIR/tests/h5_semantic_smoke.mjs'"
