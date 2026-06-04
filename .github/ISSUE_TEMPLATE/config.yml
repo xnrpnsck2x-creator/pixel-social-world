@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/xnrpnsck2x-creator/pixel-social-world/security/advisories/new
+    about: Report vulnerabilities privately. Do not post exploit details in public issues.
+  - name: Release readiness workflow
+    url: https://github.com/xnrpnsck2x-creator/pixel-social-world/actions/workflows/release-readiness.yml
+    about: Check the latest public CI and release-readiness status.
