@@ -1,0 +1,55 @@
+name: Feature request
+description: Suggest an improvement for the social world, creator platform, tooling, or release flow.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Main city / social world
+        - Creator minigame platform
+        - Housing
+        - Chat / social / guild
+        - Economy / inventory / trade
+        - LiveOps / moderation
+        - UI / localization
+        - Mobile / H5 / store release
+        - Backend / infrastructure
+        - Documentation / tooling
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What player, creator, or operator problem does this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: Describe the smallest useful version.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: textarea
+    id: validation
+    attributes:
+      label: Suggested validation
+      description: How could this be tested or measured?
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope checklist
+      options:
+        - label: This can be delivered as a small, independently testable change.
+          required: true
+        - label: This keeps production secrets and signing material out of the repository.
+          required: true

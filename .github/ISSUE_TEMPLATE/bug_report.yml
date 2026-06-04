@@ -1,0 +1,74 @@
+name: Bug report
+description: Report a reproducible issue in the client, backend, tooling, or docs.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Please do not include secrets, player private data, signing keys, or vulnerability exploit details here.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Godot client
+        - Backend
+        - Creator minigame platform
+        - UI / localization
+        - Economy / inventory / trade
+        - LiveOps / moderation
+        - Mobile export / store readiness
+        - Documentation / tooling
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What went wrong?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: List the smallest reliable steps to reproduce.
+      placeholder: |
+        1. Start from...
+        2. Click...
+        3. See...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: input
+    id: commit
+    attributes:
+      label: Commit or build
+      description: Paste the commit SHA, branch, or build artifact name if known.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or screenshots
+      description: Add safe logs or screenshots. Remove tokens, DSNs, emails, and private player data.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Safety checklist
+      options:
+        - label: I did not include secrets, credentials, or private player data.
+          required: true
+        - label: This is not a security vulnerability report with exploit details.
+          required: true
