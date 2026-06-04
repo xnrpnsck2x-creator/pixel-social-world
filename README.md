@@ -89,6 +89,8 @@ Run the local secret check before publishing changes:
 python3 scripts/check_secret_hygiene.py
 ```
 
+See `SECURITY.md` for vulnerability reporting and safe testing guidelines.
+
 ## Creator Minigame Contract
 
 Creator games must inherit the Godot `IMinigame` interface and provide localized metadata. Runtime-loaded games are isolated through the minigame sandbox flow, and creator submissions are reviewed before listing.
@@ -106,3 +108,5 @@ Apache License 2.0. See `LICENSE`.
 SPDX-License-Identifier: Apache-2.0
 
 Project copyright: Copyright 2026 xnrpnsck2x-creator. Third-party dependencies remain under their own licenses.
+
+See `CONTRIBUTING.md` for contribution workflow and PR expectations.
