@@ -10,6 +10,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+SELF_PATH = Path(__file__).resolve()
 SKIP_EXTENSIONS = {
     ".gif",
     ".gz",
@@ -96,6 +97,8 @@ def main() -> int:
     placeholder_hits = 0
 
     for path in files:
+        if path.resolve() == SELF_PATH:
+            continue
         for line_number, line in iter_text_lines(path) or ():
             for label, pattern in STRONG_PATTERNS:
                 if not pattern.search(line):
