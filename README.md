@@ -9,10 +9,21 @@ Current status: public alpha preparation. The repository is being opened for pro
 ## Stack
 
 - Client: Godot 4.x, GDScript only
-- Backend: Go, Gin, Gorilla WebSocket, GORM
-- Runtime data: PostgreSQL for durable storage, Redis for realtime/session TTLs
+- Backend: Go service authority with Gin REST APIs, Gorilla WebSocket realtime sync, GORM persistence, and modular domain packages
+- Runtime data: PostgreSQL for durable storage and audits, Redis for presence, room fanout, auth/session TTLs, and minigame session state
 - Target platforms: iOS, Android, H5/Web, later PC
 - Languages: English, Japanese, Simplified Chinese
+
+## Why The Go Backend Matters
+
+The Go backend is the backbone of the online world, not a thin companion API. It is designed as the server-authoritative layer that keeps social play, economy, creator content, and LiveOps safe enough to run beyond a local prototype.
+
+- Realtime at the center: WebSocket room joins, movement sync, chat broadcast, house visits, minigame sessions, Redis-backed presence, and Redis fanout are built for many concurrent players without pushing concurrency complexity into the Godot client.
+- Economy-safe by design: wallets, reward grants, spending, creator-share payouts, trade listings, trade settlement, escrow inventory, daily reward caps, and append-only ledger history are handled server-side so the client cannot become the source of truth for coins or items.
+- Creator-platform ready: minigame package intake, scan snapshots, AI/local-policy review, reviewer dashboards, publish/rollback state, and runtime-safe catalog output make player-created content reviewable before it reaches the live catalog.
+- LiveOps and moderation aware: chat reports, profile reports, mute/ban/restore actions, admin roles, action audit streams, CSV exports, request IDs, structured access logs, and `/debug/ops` counters give operators enough visibility to handle public-alpha incidents.
+- Production-shaped from day one: the backend builds into a Go binary for Linux amd64, runs under systemd, supports `/healthz` and `/readyz`, keeps secrets in environment files, and has release gates for monitoring, backup, auth providers, iOS, and Android handoff.
+- Single-host efficient, horizontally aware: the MVP starts cleanly on one Ubuntu host with PostgreSQL and Redis, while the room and realtime contracts leave room for multi-process fanout as traffic grows.
 
 ## What Is In The MVP
 
