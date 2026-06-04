@@ -1,0 +1,176 @@
+name: Release Readiness
+
+on:
+  push:
+    branches:
+      - main
+      - "codex/**"
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-readiness-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: backend/go.mod
+          cache-dependency-path: backend/go.sum
+
+      - name: Go format check
+        run: |
+          files="$(gofmt -l $(find . -name '*.go' -not -path './vendor/*'))"
+          if [ -n "$files" ]; then
+            echo "$files"
+            exit 1
+          fi
+
+      - name: Go test
+        run: go test ./...
+
+  content-contracts:
+    name: Content, localization, and repo hygiene
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Secret hygiene
+        run: python3 scripts/check_secret_hygiene.py
+
+      - name: Content contract validation
+        run: python3 tests/validate_content.py
+
+      - name: Localization JSON syntax
+        run: |
+          python3 -m json.tool localization/en.json >/dev/null
+          python3 -m json.tool localization/ja.json >/dev/null
+          python3 -m json.tool localization/zh-Hans.json >/dev/null
+
+      - name: GDScript line budget
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          failures = []
+          for path in Path(".").rglob("*.gd"):
+              if ".godot" in path.parts:
+                  continue
+              line_count = sum(1 for _ in path.open("r", encoding="utf-8"))
+              if line_count > 300:
+                  failures.append(f"{path}: {line_count} lines")
+          if failures:
+              print("\n".join(failures))
+              raise SystemExit(1)
+          print("GDScript line budget passed")
+          PY
+
+      - name: Tracked file size guard
+        run: |
+          python3 - <<'PY'
+          import os
+          import subprocess
+
+          files = subprocess.check_output(["git", "ls-files", "-z"]).split(b"\0")
+          failures = []
+          for raw in files:
+              if not raw:
+                  continue
+              path = raw.decode("utf-8", "surrogateescape")
+              size = os.path.getsize(path)
+              if size >= 50 * 1024 * 1024:
+                  failures.append(f"{size / 1024 / 1024:.2f} MiB {path}")
+          if failures:
+              print("\n".join(failures))
+              raise SystemExit(1)
+          print("No tracked files over 50 MiB")
+          PY
+          git rev-list --objects --all |
+            git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' \
+            > /tmp/pixel-social-world-git-blobs.txt
+          python3 - <<'PY'
+          from pathlib import Path
+
+          failures = []
+          for line in Path("/tmp/pixel-social-world-git-blobs.txt").read_text().splitlines():
+              parts = line.rstrip("\n").split(" ", 3)
+              if len(parts) < 3 or parts[0] != "blob":
+                  continue
+              size = int(parts[2])
+              path = parts[3] if len(parts) == 4 else parts[1]
+              if size >= 95 * 1024 * 1024:
+                  failures.append(f"{size / 1024 / 1024:.2f} MiB {path}")
+          if failures:
+              print("\n".join(failures))
+              raise SystemExit(1)
+          print("No history blobs over 95 MiB")
+          PY
+
+      - name: Git whitespace check
+        run: git diff --check
+
+  release-contracts:
+    name: Release handoff contracts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Store auth provider handoff
+        run: scripts/check_store_auth_provider_handoff.sh
+
+      - name: Production monitoring handoff
+        run: scripts/check_production_monitoring_handoff.sh
+
+      - name: Production data backup handoff
+        run: scripts/check_production_data_backup_handoff.sh
+
+  mobile-store-handoff:
+    name: iOS and Android store handoff
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android release tools
+        run: |
+          sdkmanager "platforms;android-35" "build-tools;35.0.1"
+
+      - name: Native release handoff
+        run: scripts/check_native_release_handoff.sh
+
+      - name: Store publish handoff
+        run: scripts/check_store_publish_handoff.sh

@@ -73,7 +73,7 @@ check_ios_toolchain() {
 	local developer_dir
 	developer_dir="$(resolve_xcode_developer_dir)"
 
-	if [[ -n "$developer_dir" && "$developer_dir" == *"/Xcode.app/"* && -d "$developer_dir" ]]; then
+	if [[ -n "$developer_dir" && "$developer_dir" == *"/Xcode"*.app/Contents/Developer && -d "$developer_dir" ]]; then
 		pass "Xcode developer directory is full Xcode"
 	else
 		fail "Xcode developer directory is not full Xcode: ${developer_dir:-unset}"
