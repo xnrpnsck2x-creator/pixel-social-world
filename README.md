@@ -101,4 +101,8 @@ See:
 
 ## License
 
-No open-source license has been published yet. Source and assets are visible for evaluation and collaboration review only; reuse, redistribution, or commercial use requires explicit permission.
+Apache License 2.0. See `LICENSE`.
+
+SPDX-License-Identifier: Apache-2.0
+
+Project copyright: Copyright 2026 xnrpnsck2x-creator. Third-party dependencies remain under their own licenses.
