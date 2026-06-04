@@ -25,6 +25,48 @@ The Go backend is the backbone of the online world, not a thin companion API. It
 - Production-shaped from day one: the backend builds into a Go binary for Linux amd64, runs under systemd, supports `/healthz` and `/readyz`, keeps secrets in environment files, and has release gates for monitoring, backup, auth providers, iOS, and Android handoff.
 - Single-host efficient, horizontally aware: the MVP starts cleanly on one Ubuntu host with PostgreSQL and Redis, while the room and realtime contracts leave room for multi-process fanout as traffic grows.
 
+## System Architecture
+
+```mermaid
+flowchart LR
+    subgraph Clients["Players and operators"]
+        Godot["Godot 4 client\nGDScript, iOS, Android, H5"]
+        Creator["Creator tools\nIMinigame packages"]
+        LiveOps["LiveOps console\nmoderation, review, audits"]
+    end
+
+    subgraph Backend["Go backend authority"]
+        Gateway["Gin REST gateway\nrequest IDs, auth, admin roles"]
+        Realtime["Gorilla WebSocket hub\nrooms, movement, chat, presence"]
+        Domains["Domain services\nwallets, trade, housing, inventory, creator review"]
+        Reviewer["AI/local policy reviewer\npackage scan and safety notes"]
+        Ops["Ops and release gates\nhealth, readiness, alerts, retention"]
+    end
+
+    subgraph Data["Runtime data"]
+        Postgres["PostgreSQL\ndurable profiles, ledgers, housing, trades, audits"]
+        Redis["Redis\npresence, sessions, room fanout, minigame TTLs"]
+        Packages["Package storage\ncreator artifacts and approved runtime installs"]
+    end
+
+    Godot -->|REST| Gateway
+    Godot <-->|WebSocket| Realtime
+    Creator -->|submit package| Gateway
+    LiveOps -->|admin APIs| Gateway
+
+    Gateway --> Domains
+    Realtime --> Domains
+    Domains --> Reviewer
+    Domains --> Postgres
+    Domains --> Redis
+    Domains --> Packages
+    Realtime --> Redis
+    Ops --> Postgres
+    Ops --> Redis
+```
+
+The client stays lightweight and expressive, while the Go backend owns trust, concurrency, review, persistence, and public-alpha operations.
+
 ## What Is In The MVP
 
 - Main city scene with movement, NPCs, map points, chat, inventory, mail, trade, guild, creator, and LiveOps panels
