@@ -6,6 +6,16 @@ Pixel Social World is a 2D pixel online social world built around a warm forest 
 
 Current status: public alpha preparation. The repository is being opened for project visibility and release readiness review; production credentials, signing keys, and deployment secrets are intentionally not committed.
 
+## Project Preview
+
+| Main city | Character selection |
+| --- | --- |
+| ![Forest Dawn Town gameplay preview](docs/previews/main-city.png) | ![Character class selection preview](docs/previews/character-selection.png) |
+
+| Creator Lab | LiveOps console |
+| --- | --- |
+| ![Creator Lab minigame submission preview](docs/previews/creator-lab.png) | ![LiveOps moderation and audit console preview](docs/previews/liveops-console.png) |
+
 ## Stack
 
 - Client: Godot 4.x, GDScript only
