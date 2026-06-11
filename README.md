@@ -39,6 +39,18 @@ The Go backend is the backbone of the online world, not a thin companion API. It
 - Single-host efficient, horizontally aware: the MVP starts cleanly on one Ubuntu host with PostgreSQL and Redis, while the room and realtime contracts leave room for multi-process fanout as traffic grows.
 - Testable as the product core: CI runs Go format checks and the full backend unit suite, while local E2E scripts exercise guest auth, realtime rooms, messaging, creator review, trade escrow, and online gameplay flows against a real Go server.
 
+## Go Backend Capability Matrix
+
+| Product area | Go-owned capability | Main packages and surfaces |
+| --- | --- | --- |
+| Auth and accounts | Guest login, refresh tokens, Apple/Google upgrade contracts, Redis-backed sessions, strict OIDC verifier path | `internal/auth`, `internal/gateway`, `/auth/*`, `/me` |
+| Realtime world | WebSocket room hub, server-authoritative movement, chat broadcast, room capacity policy, Redis fanout and rate limits | `internal/room`, `internal/presence`, `/ws/city`, `/rooms/:room_id/members` |
+| Economy and trade | Wallets, reward grants, spending, creator-share payouts, escrow inventory, listings, purchase/cancel history, admin trade audit | `internal/economy`, `internal/inventory`, `internal/trade`, `/economy/*`, `/trade/*` |
+| Social and housing | House visits, layout mutation rules, social state, follow/block flows, mailbox, private messages, social facilities | `internal/house`, `internal/social`, `internal/messaging`, `internal/facility`, `/housing/*`, `/social/*`, `/mailbox/*` |
+| Creator platform | Package upload, zip intake, local/AI review, review history, catalog publication, runtime session TTLs, fishing reward reference flow | `internal/minigame`, `pkg/ai`, `/creator-submissions/*`, `/minigames/*`, `/minigame-sessions/*` |
+| LiveOps and safety | Admin roles, chat/player reports, moderation actions, reviewer dashboard, action audit, ops counters, alert forwarding | `internal/gateway`, `internal/chat`, `internal/ops`, `/admin/*`, `/debug/ops` |
+| Production handoff | Linux amd64 binary, systemd-ready config, Postgres migrations, Redis clients, preflight checks, retention cleanup, health/readiness probes | `cmd/server`, `cmd/preflight`, `cmd/retention-cleanup`, `pkg/db`, `pkg/redis`, `/healthz`, `/readyz` |
+
 ## System Architecture
 
 ```mermaid
