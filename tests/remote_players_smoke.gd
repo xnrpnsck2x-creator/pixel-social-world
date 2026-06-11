@@ -61,6 +61,29 @@ func _run() -> void:
 		if not ["female_magic_v0", "male_ranged_v0"].has(str(child.get("character_variant_id"))):
 			failures.append("Remote avatar did not apply its presence character variant.")
 
+	var map_remote_sync = instance.get("_remote_player_sync")
+	map_remote_sync.call("set_current_map_id", "city_forest_dawn_v1")
+	map_remote_sync.call("apply_move", {
+		"player_id": "remote-a",
+		"display_name": "Remote A",
+		"map_id": "city_port_market_v1",
+		"position": {"x": 32, "y": 12},
+		"facing": "down"
+	}, "local-test-player")
+	await process_frame
+	if remote_root.get_child_count() != 1:
+		failures.append("Remote avatar from another map should be removed from the current map.")
+	map_remote_sync.call("apply_move", {
+		"player_id": "remote-a",
+		"display_name": "Remote A",
+		"map_id": "city_forest_dawn_v1",
+		"position": {"x": 32, "y": 12},
+		"facing": "down"
+	}, "local-test-player")
+	await process_frame
+	if remote_root.get_child_count() != 2:
+		failures.append("Remote avatar from the current map should be visible again.")
+
 	instance.call("_on_presence_updated", [
 		{"player_id": "local-test-player", "display_name": "Local Test"},
 		{"player_id": "remote-a", "display_name": "Remote A", "character_variant_id": "female_magic_v0"}

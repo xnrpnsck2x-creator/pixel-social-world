@@ -9,6 +9,7 @@ const MessageTypesScript := preload("res://scripts/Network/Protocol/MessageTypes
 var client: Node
 var local_player: Node
 var room_id := "world_town_square"
+var map_id := "city_forest_dawn_v1"
 
 func bind_client(new_client: Node) -> void:
 	client = new_client
@@ -16,6 +17,11 @@ func bind_client(new_client: Node) -> void:
 func bind_local_player(new_local_player: Node, new_room_id: String = "world_town_square") -> void:
 	local_player = new_local_player
 	room_id = new_room_id
+
+func set_current_map_id(new_map_id: String) -> void:
+	var normalized := new_map_id.strip_edges()
+	if not normalized.is_empty():
+		map_id = normalized
 
 func request_snapshot() -> Dictionary:
 	if client == null:
@@ -32,6 +38,7 @@ func build_player_move_payload() -> Dictionary:
 	var payload := {
 		"player_id": _save_system().call("get_player_id"),
 		"room_id": room_id,
+		"map_id": map_id,
 		"position": state.get("position", {"x": 0, "y": 0}),
 		"velocity": state.get("velocity", {"x": 0, "y": 0}),
 		"facing": str(state.get("facing", "down")),

@@ -85,6 +85,36 @@ func TestHubBroadcastsPlayerMoveOnlyInsideRoom(t *testing.T) {
 	assertNoType(t, roomB, "emote.event", 80*time.Millisecond)
 }
 
+func TestHubPreservesMainCityMapMoveContext(t *testing.T) {
+	hub := NewHub()
+	defer hub.Close()
+	client := &clientState{roomID: defaultRoomID, playerID: "player_map"}
+
+	payload := hub.sanitizeMovePayload(client, map[string]interface{}{
+		"map_id":   "city_forest_dawn_v1",
+		"position": map[string]interface{}{"x": 836, "y": -626},
+	})
+	position := payload["position"].(map[string]interface{})
+	if position["x"] != float64(836) || position["y"] != float64(-626) {
+		t.Fatalf("main city map position was clamped inside valid map bounds: %#v", position)
+	}
+	if payload["map_id"] != "city_forest_dawn_v1" {
+		t.Fatalf("main city move did not preserve map_id: %#v", payload)
+	}
+
+	clamped := hub.sanitizeMovePayload(client, map[string]interface{}{
+		"map_id":   "../../bad",
+		"position": map[string]interface{}{"x": 9000, "y": -9000},
+	})
+	clampedPosition := clamped["position"].(map[string]interface{})
+	if clampedPosition["x"] != mainCityMapHalfWidth || clampedPosition["y"] != -mainCityMapHalfHeight {
+		t.Fatalf("main city map position was not clamped to formal map bounds: %#v", clampedPosition)
+	}
+	if _, ok := clamped["map_id"]; ok {
+		t.Fatalf("invalid map_id should be removed from player.move: %#v", clamped)
+	}
+}
+
 func TestHubRejectsInvalidJoinToken(t *testing.T) {
 	hub := NewHub(WithSessionValidator(testValidator{"player_a": "token_a"}))
 	server := newHubTestServer(t, hub)

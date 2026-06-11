@@ -13,10 +13,17 @@ const BOTTOM_UI_SAFE_PIXELS := 150.0
 var _remote_root: Node2D
 var _local_player: CharacterBody2D
 var _remote_avatars: Dictionary = {}
+var _current_map_id := ""
 
 func bind(remote_root: Node2D, local_player: CharacterBody2D) -> void:
 	_remote_root = remote_root
 	_local_player = local_player
+
+func set_current_map_id(map_id: String) -> void:
+	if map_id == _current_map_id:
+		return
+	_current_map_id = map_id
+	_remove_out_of_map_avatars()
 
 func show_emote(player_id: String, emote_id: String) -> void:
 	if _remote_avatars.has(player_id):
@@ -26,7 +33,13 @@ func apply_move(payload: Dictionary, local_id: String) -> void:
 	var player_id := str(payload.get("player_id", ""))
 	if player_id.is_empty() or player_id == local_id:
 		return
+	var remote_map_id := str(payload.get("map_id", ""))
+	if _is_different_map(remote_map_id):
+		remove(player_id)
+		return
 	var avatar := _get_or_create_remote_avatar(player_id)
+	if not remote_map_id.is_empty():
+		avatar.set_meta("map_id", remote_map_id)
 	avatar.apply_remote_state(payload)
 
 func apply_snapshot(payload: Dictionary, local_id: String) -> void:
@@ -44,9 +57,12 @@ func sync_members(members: Array, local_id: String) -> void:
 			continue
 		active_ids[player_id] = true
 		var avatar: Node = _get_or_create_remote_avatar(player_id)
+		if not _current_map_id.is_empty():
+			avatar.set_meta("map_id", _current_map_id)
 		avatar.apply_remote_state({
 			"display_name": display_name_for(member as Dictionary, player_id),
 			"character_variant_id": str((member as Dictionary).get("character_variant_id", "")),
+			"map_id": _current_map_id,
 			"position": _spawn_position_for(player_id),
 			"facing": _facing_for(player_id),
 			"is_sitting": false
@@ -109,6 +125,21 @@ func _get_or_create_remote_avatar(player_id: String) -> CharacterBody2D:
 	_remote_root.add_child(avatar)
 	_remote_avatars[player_id] = avatar
 	return avatar
+
+func _is_different_map(remote_map_id: String) -> bool:
+	return not _current_map_id.is_empty() and not remote_map_id.is_empty() and remote_map_id != _current_map_id
+
+func _remove_out_of_map_avatars() -> void:
+	if _current_map_id.is_empty():
+		return
+	var stale_ids: Array[String] = []
+	for player_id in _remote_avatars.keys():
+		var avatar: Node = _remote_avatars[player_id]
+		var avatar_map_id := str(avatar.get_meta("map_id", ""))
+		if not avatar_map_id.is_empty() and avatar_map_id != _current_map_id:
+			stale_ids.append(str(player_id))
+	for player_id in stale_ids:
+		remove(player_id)
 
 func _spawn_position_for(player_id: String) -> Vector2:
 	var hash_value: int = abs(player_id.hash())

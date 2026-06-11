@@ -77,8 +77,10 @@ func set_activity_state(state: String, seconds: int = 0) -> void:
 func _input_event(_viewport: Viewport, event: InputEvent, _shape_idx: int) -> void:
 	if event is InputEventMouseButton and (event as InputEventMouseButton).pressed:
 		activate("mouse")
+		_viewport.set_input_as_handled()
 	elif event is InputEventScreenTouch and (event as InputEventScreenTouch).pressed:
 		activate("touch")
+		_viewport.set_input_as_handled()
 
 func _process(_delta: float) -> void:
 	if always_show_prompt and prompt_label != null and prompt_label.visible:

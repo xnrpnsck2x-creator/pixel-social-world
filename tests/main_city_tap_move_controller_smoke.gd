@@ -102,12 +102,23 @@ func _run() -> void:
 	hotspot.set_meta("mobile_touch_rect", Rect2(Vector2(300, -30), Vector2(70, 60)))
 	controller.call("_unhandled_input", touch)
 	controller.call("_process", 0.016)
+	if activations != ["games"]:
+		failures.append("Tap move controller activated a broad mobile touch rect on walkable ground.")
+	if hotspot.feedback_count != 1:
+		failures.append("Tap move controller showed feedback for a walkable mobile touch rect tap.")
+	if not Input.is_action_pressed("ui_right"):
+		failures.append("Tap move controller did not keep walkable mobile touch rect taps as movement.")
+	controller.call("_clear_target")
+
+	player.walkable = false
+	controller.call("_unhandled_input", touch)
+	controller.call("_process", 0.016)
 	if activations != ["games", "games"]:
-		failures.append("Tap move controller ignored a configured mobile hotspot touch rect.")
+		failures.append("Tap move controller ignored a configured mobile hotspot touch rect when the destination was blocked.")
 	if hotspot.feedback_count != 2:
-		failures.append("Tap move controller did not show feedback for a configured mobile hotspot touch rect.")
+		failures.append("Tap move controller did not show feedback for a blocked mobile hotspot touch rect.")
 	if Input.is_action_pressed("ui_right"):
-		failures.append("Tap move controller moved after a configured mobile hotspot touch rect hit.")
+		failures.append("Tap move controller moved after a blocked mobile hotspot touch rect hit.")
 	var mouse := InputEventMouseButton.new()
 	mouse.pressed = true
 	mouse.button_index = MOUSE_BUTTON_LEFT

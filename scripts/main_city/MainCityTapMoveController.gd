@@ -124,9 +124,12 @@ func _activate_hotspot_at(screen_position: Vector2, world_position: Vector2) -> 
 func _hotspot_touch_score(hotspot: Area2D, screen_position: Vector2, world_position: Vector2) -> float:
 	var screen_center := get_viewport().get_canvas_transform() * hotspot.global_position
 	var screen_distance := screen_center.distance_to(screen_position)
-	if _point_in_hotspot_bounds(hotspot, world_position):
+	if _point_in_hotspot_collision_bounds(hotspot, world_position, 0.0):
 		return screen_distance
-	if not _can_walk_to(world_position) and screen_distance <= HOTSPOT_SCREEN_RADIUS:
+	var can_walk := _can_walk_to(world_position)
+	if not can_walk and _point_in_hotspot_expanded_bounds(hotspot, world_position):
+		return screen_distance + HOTSPOT_SCREEN_RADIUS
+	if not can_walk and screen_distance <= HOTSPOT_SCREEN_RADIUS:
 		return screen_distance + HOTSPOT_SCREEN_RADIUS
 	return INF
 
@@ -135,13 +138,16 @@ func _can_walk_to(world_position: Vector2) -> bool:
 		return bool(player.call("can_enter_world_position", world_position))
 	return true
 
-func _point_in_hotspot_bounds(hotspot: Area2D, world_position: Vector2) -> bool:
+func _point_in_hotspot_expanded_bounds(hotspot: Area2D, world_position: Vector2) -> bool:
 	if hotspot.has_meta("mobile_touch_rect"):
 		var touch_rect: Variant = hotspot.get_meta("mobile_touch_rect")
 		if typeof(touch_rect) == TYPE_RECT2:
 			var mobile_rect: Rect2 = touch_rect
 			if mobile_rect.has_point(world_position):
 				return true
+	return _point_in_hotspot_collision_bounds(hotspot, world_position, HOTSPOT_TOUCH_PADDING)
+
+func _point_in_hotspot_collision_bounds(hotspot: Area2D, world_position: Vector2, padding: float) -> bool:
 	var local_point := hotspot.to_local(world_position)
 	for child in hotspot.get_children():
 		var rect := Rect2()
@@ -154,7 +160,7 @@ func _point_in_hotspot_bounds(hotspot: Area2D, world_position: Vector2) -> bool:
 			rect = _polygon_bounds(polygon.polygon, polygon.position)
 		else:
 			continue
-		if rect.grow(HOTSPOT_TOUCH_PADDING).has_point(local_point):
+		if rect.grow(padding).has_point(local_point):
 			return true
 	return false
 

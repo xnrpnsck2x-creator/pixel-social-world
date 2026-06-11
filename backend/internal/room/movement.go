@@ -9,6 +9,8 @@ import (
 const denseRoomMoveThreshold = 50
 const denseRoomMoveInterval = 120 * time.Millisecond
 const denseRoomInterestRadius = 360.0
+const mainCityMapHalfWidth = 900.0
+const mainCityMapHalfHeight = 680.0
 
 type roomBounds struct {
 	minX float64
@@ -20,6 +22,11 @@ type roomBounds struct {
 func (h *Hub) sanitizeMovePayload(client *clientState, payload map[string]interface{}) map[string]interface{} {
 	payload["room_id"] = client.roomID
 	payload["player_id"] = client.playerID
+	if mapID := sanitizeMoveMapID(stringValue(payload, "map_id", "")); mapID != "" {
+		payload["map_id"] = mapID
+	} else {
+		delete(payload, "map_id")
+	}
 	position := payloadMap(payload["position"])
 	bounds := boundsForRoom(client.roomID)
 	payload["position"] = map[string]interface{}{
@@ -103,7 +110,32 @@ func boundsForRoom(roomID string) roomBounds {
 	if strings.HasPrefix(roomID, "minigame:") {
 		return roomBounds{minX: -512, maxX: 512, minY: -320, maxY: 320}
 	}
+	if roomID == defaultRoomID {
+		return roomBounds{
+			minX: -mainCityMapHalfWidth,
+			maxX: mainCityMapHalfWidth,
+			minY: -mainCityMapHalfHeight,
+			maxY: mainCityMapHalfHeight,
+		}
+	}
 	return roomBounds{minX: -480, maxX: 480, minY: -300, maxY: 300}
+}
+
+func sanitizeMoveMapID(mapID string) string {
+	mapID = strings.TrimSpace(mapID)
+	if len(mapID) > 80 {
+		return ""
+	}
+	for _, char := range mapID {
+		if char == '_' || char == '-' {
+			continue
+		}
+		if char >= 'a' && char <= 'z' || char >= '0' && char <= '9' {
+			continue
+		}
+		return ""
+	}
+	return mapID
 }
 
 func floatValue(payload map[string]interface{}, key string, fallback float64) float64 {

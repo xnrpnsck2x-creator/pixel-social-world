@@ -95,6 +95,7 @@ func _setup_realtime(display_name: String) -> void:
 	_world_sync = WorldStateSyncScript.new()
 	_world_sync.bind_local_player(player, ROOM_ID)
 	add_child(_world_sync)
+	_sync_realtime_map_context()
 	if has_node("/root/RealtimeClient"):
 		_realtime_client = get_node("/root/RealtimeClient")
 		if not _realtime_client.message_received.is_connected(_on_realtime_message):
@@ -178,8 +179,17 @@ func _setup_depth_sorter() -> void:
 	_depth_sorter.call("bind", player, npc_root, remote_players)
 func _sync_map_activity_context() -> void:
 	if _map_activity_service != null:
-			_map_activity_service.set_context(_map_runtime.current_map_id, _map_metadata)
-			_map_runtime.refresh_activity_hotspots(_map_activity_service)
+		_map_activity_service.set_context(_map_runtime.current_map_id, _map_metadata)
+		_map_runtime.refresh_activity_hotspots(_map_activity_service)
+
+func _sync_realtime_map_context() -> void:
+	if _map_runtime == null:
+		return
+	var current_map_id := str(_map_runtime.get("current_map_id"))
+	if _world_sync != null and _world_sync.has_method("set_current_map_id"):
+		_world_sync.call("set_current_map_id", current_map_id)
+	if _remote_player_sync != null and _remote_player_sync.has_method("set_current_map_id"):
+		_remote_player_sync.call("set_current_map_id", current_map_id)
 func _setup_tap_move() -> void:
 	_tap_move_controller = MainCityTapMoveControllerScript.new()
 	add_child(_tap_move_controller)
@@ -245,6 +255,7 @@ func _on_map_travel_requested(map_id: String) -> void:
 	if next_metadata != null:
 		_map_metadata = next_metadata
 		_sync_map_activity_context()
+		_sync_realtime_map_context()
 		_push_current_map_discovery(false)
 func _switch_world_map(map_id: String, message_key: String, spawn_id := "default") -> void:
 	var first_unlock := not bool(_map_runtime.discovery.is_discovered(map_id))
@@ -252,6 +263,7 @@ func _switch_world_map(map_id: String, message_key: String, spawn_id := "default
 	if next_metadata != null:
 		_map_metadata = next_metadata
 		_sync_map_activity_context()
+		_sync_realtime_map_context()
 		_push_current_map_discovery(first_unlock)
 func _on_home_invite_requested() -> void:
 	var owner_id := SaveSystem.get_player_id()
