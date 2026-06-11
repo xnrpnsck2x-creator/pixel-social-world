@@ -49,14 +49,7 @@ func _ready() -> void:
 	presence_service.initialize(display_name)
 	minigame_session_service.initialize(minigame_registry)
 	social_facility_service.initialize()
-	hud.bind_services(
-		chat_service,
-		housing_service,
-		minigame_registry,
-		presence_service,
-		minigame_session_service,
-		social_facility_service
-	)
+	hud.bind_services(chat_service, housing_service, minigame_registry, presence_service, minigame_session_service, social_facility_service)
 	hud.set_player_name(display_name)
 	hud.emote_requested.connect(_on_emote_requested)
 	hud.home_invite_requested.connect(_on_home_invite_requested)
@@ -81,9 +74,8 @@ func _ready() -> void:
 	call_deferred("_sync_map_discovery")
 	call_deferred("_apply_local_web_debug_panel")
 func _exit_tree() -> void:
-	if _realtime_client != null:
-		if _realtime_client.message_received.is_connected(_on_realtime_message):
-			_realtime_client.message_received.disconnect(_on_realtime_message)
+	if _realtime_client != null and _realtime_client.message_received.is_connected(_on_realtime_message):
+		_realtime_client.message_received.disconnect(_on_realtime_message)
 func _on_emote_requested(emote_id: String) -> void:
 	emote_sync.send_emote(SaveSystem.get_player_id(), emote_id)
 func _on_emote_received(player_id: String, emote_id: String) -> void:
@@ -181,15 +173,12 @@ func _sync_map_activity_context() -> void:
 	if _map_activity_service != null:
 		_map_activity_service.set_context(_map_runtime.current_map_id, _map_metadata)
 		_map_runtime.refresh_activity_hotspots(_map_activity_service)
-
 func _sync_realtime_map_context() -> void:
 	if _map_runtime == null:
 		return
 	var current_map_id := str(_map_runtime.get("current_map_id"))
-	if _world_sync != null and _world_sync.has_method("set_current_map_id"):
-		_world_sync.call("set_current_map_id", current_map_id)
-	if _remote_player_sync != null and _remote_player_sync.has_method("set_current_map_id"):
-		_remote_player_sync.call("set_current_map_id", current_map_id)
+	if _world_sync != null and _world_sync.has_method("set_current_map_id"): _world_sync.call("set_current_map_id", current_map_id)
+	if _remote_player_sync != null and _remote_player_sync.has_method("set_current_map_id"): _remote_player_sync.call("set_current_map_id", current_map_id)
 func _setup_tap_move() -> void:
 	_tap_move_controller = MainCityTapMoveControllerScript.new()
 	add_child(_tap_move_controller)
@@ -272,10 +261,7 @@ func _on_home_invite_requested() -> void:
 		if not bool(response.get("ok", false)):
 			chat_service.add_system_message(App.t_key("chat.system.name"), App.t_key("error.network"))
 			return
-	chat_service.send_local_message("house", player.display_name, App.format_key("housing.invite_chat_format", {
-		"name": player.display_name,
-		"owner": owner_id
-	}))
+	chat_service.send_local_message("house", player.display_name, App.format_key("housing.invite_chat_format", {"name": player.display_name, "owner": owner_id}))
 	chat_service.add_system_message(App.t_key("chat.system.name"), App.t_key("housing.invite_sent"))
 func _on_home_visit_requested(owner_id: String) -> void:
 	var target_owner := owner_id if not owner_id.is_empty() else SaveSystem.get_player_id()
