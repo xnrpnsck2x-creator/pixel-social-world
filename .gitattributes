@@ -1,0 +1,3 @@
+# Keep GitHub language stats focused on production source.
+# Godot smoke tests are validation code, not the main implementation surface.
+tests/**/*.gd linguist-generated=true

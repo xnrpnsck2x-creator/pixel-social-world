@@ -2,7 +2,9 @@
 
 [![Release Readiness](https://github.com/xnrpnsck2x-creator/pixel-social-world/actions/workflows/release-readiness.yml/badge.svg)](https://github.com/xnrpnsck2x-creator/pixel-social-world/actions/workflows/release-readiness.yml)
 
-Pixel Social World is a 2D pixel online social world built around a warm forest main city, housing, chat, live operations, economy systems, and a creator minigame platform. The long-term goal is a social MMO-like space where players can publish AI-assisted minigames through a stable `IMinigame` contract.
+Pixel Social World is a Go backend-authoritative online social world with a Godot pixel client. The main production code path is the Go service layer: realtime rooms, economy, inventory, trade, housing, creator review, moderation, LiveOps, release handoff, and deployment readiness all run through backend-owned contracts instead of trusting the client.
+
+The player experience is a warm 2D pixel social MMO-like space with a forest main city, housing, chat, map travel, and a creator minigame platform. The long-term goal is a world where players can publish AI-assisted minigames through a stable `IMinigame` contract while the Go backend protects trust, concurrency, persistence, and operations.
 
 Current status: public alpha preparation. The repository is being opened for project visibility and release readiness review; production credentials, signing keys, and deployment secrets are intentionally not committed.
 
@@ -18,13 +20,14 @@ Current status: public alpha preparation. The repository is being opened for pro
 
 ## Stack
 
-- Client: Godot 4.x, GDScript only
-- Backend: Go service authority with Gin REST APIs, Gorilla WebSocket realtime sync, GORM persistence, and modular domain packages
+- Primary codebase: Go backend authority for the online platform and release path
+- Backend runtime: Gin REST APIs, Gorilla WebSocket realtime sync, GORM domain persistence, modular packages, and Linux amd64 single-binary deployment
+- Client: Godot 4.x, GDScript only, focused on presentation, input, scenes, and sandboxed minigame runtime
 - Runtime data: PostgreSQL for durable storage and audits, Redis for presence, room fanout, auth/session TTLs, and minigame session state
 - Target platforms: iOS, Android, H5/Web, later PC
 - Languages: English, Japanese, Simplified Chinese
 
-## Why The Go Backend Matters
+## Go Backend Authority
 
 The Go backend is the backbone of the online world, not a thin companion API. It is designed as the server-authoritative layer that keeps social play, economy, creator content, and LiveOps safe enough to run beyond a local prototype.
 
@@ -34,6 +37,7 @@ The Go backend is the backbone of the online world, not a thin companion API. It
 - LiveOps and moderation aware: chat reports, profile reports, mute/ban/restore actions, admin roles, action audit streams, CSV exports, request IDs, structured access logs, and `/debug/ops` counters give operators enough visibility to handle public-alpha incidents.
 - Production-shaped from day one: the backend builds into a Go binary for Linux amd64, runs under systemd, supports `/healthz` and `/readyz`, keeps secrets in environment files, and has release gates for monitoring, backup, auth providers, iOS, and Android handoff.
 - Single-host efficient, horizontally aware: the MVP starts cleanly on one Ubuntu host with PostgreSQL and Redis, while the room and realtime contracts leave room for multi-process fanout as traffic grows.
+- Testable as the product core: CI runs Go format checks and the full backend unit suite, while local E2E scripts exercise guest auth, realtime rooms, messaging, creator review, trade escrow, and online gameplay flows against a real Go server.
 
 ## System Architecture
 
