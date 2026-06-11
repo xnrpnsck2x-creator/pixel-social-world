@@ -8,6 +8,11 @@ This project is a 2D pixel online social world with three Day 1 pillars:
 - Housing: instanced homes with placeable items driven by JSON content.
 - Minigames: lightweight sessions launched from the lobby or interactive housing items.
 
+The Go backend owns the online authority layer for auth, realtime rooms,
+economy, trade, housing, creator review, LiveOps, and production operations.
+See `docs/BackendArchitecture.md` for the backend topology, data flows,
+storage modes, and release gates.
+
 The repository should keep player-facing text out of scripts and scenes. Runtime code reads stable English IDs from JSON and resolves display text through localization keys.
 
 ## Ownership Boundaries

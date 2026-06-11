@@ -93,6 +93,9 @@ flowchart LR
 
 The client stays lightweight and expressive, while the Go backend owns trust, concurrency, review, persistence, and public-alpha operations.
 
+For the full backend design, API grouping, data flows, storage modes, and
+operations model, see `docs/BackendArchitecture.md`.
+
 ## What Is In The MVP
 
 - Main city scene with movement, NPCs, map points, chat, inventory, mail, trade, guild, creator, and LiveOps panels

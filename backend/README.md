@@ -4,6 +4,9 @@ This directory is the main production codebase for Pixel Social World. The Godot
 
 The backend is intentionally shaped like a small online game server that can start in memory mode for local development, then switch to PostgreSQL and Redis for public-alpha operations without changing the client contract.
 
+For the full backend architecture, data flows, storage modes, and operations
+model, see `../docs/BackendArchitecture.md`.
+
 ## Product Role
 
 - Server authority: movement context, room membership, rewards, spending, trade settlement, inventory reservation, housing mutations, minigame sessions, and creator catalog state are validated in Go.
