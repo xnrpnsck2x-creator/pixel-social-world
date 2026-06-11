@@ -147,6 +147,12 @@ env GOMODCACHE="$ROOT/.tools/gomodcache" \
   "$ROOT/.tools/go/bin/go" test ./...
 ```
 
+From the repo root, verify that registered gateway routes are documented:
+
+```bash
+python3 scripts/check_backend_api_drift.py
+```
+
 Reviewer golden-set tests run against the local policy adapter by default. To run the same suite against LM Studio or another OpenAI-compatible endpoint, start/load the model yourself, then run:
 
 ```bash

@@ -219,6 +219,16 @@ Returns the current main city snapshot for initial entry and reconnect.
 
 MVP player movement fields are defined in `docs/MultiplayerSync.md`.
 
+### `GET /ws/city`
+
+Upgrades to the city WebSocket. After connecting, clients send `world.join`
+with the bearer token and target `room_id`; the Go room hub validates the
+session, authorizes restricted rooms, applies room capacity policy, and then
+broadcasts room-scoped movement, chat, presence, emote, and housing events.
+
+The endpoint is intentionally a transport entry point. Message envelopes and
+message types are defined below in `WebSocket Envelope` and `Message Types`.
+
 ### `POST /presence/heartbeat`
 
 Refreshes player presence in a room with a TTL. Requires a bearer token matching `player_id` and room access.
@@ -413,6 +423,38 @@ Response state:
 ```
 
 Self-follow or self-block returns `409 self_relationship_forbidden`.
+
+### `GET /social/facilities`
+
+Returns the authenticated player's social facility catalog. Requires a bearer
+token matching the `player_id` query. The catalog is the backend-backed source
+for facility panels such as trade and guild surfaces.
+
+Response:
+
+```json
+{
+  "schema_version": 1,
+  "player_id": "player_123",
+  "server_time": 1777545600,
+  "facilities": {
+    "trade": {
+      "map_id": "social_trade_market_v1",
+      "status": "local_contract",
+      "title_key": "facility.trade.title",
+      "body_key": "facility.trade.body",
+      "detail_key": "facility.trade.detail",
+      "icon_id": "icon.coin",
+      "rows": []
+    }
+  }
+}
+```
+
+### `GET /social/facilities/:id`
+
+Returns one facility definition from the same authenticated catalog. Unknown
+facility IDs return `404 facility_not_found`.
 
 ### `POST /mailbox/send`
 
@@ -913,6 +955,42 @@ Request:
 }
 ```
 
+### `POST /economy/first-session/claim`
+
+Claims the one-time first-session guide reward. Requires a bearer token matching
+`player_id`. The backend validates that the required guide step IDs are present
+and grants `first_session.guide_complete` exactly once through the economy
+ledger. Replays are idempotent and return `delta: 0`.
+
+Request:
+
+```json
+{
+  "player_id": "player_123",
+  "completed_step_ids": [
+    "npc_met",
+    "map_opened",
+    "trade_opened",
+    "games_opened",
+    "chat_sent"
+  ]
+}
+```
+
+Response:
+
+```json
+{
+  "player_id": "player_123",
+  "balance": 30,
+  "delta": 5,
+  "source_id": "first_session.guide_complete",
+  "claimed": true
+}
+```
+
+Incomplete guide state returns `400 first_session_incomplete`.
+
 ### `POST /map-activities/claim`
 
 Claims a server-authoritative map activity reward and cooldown. Requires a
@@ -1085,6 +1163,41 @@ Response:
       "available": 1
     }
   ]
+}
+```
+
+### `GET /admin/inventory/audit`
+
+Admin read-only inventory audit endpoint. Requires a viewer-or-higher admin
+token. Optional `player_id` narrows the audit to one player; without it the
+service returns the default normalized player scope used by the inventory
+service.
+
+The response exposes item rows, reservation-source totals, and diagnostic flags
+such as `locked_without_reservation`, `reservation_exceeds_locked`, and
+`unknown_reservation_reason`. It is for LiveOps/support triage and does not
+repair inventory.
+
+Response:
+
+```json
+{
+  "player_id": "player_123",
+  "server_time": 1777545600,
+  "totals": {
+    "items": 2,
+    "owned": 2,
+    "locked": 1,
+    "available": 1,
+    "reservation_count": 1,
+    "housing_reservations": 1,
+    "trade_reservations": 0,
+    "legacy_reservations": 0,
+    "other_reservations": 0,
+    "locked_without_reservation": 0
+  },
+  "flags": [],
+  "items": []
 }
 ```
 
@@ -1430,6 +1543,76 @@ Request:
   "player_id": "player_123",
   "category": "floor",
   "item_id": "wooden_floor"
+}
+```
+
+### `POST /housing/move`
+
+Moves an existing placed item. Requires a bearer token matching `player_id`;
+only the owner can mutate the layout. The backend validates that the referenced
+item exists in the layout, applies placement rules at the target tile, bumps the
+layout version, and broadcasts `housing.layout.updated` to `home:<owner_id>`.
+
+Request:
+
+```json
+{
+  "owner_id": "player_123",
+  "player_id": "player_123",
+  "item_id": "simple_chair",
+  "tile_x": 3,
+  "tile_y": 2,
+  "rotation": 0,
+  "target_tile_x": 4,
+  "target_tile_y": 2,
+  "target_rotation": 0
+}
+```
+
+Response:
+
+```json
+{
+  "layout": {
+    "owner_id": "player_123",
+    "version": 3,
+    "items": []
+  }
+}
+```
+
+### `POST /housing/remove`
+
+Removes an existing placed item. Requires a bearer token matching `player_id`;
+only the owner can mutate the layout. The backend releases a housing inventory
+reservation when the item came from inventory, otherwise it grants the configured
+sell refund when applicable. Successful removes broadcast `housing.layout.updated`.
+
+Request:
+
+```json
+{
+  "owner_id": "player_123",
+  "player_id": "player_123",
+  "item_id": "simple_chair",
+  "tile_x": 3,
+  "tile_y": 2,
+  "rotation": 0
+}
+```
+
+Response:
+
+```json
+{
+  "layout": {
+    "owner_id": "player_123",
+    "version": 4,
+    "items": []
+  },
+  "balance": 25,
+  "refund": 0,
+  "inventory_items": []
 }
 ```
 

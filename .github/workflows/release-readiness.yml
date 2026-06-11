@@ -68,6 +68,9 @@ jobs:
       - name: Content contract validation
         run: python3 tests/validate_content.py
 
+      - name: Backend API drift check
+        run: python3 scripts/check_backend_api_drift.py
+
       - name: Localization JSON syntax
         run: |
           python3 -m json.tool localization/en.json >/dev/null

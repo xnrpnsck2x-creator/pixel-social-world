@@ -135,6 +135,7 @@ The GitHub Actions release-readiness workflow runs:
 
 - Go format and backend unit tests
 - Content and localization contract validation
+- Backend API drift check between Go gateway routes and backend docs
 - Secret hygiene and tracked file size guards
 - GDScript 300-line budget
 - Release handoff contracts for store auth, monitoring, backup, iOS, and Android
