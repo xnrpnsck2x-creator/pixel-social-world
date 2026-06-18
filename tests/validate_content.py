@@ -98,6 +98,8 @@ RUNTIME_NETWORK_KEYS = {
     "presence_tick_seconds",
     "reconnect_attempts",
 }
+BACKEND_CLIENT_CONTRACT_METHODS = {"GET", "POST"}
+BACKEND_CLIENT_CONTRACT_VERIFICATION_KINDS = {"go_test", "godot_e2e", "godot_smoke"}
 
 
 def load_json(path):
@@ -237,6 +239,7 @@ def validate_runtime_configs():
     validate_map_points()
     validate_generated_asset_slices()
     validate_player_animations()
+    validate_backend_client_contracts()
     validate_social_facility_service_contract()
 
 
@@ -790,6 +793,112 @@ def validate_social_facility_service_contract():
     main_city = (ROOT / "scenes/main_city/MainCity.tscn").read_text(encoding="utf-8")
     if "SocialFacilityService" not in main_city:
         raise ValueError("MainCity.tscn must include SocialFacilityService")
+
+
+def validate_backend_client_contracts():
+    path = CONFIG_DIR / "backend_client_contracts.json"
+    if not path.exists():
+        raise ValueError("configs/backend_client_contracts.json is required")
+    data = load_json(path)
+    if int(data.get("schema_version", 0)) != 1:
+        raise ValueError("configs/backend_client_contracts.json schema_version must be 1")
+    contracts = data.get("contracts", [])
+    if not isinstance(contracts, list) or not contracts:
+        raise ValueError("configs/backend_client_contracts.json must contain contracts")
+
+    seen_ids = set()
+    for index, contract in enumerate(contracts):
+        if not isinstance(contract, dict):
+            raise ValueError(f"backend client contract {index} must be an object")
+        contract_id = str(contract.get("id", ""))
+        if not _is_safe_id(contract_id):
+            raise ValueError(f"backend client contract has unsafe id: {contract_id}")
+        if contract_id in seen_ids:
+            raise ValueError(f"duplicate backend client contract id: {contract_id}")
+        seen_ids.add(contract_id)
+
+        method = str(contract.get("method", ""))
+        if method not in BACKEND_CLIENT_CONTRACT_METHODS:
+            raise ValueError(f"backend client contract {contract_id} uses unsupported method: {method}")
+        route = str(contract.get("route", ""))
+        if not route.startswith("/") or " " in route:
+            raise ValueError(f"backend client contract {contract_id} route must be an absolute path")
+        _validate_contract_field_paths(contract_id, contract.get("response_fields", []))
+        _validate_contract_resources(contract_id, "client_entrypoints", contract.get("client_entrypoints", []), True)
+        _validate_contract_resources(contract_id, "consumer_scripts", contract.get("consumer_scripts", []), False)
+        _validate_contract_verification(contract_id, contract.get("verification", {}))
+
+
+def _validate_contract_field_paths(contract_id, fields):
+    if not isinstance(fields, list) or not fields:
+        raise ValueError(f"backend client contract {contract_id} must define response_fields")
+    seen_fields = set()
+    for field in fields:
+        field_path = str(field)
+        if field_path in seen_fields:
+            raise ValueError(f"backend client contract {contract_id} repeats field: {field_path}")
+        seen_fields.add(field_path)
+        if not _is_contract_field_path(field_path):
+            raise ValueError(f"backend client contract {contract_id} has invalid field path: {field_path}")
+
+
+def _validate_contract_resources(contract_id, key, resources, require_symbol):
+    if not isinstance(resources, list) or not resources:
+        raise ValueError(f"backend client contract {contract_id} must define {key}")
+    for resource in resources:
+        if not isinstance(resource, str):
+            raise ValueError(f"backend client contract {contract_id} {key} entries must be strings")
+        path_text, symbol = _split_contract_resource(resource)
+        local_path = ROOT / path_text
+        if not local_path.exists():
+            raise ValueError(f"backend client contract {contract_id} points to missing {key}: {path_text}")
+        if require_symbol:
+            if not symbol:
+                raise ValueError(f"backend client contract {contract_id} {resource} must include #symbol")
+            source = local_path.read_text(encoding="utf-8")
+            if f"func {symbol}(" not in source:
+                raise ValueError(f"backend client contract {contract_id} missing client method {symbol} in {path_text}")
+
+
+def _validate_contract_verification(contract_id, verification):
+    if not isinstance(verification, dict):
+        raise ValueError(f"backend client contract {contract_id} verification must be an object")
+    kind = str(verification.get("kind", ""))
+    if kind not in BACKEND_CLIENT_CONTRACT_VERIFICATION_KINDS:
+        raise ValueError(f"backend client contract {contract_id} has unsupported verification kind: {kind}")
+    path_text = str(verification.get("path", ""))
+    local_path = ROOT / path_text
+    if not path_text or not local_path.exists():
+        raise ValueError(f"backend client contract {contract_id} verification path is missing: {path_text}")
+    symbol = str(verification.get("symbol", ""))
+    if not symbol:
+        raise ValueError(f"backend client contract {contract_id} verification must include symbol")
+    source = local_path.read_text(encoding="utf-8")
+    if symbol not in source:
+        raise ValueError(f"backend client contract {contract_id} verification symbol not found: {symbol}")
+
+
+def _split_contract_resource(resource):
+    if "#" not in resource:
+        return resource, ""
+    path_text, symbol = resource.split("#", 1)
+    return path_text, symbol
+
+
+def _is_contract_field_path(field_path):
+    if not field_path or field_path.startswith(".") or field_path.endswith("."):
+        return False
+    allowed = set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_[].")
+    if any(character not in allowed for character in field_path):
+        return False
+    parts = [part.strip() for part in field_path.split(".")]
+    if any(not part for part in parts):
+        return False
+    for part in parts:
+        normalized = part.replace("[]", "")
+        if not normalized or not normalized.replace("_", "").isalnum():
+            return False
+    return True
 
 
 def _validate_social_facility_rows(en_locale, facility_id, rows, ui_asset_ids):

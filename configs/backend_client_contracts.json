@@ -1,0 +1,488 @@
+{
+  "schema_version": 1,
+  "owner": "Godot OnlineClient backend response contracts",
+  "contracts": [
+    {
+      "id": "auth_guest_session",
+      "method": "POST",
+      "route": "/auth/guest",
+      "client_entrypoints": ["scripts/Network/Client/OnlineClientSession.gd#guest_login"],
+      "consumer_scripts": [
+        "scripts/Network/Client/OnlineClientSession.gd",
+        "scripts/Network/Client/SessionTokenStore.gd",
+        "scripts/UI/Panels/LoginScreen.gd"
+      ],
+      "response_fields": ["player_id", "display_name", "access_token", "refresh_token"],
+      "verification": {
+        "kind": "godot_e2e",
+        "path": "tests/online_backend_e2e.gd",
+        "symbol": "func _run"
+      }
+    },
+    {
+      "id": "auth_refresh_session",
+      "method": "POST",
+      "route": "/auth/refresh",
+      "client_entrypoints": ["scripts/Network/Client/OnlineClientSession.gd#refresh_session"],
+      "consumer_scripts": [
+        "scripts/Network/Client/OnlineClientSession.gd",
+        "scripts/Network/Client/OnlineClientRequest.gd",
+        "scripts/Network/Client/SessionTokenStore.gd"
+      ],
+      "response_fields": ["player_id", "access_token", "refresh_token"],
+      "verification": {
+        "kind": "godot_e2e",
+        "path": "tests/online_backend_e2e.gd",
+        "symbol": "func _run"
+      }
+    },
+    {
+      "id": "auth_upgrade_account",
+      "method": "POST",
+      "route": "/auth/upgrade",
+      "client_entrypoints": ["scripts/Network/Client/OnlineClientSession.gd#upgrade_guest_account"],
+      "consumer_scripts": [
+        "scripts/Network/Client/OnlineClientSession.gd",
+        "tests/auth_upgrade_backend_e2e.gd"
+      ],
+      "response_fields": [
+        "session.player_id",
+        "session.access_token",
+        "session.refresh_token",
+        "linked_account.provider",
+        "linked_account.platform",
+        "linked_account.provider_subject"
+      ],
+      "verification": {
+        "kind": "godot_e2e",
+        "path": "tests/auth_upgrade_backend_e2e.gd",
+        "symbol": "func _run"
+      }
+    },
+    {
+      "id": "player_profile_wallet",
+      "method": "GET",
+      "route": "/me?player_id={player_id}",
+      "client_entrypoints": ["scripts/Network/Client/OnlineClientSession.gd#fetch_profile"],
+      "consumer_scripts": [
+        "scripts/Network/Client/OnlineClientSession.gd",
+        "scripts/UI/Panels/LoginScreen.gd",
+        "tests/BackendE2EHelpers.gd"
+      ],
+      "response_fields": ["player_id", "display_name", "wallet.coin"],
+      "verification": {
+        "kind": "godot_e2e",
+        "path": "tests/online_backend_e2e.gd",
+        "symbol": "func _run"
+      }
+    },
+    {
+      "id": "economy_ledger",
+      "method": "GET",
+      "route": "/economy/ledger/{player_id}",
+      "client_entrypoints": ["scripts/Network/Client/OnlineClientEconomy.gd#fetch_coin_ledger"],
+      "consumer_scripts": [
+        "scripts/Core/SaveSystem.gd",
+        "tests/BackendE2EHelpers.gd",
+        "tests/BackendE2EHousingHelpers.gd"
+      ],
+      "response_fields": [
+        "events[].id",
+        "events[].player_id",
+        "events[].type",
+        "events[].delta",
+        "events[].balance_after",
+        "events[].source_id",
+        "events[].checksum"
+      ],
+      "verification": {
+        "kind": "go_test",
+        "path": "backend/internal/gateway/response_contract_test.go",
+        "symbol": "TestHighRiskResponseContractsTradeEconomyInventoryLiveOps"
+      }
+    },
+    {
+      "id": "first_session_reward",
+      "method": "POST",
+      "route": "/economy/first-session/claim",
+      "client_entrypoints": ["scripts/Network/Client/OnlineClientEconomy.gd#claim_first_session_reward"],
+      "consumer_scripts": [
+        "scripts/UI/HUD/WorldHUDFirstSessionGuide.gd",
+        "tests/BackendE2EHelpers.gd"
+      ],
+      "response_fields": ["player_id", "balance", "delta", "source_id", "claimed"],
+      "verification": {
+        "kind": "go_test",
+        "path": "backend/internal/gateway/response_contract_test.go",
+        "symbol": "TestHighRiskResponseContractsTradeEconomyInventoryLiveOps"
+      }
+    },
+    {
+      "id": "inventory_items",
+      "method": "GET",
+      "route": "/inventory?player_id={player_id}",
+      "client_entrypoints": ["scripts/Network/Client/OnlineClientEconomy.gd#fetch_inventory"],
+      "consumer_scripts": [
+        "scripts/UI/Panels/WorldUtilityPanel.gd",
+        "scripts/UI/Panels/WorldUtilityInventoryRows.gd",
+        "scripts/Systems/Housing/HousingOnlineSync.gd",
+        "tests/BackendE2EHelpers.gd"
+      ],
+      "response_fields": ["items[].player_id", "items[].item_id", "items[].owned", "items[].locked", "items[].available"],
+      "verification": {
+        "kind": "godot_e2e",
+        "path": "tests/BackendE2EHelpers.gd",
+        "symbol": "verify_map_activity_reward"
+      }
+    },
+    {
+      "id": "map_activity_claim",
+      "method": "POST",
+      "route": "/map-activities/claim",
+      "client_entrypoints": ["scripts/Network/Client/OnlineClientEconomy.gd#claim_map_activity"],
+      "consumer_scripts": [
+        "scripts/Systems/Map/MapActivityService.gd",
+        "scripts/Systems/Map/MapActivityRewardText.gd",
+        "tests/BackendE2EHelpers.gd"
+      ],
+      "response_fields": [
+        "wallet.balance",
+        "wallet.delta",
+        "reward_coins",
+        "skill_id",
+        "skill_xp",
+        "drops[].item_id",
+        "drops[].quantity"
+      ],
+      "verification": {
+        "kind": "godot_e2e",
+        "path": "tests/BackendE2EHelpers.gd",
+        "symbol": "verify_map_activity_reward"
+      }
+    },
+    {
+      "id": "trade_listing_board",
+      "method": "GET",
+      "route": "/trade/listings?player_id={player_id}",
+      "client_entrypoints": ["scripts/Network/Client/OnlineClientEndpoints.gd#fetch_trade_listings"],
+      "consumer_scripts": [
+        "scripts/Systems/Social/SocialFacilityService.gd",
+        "scripts/Systems/Social/SocialFacilityTradeRows.gd",
+        "tests/BackendE2ETradeHelpers.gd"
+      ],
+      "response_fields": [
+        "server_time",
+        "items[].id",
+        "items[].seller_id",
+        "items[].item_id",
+        "items[].title_key",
+        "items[].body_key",
+        "items[].icon_id",
+        "items[].price",
+        "items[].status",
+        "items[].escrow_status"
+      ],
+      "verification": {
+        "kind": "go_test",
+        "path": "backend/internal/gateway/response_contract_test.go",
+        "symbol": "TestHighRiskResponseContractsTradeEconomyInventoryLiveOps"
+      }
+    },
+    {
+      "id": "trade_inventory",
+      "method": "GET",
+      "route": "/trade/inventory?player_id={player_id}",
+      "client_entrypoints": ["scripts/Network/Client/OnlineClientEndpoints.gd#fetch_trade_inventory"],
+      "consumer_scripts": [
+        "scripts/Systems/Social/SocialFacilityService.gd",
+        "scripts/Systems/Social/SocialFacilityTradeRows.gd",
+        "tests/BackendE2EHelpers.gd"
+      ],
+      "response_fields": ["server_time", "items[].player_id", "items[].item_id", "items[].owned", "items[].locked", "items[].available"],
+      "verification": {
+        "kind": "go_test",
+        "path": "backend/internal/gateway/response_contract_test.go",
+        "symbol": "TestHighRiskResponseContractsTradeEconomyInventoryLiveOps"
+      }
+    },
+    {
+      "id": "trade_purchase",
+      "method": "POST",
+      "route": "/trade/listings/{listing_id}/buy",
+      "client_entrypoints": ["scripts/Network/Client/OnlineClientEndpoints.gd#purchase_trade_listing"],
+      "consumer_scripts": [
+        "scripts/Systems/Social/SocialFacilityService.gd",
+        "scripts/UI/Panels/SocialFacilityTradeOutcomeHistory.gd",
+        "tests/BackendE2ETradeHelpers.gd"
+      ],
+      "response_fields": [
+        "listing.id",
+        "listing.buyer_id",
+        "listing.item_id",
+        "listing.price",
+        "listing.status",
+        "listing.escrow_status",
+        "transfer.from.player_id",
+        "transfer.from.balance",
+        "transfer.from.delta",
+        "transfer.to.player_id",
+        "transfer.to.balance",
+        "transfer.to.delta",
+        "item_transfer.item_id",
+        "item_transfer.quantity"
+      ],
+      "verification": {
+        "kind": "go_test",
+        "path": "backend/internal/gateway/response_contract_test.go",
+        "symbol": "TestHighRiskResponseContractsTradeEconomyInventoryLiveOps"
+      }
+    },
+    {
+      "id": "trade_history",
+      "method": "GET",
+      "route": "/trade/history?player_id={player_id}",
+      "client_entrypoints": ["scripts/Network/Client/OnlineClientTrade.gd#fetch_trade_history"],
+      "consumer_scripts": [
+        "scripts/Systems/Social/SocialFacilityService.gd",
+        "scripts/Systems/Social/SocialFacilityTradeRows.gd",
+        "tests/BackendE2ETradeHelpers.gd"
+      ],
+      "response_fields": [
+        "server_time",
+        "items[].id",
+        "items[].type",
+        "items[].listing_id",
+        "items[].seller_id",
+        "items[].buyer_id",
+        "items[].item_id",
+        "items[].price",
+        "items[].created_unix"
+      ],
+      "verification": {
+        "kind": "go_test",
+        "path": "backend/internal/gateway/response_contract_test.go",
+        "symbol": "TestHighRiskResponseContractsTradeEconomyInventoryLiveOps"
+      }
+    },
+    {
+      "id": "creator_submission_status",
+      "method": "GET",
+      "route": "/creator-submissions/{game_id}/status?player_id={player_id}",
+      "client_entrypoints": ["scripts/Network/Client/OnlineClientEndpoints.gd#fetch_creator_submission_status"],
+      "consumer_scripts": [
+        "scripts/UI/Panels/CreatorStatusRows.gd",
+        "scripts/UI/Panels/CreatorPackageRows.gd",
+        "scripts/UI/Panels/CreatorReviewerRows.gd",
+        "tests/BackendE2EHelpers.gd"
+      ],
+      "response_fields": [
+        "game_id",
+        "version",
+        "status",
+        "package.storage_key",
+        "package.scan_report.status",
+        "package.ai_review.status",
+        "package.review_job.status"
+      ],
+      "verification": {
+        "kind": "go_test",
+        "path": "backend/internal/gateway/response_contract_test.go",
+        "symbol": "TestHighRiskResponseContractsCreatorReviewPipeline"
+      }
+    },
+    {
+      "id": "creator_submission_history",
+      "method": "GET",
+      "route": "/creator-submissions/{game_id}/history?player_id={player_id}",
+      "client_entrypoints": ["scripts/Network/Client/OnlineClientEndpoints.gd#fetch_creator_submission_history"],
+      "consumer_scripts": [
+        "scripts/UI/Panels/CreatorStatusRows.gd",
+        "tests/online_client_smoke.gd",
+        "tests/online_backend_e2e.gd"
+      ],
+      "response_fields": [
+        "game_id",
+        "items[].game_id",
+        "items[].version",
+        "items[].author",
+        "items[].status",
+        "items[].created_unix",
+        "items[].updated_unix",
+        "items[].record"
+      ],
+      "verification": {
+        "kind": "go_test",
+        "path": "backend/internal/gateway/response_contract_test.go",
+        "symbol": "TestHighRiskResponseContractsCreatorReviewPipeline"
+      }
+    },
+    {
+      "id": "reviewer_dashboard",
+      "method": "GET",
+      "route": "/admin/reviewer-dashboard",
+      "client_entrypoints": ["scripts/Network/Client/OnlineClientAdmin.gd#fetch_reviewer_dashboard"],
+      "consumer_scripts": [
+        "scripts/UI/Panels/ReviewerConsolePanel.gd",
+        "scripts/UI/Panels/CreatorReviewerRows.gd",
+        "tests/reviewer_console_backend_e2e.gd"
+      ],
+      "response_fields": [
+        "generated_at",
+        "items[].game_id",
+        "items[].version",
+        "items[].author",
+        "items[].status",
+        "items[].name",
+        "items[].scan.status",
+        "items[].ai.status",
+        "items[].job.status",
+        "items[].install.status"
+      ],
+      "verification": {
+        "kind": "go_test",
+        "path": "backend/internal/gateway/response_contract_test.go",
+        "symbol": "TestHighRiskResponseContractsCreatorReviewPipeline"
+      }
+    },
+    {
+      "id": "reviewer_audit",
+      "method": "GET",
+      "route": "/admin/reviewer-audit/{game_id}",
+      "client_entrypoints": ["scripts/Network/Client/OnlineClientAdmin.gd#fetch_reviewer_audit"],
+      "consumer_scripts": [
+        "scripts/UI/Panels/ReviewerConsolePanel.gd",
+        "scripts/UI/Panels/ReviewerConsoleAudit.gd",
+        "tests/reviewer_console_backend_e2e.gd"
+      ],
+      "response_fields": ["game_id", "items[].id", "items[].game_id", "items[].action", "items[].status", "items[].reviewer", "items[].source", "items[].created_unix"],
+      "verification": {
+        "kind": "go_test",
+        "path": "backend/internal/gateway/response_contract_test.go",
+        "symbol": "TestHighRiskResponseContractsCreatorReviewPipeline"
+      }
+    },
+    {
+      "id": "debug_ops_snapshot",
+      "method": "GET",
+      "route": "/debug/ops",
+      "client_entrypoints": ["scripts/Network/Client/OnlineClientAdmin.gd#fetch_debug_ops"],
+      "consumer_scripts": [
+        "scripts/UI/Panels/DebugOpsPanel.gd",
+        "scripts/UI/Panels/DebugOpsCreatorPayoutRows.gd",
+        "scripts/UI/Panels/DebugOpsAlertRows.gd",
+        "tests/liveops_console_smoke.gd"
+      ],
+      "response_fields": [
+        "request_id",
+        "rooms.online_count",
+        "rooms.rooms",
+        "realtime.local_delivered",
+        "realtime.move_rate_limited",
+        "chat.total_messages",
+        "chat.total_reports",
+        "fishing_rewards.granted",
+        "economy.creator_play_rewards",
+        "creator_payouts.items",
+        "alerts.highest_severity",
+        "alerts.items"
+      ],
+      "verification": {
+        "kind": "go_test",
+        "path": "backend/internal/gateway/response_contract_test.go",
+        "symbol": "TestHighRiskResponseContractsTradeEconomyInventoryLiveOps"
+      }
+    },
+    {
+      "id": "inventory_audit",
+      "method": "GET",
+      "route": "/admin/inventory/audit?player_id={player_id}",
+      "client_entrypoints": ["scripts/Network/Client/OnlineClientAdmin.gd#fetch_inventory_audit"],
+      "consumer_scripts": [
+        "scripts/UI/Panels/DebugOpsPanel.gd",
+        "scripts/UI/Panels/InventoryAuditRows.gd",
+        "tests/inventory_audit_rows_smoke.gd"
+      ],
+      "response_fields": [
+        "player_id",
+        "server_time",
+        "totals.items",
+        "totals.owned",
+        "totals.locked",
+        "totals.available",
+        "flags[].item_id",
+        "items[].item_id",
+        "items[].owned",
+        "items[].locked",
+        "items[].available"
+      ],
+      "verification": {
+        "kind": "go_test",
+        "path": "backend/internal/gateway/response_contract_test.go",
+        "symbol": "TestHighRiskResponseContractsTradeEconomyInventoryLiveOps"
+      }
+    },
+    {
+      "id": "admin_trade_history",
+      "method": "GET",
+      "route": "/admin/trade/history",
+      "client_entrypoints": ["scripts/Network/Client/OnlineClientAdmin.gd#fetch_trade_history_audit"],
+      "consumer_scripts": [
+        "scripts/UI/Panels/TradeHistoryAuditPanel.gd",
+        "tests/trade_history_audit_panel_smoke.gd",
+        "tests/liveops_console_smoke.gd"
+      ],
+      "response_fields": [
+        "server_time",
+        "count",
+        "matched",
+        "limit",
+        "offset",
+        "items[].id",
+        "items[].type",
+        "items[].seller_id",
+        "items[].buyer_id",
+        "items[].item_id",
+        "items[].price"
+      ],
+      "verification": {
+        "kind": "go_test",
+        "path": "backend/internal/gateway/response_contract_test.go",
+        "symbol": "TestHighRiskResponseContractsTradeEconomyInventoryLiveOps"
+      }
+    },
+    {
+      "id": "chat_reports",
+      "method": "GET",
+      "route": "/admin/chat-reports?status={status}",
+      "client_entrypoints": ["scripts/Network/Client/OnlineClientAdmin.gd#fetch_chat_reports"],
+      "consumer_scripts": [
+        "scripts/UI/Panels/ChatReportsConsolePanel.gd",
+        "tests/reviewer_console_backend_e2e.gd",
+        "tests/liveops_console_smoke.gd"
+      ],
+      "response_fields": ["items[].id", "items[].room_id", "items[].channel_id", "items[].reporter_id", "items[].target_player_id", "items[].reason", "items[].status"],
+      "verification": {
+        "kind": "godot_e2e",
+        "path": "tests/reviewer_console_backend_e2e.gd",
+        "symbol": "func _run"
+      }
+    },
+    {
+      "id": "chat_moderation_actions",
+      "method": "GET",
+      "route": "/admin/chat-moderation/actions",
+      "client_entrypoints": ["scripts/Network/Client/OnlineClientAdmin.gd#fetch_chat_moderation"],
+      "consumer_scripts": [
+        "scripts/UI/Panels/ChatModerationAuditPanel.gd",
+        "tests/chat_moderation_audit_smoke.gd",
+        "tests/reviewer_console_backend_e2e.gd"
+      ],
+      "response_fields": ["items[].target_player_id", "items[].target_player_name", "items[].action", "items[].status", "items[].note", "items[].created_at"],
+      "verification": {
+        "kind": "godot_e2e",
+        "path": "tests/reviewer_console_backend_e2e.gd",
+        "symbol": "func _run"
+      }
+    }
+  ]
+}

@@ -19,6 +19,12 @@ Storage modes:
 - `postgres`: persists economy wallet/ledger, housing layout, player world-map discovery, map activity cooldowns, map activity daily reward fatigue, inventory escrow, trade listings, and trade event history.
 - `redis` realtime mode stores auth sessions, presence, and minigame session TTL.
 
+Godot client consumption contracts live in `configs/backend_client_contracts.json`.
+That file records the MVP response fields read by OnlineClient, social facility
+trade UI, Creator Lab, and LiveOps panels. `python3 tests/validate_content.py`
+fails if a contract entry loses its client method, consumer script, field list,
+or backing verification test.
+
 ## REST
 
 All HTTP responses include `X-Request-ID`. Clients and ops tooling may send `X-Request-ID`; otherwise the gateway generates one. Admin audit rows persist this value for high-risk action traceability.

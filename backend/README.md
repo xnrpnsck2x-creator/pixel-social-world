@@ -153,6 +153,12 @@ From the repo root, verify that registered gateway routes are documented:
 python3 scripts/check_backend_api_drift.py
 ```
 
+The same content gate also verifies `configs/backend_client_contracts.json`, which records the response fields consumed by Godot OnlineClient, social facility, Creator Lab, and LiveOps panels:
+
+```bash
+python3 tests/validate_content.py
+```
+
 For a focused response-field contract smoke across the highest-risk player and admin flows:
 
 ```bash
