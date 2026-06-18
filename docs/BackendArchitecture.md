@@ -309,6 +309,7 @@ Reference runbooks:
 | Backend unit tests | `cd backend && ROOT="$(cd .. && pwd)" && env GOMODCACHE="$ROOT/.tools/gomodcache" GOCACHE="$ROOT/.tools/gocache" "$ROOT/.tools/go/bin/go" test ./...` | Verifies Go domain services, gateway handlers, Redis smoke tests, package review, and ops helpers. |
 | Content contracts | `python3 tests/validate_content.py` | Verifies JSON content, localization, routes, and public content contracts. |
 | Backend API drift | `python3 scripts/check_backend_api_drift.py` | Verifies registered Go gateway routes are documented in both `BackendContract.md` and this architecture guide. |
+| Backend response contracts | `cd backend && ROOT="$(cd .. && pwd)" && env GOMODCACHE="$ROOT/.tools/gomodcache" GOCACHE="$ROOT/.tools/gocache" "$ROOT/.tools/go/bin/go" test ./internal/gateway -run TestHighRiskResponseContracts` | Locks high-risk JSON fields for trade, inventory, economy, creator review, catalog publishing, and LiveOps admin surfaces. |
 | Secret hygiene | `python3 scripts/check_secret_hygiene.py` | Blocks committed secrets and suspicious tracked filenames. |
 | Release readiness CI | `.github/workflows/release-readiness.yml` | Runs backend tests, content checks, line budgets, file size guards, store handoff, monitoring, and backup handoff. |
 | Full local MVP gate | `scripts/run_mvp_100_gate.sh` | Exercises deeper Godot/H5 smoke and semantic screenshot coverage. |

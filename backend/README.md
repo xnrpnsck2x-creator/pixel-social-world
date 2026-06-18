@@ -153,6 +153,16 @@ From the repo root, verify that registered gateway routes are documented:
 python3 scripts/check_backend_api_drift.py
 ```
 
+For a focused response-field contract smoke across the highest-risk player and admin flows:
+
+```bash
+cd backend
+ROOT="$(cd .. && pwd)"
+env GOMODCACHE="$ROOT/.tools/gomodcache" \
+  GOCACHE="$ROOT/.tools/gocache" \
+  "$ROOT/.tools/go/bin/go" test ./internal/gateway -run TestHighRiskResponseContracts
+```
+
 Reviewer golden-set tests run against the local policy adapter by default. To run the same suite against LM Studio or another OpenAI-compatible endpoint, start/load the model yourself, then run:
 
 ```bash
