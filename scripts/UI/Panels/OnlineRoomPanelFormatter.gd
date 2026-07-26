@@ -33,10 +33,9 @@ static func session_rows(session_service: Node, sessions: Array, limit: int, pre
 		var record := session as Dictionary
 		var game_id := str(record.get("game_id", ""))
 		var game: Dictionary = session_service.get_game(game_id) if session_service != null else {}
-		var name_key := str(game.get("name_key", game_id))
 		var players: Array = record.get("players", []) as Array
 		rows.append(App.format_key("world.session_row_format", {
-			"name": App.t_key(name_key),
+			"name": localized_game_name(game) if not game.is_empty() else game_id,
 			"host": session_host_text(record, presence_service),
 			"players": players.size(),
 			"max": int(record.get("max_players", 1)),
@@ -67,10 +66,24 @@ static func game_catalog(minigame_registry: Node) -> String:
 		return App.format_key("minigames.available_format", {"ids": "-"})
 	var names := PackedStringArray()
 	for game in minigame_registry.get_enabled_minigames():
-		names.append(App.t_key(str(game.get("name_key", game.get("id", "")))))
+		names.append(localized_game_name(game))
 	return App.format_key("minigames.available_format", {
 		"ids": ", ".join(names) if not names.is_empty() else "-"
 	})
+
+static func populate_game_picker(picker: OptionButton, minigame_registry: Node) -> void:
+	var selected_id := ""
+	if picker.item_count > 0:
+		selected_id = str(picker.get_item_metadata(picker.selected))
+	picker.clear()
+	if minigame_registry != null:
+		for game in minigame_registry.get_enabled_minigames():
+			picker.add_item(localized_game_name(game))
+			var index := picker.item_count - 1
+			picker.set_item_metadata(index, str(game.get("id", "")))
+			if str(game.get("id", "")) == selected_id:
+				picker.select(index)
+	picker.disabled = picker.item_count == 0
 
 static func heartbeat_text(seconds: int) -> String:
 	if seconds < 0:
@@ -121,5 +134,16 @@ static func _game_name(game_id: String, minigame_registry: Node) -> String:
 	if minigame_registry != null:
 		var game: Dictionary = minigame_registry.get_minigame(game_id)
 		if not game.is_empty():
-			return App.t_key(str(game.get("name_key", game_id)))
+			return localized_game_name(game)
 	return game_id
+
+static func localized_game_name(game: Dictionary) -> String:
+	var names := game.get("name", {}) as Dictionary
+	if not names.is_empty():
+		var locale_name := str(names.get(App.current_locale, ""))
+		if locale_name.is_empty() and App.current_locale == "zh-Hans":
+			locale_name = str(names.get("zh", ""))
+		if locale_name.is_empty():
+			locale_name = str(names.get("en", game.get("id", "")))
+		return locale_name
+	return App.t_key(str(game.get("name_key", game.get("id", ""))))

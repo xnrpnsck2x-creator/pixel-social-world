@@ -20,7 +20,7 @@ func TestFilePackageInstallStoreWritesRuntimeCatalogAndAssets(t *testing.T) {
 	if err != nil {
 		t.Fatalf("buildPackageRecord returned error: %v", err)
 	}
-	record.Status = "approved"
+	record = packageReadyForPublishFixture(record)
 
 	root := t.TempDir()
 	store := NewFilePackageInstallStore(root)
@@ -28,10 +28,11 @@ func TestFilePackageInstallStoreWritesRuntimeCatalogAndAssets(t *testing.T) {
 	if err != nil {
 		t.Fatalf("InstallPackage returned error: %v", err)
 	}
-	if install.InstallKey != "creator/creator_install_asset/0.1.0" || install.ManifestURI == "" {
+	if install.InstallKey != "creator/creator_install_asset/0.1.0/"+record.Package.SHA256 ||
+		install.ManifestURI == "" {
 		t.Fatalf("unexpected install snapshot: %#v", install)
 	}
-	assetPath := filepath.Join(root, "creator", "creator_install_asset", "0.1.0", "assets", "icon.webp")
+	assetPath := filepath.Join(root, filepath.FromSlash(install.InstallKey), "assets", "icon.webp")
 	bytes, err := os.ReadFile(assetPath)
 	if err != nil {
 		t.Fatalf("installed asset missing: %v", err)
@@ -56,7 +57,7 @@ func TestFilePackageInstallStoreRollbackAndUnpublishCurrentPointer(t *testing.T)
 	if err != nil {
 		t.Fatalf("buildPackageRecord first returned error: %v", err)
 	}
-	firstRecord.Status = "approved"
+	firstRecord = packageReadyForPublishFixture(firstRecord)
 	first, err := store.InstallPackage(context.Background(), firstRecord, firstRequest)
 	if err != nil {
 		t.Fatalf("InstallPackage first returned error: %v", err)
@@ -71,7 +72,7 @@ func TestFilePackageInstallStoreRollbackAndUnpublishCurrentPointer(t *testing.T)
 	if err != nil {
 		t.Fatalf("buildPackageRecord second returned error: %v", err)
 	}
-	secondRecord.Status = "approved"
+	secondRecord = packageReadyForPublishFixture(secondRecord)
 	second, err := store.InstallPackage(context.Background(), secondRecord, secondRequest)
 	if err != nil {
 		t.Fatalf("InstallPackage second returned error: %v", err)
@@ -115,6 +116,38 @@ func TestFilePackageInstallStoreRollbackAndUnpublishCurrentPointer(t *testing.T)
 	}
 	if len(list) != 0 {
 		t.Fatalf("unpublished package still appears in catalog: %#v", list)
+	}
+}
+
+func TestPackageInstallStoreRepeatPublishIsIdempotent(t *testing.T) {
+	request := creatorPackageRequest("creator_install_idempotent", safeCreatorScript())
+	record, err := buildPackageRecord(request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	record = packageReadyForPublishFixture(record)
+	for _, store := range []PackageInstallStore{
+		NewMemoryPackageInstallStore(),
+		NewFilePackageInstallStore(t.TempDir()),
+	} {
+		first, err := store.InstallPackage(context.Background(), record, request)
+		if err != nil {
+			t.Fatal(err)
+		}
+		second, err := store.InstallPackage(context.Background(), record, request)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if second.InstallKey != first.InstallKey ||
+			second.PreviousInstallKey != first.PreviousInstallKey {
+			t.Fatalf("repeat publish changed release history: first=%#v second=%#v", first, second)
+		}
+		if _, err := store.RollbackPackage(
+			context.Background(),
+			"creator_install_idempotent",
+		); err == nil || err.Error() != "package_rollback_unavailable" {
+			t.Fatalf("repeat publish created a self rollback pointer: %v", err)
+		}
 	}
 }
 
@@ -214,6 +247,60 @@ func TestMemoryPublishRollbackAndUnpublish(t *testing.T) {
 	}
 	if len(list) != 0 {
 		t.Fatalf("unpublished package still appears in catalog: %#v", list)
+	}
+}
+
+func TestMemoryRollbackKeepsNewerPendingSubmissionIntact(t *testing.T) {
+	service := NewMemoryServiceConcrete()
+	for _, version := range []string{"0.1.0", "0.2.0"} {
+		request := creatorPackageRequestVersion(
+			"creator_release_pointer",
+			version,
+			safeCreatorScript()+"\nfunc marker_"+string(version[2])+"() -> void:\n\tpass\n",
+		)
+		if _, err := service.SubmitPackageAsync(context.Background(), request); err != nil {
+			t.Fatal(err)
+		}
+		waitServiceStatus(t, service, request.GameID, "needs_review")
+		if _, err := service.SetReviewStatus(
+			context.Background(),
+			request.GameID,
+			"approved",
+		); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := service.PublishPackage(context.Background(), request.GameID); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	pending := creatorPackageRequestVersion(
+		"creator_release_pointer",
+		"0.3.0",
+		safeCreatorScript()+"\nfunc marker_three() -> void:\n\tpass\n",
+	)
+	if _, err := service.SubmitPackageAsync(context.Background(), pending); err != nil {
+		t.Fatal(err)
+	}
+	waitServiceStatus(t, service, pending.GameID, "needs_review")
+
+	rolledBack, err := service.RollbackPackage(context.Background(), pending.GameID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if rolledBack.Version != "0.1.0" || rolledBack.Status != "published" {
+		t.Fatalf("rollback did not return the active historical release: %#v", rolledBack)
+	}
+	current, ok := service.Get(context.Background(), pending.GameID)
+	if !ok || current.Version != "0.3.0" || current.Status != "needs_review" {
+		t.Fatalf("rollback overwrote the newer pending submission: %#v", current)
+	}
+	published, err := service.ListPublishedPackages(context.Background())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(published) != 1 || published[0].Version != "0.1.0" {
+		t.Fatalf("release pointer did not target v1: %#v", published)
 	}
 }
 

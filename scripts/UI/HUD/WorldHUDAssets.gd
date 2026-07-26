@@ -144,25 +144,33 @@ static func browser_window_size() -> Vector2:
 		return Vector2.ZERO
 	return Vector2(float(width_value), float(height_value))
 
-static func mark_debug_control_rect(key: String, control: Control) -> void:
+static func mark_debug_control_rect(key: String, control: Control, use_global_rect: bool = false) -> void:
 	if not OS.has_feature("web") or not Engine.has_singleton("JavaScriptBridge"):
 		return
 	var bridge: Object = Engine.get_singleton("JavaScriptBridge")
 	if bridge == null or not bridge.has_method("eval"):
 		return
 	var global_key := "globalThis.__psw_debug_%s_rect" % key
-	if control == null or not control.visible:
+	if control == null or not control.is_inside_tree() or not control.visible:
 		bridge.call("eval", "%s = null" % global_key, true)
 		return
 	var rect := control.get_global_rect()
 	var anchored_size := Vector2(control.offset_right - control.offset_left, control.offset_bottom - control.offset_top)
-	if control.anchor_left == 0.0 and control.anchor_top == 0.0 and anchored_size.x > 0.0 and anchored_size.y > 0.0:
+	if not use_global_rect and control.anchor_left == 0.0 and control.anchor_top == 0.0 and anchored_size.x > 0.0 and anchored_size.y > 0.0:
 		rect = Rect2(Vector2(control.offset_left, control.offset_top), anchored_size)
+	elif use_global_rect:
+		var ancestor := control.get_parent()
+		while ancestor != null:
+			if ancestor is ScrollContainer:
+				rect.position -= Vector2(ancestor.scroll_horizontal, ancestor.scroll_vertical)
+			ancestor = ancestor.get_parent()
 	bridge.call("eval", "%s = %s" % [global_key, JSON.stringify({
 		"x": rect.position.x,
 		"y": rect.position.y,
 		"width": rect.size.x,
-		"height": rect.size.y
+		"height": rect.size.y,
+		"viewport_width": control.get_viewport_rect().size.x,
+		"viewport_height": control.get_viewport_rect().size.y
 	})], true)
 
 static func configure_button_frame(button: Button) -> void:

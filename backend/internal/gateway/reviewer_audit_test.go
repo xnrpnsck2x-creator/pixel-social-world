@@ -13,21 +13,24 @@ func TestReviewerActionsWriteAuditTrail(t *testing.T) {
 	deps := DefaultMemoryDependencies()
 	deps.AdminToken = "audit-admin-token"
 	server := NewServerWithDependencies(deps)
-	testPostJSON(t, server, "/minigames/submit", deps.AdminToken, map[string]any{
-		"game_id":            "audit_creator_game",
-		"version":            "0.1.0",
-		"author":             "creator",
-		"mode_id":            "casual_activity",
-		"name":               map[string]any{"en": "Audit", "ja": "Audit", "zh": "Audit"},
-		"min_players":        1,
-		"max_players":        4,
-		"tags":               []string{"audit"},
-		"requires_network":   false,
-		"runtime_contract":   map[string]any{"camera": "contained", "input_profile": "tap_timing", "network_profile": "offline_optional"},
-		"entry_scene":        "res://creator/audit/main.tscn",
-		"main_script":        "res://creator/audit/game.gd",
-		"asset_budget_bytes": 1024,
-	}, http.StatusAccepted)
+	session := testGuestLogin(t, server, "Audit Creator")
+	playerID := session["player_id"].(string)
+	accessToken := session["access_token"].(string)
+	testPostJSON(
+		t,
+		server,
+		"/creator-submissions/package",
+		accessToken,
+		creatorPackagePayload(t, playerID, "audit_creator_game", safePackageScript()),
+		http.StatusAccepted,
+	)
+	waitCreatorStatus(
+		t,
+		server,
+		"/creator-submissions/audit_creator_game/status?player_id="+playerID,
+		accessToken,
+		"needs_review",
+	)
 
 	review := postAdminJSON(t, server, "/minigames/audit_creator_game/review", deps.AdminToken, map[string]any{
 		"action": "approve",

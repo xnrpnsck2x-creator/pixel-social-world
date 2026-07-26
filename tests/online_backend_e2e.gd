@@ -1,6 +1,7 @@
 extends SceneTree
 
 const Helpers := preload("res://tests/BackendE2EHelpers.gd")
+const CreatorFixtures := preload("res://tests/CreatorE2EFixtures.gd")
 const HousingHelpers := preload("res://tests/BackendE2EHousingHelpers.gd")
 const TradeHelpers := preload("res://tests/BackendE2ETradeHelpers.gd")
 
@@ -155,8 +156,8 @@ func _run() -> void:
 		failures.append("Public reward endpoint was not blocked.")
 	await Helpers.verify_first_session_reward(client, player_id, failures)
 
-	var creator_submit := Helpers.creator_admin_manifest()
-	var creator_draft := Helpers.creator_draft_manifest()
+	var creator_submit := CreatorFixtures.admin_manifest()
+	var creator_draft := CreatorFixtures.draft_manifest()
 	var draft_submit: Dictionary = await client.call("submit_creator_draft", creator_draft)
 	if not Helpers.ok(draft_submit):
 		failures.append("Creator draft submit failed: %s" % str(draft_submit))
@@ -167,7 +168,31 @@ func _run() -> void:
 		var draft_data: Dictionary = draft_status.get("data", {}) as Dictionary
 		if str(draft_data.get("status", "")) != "pending_review":
 			failures.append("Creator draft status did not return pending_review.")
-	var package_submit: Dictionary = await client.call("submit_creator_package", Helpers.creator_package_manifest())
+	var discovery: Dictionary = await client.call(
+		"discover_creator_keywords",
+		"two player fighting duel",
+		"2d_fighting",
+		"en",
+		6
+	)
+	if not Helpers.ok(discovery):
+		failures.append("Creator keyword discovery failed: %s" % str(discovery))
+	var resolution: Dictionary = await client.call(
+		"resolve_creator_manifest",
+		CreatorFixtures.manifest_request()
+	)
+	var resolved_manifest := (
+		((resolution.get("data", {}) as Dictionary).get("resolved_manifest", {}) as Dictionary)
+	)
+	if not Helpers.ok(resolution) or resolved_manifest.is_empty():
+		failures.append("Creator manifest resolution failed: %s" % str(resolution))
+	var package_submit: Dictionary = await client.call(
+		"submit_creator_package",
+		CreatorFixtures.package_manifest(
+			resolved_manifest,
+			str(client.get("player_id"))
+		)
+	)
 	if not Helpers.ok(package_submit):
 		failures.append("Creator package submit failed: %s" % str(package_submit))
 	var package_status: Dictionary = await Helpers.wait_package_status(root, client, "creator_e2e_package")

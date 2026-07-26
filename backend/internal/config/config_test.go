@@ -41,6 +41,7 @@ func TestLoadAppliesEnvironmentOverrides(t *testing.T) {
 	t.Setenv("PSW_HOUSING_CONFIG_PATH", "/tmp/housing_items.json")
 	t.Setenv("PSW_HOUSING_SELL_REFUND_RATE", "0.4")
 	t.Setenv("PSW_FISHING_CONFIG_PATH", "/tmp/fishing.json")
+	t.Setenv("PSW_CREATOR_REGISTRY_PATH", "/tmp/creator_registry.json")
 	t.Setenv("PSW_MAP_ACTIVITIES_CONFIG_PATH", "/tmp/map_activities.json")
 	t.Setenv("PSW_MAP_POINTS_CONFIG_PATH", "/tmp/map_points.json")
 	t.Setenv("PSW_UTILITY_PANELS_CONFIG_PATH", "/tmp/utility_panels.json")
@@ -129,6 +130,9 @@ func TestLoadAppliesEnvironmentOverrides(t *testing.T) {
 	}
 	if cfg.Minigames.FishingConfigPath != "/tmp/fishing.json" {
 		t.Fatalf("fishing config override failed: %s", cfg.Minigames.FishingConfigPath)
+	}
+	if cfg.Minigames.CreatorRegistryPath != "/tmp/creator_registry.json" {
+		t.Fatalf("creator registry override failed: %s", cfg.Minigames.CreatorRegistryPath)
 	}
 	if cfg.World.MapActivitiesConfigPath != "/tmp/map_activities.json" {
 		t.Fatalf("map activities config override failed: %s", cfg.World.MapActivitiesConfigPath)

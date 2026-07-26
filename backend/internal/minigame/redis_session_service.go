@@ -104,6 +104,13 @@ func (s *RedisSessionService) ListPublishedPackages(ctx context.Context) ([]Pack
 	return s.records.ListPublishedPackages(ctx)
 }
 
+func (s *RedisSessionService) PublishedRuntime(
+	ctx context.Context,
+	id string,
+) (PublishedRuntimeSnapshot, error) {
+	return s.records.PublishedRuntime(ctx, id)
+}
+
 func (s *RedisSessionService) CreateSession(ctx context.Context, request CreateSessionRequest) (Session, error) {
 	if request.GameID == "" {
 		return Session{}, errors.New("game_id_required")

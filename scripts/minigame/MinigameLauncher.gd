@@ -6,6 +6,8 @@ signal game_finished(result: Dictionary)
 signal emote_requested(player_id: String, emote_id: String)
 
 const MINIGAME_BASE_SCRIPT := preload("res://scripts/minigame/IMinigame.gd")
+const DECLARATIVE_GAME_PATH := "res://scenes/minigames/declarative/main.tscn"
+const RUNTIME_CACHE_KEY := "pending_creator_runtime"
 const REQUIRED_METHODS := [
 	"get_game_id",
 	"get_game_name",
@@ -20,6 +22,7 @@ const REQUIRED_METHODS := [
 var active_game: Node
 var active_game_id := ""
 var active_session_id := ""
+var runtime_client_override: Node
 var _returning_to_world := false
 
 @onready var title_label: Label = %TitleLabel
@@ -78,6 +81,8 @@ func _launch_pending_game() -> void:
 	var game_id: String = str(SaveSystem.get_profile_value("pending_minigame_id", "fishing"))
 	var minigame: Dictionary = _find_minigame(game_id)
 	if minigame.is_empty():
+		minigame = await _fetch_creator_runtime(game_id)
+	if minigame.is_empty():
 		_fail("Unknown minigame: %s" % game_id)
 		return
 	var session_id := str(SaveSystem.get_profile_value("pending_minigame_session_id", "local"))
@@ -105,6 +110,60 @@ func _find_minigame(game_id: String) -> Dictionary:
 		if typeof(record) == TYPE_DICTIONARY and str(record.get("id", "")) == game_id:
 			return record as Dictionary
 	return {}
+
+func _fetch_creator_runtime(game_id: String) -> Dictionary:
+	var client := _online_client()
+	if client != null and bool(client.get("online_enabled")):
+		var response: Dictionary = await client.call("fetch_published_minigame_runtime", game_id)
+		if bool(response.get("ok", false)):
+			var runtime := response.get("data", {}) as Dictionary
+			if _valid_creator_runtime(runtime, game_id):
+				SaveSystem.set_profile_value(RUNTIME_CACHE_KEY, runtime)
+				SaveSystem.save_profile()
+				return _runtime_game_record(runtime)
+		var status := int(response.get("status", 0))
+		if status == 404:
+			SaveSystem.set_profile_value(RUNTIME_CACHE_KEY, {})
+			SaveSystem.save_profile()
+		if status > 0:
+			return {}
+	var cached: Variant = SaveSystem.get_profile_value(RUNTIME_CACHE_KEY, {})
+	if typeof(cached) == TYPE_DICTIONARY and _valid_creator_runtime(cached as Dictionary, game_id):
+		return _runtime_game_record(cached as Dictionary)
+	return {}
+
+func _valid_creator_runtime(runtime: Dictionary, game_id: String) -> bool:
+	if int(runtime.get("schema_version", 0)) != 1:
+		return false
+	if str(runtime.get("game_id", "")) != game_id:
+		return false
+	var definition := runtime.get("definition", {}) as Dictionary
+	var manifest := runtime.get("manifest", {}) as Dictionary
+	return (
+		int(definition.get("schema_version", 0)) == 1
+		and str(definition.get("game_id", "")) == game_id
+		and str(runtime.get("mode_id", "")) == "casual_activity"
+		and str(definition.get("type", "")) == "tap_timing"
+		and str(definition.get("mode_id", "")) == str(runtime.get("mode_id", ""))
+		and str((manifest.get("interface", {}) as Dictionary).get("id", "")) == "interface.declarative_runtime"
+		and not str(manifest.get("lock_digest", "")).is_empty()
+	)
+
+func _runtime_game_record(runtime: Dictionary) -> Dictionary:
+	return {
+		"id": str(runtime.get("game_id", "")),
+		"mode_id": str(runtime.get("mode_id", "")),
+		"name": (runtime.get("name", {}) as Dictionary).duplicate(true),
+		"version": str(runtime.get("version", "")),
+		"author": str(runtime.get("author", "")),
+		"min_players": int(runtime.get("min_players", 1)),
+		"max_players": int(runtime.get("max_players", 1)),
+		"requires_network": bool(runtime.get("requires_network", false)),
+		"runtime_contract": (runtime.get("runtime_contract", {}) as Dictionary).duplicate(true),
+		"runtime_manifest": (runtime.get("manifest", {}) as Dictionary).duplicate(true),
+		"runtime_definition": (runtime.get("definition", {}) as Dictionary).duplicate(true),
+		"game_path": DECLARATIVE_GAME_PATH
+	}
 
 func _is_valid_minigame(instance: Node) -> bool:
 	for method_name in REQUIRED_METHODS:
@@ -171,6 +230,8 @@ func _close_online_session(ended: bool) -> void:
 		await client.call("leave_minigame_session", active_session_id)
 
 func _online_client() -> Node:
+	if runtime_client_override != null:
+		return runtime_client_override
 	if not has_node("/root/OnlineClient"):
 		return null
 	return get_node("/root/OnlineClient")

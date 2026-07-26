@@ -14,6 +14,8 @@ var sessions: Array[Dictionary] = []
 func initialize(new_registry: Node, new_room_id: String = DEFAULT_ROOM_ID) -> void:
 	registry = new_registry
 	room_id = new_room_id if not new_room_id.is_empty() else DEFAULT_ROOM_ID
+	if registry != null and registry.has_signal("catalog_updated"):
+		registry.catalog_updated.connect(refresh_sessions)
 	refresh_sessions()
 
 func refresh_sessions() -> void:

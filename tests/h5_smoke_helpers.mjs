@@ -149,6 +149,7 @@ export async function runCaseSteps(page, testCase) {
 
 const DEBUG_RECT_GLOBALS = {
   hostClick: "__psw_debug_room_host_fishing_button_rect",
+  creatorIdeaInputClick: "__psw_debug_creator_idea_input_rect",
 };
 
 export async function sampleCanvasPixels(page, points) {
@@ -194,6 +195,7 @@ function interactionSteps(testCase) {
     ["chatSubmitClick", 1200],
     ["privateInputClick", 900],
     ["tradePriceInputClick", 900],
+    ["creatorIdeaInputClick", 900],
     ["inventoryClick", 2500],
     ["homeClick", 3000],
     ["catalogClick", 500],
@@ -228,6 +230,11 @@ async function runStep(page, testCase, step) {
     await page.keyboard.press("Backspace");
     await page.keyboard.type(testCase.tradePriceText);
   }
+  if (key === "creatorIdeaInputClick" && testCase.creatorIdeaText) {
+    await page.keyboard.press("ControlOrMeta+A");
+    await page.keyboard.press("Backspace");
+    await page.keyboard.type(testCase.creatorIdeaText);
+  }
   if (confirmKey && testCase[confirmKey]) {
     await page.waitForTimeout(1500);
     const confirm = testCase[confirmKey];
@@ -244,6 +251,13 @@ async function stepPoint(page, key, fallback) {
   const rect = await page.evaluate((name) => globalThis[name] || null, globalName);
   if (!rect || rect.width <= 2 || rect.height <= 2) {
     return fallback;
+  }
+  const canvas = await page.locator("canvas").boundingBox();
+  if (canvas && rect.viewport_width > 0 && rect.viewport_height > 0) {
+    return {
+      x: Math.round(canvas.x + (rect.x + rect.width * 0.5) * canvas.width / rect.viewport_width),
+      y: Math.round(canvas.y + (rect.y + rect.height * 0.5) * canvas.height / rect.viewport_height),
+    };
   }
   return {
     x: Math.round(rect.x + rect.width * 0.5),

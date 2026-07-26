@@ -20,25 +20,44 @@ type roomBounds struct {
 }
 
 func (h *Hub) sanitizeMovePayload(client *clientState, payload map[string]interface{}) map[string]interface{} {
-	payload["room_id"] = client.roomID
-	payload["player_id"] = client.playerID
+	state := client.snapshot()
+	sanitized := map[string]interface{}{
+		"room_id":   state.roomID,
+		"player_id": state.playerID,
+	}
 	if mapID := sanitizeMoveMapID(stringValue(payload, "map_id", "")); mapID != "" {
-		payload["map_id"] = mapID
-	} else {
-		delete(payload, "map_id")
+		sanitized["map_id"] = mapID
 	}
 	position := payloadMap(payload["position"])
-	bounds := boundsForRoom(client.roomID)
-	payload["position"] = map[string]interface{}{
+	bounds := boundsForRoom(state.roomID)
+	sanitized["position"] = map[string]interface{}{
 		"x": clampFloat(floatValue(position, "x", 0), bounds.minX, bounds.maxX),
 		"y": clampFloat(floatValue(position, "y", 0), bounds.minY, bounds.maxY),
 	}
-	return payload
+	if velocity, ok := payload["velocity"].(map[string]interface{}); ok {
+		sanitized["velocity"] = map[string]interface{}{
+			"x": clampFloat(floatValue(velocity, "x", 0), -2000, 2000),
+			"y": clampFloat(floatValue(velocity, "y", 0), -2000, 2000),
+		}
+	}
+	if facing := sanitizedShortValue(payload, "facing", 16); facing != "" {
+		sanitized["facing"] = facing
+	}
+	if variantID := sanitizedShortValue(payload, "character_variant_id", 80); variantID != "" {
+		sanitized["character_variant_id"] = variantID
+	}
+	if value, ok := payload["is_sitting"].(bool); ok {
+		sanitized["is_sitting"] = value
+	}
+	if value, ok := payload["is_attacking"].(bool); ok {
+		sanitized["is_attacking"] = value
+	}
+	return sanitized
 }
 
 func (h *Hub) moveIntervalFor(client *clientState) time.Duration {
 	interval := h.moveInterval
-	if h.joinedClientCount(client.roomID) >= denseRoomMoveThreshold && interval < denseRoomMoveInterval {
+	if h.joinedClientCount(client.snapshot().roomID) >= denseRoomMoveThreshold && interval < denseRoomMoveInterval {
 		return denseRoomMoveInterval
 	}
 	return interval
@@ -58,7 +77,8 @@ func (h *Hub) filterMovementTargets(roomID string, envelope Envelope, clients []
 	targets := make([]*clientState, 0, len(clients))
 	culled := 0
 	for _, client := range clients {
-		if client.playerID == "" || client.playerID == sourcePlayerID || h.clientInInterestRange(roomID, client.playerID, sourcePoint) {
+		playerID := client.snapshot().playerID
+		if playerID == "" || playerID == sourcePlayerID || h.clientInInterestRange(roomID, playerID, sourcePoint) {
 			targets = append(targets, client)
 			continue
 		}

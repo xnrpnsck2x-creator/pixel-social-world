@@ -4,17 +4,19 @@ extends RefCounted
 const WorldHUDAssetsScript := preload("res://scripts/UI/HUD/WorldHUDAssets.gd")
 const PanelListFrameScript := preload("res://scripts/UI/Panels/PanelListFrame.gd")
 const PanelTextThemeScript := preload("res://scripts/UI/Panels/PanelTextTheme.gd")
+const CreatorWorkflowScript := preload("res://scripts/UI/Panels/CreatorWorkflow.gd")
 const STATUS_KEY := "creator_package_status"
-const PACKAGE_GAME_ID := "creator_package_probe"
 
 var compact_layout := false
+var workflow := CreatorWorkflowScript.new()
+var detail_label: Label
+var submit_button: Button
 
 func render(items_rows: VBoxContainer, compact: bool) -> void:
 	compact_layout = compact
 	var row := PanelListFrameScript.new().add_hbox(items_rows, compact_layout)
-
 	var icon := TextureRect.new()
-	icon.custom_minimum_size = Vector2(30, 30) if compact_layout else Vector2(34, 34)
+	icon.custom_minimum_size = Vector2(24, 24) if compact_layout else Vector2(32, 32)
 	icon.texture = WorldHUDAssetsScript.load_ui_texture("icon.shield")
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -23,91 +25,76 @@ func render(items_rows: VBoxContainer, compact: bool) -> void:
 	var labels := VBoxContainer.new()
 	labels.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(labels)
-
 	var title_label := Label.new()
 	title_label.text = App.t_key("creator.package.title")
-	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	title_label.add_theme_font_size_override("font_size", 10 if compact_layout else 14)
+	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	title_label.clip_text = true
 	labels.add_child(title_label)
-
-	var detail_label := Label.new()
+	detail_label = Label.new()
 	detail_label.text = _status_text(_load_status())
-	detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	detail_label.add_theme_font_size_override("font_size", 8 if compact_layout else 11)
+	detail_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	detail_label.clip_text = true
 	PanelTextThemeScript.apply_pair([title_label], [detail_label])
 	labels.add_child(detail_label)
 
-	var submit_button := Button.new()
+	submit_button = Button.new()
+	submit_button.name = "CreatorPackageSubmitButton"
 	submit_button.text = App.t_key("creator.package.submit_button")
-	submit_button.custom_minimum_size = Vector2(62, 30) if compact_layout else Vector2(76, 32)
+	submit_button.custom_minimum_size = Vector2(58, 30) if compact_layout else Vector2(76, 32)
+	submit_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	submit_button.add_theme_font_size_override("font_size", 10 if compact_layout else 12)
+	submit_button.disabled = not workflow.has_resolved_state()
 	WorldHUDAssetsScript.configure_button_frame(submit_button)
 	submit_button.pressed.connect(_submit_package.bind(detail_label, submit_button))
 	row.add_child(submit_button)
 
+func refresh_state() -> void:
+	if not is_instance_valid(detail_label) or not is_instance_valid(submit_button):
+		return
+	detail_label.text = _status_text(_load_status())
+	submit_button.disabled = not workflow.has_resolved_state()
+
 func _submit_package(detail_label: Label, submit_button: Button) -> void:
+	var payload := workflow.build_package()
+	if payload.is_empty():
+		detail_label.text = App.t_key("creator.package.status.manifest_required")
+		submit_button.disabled = true
+		return
 	submit_button.disabled = true
 	detail_label.text = App.t_key("creator.package.status.submitting")
 	var client := _online_client()
-	var response: Dictionary = await client.call("submit_creator_package", _package_payload())
+	var response: Dictionary = await client.call("submit_creator_package", payload)
+	if not is_instance_valid(detail_label) or not is_instance_valid(submit_button):
+		return
 	if not bool(response.get("ok", false)):
 		detail_label.text = _failed_status(response)
 		submit_button.disabled = false
 		return
 	var data: Dictionary = response.get("data", {}) as Dictionary
 	_save_status(data)
-	var status_response: Dictionary = await _wait_for_package_status(client)
+	var status_response: Dictionary = await _wait_for_package_status(
+		client,
+		str(payload.get("game_id", ""))
+	)
+	if not is_instance_valid(detail_label) or not is_instance_valid(submit_button):
+		return
 	if bool(status_response.get("ok", false)):
 		data = status_response.get("data", {}) as Dictionary
 		_save_status(data)
 	detail_label.text = _status_text(data)
 	submit_button.disabled = false
 
-func _package_payload() -> Dictionary:
-	var manifest := _manifest()
-	var meta_text := JSON.stringify(manifest)
-	var script := "class_name CreatorPackageProbe\nextends IMinigame\n\nfunc get_game_id() -> String:\n\treturn \"%s\"\n" % PACKAGE_GAME_ID
-	var scene := "[gd_scene format=3]\n[node name=\"CreatorPackageProbe\" type=\"Node\"]\nscript = ExtResource(\"1_script\")\n"
-	var payload := manifest.duplicate(true)
-	payload["files"] = [
-		_file("meta.json", meta_text),
-		_file("main.tscn", scene),
-		_file("game.gd", script),
-		_file("README.md", "Creator package probe for intake scanner.")
-	]
-	return payload
-
-func _manifest() -> Dictionary:
-	return {
-		"game_id": PACKAGE_GAME_ID,
-		"version": "0.1.0",
-		"mode_id": "2d_fighting",
-		"name": {"en": "Creator Package Probe", "ja": "Creator Package Probe", "zh": "Creator Package Probe"},
-		"min_players": 1,
-		"max_players": 4,
-		"tags": ["fighting", "package"],
-		"requires_network": true,
-		"runtime_contract": {
-			"camera": "side_view",
-			"input_profile": "fighting_action",
-			"network_profile": "authoritative_realtime"
-		},
-		"entry_scene": "res://creator/%s/main.tscn" % PACKAGE_GAME_ID,
-		"main_script": "res://creator/%s/game.gd" % PACKAGE_GAME_ID,
-		"asset_budget_bytes": 5242880
-	}
-
-func _file(path: String, content: String) -> Dictionary:
-	return {
-		"path": path,
-		"size_bytes": content.to_utf8_buffer().size(),
-		"content_text": content
-	}
-
 func _status_text(status: Dictionary) -> String:
 	if status.is_empty():
-		return App.t_key("creator.package.status.none")
+		if workflow.has_resolved_state():
+			return App.t_key("creator.package.status.ready")
+		return App.t_key("creator.package.status.manifest_required")
 	return App.format_key("creator.package.status.format", {
-		"game": str(status.get("game_id", PACKAGE_GAME_ID)),
+		"game": str(status.get("game_id", workflow.current_game_id())),
 		"status": str(status.get("status", "needs_review")),
-		"mode": str(status.get("mode_id", "2d_fighting"))
+		"mode": str(status.get("mode_id", ""))
 	})
 
 func _failed_status(response: Dictionary) -> String:
@@ -121,17 +108,17 @@ func _failed_status(response: Dictionary) -> String:
 		"error": str(response.get("error", "package_scan_failed"))
 	})
 
-func _wait_for_package_status(client: Node) -> Dictionary:
+func _wait_for_package_status(client: Node, game_id: String) -> Dictionary:
 	var response := {}
 	var tree := Engine.get_main_loop() as SceneTree
-	for _attempt in range(12):
-		response = await client.call("fetch_creator_submission_status", PACKAGE_GAME_ID)
+	for _attempt in range(50):
+		response = await client.call("fetch_creator_submission_status", game_id)
 		if bool(response.get("ok", false)):
 			var data: Dictionary = response.get("data", {}) as Dictionary
 			var status := str(data.get("status", ""))
 			if status != "submitted" and status != "scanning":
 				return response
-		await tree.create_timer(0.08).timeout
+		await tree.create_timer(0.1).timeout
 	return response
 
 func _load_status() -> Dictionary:

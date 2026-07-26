@@ -178,7 +178,16 @@ See `SECURITY.md` for vulnerability reporting and safe testing guidelines.
 
 ## Creator Minigame Contract
 
-Creator games must inherit the Godot `IMinigame` interface and provide localized metadata. Runtime-loaded games are isolated through the minigame sandbox flow, and creator submissions are reviewed before listing.
+Automatic creator integration uses Manifest V2 declarative packages resolved
+against the versioned creator registry. The registry provides multilingual
+keyword discovery, mode-safe capabilities, pinned official asset hashes, and
+a deterministic manifest lock. The public upload path is declarative-only;
+published clients receive a path-free catalog plus a server-revalidated JSON
+runtime payload interpreted by the platform-owned Godot scene;
+the Godot `IMinigame` code contract is reserved for platform-owned releases
+until a trusted-publisher signature verifier is implemented. `SubViewport`
+provides rendering and lifecycle isolation, not a security boundary, so
+player-supplied scripts are never accepted by automatic intake.
 
 See:
 

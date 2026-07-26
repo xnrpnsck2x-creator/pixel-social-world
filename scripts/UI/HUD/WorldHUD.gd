@@ -119,10 +119,10 @@ func _ready() -> void:
 	first_session_guide.bind_ui(first_session_panel, first_session_title, first_session_body, first_session_progress)
 	first_session_guide.reward_granted.connect(_on_first_session_reward_granted)
 	mobile_input_controller = WorldHUDMobileInputControllerScript.new()
-	mobile_input_controller.bind(bottom_bar, _mobile_text_inputs(), [online_room_panel, social_messages_panel, social_facility_panel])
-	social_facility_panel.text_input_added.connect(func(input: LineEdit) -> void:
-		mobile_input_controller.track_input(input)
-	)
+	mobile_input_controller.bind(bottom_bar, _mobile_text_inputs(), [online_room_panel, utility_panel, social_messages_panel, social_facility_panel])
+	for panel in [utility_panel, social_facility_panel]:
+		panel.text_input_added.connect(func(input: LineEdit) -> void:
+			mobile_input_controller.track_input(input))
 	_emote_palette_controller = WorldHUDEmotePaletteScript.new()
 	_emote_palette_controller.bind(emote_palette, emote_grid)
 	_emote_palette_controller.emote_selected.connect(_on_palette_emote_selected)

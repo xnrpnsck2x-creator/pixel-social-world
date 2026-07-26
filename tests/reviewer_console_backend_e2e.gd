@@ -1,6 +1,7 @@
 extends SceneTree
 
 const Helpers := preload("res://tests/BackendE2EHelpers.gd")
+const CreatorFixtures := preload("res://tests/CreatorE2EFixtures.gd")
 
 func _initialize() -> void:
 	call_deferred("_run")
@@ -38,7 +39,29 @@ func _run() -> void:
 	var login: Dictionary = await client.call("guest_login", "Reviewer E2E")
 	if not Helpers.ok(login):
 		failures.append("Reviewer E2E login failed: %s" % str(login))
-	var submit: Dictionary = await client.call("submit_creator_package", Helpers.creator_package_manifest())
+	var discovery: Dictionary = await client.call(
+		"discover_creator_keywords",
+		"two player fighting duel",
+		"2d_fighting",
+		"en",
+		6
+	)
+	if not Helpers.ok(discovery) or not _discovery_has_keyword(discovery, "keyword.genre.fighting"):
+		failures.append("Reviewer E2E keyword discovery failed: %s" % str(discovery))
+	var resolution: Dictionary = await client.call(
+		"resolve_creator_manifest",
+		CreatorFixtures.manifest_request()
+	)
+	var resolved_manifest := _resolved_manifest(resolution)
+	if not Helpers.ok(resolution) or resolved_manifest.is_empty():
+		failures.append("Reviewer E2E manifest resolution failed: %s" % str(resolution))
+	var submit: Dictionary = await client.call(
+		"submit_creator_package",
+		CreatorFixtures.package_manifest(
+			resolved_manifest,
+			str(client.get("player_id"))
+		)
+	)
 	if not Helpers.ok(submit):
 		failures.append("Reviewer E2E package submit failed: %s" % str(submit))
 	var status: Dictionary = await Helpers.wait_package_status(root, client, "creator_e2e_package")
@@ -111,9 +134,34 @@ func _run() -> void:
 	var catalog := await Helpers.raw_json(root, HTTPClient.METHOD_GET, "/minigames/catalog", {}, "")
 	if int(catalog.get("status", 0)) != 200 or _catalog_missing_game(catalog, "creator_e2e_package"):
 		failures.append("Published reviewer package did not enter catalog.")
+	var runtime: Dictionary = await client.call(
+		"fetch_published_minigame_runtime",
+		"creator_e2e_package"
+	)
+	var runtime_definition := (runtime.get("data", {}) as Dictionary).get("definition", {}) as Dictionary
+	if not Helpers.ok(runtime) or str(runtime_definition.get("game_id", "")) != "creator_e2e_package":
+		failures.append("Published reviewer package runtime did not load: %s" % str(runtime))
+	var creator_session: Dictionary = await client.call(
+		"create_minigame_session",
+		"creator_e2e_package",
+		"world_town_square",
+		4
+	)
+	var creator_session_id := str((creator_session.get("data", {}) as Dictionary).get("id", ""))
+	if not Helpers.ok(creator_session) or creator_session_id.is_empty():
+		failures.append("Published creator game could not create a player session: %s" % str(creator_session))
 	var unpublish: Dictionary = await client.call("review_minigame_admin", "creator_e2e_package", "unpublish", "local-admin-token", true, "reviewer e2e unpublish")
 	if not Helpers.ok(unpublish) or str((unpublish.get("data", {}) as Dictionary).get("status", "")) != "approved":
 		failures.append("Reviewer unpublish action failed: %s" % str(unpublish))
+	var unpublished_runtime: Dictionary = await client.call(
+		"fetch_published_minigame_runtime",
+		"creator_e2e_package"
+	)
+	if int(unpublished_runtime.get("status", 0)) != 404:
+		failures.append("Unpublished reviewer runtime remained available.")
+	var blocked_join: Dictionary = await client.call("join_minigame_session", creator_session_id)
+	if int(blocked_join.get("status", 0)) != 410:
+		failures.append("Unpublished creator session remained joinable: %s" % str(blocked_join))
 	var audit: Dictionary = await client.call("fetch_reviewer_audit", "creator_e2e_package", "local-admin-token")
 	if not Helpers.ok(audit) or _audit_count(audit) < 3:
 		failures.append("Reviewer audit did not record action history: %s" % str(audit))
@@ -138,6 +186,16 @@ func _dashboard_has_game(response: Dictionary, game_id: String) -> bool:
 		if typeof(item) == TYPE_DICTIONARY and str((item as Dictionary).get("game_id", "")) == game_id:
 			return true
 	return false
+
+func _discovery_has_keyword(response: Dictionary, keyword_id: String) -> bool:
+	var matches: Array = (response.get("data", {}) as Dictionary).get("matches", []) as Array
+	for match in matches:
+		if typeof(match) == TYPE_DICTIONARY and str((match as Dictionary).get("id", "")) == keyword_id:
+			return true
+	return false
+
+func _resolved_manifest(response: Dictionary) -> Dictionary:
+	return ((response.get("data", {}) as Dictionary).get("resolved_manifest", {}) as Dictionary)
 
 func _catalog_missing_game(response: Dictionary, game_id: String) -> bool:
 	var items: Array = (response.get("body", {}) as Dictionary).get("items", []) as Array

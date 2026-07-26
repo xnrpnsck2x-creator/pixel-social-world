@@ -1,6 +1,9 @@
 package room
 
-import "strings"
+import (
+	"context"
+	"strings"
+)
 
 type RoomCapacityPolicy struct {
 	MainCity int
@@ -17,6 +20,8 @@ type joinReservation struct {
 	oldPlayerID    string
 	oldDisplayName string
 	shouldLeave    bool
+	superseded     *clientState
+	errorCode      string
 }
 
 func DefaultRoomCapacityPolicy() RoomCapacityPolicy {
@@ -52,37 +57,77 @@ func normalizedRoomCapacityPolicy(policy RoomCapacityPolicy) RoomCapacityPolicy 
 }
 
 func (h *Hub) reserveJoin(client *clientState, playerID string, displayName string, roomID string) joinReservation {
+	h.sessionFenceMu.Lock()
+	defer h.sessionFenceMu.Unlock()
 	h.mu.Lock()
-	defer h.mu.Unlock()
 
 	limit := h.roomCapacityLimit(roomID)
-	current := h.joinedClientCountLocked(roomID, client)
+	current := h.joinedClientCountLocked(roomID, playerID)
 	if limit > 0 && current >= limit {
+		h.mu.Unlock()
 		return joinReservation{accepted: false, limit: limit, current: current}
 	}
 
+	previous := client.snapshot()
+	active := h.activePlayers[playerID]
 	reservation := joinReservation{
 		accepted:       true,
 		limit:          limit,
 		current:        current + 1,
-		oldRoomID:      client.roomID,
-		oldPlayerID:    client.playerID,
-		oldDisplayName: client.displayName,
+		oldRoomID:      previous.roomID,
+		oldPlayerID:    previous.playerID,
+		oldDisplayName: previous.displayName,
 	}
-	reservation.shouldLeave = client.playerID != "" && (client.roomID != roomID || client.playerID != playerID)
-	client.roomID = roomID
-	client.playerID = playerID
-	client.displayName = displayName
+	if active.client != nil && active.client != client {
+		activeState := active.client.snapshot()
+		reservation.superseded = active.client
+		if activeState.roomID != roomID {
+			reservation.oldRoomID = activeState.roomID
+			reservation.oldPlayerID = activeState.playerID
+			reservation.oldDisplayName = activeState.displayName
+			reservation.shouldLeave = activeState.playerID != ""
+		}
+	}
+	if previous.playerID != "" && (previous.roomID != roomID || previous.playerID != playerID) {
+		reservation.shouldLeave = true
+	}
+
+	if previous.playerID != "" && previous.playerID != playerID {
+		if old := h.activePlayers[previous.playerID]; old.client == client && old.generation == previous.generation {
+			delete(h.activePlayers, previous.playerID)
+		}
+	}
+	h.nextGeneration++
+	generation := h.nextGeneration
+	sessionToken := newSessionToken(generation)
+	h.mu.Unlock()
+
+	if h.sessionLease != nil {
+		if err := h.sessionLease.Claim(
+			context.Background(),
+			playerID,
+			sessionToken,
+			h.sessionLeaseTTL(),
+		); err != nil {
+			return joinReservation{accepted: false, errorCode: "session_lease_unavailable"}
+		}
+	}
+
+	h.mu.Lock()
+	client.setSession(roomID, playerID, displayName, generation, sessionToken)
+	h.activePlayers[playerID] = activePlayerSession{client: client, generation: generation}
+	h.mu.Unlock()
 	return reservation
 }
 
-func (h *Hub) joinedClientCountLocked(roomID string, excluded *clientState) int {
+func (h *Hub) joinedClientCountLocked(roomID string, excludedPlayerID string) int {
 	count := 0
-	for _, client := range h.clients {
-		if client == excluded || client.playerID == "" {
+	for playerID, session := range h.activePlayers {
+		if playerID == excludedPlayerID {
 			continue
 		}
-		if client.roomID == roomID {
+		state := session.client.snapshot()
+		if state.playerID == playerID && state.generation == session.generation && state.roomID == roomID {
 			count++
 		}
 	}
@@ -92,7 +137,7 @@ func (h *Hub) joinedClientCountLocked(roomID string, excluded *clientState) int 
 func (h *Hub) joinedClientCount(roomID string) int {
 	h.mu.RLock()
 	defer h.mu.RUnlock()
-	return h.joinedClientCountLocked(roomID, nil)
+	return h.joinedClientCountLocked(roomID, "")
 }
 
 func (h *Hub) roomCapacityLimit(roomID string) int {

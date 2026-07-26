@@ -13,12 +13,27 @@ func (s *MemoryService) packageInstallStore() PackageInstallStore {
 }
 
 func (s *MemoryService) PublishPackage(ctx context.Context, id string) (Record, error) {
-	record, ok := s.Get(ctx, id)
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	record, ok := s.records[id]
 	if !ok {
 		return Record{}, errors.New("minigame_not_found")
 	}
 	if record.Package == nil {
 		return Record{}, errors.New("package_snapshot_required")
+	}
+	previous, previousOK, err := s.packageInstallStore().CurrentPackage(ctx, id)
+	if err != nil {
+		return Record{}, err
+	}
+	targetInstallKey, err := packageInstallKey(record)
+	if err != nil {
+		return Record{}, err
+	}
+	if previousOK && previous.InstallKey != targetInstallKey {
+		if _, ok := s.memoryRecordForInstallLocked(previous); !ok {
+			return Record{}, errors.New("release_history_missing")
+		}
 	}
 	request, err := s.packageStore().LoadPackage(ctx, record.Package.StorageKey)
 	if err != nil {
@@ -28,57 +43,67 @@ func (s *MemoryService) PublishPackage(ctx context.Context, id string) (Record, 
 	if err != nil {
 		return Record{}, err
 	}
-	record.Status = "published"
-	record.Package.Install = &install
-	record.Package.Report.Status = "published"
-	if !containsPackageStage(record.Package.Report.Stages, "published") {
-		record.Package.Report.Stages = append(record.Package.Report.Stages, "published")
+	if previousOK && previous.InstallKey != install.InstallKey {
+		s.markMemoryReleaseInactiveLocked(previous, "superseded")
 	}
-	s.storeRecord(record)
+	record = recordWithPublishedInstall(record, install)
+	s.records[id] = cloneRecord(record)
+	s.storeSubmissionVersionLocked(record)
 	return record, nil
 }
 
 func (s *MemoryService) RollbackPackage(ctx context.Context, id string) (Record, error) {
-	record, ok := s.Get(ctx, id)
-	if !ok {
-		return Record{}, errors.New("minigame_not_found")
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	previous, previousOK, err := s.packageInstallStore().CurrentPackage(ctx, id)
+	if err != nil {
+		return Record{}, err
 	}
-	if record.Package == nil {
-		return Record{}, errors.New("package_snapshot_required")
+	if !previousOK {
+		return Record{}, errors.New("package_not_published")
 	}
 	install, err := s.packageInstallStore().RollbackPackage(ctx, id)
 	if err != nil {
 		return Record{}, err
 	}
-	record.Status = "published"
-	record.Package.Install = &install
-	record.Package.Report.Status = "published"
-	if !containsPackageStage(record.Package.Report.Stages, "rollback") {
-		record.Package.Report.Stages = append(record.Package.Report.Stages, "rollback")
+	record, ok := s.memoryRecordForInstallLocked(install)
+	if !ok {
+		_ = s.packageInstallStore().RestorePackage(ctx, id, install.InstallKey, &previous)
+		return Record{}, errors.New("release_history_missing")
 	}
-	s.storeRecord(record)
+	s.markMemoryReleaseInactiveLocked(previous, "superseded")
+	record = recordWithPublishedInstall(record, install)
+	record.Package.Report.Stages = appendUniqueStage(record.Package.Report.Stages, "rollback")
+	s.storeSubmissionVersionLocked(record)
+	if current := s.records[id]; current.Version == record.Version {
+		s.records[id] = cloneRecord(record)
+	}
 	return record, nil
 }
 
 func (s *MemoryService) UnpublishPackage(ctx context.Context, id string) (Record, error) {
-	record, ok := s.Get(ctx, id)
-	if !ok {
-		return Record{}, errors.New("minigame_not_found")
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	currentInstall, ok, err := s.packageInstallStore().CurrentPackage(ctx, id)
+	if err != nil {
+		return Record{}, err
 	}
-	if record.Package == nil {
-		return Record{}, errors.New("package_snapshot_required")
+	if !ok {
+		return Record{}, errors.New("package_not_published")
+	}
+	record, ok := s.memoryRecordForInstallLocked(currentInstall)
+	if !ok {
+		return Record{}, errors.New("release_history_missing")
 	}
 	install, err := s.packageInstallStore().UnpublishPackage(ctx, id)
 	if err != nil {
 		return Record{}, err
 	}
-	record.Status = "approved"
-	record.Package.Install = &install
-	record.Package.Report.Status = "approved"
-	if !containsPackageStage(record.Package.Report.Stages, "unpublished") {
-		record.Package.Report.Stages = append(record.Package.Report.Stages, "unpublished")
+	record = recordWithInactiveInstall(record, install, "unpublished")
+	s.storeSubmissionVersionLocked(record)
+	if current := s.records[id]; current.Version == record.Version {
+		s.records[id] = cloneRecord(record)
 	}
-	s.storeRecord(record)
 	return record, nil
 }
 
@@ -86,11 +111,28 @@ func (s *MemoryService) ListPublishedPackages(ctx context.Context) ([]PackageIns
 	return s.packageInstallStore().ListInstalledPackages(ctx)
 }
 
-func containsPackageStage(stages []string, target string) bool {
-	for _, stage := range stages {
-		if stage == target {
-			return true
-		}
+func (s *MemoryService) memoryRecordForInstallLocked(
+	install PackageInstallSnapshot,
+) (Record, bool) {
+	versions := s.versionRecords[install.GameID]
+	snapshot, ok := versions[submissionVersionKey(install.Version)]
+	if !ok || !installMatchesRecord(install, snapshot.Record) {
+		return Record{}, false
 	}
-	return false
+	return cloneRecord(snapshot.Record), true
+}
+
+func (s *MemoryService) markMemoryReleaseInactiveLocked(
+	install PackageInstallSnapshot,
+	stage string,
+) {
+	record, ok := s.memoryRecordForInstallLocked(install)
+	if !ok {
+		return
+	}
+	record = recordWithInactiveInstall(record, install, stage)
+	s.storeSubmissionVersionLocked(record)
+	if current := s.records[install.GameID]; current.Version == record.Version {
+		s.records[install.GameID] = cloneRecord(record)
+	}
 }

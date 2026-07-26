@@ -2858,3 +2858,19 @@ Status: Implemented and H5/Godot verified on 2026-05-11.
 - Added profile-card smoke coverage for the selected remote member variant preview and kept touched Godot scripts within the 300-line budget.
 - Verified focused Godot smokes: `map_npc_grounding_smoke`, `map_collision_patrol_smoke`, `main_city_interactions_smoke`, `login_character_selection_smoke`, `player_avatar_variants_smoke`, `player_avatar_smoke`, and `map_npc_visual_quality_v2_smoke`.
 - Verified H5 profile-card screenshots with fresh Web evidence: `.tools/profile-card-character-preview-v2b-web/h5-desktop-profile-card.png` and `.tools/profile-card-character-preview-v2b-web/h5-mobile-landscape-profile-card.png`.
+
+## Creator Automatic Runtime Player Loop v2
+
+Status: Implemented and full local MVP-gate verified on 2026-07-25.
+
+- Completed the player-visible Creator loop from idea analysis and keyword/capability resolution through declarative package submission, asynchronous review/publish state, public catalog selection, session host/join, and sandbox launch.
+- Added a shared Creator registry contract for the Go backend and Godot client. Automatic public runtime is deliberately limited to `casual_activity` with the `tap_timing` template; the six other Creator modes remain reserved until their runtime templates and safety policies are independently production-ready.
+- Made catalog and session admission fail closed. Unpublished, revoked, missing, stale, or contract-invalid Creator releases cannot create or join sessions, and explicit runtime lookup failures do not fall back to an old cached package.
+- Added player-facing game selection to the room panel and compact Creator Lab rows for analysis, package intake, review signals, and release status.
+- Hardened mobile Web input layout and delayed debug-rectangle callbacks so virtual-keyboard checks remain valid without reading controls after route teardown.
+- Added focused Godot coverage for workflow analysis, package unlock, player selection/launch, declarative runtime, and runtime revocation, plus backend tests for registry publication, session admission, package integrity, rate limits, and review execution.
+- Verified the complete local `run_mvp_100_gate.sh`: Go packages, content contracts, UI/category/map v2 gates, five backend/Godot E2E flows, 27 priority H5 screenshots, semantic screenshot checks, 64 desktop/mobile map-patrol screenshots, zero browser console messages, atlas generation, GDScript line budget, and whitespace checks all passed.
+- Preserved the compact reports and representative desktop/mobile evidence under `.tools/mvp-creator-runtime-v2/`; duplicate Web exports and temporary backend binaries are intentionally excluded.
+- Re-exported, pruned, aligned, v2/v3-signed, installed, and launched the current 150.0 MB Android debug APK on authorized device `c7e94055`.
+- Refreshed both required Android runtime reports with strict package/Godot log scanning. The 240-second probe passed with 20 samples, 27.2%/33.3% average/peak CPU, 345/370.5 MB average/peak PSS, -16.8 MB PSS growth, and 19.2 MB peak swap PSS. The 600-second soak passed with 51 samples, 22.7%/33.7% CPU, 321.1/354.9 MB PSS, -38.5 MB growth, and 9 MB peak swap PSS.
+- Re-ran `run_mvp_100_gate.sh` without `PSW_PROJECT_CATEGORY_V2_SKIP_ANDROID_RUNTIME`; all 14 project categories and 40 category checks passed using the refreshed true-device reports.

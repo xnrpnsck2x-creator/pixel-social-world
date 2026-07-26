@@ -1,6 +1,7 @@
 class_name WorldUtilityPanel
 extends PanelContainer
 signal utility_action_requested(action_id: String)
+signal text_input_added(input: LineEdit)
 const WorldHUDAssetsScript := preload("res://scripts/UI/HUD/WorldHUDAssets.gd")
 const CreatorContractRowsScript := preload("res://scripts/UI/Panels/CreatorContractRows.gd")
 const CreatorDraftRowsScript := preload("res://scripts/UI/Panels/CreatorDraftRows.gd")
@@ -81,7 +82,9 @@ func _refresh_text() -> void:
 
 func _rebuild_rows(panel_id: String) -> void:
 	for child in items_rows.get_children():
+		items_rows.remove_child(child)
 		child.queue_free()
+	items_scroll.scroll_vertical = 0
 	match panel_id:
 		"shop":
 			_render_shop_rows()
@@ -90,13 +93,13 @@ func _rebuild_rows(panel_id: String) -> void:
 		"notice":
 			_render_message_rows("notice", "notices", "world.panel.notice.empty")
 		"creator":
-			CreatorContractRowsScript.new().render(items_rows, _compact_layout)
-			_creator_draft_rows = CreatorDraftRowsScript.new()
-			_creator_draft_rows.render(items_rows, _compact_layout)
 			_creator_package_rows = CreatorPackageRowsScript.new()
+			_creator_draft_rows = CreatorDraftRowsScript.new()
+			_creator_draft_rows.render(items_rows, _compact_layout, Callable(self, "_register_text_input"), Callable(_creator_package_rows, "refresh_state"))
 			_creator_package_rows.render(items_rows, _compact_layout)
 			CreatorReviewerRowsScript.new().render(items_rows, _compact_layout)
 			CreatorStatusRowsScript.new().render(items_rows, _compact_layout)
+			CreatorContractRowsScript.new().render(items_rows, _compact_layout)
 		"map":
 			MapDirectoryRowsScript.new().render(
 				items_rows,
@@ -224,6 +227,9 @@ func _request_map_travel(map_id: String) -> void:
 
 func _request_map_atlas() -> void:
 	utility_action_requested.emit("map_atlas")
+
+func _register_text_input(input: LineEdit) -> void:
+	text_input_added.emit(input)
 
 func _housing_item(config: Dictionary, item_id: String) -> Dictionary:
 	for item in config.get("items", []):

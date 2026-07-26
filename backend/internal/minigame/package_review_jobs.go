@@ -12,6 +12,7 @@ const maxPackageReviewAttempts = 3
 type PackageReviewJobSnapshot struct {
 	ID           string `json:"id"`
 	GameID       string `json:"game_id"`
+	Version      string `json:"version"`
 	StorageKey   string `json:"storage_key"`
 	ArtifactURI  string `json:"artifact_uri,omitempty"`
 	Status       string `json:"status"`
@@ -42,6 +43,9 @@ func (s *MemoryService) SubmitPackageAsync(ctx context.Context, request PackageS
 	if err != nil {
 		return Record{}, err
 	}
+	if err := s.validateSubmittedRecord(record); err != nil {
+		return Record{}, err
+	}
 	artifactURI, err := s.packageStore().SavePackage(ctx, record.Package.StorageKey, request)
 	if err != nil {
 		return Record{}, err
@@ -49,9 +53,21 @@ func (s *MemoryService) SubmitPackageAsync(ctx context.Context, request PackageS
 	record.Package.ArtifactURI = artifactURI
 	job.StorageKey = record.Package.StorageKey
 	job.ArtifactURI = artifactURI
-	s.storeRecord(record)
+	record.Package.ReviewJob = &job
+	if err := s.storeSubmittedRecord(record); err != nil {
+		return Record{}, err
+	}
 	s.storeReviewJob(job)
-	go s.scanPackageReviewJob(job.ID)
+	queueContext, cancel := context.WithTimeout(ctx, 250*time.Millisecond)
+	defer cancel()
+	if !creatorPackageReviewExecutor.Submit(queueContext, job.ID, func() {
+		s.scanPackageReviewJob(job.ID)
+	}) {
+		job.Attempts = maxPackageReviewAttempts
+		s.failReviewJob(job, errors.New("package_review_queue_full"))
+		current, _ := s.Get(ctx, record.GameID)
+		return current, errors.New("package_review_queue_full")
+	}
 	return record, nil
 }
 
@@ -83,8 +99,7 @@ func (s *MemoryService) scanPackageReviewJob(jobID string) {
 	completed := completePackageReviewJob(job, "")
 	final.Package.ArtifactURI = job.ArtifactURI
 	final.Package.ReviewJob = &completed
-	s.storeReviewJob(completed)
-	s.storeScanRecord(final)
+	s.storeMemoryReviewOutcome(completed, &final)
 }
 
 func (s *MemoryService) storeReviewJob(job PackageReviewJobSnapshot) {
@@ -109,7 +124,63 @@ func (s *MemoryService) startReviewJob(jobID string) (PackageReviewJobSnapshot, 
 
 func (s *MemoryService) failReviewJob(job PackageReviewJobSnapshot, err error) {
 	failed := failPackageReviewJob(job, err)
-	s.storeReviewJob(failed)
+	s.storeMemoryReviewOutcome(failed, nil)
+	if failed.Status == "retrying" {
+		delay := time.Until(time.Unix(failed.RunAfterUnix, 0))
+		if delay < 0 {
+			delay = 0
+		}
+		time.AfterFunc(delay, func() {
+			if creatorPackageReviewExecutor.TrySubmit(failed.ID, func() {
+				s.scanPackageReviewJob(failed.ID)
+			}) {
+				return
+			}
+			failed.Attempts = maxPackageReviewAttempts
+			s.failReviewJob(failed, errors.New("package_review_queue_full"))
+		})
+	}
+}
+
+func (s *MemoryService) storeMemoryReviewOutcome(
+	job PackageReviewJobSnapshot,
+	final *Record,
+) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.reviewJobs[job.ID] = job
+
+	target, targetIsCurrent := s.records[job.GameID]
+	if target.Version != job.Version ||
+		target.Package == nil ||
+		target.Package.StorageKey != job.StorageKey ||
+		packageReviewJobID(target.Package) != job.ID {
+		targetIsCurrent = false
+		versions := s.versionRecords[job.GameID]
+		snapshot, ok := versions[submissionVersionKey(job.Version)]
+		if !ok {
+			return
+		}
+		target = snapshot.Record
+		if target.Package == nil ||
+			target.Package.StorageKey != job.StorageKey ||
+			packageReviewJobID(target.Package) != job.ID {
+			return
+		}
+	}
+	if final != nil {
+		if !packageScanMutableStatus(target.Status) ||
+			!samePackageReviewTarget(target, *final) {
+			return
+		}
+		target = cloneRecord(*final)
+	} else {
+		target.Package.ReviewJob = &job
+	}
+	if targetIsCurrent {
+		s.records[job.GameID] = cloneRecord(target)
+	}
+	s.storeSubmissionVersionLocked(target)
 }
 
 func newPackageReviewJob(request PackageSubmitRequest) PackageReviewJobSnapshot {
@@ -118,6 +189,7 @@ func newPackageReviewJob(request PackageSubmitRequest) PackageReviewJobSnapshot 
 	return PackageReviewJobSnapshot{
 		ID:           fmt.Sprintf("%s:%s:%d", request.GameID, request.Version, nonce),
 		GameID:       request.GameID,
+		Version:      request.Version,
 		Status:       "queued",
 		RunAfterUnix: now,
 		CreatedUnix:  now,

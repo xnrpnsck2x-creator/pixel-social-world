@@ -79,6 +79,8 @@ def is_placeholder(path: Path, line: str) -> bool:
 
 
 def iter_text_lines(path: Path):
+    if not path.exists():
+        return
     if path.suffix.lower() in SKIP_EXTENSIONS:
         return
     if path.stat().st_size > 2_000_000:

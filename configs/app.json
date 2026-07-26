@@ -54,6 +54,7 @@
     "housing_items": "res://configs/housing_items.json",
     "minigames": "res://configs/minigames.json",
     "creator_game_modes": "res://configs/creator_game_modes.json",
+    "creator_registry": "res://configs/creator_registry.json",
     "economy": "res://configs/economy.json",
     "fishing": "res://configs/fishing.json",
     "utility_panels": "res://configs/utility_panels.json",

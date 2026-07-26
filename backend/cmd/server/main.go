@@ -5,12 +5,15 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"path/filepath"
+	"strings"
 	"syscall"
 	"time"
 
 	"pixel-social-world/backend/internal/auth"
 	"pixel-social-world/backend/internal/chat"
 	"pixel-social-world/backend/internal/config"
+	"pixel-social-world/backend/internal/creatorregistry"
 	"pixel-social-world/backend/internal/economy"
 	"pixel-social-world/backend/internal/gateway"
 	"pixel-social-world/backend/internal/house"
@@ -37,6 +40,11 @@ func main() {
 	cfg, err := config.Load(configPath)
 	if err != nil {
 		log.Fatal(err)
+	}
+	strictConfig := strings.EqualFold(os.Getenv("PSW_ENV"), "production") ||
+		strings.EqualFold(filepath.Base(configPath), "production.yaml")
+	if issues := config.Validate(cfg, strictConfig); len(issues) > 0 {
+		log.Fatalf("invalid backend configuration: %v", issues)
 	}
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
@@ -74,6 +82,16 @@ func main() {
 	deps.HousingSellRefundRate = cfg.Housing.SellRefundRate
 	deps.AdminToken = cfg.Auth.AdminToken
 	deps.CORSAllowedOrigins = cfg.Server.CORSAllowedOrigins
+	creatorRegistry, err := creatorregistry.Load(cfg.Minigames.CreatorRegistryPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err := creatorRegistry.VerifyLocalAssets(
+		creatorregistry.ProjectRootForRegistryPath(cfg.Minigames.CreatorRegistryPath),
+	); err != nil {
+		log.Fatal(err)
+	}
+	deps.CreatorRegistry = creatorRegistry
 	providerVerifier := authProviderVerifierFromConfig(cfg.Auth)
 	deps.AuthService = auth.NewMemoryServiceWithProviderVerifier(
 		time.Duration(cfg.Auth.AccessTTLSeconds)*time.Second,
@@ -104,6 +122,7 @@ func main() {
 	}
 	var realtimeFanout room.Fanout
 	var realtimeRateLimiter room.RateLimiter
+	var realtimeSessionLease room.SessionLease
 	makeFishingRewards := func(economyService economy.Service) minigame.FishingRewardService {
 		return minigame.NewMemoryFishingRewardService(deps.MinigameService, economyService, fishingRules)
 	}
@@ -149,6 +168,7 @@ func main() {
 		}
 		realtimeFanout = room.NewRedisFanout(client)
 		realtimeRateLimiter = room.NewRedisRateLimiter(client)
+		realtimeSessionLease = room.NewRedisSessionLease(client)
 	}
 	if cfg.Storage.Mode == "postgres" {
 		postgresDB, err := db.OpenPostgres(db.PostgresConfig{
@@ -221,7 +241,14 @@ func main() {
 			minigame.WithPackageAIReviewer(packageReviewer),
 		)
 	}
-	deps.RoomHub = configuredRoomHub(cfg.Realtime, deps.AuthService, deps.MinigameService, realtimeFanout, realtimeRateLimiter)
+	deps.RoomHub = configuredRoomHub(
+		cfg.Realtime,
+		deps.AuthService,
+		deps.MinigameService,
+		realtimeFanout,
+		realtimeRateLimiter,
+		realtimeSessionLease,
+	)
 	deps.FishingRewardService = makeFishingRewards(deps.EconomyService)
 
 	server := gateway.NewServerWithDependencies(deps)
@@ -243,6 +270,7 @@ func configuredRoomHub(
 	minigameService minigame.Service,
 	fanout room.Fanout,
 	rateLimiter room.RateLimiter,
+	sessionLease room.SessionLease,
 ) *room.Hub {
 	options := []room.Option{
 		room.WithSessionValidator(authService),
@@ -259,6 +287,9 @@ func configuredRoomHub(
 	}
 	if rateLimiter != nil {
 		options = append(options, room.WithRateLimiter(rateLimiter))
+	}
+	if sessionLease != nil {
+		options = append(options, room.WithSessionLease(sessionLease))
 	}
 	return room.NewHub(options...)
 }

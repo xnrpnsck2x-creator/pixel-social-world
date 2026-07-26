@@ -6,7 +6,7 @@ GODOT_BIN="${PSW_GODOT_BIN:-$ROOT_DIR/.tools/godot-standard/Godot.app/Contents/M
 ARTIFACT_DIR="${PSW_UI_V2_ARTIFACT_DIR:-$ROOT_DIR/.tools/ui-v2-gate}"
 H5_ARTIFACT_DIR="$ARTIFACT_DIR/h5"
 
-DEFAULT_H5_CASES="h5-desktop-login-character-preview,h5-desktop-world-base,h5-mobile-landscape-world-base,h5-mobile-landscape-chat-keyboard-guard,h5-mobile-landscape-private-keyboard-guard,h5-mobile-landscape-trade-price-keyboard-guard,h5-desktop-map-panel,h5-mobile-landscape-map-atlas-wilds-filter,h5-desktop-shop-panel,h5-desktop-creator-panel,h5-mobile-landscape-creator-panel,h5-desktop-trade-facility-panel,h5-mobile-landscape-trade-facility-panel,h5-desktop-messages-panel,h5-mobile-landscape-messages-panel,h5-desktop-inventory-panel,h5-mobile-landscape-inventory-panel,h5-mobile-landscape-inventory-activity-rewards,h5-desktop-profile-card,h5-mobile-landscape-profile-card,h5-desktop-housing-selected,h5-mobile-landscape-housing-selected,h5-desktop-minigame-host,h5-mobile-landscape-minigame-host,h5-liveops-375x240-ops-tab,h5-mobile-portrait-guard"
+DEFAULT_H5_CASES="h5-desktop-login-character-preview,h5-desktop-world-base,h5-mobile-landscape-world-base,h5-mobile-landscape-chat-keyboard-guard,h5-mobile-landscape-private-keyboard-guard,h5-mobile-landscape-trade-price-keyboard-guard,h5-desktop-map-panel,h5-mobile-landscape-map-atlas-wilds-filter,h5-desktop-shop-panel,h5-desktop-creator-panel,h5-mobile-landscape-creator-panel,h5-mobile-landscape-creator-keyboard-guard,h5-desktop-trade-facility-panel,h5-mobile-landscape-trade-facility-panel,h5-desktop-messages-panel,h5-mobile-landscape-messages-panel,h5-desktop-inventory-panel,h5-mobile-landscape-inventory-panel,h5-mobile-landscape-inventory-activity-rewards,h5-desktop-profile-card,h5-mobile-landscape-profile-card,h5-desktop-housing-selected,h5-mobile-landscape-housing-selected,h5-desktop-minigame-host,h5-mobile-landscape-minigame-host,h5-liveops-375x240-ops-tab,h5-mobile-portrait-guard"
 H5_CASES="${PSW_UI_V2_H5_CASES:-$DEFAULT_H5_CASES}"
 
 mkdir -p "$ARTIFACT_DIR" "$H5_ARTIFACT_DIR"
@@ -33,6 +33,9 @@ run_step "UI v2 runtime asset contract" python3 "$ROOT_DIR/tests/ui_v2_contract_
 run_step "Godot import cache warmup" "$GODOT_BIN" --headless --path "$ROOT_DIR" --import
 run_step "Godot UI frame contract smoke" run_godot_smoke "$ROOT_DIR/tests/ui_frame_contract_smoke.gd"
 run_step "Godot world utility panel UI smoke" run_godot_smoke "$ROOT_DIR/tests/world_utility_panel_ui_smoke.gd"
+run_step "Godot creator workflow smoke" run_godot_smoke "$ROOT_DIR/tests/creator_workflow_smoke.gd"
+run_step "Godot creator package unlock smoke" run_godot_smoke "$ROOT_DIR/tests/creator_package_unlock_smoke.gd"
+run_step "Godot creator player flow smoke" run_godot_smoke "$ROOT_DIR/tests/creator_minigame_player_flow_smoke.gd"
 run_step "Godot housing responsive layout smoke" run_godot_smoke "$ROOT_DIR/tests/housing_responsive_layout_smoke.gd"
 run_step "content contract validation" python3 "$ROOT_DIR/tests/validate_content.py"
 

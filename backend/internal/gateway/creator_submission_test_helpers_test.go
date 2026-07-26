@@ -9,6 +9,8 @@ import (
 	"net/http/httptest"
 	"testing"
 	"time"
+
+	"pixel-social-world/backend/pkg/creatorcontract"
 )
 
 func creatorDraftPayload(playerID string) map[string]any {
@@ -33,20 +35,64 @@ func creatorDraftPayload(playerID string) map[string]any {
 	}
 }
 
-func creatorPackagePayload(playerID string, gameID string, script string) map[string]any {
+func creatorPackagePayload(
+	t *testing.T,
+	playerID string,
+	gameID string,
+	script string,
+) map[string]any {
+	t.Helper()
 	payload := creatorDraftPayload(playerID)
 	payload["game_id"] = gameID
 	payload["version"] = "0.1.0"
-	payload["tags"] = []string{"fighting", "package"}
-	payload["entry_scene"] = "res://creator/" + gameID + "/main.tscn"
-	payload["main_script"] = "res://creator/" + gameID + "/game.gd"
+	payload["mode_id"] = "casual_activity"
+	payload["tags"] = []string{"casual", "package"}
+	payload["requires_network"] = false
+	payload["runtime_contract"] = map[string]any{
+		"camera":          "contained",
+		"input_profile":   "tap_timing",
+		"network_profile": "offline_optional",
+	}
+	payload["entry_scene"] = ""
+	payload["main_script"] = ""
+	registry := testCreatorRegistry(t)
+	resolution := registry.Resolve(creatorcontract.Manifest{
+		SchemaVersion:    creatorcontract.ManifestSchemaVersion,
+		RegistryRevision: registry.Revision(),
+		GameID:           gameID,
+		ModeID:           "casual_activity",
+		Interface: creatorcontract.VersionedRef{
+			ID: "interface.declarative_runtime", Version: "1.0.0", Required: true,
+		},
+		Entry: creatorcontract.EntryPoint{
+			Type: "declarative_v1",
+			Path: "content/game.json",
+		},
+	})
+	if !resolution.OK {
+		t.Fatalf("resolve creator package fixture: %#v", resolution.Issues)
+	}
 	meta, _ := json.Marshal(payload)
+	manifest, _ := json.Marshal(resolution.Resolved)
+	entry, _ := json.Marshal(map[string]any{
+		"schema_version": 1,
+		"game_id":        gameID,
+		"mode_id":        "casual_activity",
+		"type":           "tap_timing",
+		"rules":          map[string]any{"duration_seconds": 60},
+	})
 	payload["files"] = []map[string]any{
 		{"path": "meta.json", "content_text": string(meta)},
-		{"path": "main.tscn", "content_text": "[gd_scene format=3]\n[node name=\"Game\" type=\"Node\"]"},
-		{"path": "game.gd", "content_text": script},
+		{"path": "creator_manifest.json", "content_text": string(manifest)},
+		{"path": "content/game.json", "content_text": string(entry)},
 		{"path": "README.md", "content_text": "Creator package fixture."},
 	}
+	if script != safePackageScript() {
+		payload["files"] = append(payload["files"].([]map[string]any), map[string]any{
+			"path": "game.gd", "content_text": script,
+		})
+	}
+	payload["resolved_manifest"] = resolution.Resolved
 	return payload
 }
 

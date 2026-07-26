@@ -1,6 +1,8 @@
 package gateway
 
 import (
+	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 
@@ -11,12 +13,14 @@ import (
 
 func (s *Server) submitCreatorDraft(ctx *gin.Context) {
 	var request minigame.SubmitRequest
-	if err := ctx.ShouldBindJSON(&request); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid_request"})
+	if !bindCreatorJSON(ctx, &request, minigame.MaxCreatorDraftJSONBytes) {
 		return
 	}
 	playerID, ok := s.requireAuthorizedPlayer(ctx, request.Author)
 	if !ok {
+		return
+	}
+	if !s.allowCreatorSubmission(ctx, playerID) {
 		return
 	}
 	request.Author = playerID
@@ -30,15 +34,20 @@ func (s *Server) submitCreatorDraft(ctx *gin.Context) {
 
 func (s *Server) submitCreatorPackage(ctx *gin.Context) {
 	var request minigame.PackageSubmitRequest
-	if err := ctx.ShouldBindJSON(&request); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid_request"})
+	if !bindCreatorJSON(ctx, &request, minigame.MaxCreatorPackageJSONBytes) {
 		return
 	}
 	playerID, ok := s.requireAuthorizedPlayer(ctx, request.Author)
 	if !ok {
 		return
 	}
+	if !s.allowCreatorSubmission(ctx, playerID) {
+		return
+	}
 	request.Author = playerID
+	if !s.validateResolvedCreatorManifest(ctx, &request) {
+		return
+	}
 	record, err := s.minigameService.SubmitPackageAsync(ctx.Request.Context(), request)
 	if err != nil {
 		status := http.StatusBadRequest
@@ -65,6 +74,9 @@ func (s *Server) submitCreatorPackageZip(ctx *gin.Context) {
 	if !ok {
 		return
 	}
+	if !s.allowCreatorSubmission(ctx, playerID) {
+		return
+	}
 	file, _, err := ctx.Request.FormFile("package")
 	if err != nil {
 		file, _, err = ctx.Request.FormFile("file")
@@ -88,6 +100,9 @@ func (s *Server) submitCreatorPackageZip(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	if !s.validateResolvedCreatorManifest(ctx, &request) {
+		return
+	}
 	record, err := s.minigameService.SubmitPackageAsync(ctx.Request.Context(), request)
 	if err != nil {
 		status := http.StatusBadRequest
@@ -98,6 +113,18 @@ func (s *Server) submitCreatorPackageZip(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusAccepted, record)
+}
+
+func (s *Server) allowCreatorSubmission(ctx *gin.Context, playerID string) bool {
+	if s.creatorSubmissionLimit == nil {
+		s.creatorSubmissionLimit = newCreatorSubmissionLimiter()
+	}
+	if s.creatorSubmissionLimit.allow(playerID, ctx.ClientIP()) {
+		return true
+	}
+	ctx.Header("Retry-After", "60")
+	ctx.JSON(http.StatusTooManyRequests, gin.H{"error": "creator_submission_rate_limited"})
+	return false
 }
 
 func (s *Server) creatorSubmissionStatus(ctx *gin.Context) {
@@ -121,4 +148,29 @@ func (s *Server) creatorSubmissionStatus(ctx *gin.Context) {
 		"status":  record.Status,
 		"package": record.Package,
 	})
+}
+
+func bindCreatorJSON(ctx *gin.Context, target any, maxBytes int) bool {
+	if ctx.Request.ContentLength > int64(maxBytes) {
+		ctx.JSON(http.StatusRequestEntityTooLarge, gin.H{"error": "request_body_too_large"})
+		return false
+	}
+	ctx.Request.Body = http.MaxBytesReader(ctx.Writer, ctx.Request.Body, int64(maxBytes))
+	decoder := json.NewDecoder(ctx.Request.Body)
+	decoder.DisallowUnknownFields()
+	if err := decoder.Decode(target); err != nil {
+		var maxBytesError *http.MaxBytesError
+		if errors.As(err, &maxBytesError) {
+			ctx.JSON(http.StatusRequestEntityTooLarge, gin.H{"error": "request_body_too_large"})
+			return false
+		}
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid_request"})
+		return false
+	}
+	var trailing any
+	if err := decoder.Decode(&trailing); !errors.Is(err, io.EOF) {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid_request"})
+		return false
+	}
+	return true
 }

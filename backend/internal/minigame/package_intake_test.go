@@ -7,6 +7,8 @@ import (
 	"encoding/json"
 	"testing"
 	"time"
+
+	"pixel-social-world/backend/pkg/creatorcontract"
 )
 
 func TestMemoryServiceSubmitPackageScansAndStoresCleanPackage(t *testing.T) {
@@ -47,7 +49,7 @@ func TestMemoryServiceSubmitPackageAsyncTransitionsToScanResult(t *testing.T) {
 	}
 }
 
-func TestMemoryServiceAsyncScanDoesNotOverwriteReviewStatus(t *testing.T) {
+func TestMemoryServiceRejectsApprovalBeforeAsyncScanCompletes(t *testing.T) {
 	service := NewMemoryServiceConcrete()
 	request := creatorPackageRequest("creator_package_review_race", safeCreatorScript())
 	job := newPackageReviewJob(request)
@@ -55,18 +57,15 @@ func TestMemoryServiceAsyncScanDoesNotOverwriteReviewStatus(t *testing.T) {
 	if err != nil {
 		t.Fatalf("queuedPackageRecord returned error: %v", err)
 	}
-	service.storeRecord(submitted)
-	if _, err := service.SetReviewStatus(context.Background(), "creator_package_review_race", "approved"); err != nil {
-		t.Fatalf("SetReviewStatus returned error: %v", err)
+	if err := service.storeSubmittedRecord(submitted); err != nil {
+		t.Fatalf("storeSubmittedRecord returned error: %v", err)
 	}
-	final, err := buildPackageRecord(request)
-	if err != nil {
-		t.Fatalf("buildPackageRecord returned error: %v", err)
+	if _, err := service.SetReviewStatus(context.Background(), "creator_package_review_race", "approved"); err == nil {
+		t.Fatal("expected approval before completed review to fail")
 	}
-	service.storeScanRecord(final)
 	record, _ := service.Get(context.Background(), "creator_package_review_race")
-	if record.Status != "approved" {
-		t.Fatalf("scan record overwrote review status: %#v", record)
+	if record.Status != "submitted" {
+		t.Fatalf("premature approval changed review status: %#v", record)
 	}
 }
 
@@ -135,6 +134,8 @@ func TestMemoryServiceReviewStatusTransitions(t *testing.T) {
 
 func TestPackageSubmitRequestFromZipStripsCommonRoot(t *testing.T) {
 	source := creatorPackageRequest("creator_zip_package", safeCreatorScript())
+	source.Author = "creator_zip_author"
+	rewritePackageMeta(t, &source)
 	archive := creatorZipArchive(t, "creator_zip_package/", source.Files)
 	request, err := PackageSubmitRequestFromZip("creator_zip_author", archive)
 	if err != nil {
@@ -152,6 +153,56 @@ func TestPackageSubmitRequestFromZipStripsCommonRoot(t *testing.T) {
 	}
 	if record.Status != "needs_review" || record.Package == nil {
 		t.Fatalf("unexpected zip package record: %#v", record)
+	}
+}
+
+func TestPackageScanRejectsUnknownAndMismatchedMetaFields(t *testing.T) {
+	for _, testCase := range []struct {
+		name      string
+		transform func(map[string]any)
+		wantIssue string
+	}{
+		{
+			name: "unknown field",
+			transform: func(meta map[string]any) {
+				meta["system_api"] = "forbidden"
+			},
+			wantIssue: "meta_json_invalid",
+		},
+		{
+			name: "known field mismatch",
+			transform: func(meta map[string]any) {
+				meta["requires_network"] = false
+			},
+			wantIssue: "meta_request_mismatch",
+		},
+	} {
+		t.Run(testCase.name, func(t *testing.T) {
+			request := creatorPackageRequest("strict_meta_package", safeCreatorScript())
+			for index := range request.Files {
+				if request.Files[index].Path != "meta.json" {
+					continue
+				}
+				var meta map[string]any
+				if err := json.Unmarshal([]byte(request.Files[index].ContentText), &meta); err != nil {
+					t.Fatal(err)
+				}
+				testCase.transform(meta)
+				encoded, err := json.Marshal(meta)
+				if err != nil {
+					t.Fatal(err)
+				}
+				request.Files[index].ContentText = string(encoded)
+			}
+			record, err := NewMemoryServiceConcrete().SubmitPackage(context.Background(), request)
+			if err == nil || err.Error() != "package_scan_failed" {
+				t.Fatalf("invalid meta was accepted: %v", err)
+			}
+			if record.Package == nil ||
+				!containsIssuePrefix(record.Package.Report.Issues, testCase.wantIssue) {
+				t.Fatalf("missing %s issue: %#v", testCase.wantIssue, record.Package)
+			}
+		})
 	}
 }
 
@@ -174,6 +225,40 @@ func TestSubmissionRecordRoundTripPreservesPackageSnapshot(t *testing.T) {
 	}
 	if roundTrip.Package.SHA256 != record.Package.SHA256 {
 		t.Fatalf("round trip lost package digest: %#v", roundTrip.Package)
+	}
+}
+
+func TestDeclarativePackageDoesNotRequireCreatorCode(t *testing.T) {
+	request := declarativeCreatorPackageRequest(t, "creator_declarative")
+	record, err := NewMemoryServiceConcrete().SubmitPackage(context.Background(), request)
+	if err != nil {
+		t.Fatalf("declarative package failed: %v", err)
+	}
+	if record.Status != "needs_review" || record.Package == nil || record.Package.Report.ScriptCount != 0 {
+		t.Fatalf("unexpected declarative package result: %#v", record)
+	}
+}
+
+func TestDeclarativePackageRejectsExecutableFiles(t *testing.T) {
+	request := declarativeCreatorPackageRequest(t, "creator_declarative_code")
+	request.Files = append(request.Files, PackageFile{
+		Path:        "content/escape.gd",
+		ContentText: "extends Node",
+	})
+	record, err := NewMemoryServiceConcrete().SubmitPackage(context.Background(), request)
+	if err == nil || record.Status != "rejected" ||
+		!containsIssuePrefix(record.Package.Report.Issues, "declarative_package_executable_forbidden") {
+		t.Fatalf("declarative executable file was not rejected: record=%#v err=%v", record, err)
+	}
+}
+
+func TestDeclarativePackageRejectsReservedRuntimeMode(t *testing.T) {
+	request := declarativeCreatorPackageRequest(t, "creator_future_mode")
+	request.ModeID = "2d_fighting"
+	request.ResolvedManifest.ModeID = "2d_fighting"
+	err := validateDeclarativeSubmitRequest(request)
+	if err == nil || err.Error() != "declarative_mode_not_supported" {
+		t.Fatalf("reserved declarative mode was not rejected: %v", err)
 	}
 }
 
@@ -205,6 +290,72 @@ func creatorPackageRequest(gameID string, script string) PackageSubmitRequest {
 		{Path: "README.md", ContentText: "Creator package fixture."},
 	}
 	return PackageSubmitRequest{SubmitRequest: request, Files: files}
+}
+
+func declarativeCreatorPackageRequest(t *testing.T, gameID string) PackageSubmitRequest {
+	t.Helper()
+	submission := SubmitRequest{
+		GameID:          gameID,
+		Version:         "1.0.0",
+		Author:          "creator",
+		ModeID:          "casual_activity",
+		Name:            map[string]string{"en": "Tap Game", "ja": "タップゲーム", "zh-Hans": "点击游戏"},
+		MinPlayers:      1,
+		MaxPlayers:      1,
+		Tags:            []string{"timing"},
+		RequiresNetwork: false,
+		RuntimeContract: map[string]any{
+			"camera":          "contained",
+			"input_profile":   "tap_timing",
+			"network_profile": "offline_optional",
+		},
+		AssetBudget: MaxCreatorAssetBudgetBytes,
+	}
+	resolved := &creatorcontract.ResolvedManifest{
+		Manifest: creatorcontract.Manifest{
+			SchemaVersion:    creatorcontract.ManifestSchemaVersion,
+			RegistryRevision: "test",
+			GameID:           gameID,
+			ModeID:           submission.ModeID,
+			Interface: creatorcontract.VersionedRef{
+				ID: "interface.declarative_runtime", Version: "1.0.0",
+			},
+			Keywords: []string{"keyword.loop.tap_timing"},
+			Capabilities: []creatorcontract.VersionedRef{
+				{ID: "cap.timer.local", Version: "1.0.0"},
+			},
+			Entry: creatorcontract.EntryPoint{Type: "declarative_v1", Path: "content/game.json"},
+		},
+		LockDigest: "test-lock",
+	}
+	meta, err := json.Marshal(submission)
+	if err != nil {
+		t.Fatal(err)
+	}
+	manifest, err := json.Marshal(resolved)
+	if err != nil {
+		t.Fatal(err)
+	}
+	entry, err := json.Marshal(map[string]any{
+		"schema_version":   1,
+		"game_id":          gameID,
+		"mode_id":          submission.ModeID,
+		"type":             "tap_timing",
+		"duration_seconds": 30,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return PackageSubmitRequest{
+		SubmitRequest:    submission,
+		ResolvedManifest: resolved,
+		Files: []PackageFile{
+			{Path: "meta.json", ContentText: string(meta)},
+			{Path: "creator_manifest.json", ContentText: string(manifest)},
+			{Path: "content/game.json", ContentText: string(entry)},
+			{Path: "README.md", ContentText: "Declarative creator fixture."},
+		},
+	}
 }
 
 func safeCreatorScript() string {

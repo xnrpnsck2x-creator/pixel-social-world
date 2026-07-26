@@ -8,6 +8,7 @@ const OnlineClientSessionScript := preload("res://scripts/Network/Client/OnlineC
 const OnlineClientAdminScript := preload("res://scripts/Network/Client/OnlineClientAdmin.gd")
 const OnlineClientEconomyScript := preload("res://scripts/Network/Client/OnlineClientEconomy.gd")
 const OnlineClientTradeScript := preload("res://scripts/Network/Client/OnlineClientTrade.gd")
+const OnlineClientCreatorScript := preload("res://scripts/Network/Client/OnlineClientCreator.gd")
 const OnlineClientRequestScript := preload("res://scripts/Network/Client/OnlineClientRequest.gd")
 
 var base_url := "http://127.0.0.1:8787"
@@ -24,6 +25,7 @@ var _session
 var _admin
 var _economy
 var _trade
+var _creator
 var _requester
 
 func _ready() -> void:
@@ -165,13 +167,27 @@ func end_minigame_session(session_id: String) -> Dictionary:
 func claim_fishing_catch(session_id: String, request_id: String = "") -> Dictionary:
 	return await _api().claim_fishing_catch(session_id, request_id)
 func submit_creator_draft(request: Dictionary) -> Dictionary:
-	return await _api().submit_creator_draft(request)
+	return await _creator_api().submit_draft(request)
 func submit_creator_package(request: Dictionary) -> Dictionary:
-	return await _api().submit_creator_package(request)
+	return await _creator_api().submit_package(request)
+func fetch_creator_registry(filters: Dictionary = {}) -> Dictionary:
+	return await _creator_api().fetch_registry(filters)
+func fetch_creator_registry_entry(entry_id: String) -> Dictionary:
+	return await _creator_api().fetch_registry_entry(entry_id)
+func discover_creator_keywords(
+	text: String,
+	mode_id: String = "",
+	locale: String = "en",
+	limit: int = 12
+) -> Dictionary:
+	return await _creator_api().discover_keywords(text, mode_id, locale, limit)
+func resolve_creator_manifest(manifest: Dictionary) -> Dictionary:
+	return await _creator_api().resolve_manifest(manifest)
 func fetch_creator_submission_status(game_id: String) -> Dictionary:
-	return await _api().fetch_creator_submission_status(game_id)
-func fetch_creator_submission_history(game_id: String) -> Dictionary:
-	return await _api().fetch_creator_submission_history(game_id)
+	return await _creator_api().fetch_submission_status(game_id)
+func fetch_creator_submission_history(game_id: String) -> Dictionary: return await _creator_api().fetch_submission_history(game_id)
+func fetch_published_minigame_catalog() -> Dictionary: return await _creator_api().fetch_published_catalog()
+func fetch_published_minigame_runtime(game_id: String) -> Dictionary: return await _creator_api().fetch_published_runtime(game_id)
 func fetch_utility_panels() -> Dictionary:
 	return await _api().fetch_utility_panels()
 func fetch_social_facilities() -> Dictionary:
@@ -227,7 +243,6 @@ func _api():
 func _auth():
 	if _session == null: _session = OnlineClientSessionScript.new(self)
 	return _session
-
 func _admin_api():
 	if _admin == null: _admin = OnlineClientAdminScript.new(self)
 	return _admin
@@ -239,6 +254,9 @@ func _economy_api():
 func _trade_api():
 	if _trade == null: _trade = OnlineClientTradeScript.new(self)
 	return _trade
+func _creator_api():
+	if _creator == null: _creator = OnlineClientCreatorScript.new(self)
+	return _creator
 
 func _request_transport():
 	if _requester == null: _requester = OnlineClientRequestScript.new(self)

@@ -1,6 +1,9 @@
 package room
 
-import "testing"
+import (
+	"testing"
+	"time"
+)
 
 func TestHubBroadcastsLeaveOnDisconnect(t *testing.T) {
 	hub := NewHub()
@@ -37,6 +40,7 @@ func TestHubBroadcastsLeaveOnRoomSwitch(t *testing.T) {
 	writeEnvelope(t, roomA2, joinEnvelope("player_a2", "room_a"))
 	waitForRoomCounts(t, hub, map[string]int{"room_a": 2})
 
+	time.Sleep(defaultJoinInterval + 10*time.Millisecond)
 	writeEnvelope(t, roomA1, joinEnvelope("player_a1", "room_b"))
 	leave := readUntilType(t, roomA2, "world.leave")
 	payload := leave.Payload.(map[string]interface{})

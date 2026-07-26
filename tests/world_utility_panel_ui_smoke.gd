@@ -22,6 +22,10 @@ func _run() -> void:
 
 	var scene: PackedScene = load("res://scenes/ui/WorldUtilityPanel.tscn")
 	var panel := scene.instantiate()
+	var tracked_inputs: Array[LineEdit] = []
+	panel.text_input_added.connect(func(input: LineEdit) -> void:
+		tracked_inputs.append(input)
+	)
 	root.add_child(panel)
 	await process_frame
 
@@ -42,6 +46,15 @@ func _run() -> void:
 	panel.call("set_compact_layout", true)
 	panel.call("show_panel", "creator")
 	await process_frame
+	var idea_input := panel.find_child("CreatorIdeaInput", true, false) as LineEdit
+	var mode_picker := panel.find_child("CreatorModePicker", true, false) as OptionButton
+	var package_button := panel.find_child("CreatorPackageSubmitButton", true, false) as Button
+	if idea_input == null or mode_picker == null or package_button == null:
+		failures.append("Creator Lab did not render idea, mode, and package controls.")
+	elif tracked_inputs.is_empty() or tracked_inputs[0] != idea_input:
+		failures.append("Creator Lab idea input was not registered with the mobile keyboard guard.")
+	elif not package_button.disabled:
+		failures.append("Creator Lab allowed package submission before manifest resolution.")
 	if panel.get_node("%BodyLabel").max_lines_visible != 1 or panel.get_node("%ItemsScroll").custom_minimum_size.y < 112.0:
 		failures.append("Compact creator panel did not trade long intro copy for more row space.")
 	var compact_mode_detail := _find_label(panel, "Contained")

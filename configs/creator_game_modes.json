@@ -5,6 +5,7 @@
   "modes": [
     {
       "id": "casual_activity",
+      "public_runtime_enabled": true,
       "name_key": "creator.mode.casual_activity.name",
       "summary_key": "creator.mode.casual_activity.summary",
       "icon_id": "icon.games",
@@ -19,6 +20,7 @@
     },
     {
       "id": "side_scroller_2d",
+      "public_runtime_enabled": false,
       "name_key": "creator.mode.side_scroller_2d.name",
       "summary_key": "creator.mode.side_scroller_2d.summary",
       "icon_id": "icon.quest",
@@ -33,6 +35,7 @@
     },
     {
       "id": "2d_fighting",
+      "public_runtime_enabled": false,
       "name_key": "creator.mode.2d_fighting.name",
       "summary_key": "creator.mode.2d_fighting.summary",
       "icon_id": "icon.shield",
@@ -47,6 +50,7 @@
     },
     {
       "id": "strategy_war",
+      "public_runtime_enabled": false,
       "name_key": "creator.mode.strategy_war.name",
       "summary_key": "creator.mode.strategy_war.summary",
       "icon_id": "icon.shield",
@@ -61,6 +65,7 @@
     },
     {
       "id": "rpg_adventure",
+      "public_runtime_enabled": false,
       "name_key": "creator.mode.rpg_adventure.name",
       "summary_key": "creator.mode.rpg_adventure.summary",
       "icon_id": "icon.heart",
@@ -75,6 +80,7 @@
     },
     {
       "id": "tower_defense",
+      "public_runtime_enabled": false,
       "name_key": "creator.mode.tower_defense.name",
       "summary_key": "creator.mode.tower_defense.summary",
       "icon_id": "icon.warning",
@@ -89,6 +95,7 @@
     },
     {
       "id": "battle_royale",
+      "public_runtime_enabled": false,
       "name_key": "creator.mode.battle_royale.name",
       "summary_key": "creator.mode.battle_royale.summary",
       "icon_id": "icon.warning",

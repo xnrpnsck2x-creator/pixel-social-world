@@ -9,6 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+
+	"pixel-social-world/backend/pkg/creatorcontract"
 )
 
 type PackageArtifactStore interface {
@@ -123,6 +125,7 @@ func clonePackageSubmitRequest(request PackageSubmitRequest) PackageSubmitReques
 	cloned.Tags = append([]string{}, request.Tags...)
 	cloned.RuntimeContract = cloneAnyMap(request.RuntimeContract)
 	cloned.Files = append([]PackageFile{}, request.Files...)
+	cloned.ResolvedManifest = creatorcontract.CloneResolvedManifest(request.ResolvedManifest)
 	return cloned
 }
 

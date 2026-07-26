@@ -2,12 +2,14 @@ package gateway
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 
 	"pixel-social-world/backend/internal/auth"
 	"pixel-social-world/backend/internal/chat"
+	"pixel-social-world/backend/internal/creatorregistry"
 	"pixel-social-world/backend/internal/economy"
 	"pixel-social-world/backend/internal/facility"
 	"pixel-social-world/backend/internal/house"
@@ -46,6 +48,7 @@ type Dependencies struct {
 	HousingSellRefundRate float64
 	AdminToken            string
 	CORSAllowedOrigins    []string
+	CreatorRegistry       *creatorregistry.Service
 }
 
 func DefaultMemoryDependencies() Dependencies {
@@ -67,7 +70,21 @@ func DefaultMemoryDependencies() Dependencies {
 		StartingCoinBalance:   startingCoinBalance,
 		HousingSellRefundRate: housingDefaultSellRefundRate,
 		CORSAllowedOrigins:    DefaultCORSAllowedOrigins(),
+		CreatorRegistry:       defaultMemoryCreatorRegistry(),
 	}
+}
+
+func defaultMemoryCreatorRegistry() *creatorregistry.Service {
+	for _, registryPath := range []string{
+		"configs/creator_registry.json",
+		"../configs/creator_registry.json",
+		"../../../configs/creator_registry.json",
+	} {
+		if registry, err := creatorregistry.Load(registryPath); err == nil {
+			return registry
+		}
+	}
+	return creatorregistry.NewEmpty()
 }
 
 func NewServer() *Server {
@@ -145,33 +162,52 @@ func NewServerWithDependencies(deps Dependencies) *Server {
 	router.Use(requestIDMiddleware(), structuredLoggerMiddleware(), gin.Recovery())
 	router.Use(corsMiddleware(deps.CORSAllowedOrigins))
 	server := &Server{
-		router:                router,
-		authService:           deps.AuthService,
-		chatService:           deps.ChatService,
-		messagingService:      deps.MessagingService,
-		economyService:        deps.EconomyService,
-		mapActivityService:    deps.MapActivityService,
-		houseService:          deps.HouseService,
-		minigameService:       deps.MinigameService,
-		utilityService:        deps.UtilityService,
-		facilityService:       deps.FacilityService,
-		inventoryService:      deps.InventoryService,
-		tradeService:          deps.TradeService,
-		fishingRewards:        deps.FishingRewardService,
-		presenceService:       deps.PresenceService,
-		playerService:         deps.PlayerService,
-		socialService:         deps.SocialService,
-		retentionPolicy:       deps.RetentionPolicy,
-		roomHub:               deps.RoomHub,
-		startingCoinBalance:   deps.StartingCoinBalance,
-		housingSellRefundRate: deps.HousingSellRefundRate,
-		adminToken:            deps.AdminToken,
+		router:                 router,
+		authService:            deps.AuthService,
+		chatService:            deps.ChatService,
+		messagingService:       deps.MessagingService,
+		economyService:         deps.EconomyService,
+		mapActivityService:     deps.MapActivityService,
+		houseService:           deps.HouseService,
+		minigameService:        deps.MinigameService,
+		utilityService:         deps.UtilityService,
+		facilityService:        deps.FacilityService,
+		inventoryService:       deps.InventoryService,
+		tradeService:           deps.TradeService,
+		fishingRewards:         deps.FishingRewardService,
+		presenceService:        deps.PresenceService,
+		playerService:          deps.PlayerService,
+		socialService:          deps.SocialService,
+		retentionPolicy:        deps.RetentionPolicy,
+		roomHub:                deps.RoomHub,
+		startingCoinBalance:    deps.StartingCoinBalance,
+		housingSellRefundRate:  deps.HousingSellRefundRate,
+		adminToken:             deps.AdminToken,
+		creatorRegistry:        deps.CreatorRegistry,
+		creatorSubmissionLimit: newCreatorSubmissionLimiter(),
+		websocketAdmission:     defaultWebsocketAdmissionLimiter(),
 		upgrader: websocket.Upgrader{
-			CheckOrigin: func(_ *http.Request) bool {
-				return true
-			},
+			CheckOrigin: websocketOriginChecker(deps.CORSAllowedOrigins),
 		},
 	}
 	server.routes()
 	return server
+}
+
+func websocketOriginChecker(allowedOrigins []string) func(*http.Request) bool {
+	allowed := make(map[string]struct{}, len(allowedOrigins))
+	for _, origin := range allowedOrigins {
+		origin = strings.TrimSpace(origin)
+		if origin != "" {
+			allowed[origin] = struct{}{}
+		}
+	}
+	return func(request *http.Request) bool {
+		origin := strings.TrimSpace(request.Header.Get("Origin"))
+		if origin == "" {
+			return true
+		}
+		_, ok := allowed[origin]
+		return ok
+	}
 }

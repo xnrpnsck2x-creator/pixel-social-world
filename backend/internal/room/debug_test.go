@@ -10,12 +10,11 @@ func TestDebugSnapshotIncludesRoomTypeAndActivity(t *testing.T) {
 	hub := NewHub(WithClock(func() time.Time { return now }))
 	defer hub.Close()
 
+	client := newClientState(nil, now.Unix())
+	client.setSession(defaultRoomID, "player_main", "Player Main", 1)
 	hub.mu.Lock()
-	hub.clients[nil] = &clientState{
-		roomID:       defaultRoomID,
-		playerID:     "player_main",
-		lastActiveAt: now.Unix(),
-	}
+	hub.clients[nil] = client
+	hub.activePlayers["player_main"] = activePlayerSession{client: client, generation: 1}
 	hub.lastMoves["home:owner"] = map[string]map[string]interface{}{
 		"visitor": {"last_active_at": now.Add(-5 * time.Second).Unix()},
 	}

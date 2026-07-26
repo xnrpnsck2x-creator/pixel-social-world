@@ -5,10 +5,14 @@ import "strings"
 func (h *Hub) DebugSnapshot() map[string]interface{} {
 	h.mu.RLock()
 	rooms := map[string]map[string]interface{}{}
-	for _, client := range h.clients {
-		roomState := debugRoomState(rooms, client.roomID)
+	for playerID, session := range h.activePlayers {
+		state := session.client.snapshot()
+		if state.playerID != playerID || state.generation != session.generation {
+			continue
+		}
+		roomState := debugRoomState(rooms, state.roomID)
 		roomState["connected"] = intValue(roomState["connected"]) + 1
-		roomState["last_active_at"] = maxInt64(int64Value(roomState["last_active_at"]), client.lastActiveAt)
+		roomState["last_active_at"] = maxInt64(int64Value(roomState["last_active_at"]), state.lastActiveAt)
 	}
 	for roomID, players := range h.lastMoves {
 		roomState := debugRoomState(rooms, roomID)
@@ -20,7 +24,7 @@ func (h *Hub) DebugSnapshot() map[string]interface{} {
 			)
 		}
 	}
-	onlineCount := len(h.clients)
+	onlineCount := len(h.activePlayers)
 	h.mu.RUnlock()
 	attachRoomMetricSnapshots(rooms, h.roomMetricsSnapshot())
 	h.attachRoomCapacities(rooms)

@@ -15,7 +15,7 @@ func TestCreatorSubmissionHistoryKeepsVersionedPackageRecords(t *testing.T) {
 	visitorID := visitorSession["player_id"].(string)
 	visitorToken := visitorSession["access_token"].(string)
 
-	v1 := creatorPackagePayload(ownerID, "creator_history_package", safePackageScript())
+	v1 := creatorPackagePayload(t, ownerID, "creator_history_package", safePackageScript())
 	testPostJSON(t, server, "/creator-submissions/package", ownerToken, v1, http.StatusAccepted)
 	waitCreatorStatus(
 		t,
@@ -24,7 +24,7 @@ func TestCreatorSubmissionHistoryKeepsVersionedPackageRecords(t *testing.T) {
 		ownerToken,
 		"needs_review",
 	)
-	v2 := creatorPackagePayload(ownerID, "creator_history_package", safePackageScript())
+	v2 := creatorPackagePayload(t, ownerID, "creator_history_package", safePackageScript())
 	setCreatorPackageVersion(v2, "0.2.0")
 	testPostJSON(t, server, "/creator-submissions/package", ownerToken, v2, http.StatusAccepted)
 	waitCreatorStatus(
@@ -66,7 +66,7 @@ func setCreatorPackageVersion(payload map[string]any, version string) {
 	files := payload["files"].([]map[string]any)
 	manifest := map[string]any{}
 	for key, value := range payload {
-		if key != "files" {
+		if key != "files" && key != "resolved_manifest" {
 			manifest[key] = value
 		}
 	}

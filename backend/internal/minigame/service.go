@@ -71,6 +71,7 @@ type Service interface {
 	RollbackPackage(ctx context.Context, id string) (Record, error)
 	UnpublishPackage(ctx context.Context, id string) (Record, error)
 	ListPublishedPackages(ctx context.Context) ([]PackageInstallSnapshot, error)
+	PublishedRuntime(ctx context.Context, id string) (PublishedRuntimeSnapshot, error)
 	ReviewDashboard(ctx context.Context) (ReviewDashboardSnapshot, error)
 	RecordReviewAudit(ctx context.Context, event ReviewAuditEvent) error
 	ReviewAudit(ctx context.Context, id string) (ReviewAuditSnapshot, error)
@@ -168,26 +169,25 @@ func (s *MemoryService) Submit(_ context.Context, request SubmitRequest) (Record
 	}
 
 	record := Record{SubmitRequest: request, Status: "pending_review"}
-	s.mu.Lock()
-	s.records[request.GameID] = record
-	s.storeSubmissionVersionLocked(record)
-	s.mu.Unlock()
-	return record, nil
+	return record, s.storeSubmittedRecord(record)
 }
 
 func (s *MemoryService) Get(_ context.Context, id string) (Record, bool) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	record, ok := s.records[id]
-	return record, ok
+	return cloneRecord(record), ok
 }
 
 func (s *MemoryService) QueueReview(_ context.Context, id string) Record {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	record := s.records[id]
-	record.Status = "review_queued"
-	s.records[id] = record
+	record, ok := s.records[id]
+	if !ok || validateReviewTransition(record, "review_queued") != nil {
+		return Record{}
+	}
+	record = applyManualReviewStatus(record, "review_queued")
+	s.records[id] = cloneRecord(record)
 	s.storeSubmissionVersionLocked(record)
 	return record
 }
@@ -205,8 +205,11 @@ func (s *MemoryService) SetReviewStatus(ctx context.Context, id string, status s
 	if !ok {
 		return Record{}, errors.New("minigame_not_found")
 	}
-	record.Status = status
-	s.records[id] = record
+	if err := validateReviewTransition(record, status); err != nil {
+		return Record{}, err
+	}
+	record = applyManualReviewStatus(record, status)
+	s.records[id] = cloneRecord(record)
 	s.storeSubmissionVersionLocked(record)
 	return record, nil
 }

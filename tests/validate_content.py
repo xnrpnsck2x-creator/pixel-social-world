@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -224,6 +225,7 @@ def validate_runtime_configs():
     validate_main_city_npcs(en_locale)
     validate_housing_items(en_locale)
     creator_modes = validate_creator_game_modes(en_locale)
+    validate_creator_registry(creator_modes)
     validate_minigames(en_locale, route_ids, creator_modes)
     validate_creator_mode_fixtures(creator_modes)
     validate_economy()
@@ -508,6 +510,7 @@ def validate_creator_game_modes(en_locale):
         if isinstance(asset, dict)
     }
     mode_caps = {}
+    public_runtime_modes = set()
     seen_ids = set()
     for mode in modes:
         if not isinstance(mode, dict):
@@ -529,12 +532,119 @@ def validate_creator_game_modes(en_locale):
                 raise ValueError(f"creator mode {mode_id} must define {array_key}")
         if mode_id not in CREATOR_MODE_RUNTIME_CONTRACTS:
             raise ValueError(f"creator mode {mode_id} is missing runtime contract validation")
+        if not isinstance(mode.get("public_runtime_enabled"), bool):
+            raise ValueError(f"creator mode {mode_id} must declare public_runtime_enabled")
+        if mode["public_runtime_enabled"]:
+            public_runtime_modes.add(mode_id)
         mode_caps[mode_id] = max_players
     if data.get("default_mode_id") not in mode_caps:
         raise ValueError("creator_game_modes default_mode_id must be a mode id")
     if int(data.get("asset_budget_bytes", 0)) <= 0:
         raise ValueError("creator_game_modes asset_budget_bytes must be positive")
+    if public_runtime_modes != {"casual_activity"}:
+        raise ValueError("only casual_activity may use the MVP public declarative runtime")
     return mode_caps
+
+
+def validate_creator_registry(creator_modes):
+    path = CONFIG_DIR / "creator_registry.json"
+    data = load_json(path)
+    if int(data.get("schema_version", 0)) != 1:
+        raise ValueError("configs/creator_registry.json schema_version must be 1")
+    if not str(data.get("revision", "")).strip():
+        raise ValueError("configs/creator_registry.json revision is required")
+
+    registry_modes = data.get("modes", [])
+    if not isinstance(registry_modes, list) or not registry_modes:
+        raise ValueError("configs/creator_registry.json must contain modes")
+    seen_modes = set()
+    public_runtime_modes = set()
+    mode_capability_refs = {}
+    presentation_modes = {
+        mode.get("id"): mode
+        for mode in load_json(CONFIG_DIR / "creator_game_modes.json").get("modes", [])
+        if isinstance(mode, dict)
+    }
+    for mode in registry_modes:
+        if not isinstance(mode, dict):
+            raise ValueError("creator registry mode must be an object")
+        mode_id = str(mode.get("id", ""))
+        if mode_id not in creator_modes or mode_id in seen_modes:
+            raise ValueError(f"creator registry has invalid or duplicate mode: {mode_id}")
+        seen_modes.add(mode_id)
+        if int(mode.get("max_players", 0)) != creator_modes[mode_id]:
+            raise ValueError(f"creator registry player cap drift for mode: {mode_id}")
+        if mode.get("runtime_contract") != CREATOR_MODE_RUNTIME_CONTRACTS[mode_id]:
+            raise ValueError(f"creator registry runtime contract drift for mode: {mode_id}")
+        if mode.get("public_runtime_enabled") != presentation_modes[mode_id].get("public_runtime_enabled"):
+            raise ValueError(f"creator registry public runtime flag drift for mode: {mode_id}")
+        if mode.get("public_runtime_enabled"):
+            public_runtime_modes.add(mode_id)
+        capability_refs = mode.get("capabilities", [])
+        if not isinstance(capability_refs, list) or not capability_refs:
+            raise ValueError(f"creator registry mode has no capabilities: {mode_id}")
+        mode_capability_refs[mode_id] = capability_refs
+    if seen_modes != set(creator_modes):
+        raise ValueError("creator registry mode IDs drift from creator_game_modes.json")
+    if public_runtime_modes != {"casual_activity"}:
+        raise ValueError("creator registry must expose only casual_activity to the MVP runtime")
+
+    entries = data.get("entries", [])
+    if not isinstance(entries, list) or not entries:
+        raise ValueError("configs/creator_registry.json must contain entries")
+    by_id = {}
+    for entry in entries:
+        if not isinstance(entry, dict):
+            raise ValueError("creator registry entry must be an object")
+        entry_id = str(entry.get("id", ""))
+        safe_entry_id = (
+            bool(entry_id)
+            and len(entry_id) <= 120
+            and entry_id.replace("_", "").replace("-", "").replace(".", "").isalnum()
+        )
+        if not safe_entry_id or entry_id in by_id:
+            raise ValueError(f"creator registry has unsafe or duplicate entry id: {entry_id}")
+        if entry.get("kind") not in {"keyword", "capability", "assetpack", "interface"}:
+            raise ValueError(f"creator registry entry has invalid kind: {entry_id}")
+        if entry.get("status") not in {"stable", "beta", "manual_review", "deprecated", "revoked"}:
+            raise ValueError(f"creator registry entry has invalid status: {entry_id}")
+        if not str(entry.get("version", "")).strip():
+            raise ValueError(f"creator registry entry has no version: {entry_id}")
+        names = entry.get("name", {})
+        if not isinstance(names, dict) or any(
+            not str(names.get(locale, "")).strip() for locale in LOCALES
+        ):
+            raise ValueError(f"creator registry entry lacks localized names: {entry_id}")
+        compatible_modes = entry.get("compatible_modes", [])
+        if any(mode_id != "*" and mode_id not in creator_modes for mode_id in compatible_modes):
+            raise ValueError(f"creator registry entry uses unknown mode: {entry_id}")
+        by_id[entry_id] = entry
+
+    declarative = by_id.get("interface.declarative_runtime", {})
+    if declarative.get("status") != "stable":
+        raise ValueError("creator registry declarative runtime interface must be stable")
+    if not any(entry.get("kind") == "keyword" for entry in entries):
+        raise ValueError("creator registry must contain discoverable keywords")
+
+    for entry_id, entry in by_id.items():
+        for dependency in entry.get("dependencies", []):
+            target = by_id.get(dependency)
+            if not target or target.get("kind") != "capability":
+                raise ValueError(f"creator registry dependency is invalid: {entry_id} -> {dependency}")
+        if entry.get("kind") == "assetpack":
+            resource_uri = str(entry.get("resource_uri", ""))
+            require_resource(resource_uri, f"creator registry asset pack {entry_id}")
+            digest = hashlib.sha256(local_resource_path(resource_uri).read_bytes()).hexdigest()
+            if digest.lower() != str(entry.get("sha256", "")).lower():
+                raise ValueError(f"creator registry asset digest mismatch: {entry_id}")
+
+    for mode_id, capability_refs in mode_capability_refs.items():
+        for capability_id in capability_refs:
+            entry = by_id.get(capability_id)
+            if not entry or entry.get("kind") != "capability":
+                raise ValueError(
+                    f"creator registry mode capability is invalid: {mode_id} -> {capability_id}"
+                )
 
 
 def validate_minigames(en_locale, route_ids, creator_modes):

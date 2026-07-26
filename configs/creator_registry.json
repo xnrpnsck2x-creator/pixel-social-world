@@ -1,0 +1,585 @@
+{
+  "schema_version": 1,
+  "revision": "2026-07-25.2",
+  "default_locale": "en",
+  "modes": [
+    {
+      "id": "casual_activity",
+      "public_runtime_enabled": true,
+      "min_players": 1,
+      "max_players": 4,
+      "runtime_contract": {
+        "camera": "contained",
+        "input_profile": "tap_timing",
+        "network_profile": "offline_optional"
+      },
+      "capabilities": [
+        "cap.timer.local",
+        "cap.score.submit",
+        "cap.emote.request"
+      ]
+    },
+    {
+      "id": "side_scroller_2d",
+      "public_runtime_enabled": false,
+      "min_players": 1,
+      "max_players": 4,
+      "runtime_contract": {
+        "camera": "side_view",
+        "input_profile": "action_platformer",
+        "network_profile": "session_sync"
+      },
+      "capabilities": [
+        "cap.character.physics",
+        "cap.world.tilemap",
+        "cap.camera.2d",
+        "cap.enemy.ai",
+        "cap.emote.request"
+      ]
+    },
+    {
+      "id": "2d_fighting",
+      "public_runtime_enabled": false,
+      "min_players": 1,
+      "max_players": 4,
+      "runtime_contract": {
+        "camera": "side_view",
+        "input_profile": "fighting_action",
+        "network_profile": "authoritative_realtime"
+      },
+      "capabilities": [
+        "cap.character.physics",
+        "cap.combat.hitboxes",
+        "cap.combat.hurtboxes",
+        "cap.input.buffer",
+        "cap.combat.combo_rules",
+        "cap.session.round_timer",
+        "cap.emote.request"
+      ]
+    },
+    {
+      "id": "strategy_war",
+      "public_runtime_enabled": false,
+      "min_players": 1,
+      "max_players": 4,
+      "runtime_contract": {
+        "camera": "isometric",
+        "input_profile": "strategy_pointer",
+        "network_profile": "turn_or_lockstep"
+      },
+      "capabilities": [
+        "cap.strategy.grid_state",
+        "cap.strategy.unit_orders",
+        "cap.strategy.projectiles",
+        "cap.strategy.fog_of_war"
+      ]
+    },
+    {
+      "id": "rpg_adventure",
+      "public_runtime_enabled": false,
+      "min_players": 1,
+      "max_players": 4,
+      "runtime_contract": {
+        "camera": "top_down",
+        "input_profile": "rpg_move_confirm",
+        "network_profile": "session_sync"
+      },
+      "capabilities": [
+        "cap.rpg.dialogue",
+        "cap.rpg.quests",
+        "cap.rpg.inventory_light",
+        "cap.rpg.combat_light",
+        "cap.emote.request"
+      ]
+    },
+    {
+      "id": "tower_defense",
+      "public_runtime_enabled": false,
+      "min_players": 1,
+      "max_players": 4,
+      "runtime_contract": {
+        "camera": "lane_grid",
+        "input_profile": "tower_place_upgrade",
+        "network_profile": "session_sync"
+      },
+      "capabilities": [
+        "cap.tower.wave_spawns",
+        "cap.tower.placement",
+        "cap.tower.path_grid",
+        "cap.tower.upgrade_rules"
+      ]
+    },
+    {
+      "id": "battle_royale",
+      "public_runtime_enabled": false,
+      "min_players": 2,
+      "max_players": 16,
+      "runtime_contract": {
+        "camera": "top_down",
+        "input_profile": "survival_action",
+        "network_profile": "authoritative_realtime"
+      },
+      "capabilities": [
+        "cap.survival.shrinking_zone",
+        "cap.survival.elimination",
+        "cap.survival.loot_light",
+        "cap.survival.spectator_state"
+      ]
+    }
+  ],
+  "entries": [
+    {
+      "id": "interface.declarative_runtime",
+      "kind": "interface",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {
+        "en": "Declarative minigame runtime",
+        "ja": "宣言型ミニゲームランタイム",
+        "zh-Hans": "声明式小游戏运行时"
+      },
+      "compatible_modes": ["*"],
+      "min_client_version": "0.1.0"
+    },
+    {
+      "id": "interface.iminigame",
+      "kind": "interface",
+      "version": "1.1.0",
+      "status": "manual_review",
+      "name": {
+        "en": "Signed IMinigame package",
+        "ja": "署名済み IMinigame パッケージ",
+        "zh-Hans": "已签名 IMinigame 包"
+      },
+      "compatible_modes": ["*"],
+      "min_client_version": "0.1.0"
+    },
+    {
+      "id": "keyword.activity.fishing",
+      "kind": "keyword",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Fishing", "ja": "釣り", "zh-Hans": "钓鱼"},
+      "aliases": {
+        "en": ["fish", "angling", "river fishing"],
+        "ja": ["魚釣り", "フィッシング"],
+        "zh-Hans": ["垂钓", "河边钓鱼", "捕鱼"]
+      },
+      "compatible_modes": ["casual_activity"]
+    },
+    {
+      "id": "keyword.activity.mining",
+      "kind": "keyword",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Mining", "ja": "採掘", "zh-Hans": "挖矿"},
+      "aliases": {
+        "en": ["mine", "ore", "cave"],
+        "ja": ["鉱山", "鉱石"],
+        "zh-Hans": ["矿洞", "矿石", "采矿"]
+      },
+      "compatible_modes": ["casual_activity", "rpg_adventure"]
+    },
+    {
+      "id": "keyword.activity.farming",
+      "kind": "keyword",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Farming", "ja": "農業", "zh-Hans": "农场"},
+      "aliases": {
+        "en": ["farm", "crops", "harvest"],
+        "ja": ["農場", "収穫"],
+        "zh-Hans": ["种植", "收获", "作物"]
+      },
+      "compatible_modes": ["casual_activity"]
+    },
+    {
+      "id": "keyword.activity.cooking",
+      "kind": "keyword",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Cooking", "ja": "料理", "zh-Hans": "料理"},
+      "aliases": {
+        "en": ["cook", "recipe", "kitchen"],
+        "ja": ["調理", "レシピ"],
+        "zh-Hans": ["烹饪", "菜谱", "厨房"]
+      },
+      "compatible_modes": ["casual_activity"]
+    },
+    {
+      "id": "keyword.loop.tap_timing",
+      "kind": "keyword",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Tap timing", "ja": "タイミングタップ", "zh-Hans": "点击时机"},
+      "aliases": {
+        "en": ["timing", "tap", "reaction"],
+        "ja": ["タイミング", "反応"],
+        "zh-Hans": ["反应", "节奏点击", "时机"]
+      },
+      "compatible_modes": ["casual_activity"]
+    },
+    {
+      "id": "keyword.genre.platformer",
+      "kind": "keyword",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Platformer", "ja": "プラットフォーマー", "zh-Hans": "平台跳跃"},
+      "aliases": {
+        "en": ["side scroller", "jump and run"],
+        "ja": ["横スクロール", "ジャンプ"],
+        "zh-Hans": ["横版", "跳跃闯关"]
+      },
+      "compatible_modes": ["side_scroller_2d"]
+    },
+    {
+      "id": "keyword.genre.fighting",
+      "kind": "keyword",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Fighting", "ja": "格闘", "zh-Hans": "格斗"},
+      "aliases": {
+        "en": ["duel", "versus", "combat"],
+        "ja": ["対戦", "バトル"],
+        "zh-Hans": ["对战", "决斗", "战斗"]
+      },
+      "compatible_modes": ["2d_fighting"]
+    },
+    {
+      "id": "keyword.genre.strategy",
+      "kind": "keyword",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Strategy", "ja": "ストラテジー", "zh-Hans": "策略"},
+      "aliases": {
+        "en": ["tactics", "war", "units"],
+        "ja": ["戦略", "戦術"],
+        "zh-Hans": ["战棋", "战争", "战术"]
+      },
+      "compatible_modes": ["strategy_war", "tower_defense"]
+    },
+    {
+      "id": "keyword.genre.rpg",
+      "kind": "keyword",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "RPG adventure", "ja": "RPG アドベンチャー", "zh-Hans": "RPG 冒险"},
+      "aliases": {
+        "en": ["role playing", "quest", "adventure"],
+        "ja": ["ロールプレイ", "冒険", "クエスト"],
+        "zh-Hans": ["角色扮演", "任务", "冒险"]
+      },
+      "compatible_modes": ["rpg_adventure"]
+    },
+    {
+      "id": "keyword.genre.tower_defense",
+      "kind": "keyword",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Tower defense", "ja": "タワーディフェンス", "zh-Hans": "塔防"},
+      "aliases": {
+        "en": ["defense", "waves", "towers"],
+        "ja": ["防衛", "ウェーブ"],
+        "zh-Hans": ["防守", "波次", "炮塔"]
+      },
+      "compatible_modes": ["tower_defense"]
+    },
+    {
+      "id": "keyword.genre.battle_royale",
+      "kind": "keyword",
+      "version": "1.0.0",
+      "status": "beta",
+      "name": {"en": "Battle royale", "ja": "バトルロイヤル", "zh-Hans": "大逃杀"},
+      "aliases": {
+        "en": ["survival", "last player"],
+        "ja": ["サバイバル", "生存"],
+        "zh-Hans": ["生存", "缩圈", "最后一人"]
+      },
+      "compatible_modes": ["battle_royale"]
+    },
+    {
+      "id": "keyword.feature.social",
+      "kind": "keyword",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Social play", "ja": "ソーシャルプレイ", "zh-Hans": "社交玩法"},
+      "aliases": {
+        "en": ["friends", "emotes", "co-op"],
+        "ja": ["フレンド", "エモート", "協力"],
+        "zh-Hans": ["好友", "表情", "合作"]
+      },
+      "compatible_modes": ["*"]
+    },
+    {
+      "id": "cap.timer.local",
+      "kind": "capability",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Local timer", "ja": "ローカルタイマー", "zh-Hans": "本地计时器"},
+      "compatible_modes": ["casual_activity"]
+    },
+    {
+      "id": "cap.score.submit",
+      "kind": "capability",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Score intent", "ja": "スコア申請", "zh-Hans": "分数意图"},
+      "compatible_modes": ["casual_activity"],
+      "permissions": ["score.intent.submit"]
+    },
+    {
+      "id": "cap.emote.request",
+      "kind": "capability",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Request emote", "ja": "エモート申請", "zh-Hans": "请求表情"},
+      "compatible_modes": ["casual_activity", "side_scroller_2d", "2d_fighting", "rpg_adventure"],
+      "permissions": ["social.emote.request"]
+    },
+    {
+      "id": "cap.character.physics",
+      "kind": "capability",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Character physics", "ja": "キャラクター物理", "zh-Hans": "角色物理"},
+      "compatible_modes": ["side_scroller_2d", "2d_fighting"]
+    },
+    {
+      "id": "cap.world.tilemap",
+      "kind": "capability",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Tile map", "ja": "タイルマップ", "zh-Hans": "瓦片地图"},
+      "compatible_modes": ["side_scroller_2d"]
+    },
+    {
+      "id": "cap.camera.2d",
+      "kind": "capability",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "2D camera", "ja": "2D カメラ", "zh-Hans": "2D 镜头"},
+      "compatible_modes": ["side_scroller_2d"]
+    },
+    {
+      "id": "cap.enemy.ai",
+      "kind": "capability",
+      "version": "1.0.0",
+      "status": "beta",
+      "name": {"en": "Bounded enemy AI", "ja": "制限付き敵 AI", "zh-Hans": "受限敌人 AI"},
+      "compatible_modes": ["side_scroller_2d"],
+      "dependencies": ["cap.world.tilemap"]
+    },
+    {
+      "id": "cap.combat.hitboxes",
+      "kind": "capability",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Hit boxes", "ja": "ヒットボックス", "zh-Hans": "攻击判定"},
+      "compatible_modes": ["2d_fighting"],
+      "dependencies": ["cap.character.physics"]
+    },
+    {
+      "id": "cap.combat.hurtboxes",
+      "kind": "capability",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Hurt boxes", "ja": "ハートボックス", "zh-Hans": "受击判定"},
+      "compatible_modes": ["2d_fighting"],
+      "dependencies": ["cap.character.physics"]
+    },
+    {
+      "id": "cap.input.buffer",
+      "kind": "capability",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Input buffer", "ja": "入力バッファ", "zh-Hans": "输入缓冲"},
+      "compatible_modes": ["2d_fighting"]
+    },
+    {
+      "id": "cap.combat.combo_rules",
+      "kind": "capability",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Combo rules", "ja": "コンボルール", "zh-Hans": "连招规则"},
+      "compatible_modes": ["2d_fighting"],
+      "dependencies": ["cap.combat.hitboxes", "cap.input.buffer"]
+    },
+    {
+      "id": "cap.session.round_timer",
+      "kind": "capability",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Round timer", "ja": "ラウンドタイマー", "zh-Hans": "回合计时"},
+      "compatible_modes": ["2d_fighting"],
+      "permissions": ["session.clock.read"]
+    },
+    {
+      "id": "cap.strategy.grid_state",
+      "kind": "capability",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Grid state", "ja": "グリッド状態", "zh-Hans": "网格状态"},
+      "compatible_modes": ["strategy_war"]
+    },
+    {
+      "id": "cap.strategy.unit_orders",
+      "kind": "capability",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Unit orders", "ja": "ユニット命令", "zh-Hans": "单位指令"},
+      "compatible_modes": ["strategy_war"],
+      "dependencies": ["cap.strategy.grid_state"]
+    },
+    {
+      "id": "cap.strategy.projectiles",
+      "kind": "capability",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Projectiles", "ja": "投射物", "zh-Hans": "投射物"},
+      "compatible_modes": ["strategy_war"]
+    },
+    {
+      "id": "cap.strategy.fog_of_war",
+      "kind": "capability",
+      "version": "1.0.0",
+      "status": "beta",
+      "name": {"en": "Fog of war", "ja": "戦場の霧", "zh-Hans": "战争迷雾"},
+      "compatible_modes": ["strategy_war"],
+      "dependencies": ["cap.strategy.grid_state"]
+    },
+    {
+      "id": "cap.rpg.dialogue",
+      "kind": "capability",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Dialogue", "ja": "会話", "zh-Hans": "对话"},
+      "compatible_modes": ["rpg_adventure"]
+    },
+    {
+      "id": "cap.rpg.quests",
+      "kind": "capability",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Quest state", "ja": "クエスト状態", "zh-Hans": "任务状态"},
+      "compatible_modes": ["rpg_adventure"],
+      "permissions": ["session.state.write"]
+    },
+    {
+      "id": "cap.rpg.inventory_light",
+      "kind": "capability",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Session inventory", "ja": "セッション所持品", "zh-Hans": "局内背包"},
+      "compatible_modes": ["rpg_adventure"],
+      "permissions": ["session.inventory.write"]
+    },
+    {
+      "id": "cap.rpg.combat_light",
+      "kind": "capability",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Light combat", "ja": "ライト戦闘", "zh-Hans": "轻量战斗"},
+      "compatible_modes": ["rpg_adventure"]
+    },
+    {
+      "id": "cap.tower.wave_spawns",
+      "kind": "capability",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Wave spawns", "ja": "ウェーブ出現", "zh-Hans": "波次生成"},
+      "compatible_modes": ["tower_defense"]
+    },
+    {
+      "id": "cap.tower.placement",
+      "kind": "capability",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Tower placement", "ja": "タワー配置", "zh-Hans": "防御塔放置"},
+      "compatible_modes": ["tower_defense"],
+      "dependencies": ["cap.tower.path_grid"]
+    },
+    {
+      "id": "cap.tower.path_grid",
+      "kind": "capability",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Path grid", "ja": "経路グリッド", "zh-Hans": "路径网格"},
+      "compatible_modes": ["tower_defense"]
+    },
+    {
+      "id": "cap.tower.upgrade_rules",
+      "kind": "capability",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Upgrade rules", "ja": "強化ルール", "zh-Hans": "升级规则"},
+      "compatible_modes": ["tower_defense"],
+      "dependencies": ["cap.tower.placement"]
+    },
+    {
+      "id": "cap.survival.shrinking_zone",
+      "kind": "capability",
+      "version": "1.0.0",
+      "status": "beta",
+      "name": {"en": "Shrinking zone", "ja": "縮小ゾーン", "zh-Hans": "缩圈"},
+      "compatible_modes": ["battle_royale"],
+      "permissions": ["session.authoritative.tick"]
+    },
+    {
+      "id": "cap.survival.elimination",
+      "kind": "capability",
+      "version": "1.0.0",
+      "status": "beta",
+      "name": {"en": "Elimination", "ja": "脱落", "zh-Hans": "淘汰"},
+      "compatible_modes": ["battle_royale"],
+      "permissions": ["session.authoritative.state"]
+    },
+    {
+      "id": "cap.survival.loot_light",
+      "kind": "capability",
+      "version": "1.0.0",
+      "status": "beta",
+      "name": {"en": "Session loot", "ja": "セッション戦利品", "zh-Hans": "局内战利品"},
+      "compatible_modes": ["battle_royale"],
+      "permissions": ["session.inventory.write"]
+    },
+    {
+      "id": "cap.survival.spectator_state",
+      "kind": "capability",
+      "version": "1.0.0",
+      "status": "beta",
+      "name": {"en": "Spectator state", "ja": "観戦状態", "zh-Hans": "观战状态"},
+      "compatible_modes": ["battle_royale"],
+      "permissions": ["session.spectator.read"]
+    },
+    {
+      "id": "assetpack.ui.pixel.base",
+      "kind": "assetpack",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Pixel UI catalog", "ja": "ピクセル UI カタログ", "zh-Hans": "像素 UI 目录"},
+      "compatible_modes": ["*"],
+      "resource_uri": "res://configs/ui_assets.json",
+      "sha256": "ebe1f09d8aa128837ac24a517ef684bca8b1af5b90324182b5f5b97e7a2da22e"
+    },
+    {
+      "id": "assetpack.world.pixel.base",
+      "kind": "assetpack",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Pixel world catalog", "ja": "ピクセルワールドカタログ", "zh-Hans": "像素世界目录"},
+      "compatible_modes": ["*"],
+      "resource_uri": "res://configs/art_assets.json",
+      "sha256": "0de1dd8dce5659b929258dbb1d6d04feef3ce457f8c472be30f1da3d03dfb366"
+    },
+    {
+      "id": "assetpack.fishing.rules",
+      "kind": "assetpack",
+      "version": "1.0.0",
+      "status": "stable",
+      "name": {"en": "Fishing rules", "ja": "釣りルール", "zh-Hans": "钓鱼规则"},
+      "compatible_modes": ["casual_activity"],
+      "resource_uri": "res://configs/fishing.json",
+      "sha256": "e56c25e3a2e8938d1c1c978d00fc29842304f38d651bfa88ee57e9c6e7740d32"
+    }
+  ]
+}

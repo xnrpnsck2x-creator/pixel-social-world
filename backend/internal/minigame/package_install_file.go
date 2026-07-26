@@ -37,12 +37,33 @@ func (s *FilePackageInstallStore) InstallPackage(
 	if err != nil {
 		return PackageInstallSnapshot{}, err
 	}
-	if previous, ok := s.currentSnapshot(ctx, snapshot.GameID); ok {
+	if current, ok := s.currentSnapshot(ctx, snapshot.GameID); ok &&
+		current.InstallKey == snapshot.InstallKey {
+		if !installMatchesRecord(current, record) {
+			return PackageInstallSnapshot{}, errors.New("immutable_install_conflict")
+		}
+		return current, nil
+	} else if ok {
+		previous := current
 		snapshot.PreviousInstallKey = previous.InstallKey
 	}
 	finalDir, err := s.installDir(snapshot.InstallKey)
 	if err != nil {
 		return PackageInstallSnapshot{}, err
+	}
+	snapshot.InstallURI = "file://" + finalDir
+	snapshot.ManifestURI = "file://" + filepath.Join(finalDir, "install.json")
+	if existing, readErr := readInstallJSON(filepath.Join(finalDir, "install.json")); readErr == nil {
+		if existing.SourceSHA256 != snapshot.SourceSHA256 ||
+			existing.SourceStorageKey != snapshot.SourceStorageKey {
+			return PackageInstallSnapshot{}, errors.New("immutable_install_conflict")
+		}
+		if err := s.writeCurrentSnapshot(snapshot); err != nil {
+			return PackageInstallSnapshot{}, err
+		}
+		return snapshot, nil
+	} else if !os.IsNotExist(readErr) {
+		return PackageInstallSnapshot{}, readErr
 	}
 	tempDir := finalDir + fmt.Sprintf(".tmp-%d", time.Now().UnixNano())
 	_ = os.RemoveAll(tempDir)
@@ -53,17 +74,11 @@ func (s *FilePackageInstallStore) InstallPackage(
 		_ = os.RemoveAll(tempDir)
 		return PackageInstallSnapshot{}, err
 	}
-	snapshot.InstallURI = "file://" + finalDir
-	snapshot.ManifestURI = "file://" + filepath.Join(finalDir, "install.json")
 	if err := writeInstallJSON(filepath.Join(tempDir, "install.json"), snapshot); err != nil {
 		_ = os.RemoveAll(tempDir)
 		return PackageInstallSnapshot{}, err
 	}
 	if err := writeInstallJSON(filepath.Join(tempDir, "catalog_entry.json"), snapshot); err != nil {
-		_ = os.RemoveAll(tempDir)
-		return PackageInstallSnapshot{}, err
-	}
-	if err := os.RemoveAll(finalDir); err != nil {
 		_ = os.RemoveAll(tempDir)
 		return PackageInstallSnapshot{}, err
 	}
@@ -111,12 +126,6 @@ func (s *FilePackageInstallStore) RollbackPackage(
 	previous = cloneInstallSnapshot(previous)
 	previous.Status = "installed"
 	previous.PreviousInstallKey = current.InstallKey
-	if err := writeInstallJSON(filepath.Join(previousDir, "install.json"), previous); err != nil {
-		return PackageInstallSnapshot{}, err
-	}
-	if err := writeInstallJSON(filepath.Join(previousDir, "catalog_entry.json"), previous); err != nil {
-		return PackageInstallSnapshot{}, err
-	}
 	if err := s.writeCurrentSnapshot(previous); err != nil {
 		return PackageInstallSnapshot{}, err
 	}
@@ -150,6 +159,60 @@ func (s *FilePackageInstallStore) UnpublishPackage(
 	current = cloneInstallSnapshot(current)
 	current.Status = "unpublished"
 	return current, nil
+}
+
+func (s *FilePackageInstallStore) CurrentPackage(
+	ctx context.Context,
+	gameID string,
+) (PackageInstallSnapshot, bool, error) {
+	if err := ctx.Err(); err != nil {
+		return PackageInstallSnapshot{}, false, err
+	}
+	path, err := s.currentPath(gameID)
+	if err != nil {
+		return PackageInstallSnapshot{}, false, err
+	}
+	snapshot, err := readInstallJSON(path)
+	if os.IsNotExist(err) {
+		return PackageInstallSnapshot{}, false, nil
+	}
+	if err != nil {
+		return PackageInstallSnapshot{}, false, err
+	}
+	return snapshot, snapshot.InstallKey != "", nil
+}
+
+func (s *FilePackageInstallStore) RestorePackage(
+	ctx context.Context,
+	gameID string,
+	expectedInstallKey string,
+	previous *PackageInstallSnapshot,
+) error {
+	current, ok, err := s.CurrentPackage(ctx, gameID)
+	if err != nil {
+		return err
+	}
+	if expectedInstallKey == "" {
+		if ok && current.InstallKey != "" {
+			return errors.New("release_pointer_changed")
+		}
+	} else if !ok || current.InstallKey != expectedInstallKey {
+		return errors.New("release_pointer_changed")
+	}
+	path, err := s.currentPath(gameID)
+	if err != nil {
+		return err
+	}
+	if previous == nil || previous.InstallKey == "" {
+		if err := os.Remove(path); err != nil && !os.IsNotExist(err) {
+			return err
+		}
+		return nil
+	}
+	if previous.GameID != gameID {
+		return errors.New("release_pointer_game_mismatch")
+	}
+	return s.writeCurrentSnapshot(cloneInstallSnapshot(*previous))
 }
 
 func (s *FilePackageInstallStore) ListInstalledPackages(ctx context.Context) ([]PackageInstallSnapshot, error) {

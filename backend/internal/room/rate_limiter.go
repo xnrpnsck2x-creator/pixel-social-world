@@ -50,14 +50,10 @@ func (h *Hub) allowAction(
 	client *clientState,
 	action string,
 	interval time.Duration,
-	last *time.Time,
 ) bool {
+	state := client.snapshot()
 	if h.rateLimiter != nil {
-		return h.rateLimiter.Allow(context.Background(), rateKey(client.playerID, action), interval)
+		return h.rateLimiter.Allow(context.Background(), rateKey(state.playerID, action), interval)
 	}
-	if h.tooSoon(*last, interval) {
-		return false
-	}
-	*last = h.now()
-	return true
+	return client.allowLocalAction(action, h.now(), interval)
 }

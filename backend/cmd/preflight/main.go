@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"pixel-social-world/backend/internal/config"
+	"pixel-social-world/backend/internal/creatorregistry"
 	"pixel-social-world/backend/internal/house"
 	"pixel-social-world/backend/internal/mapactivity"
 	"pixel-social-world/backend/internal/minigame"
@@ -80,6 +81,15 @@ func runPreflight(configPath string, cfg config.Config, strict bool, checkDirs b
 		_, err := minigame.LoadFishingRewardRules(cfg.Minigames.FishingConfigPath)
 		return err
 	}, cfg.Minigames.FishingConfigPath)
+	report.add("creator_registry", func() error {
+		registry, err := creatorregistry.Load(cfg.Minigames.CreatorRegistryPath)
+		if err != nil {
+			return err
+		}
+		return registry.VerifyLocalAssets(
+			creatorregistry.ProjectRootForRegistryPath(cfg.Minigames.CreatorRegistryPath),
+		)
+	}, cfg.Minigames.CreatorRegistryPath)
 	report.add("map_activity_rules", func() error {
 		_, err := mapactivity.LoadRuleset(cfg.World.MapActivitiesConfigPath, cfg.World.MapPointsConfigPath)
 		return err

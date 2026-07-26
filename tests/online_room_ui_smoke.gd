@@ -122,10 +122,10 @@ func _run() -> void:
 		failures.append("Creator utility panel did not render 2D fighting mode.")
 	if not assertions.utility_rows_contain(utility_panel, "Battle Royale"):
 		failures.append("Creator utility panel did not render battle royale mode.")
-	if not assertions.utility_rows_contain(utility_panel, "Draft Review Probe"):
-		failures.append("Creator utility panel did not render draft submission status row.")
-	if not assertions.utility_rows_contain(utility_panel, "Package Intake Probe"):
-		failures.append("Creator utility panel did not render package intake status row.")
+	if not assertions.utility_rows_contain(utility_panel, "Idea Blueprint"):
+		failures.append("Creator utility panel did not render the idea workflow row.")
+	if not assertions.utility_rows_contain(utility_panel, "Declarative Package"):
+		failures.append("Creator utility panel did not render the declarative package row.")
 	if not assertions.utility_rows_contain(utility_panel, "Review Signals"):
 		failures.append("Creator utility panel did not render reviewer signal row.")
 	if not assertions.utility_rows_contain(utility_panel, "Creator Status Page"):
@@ -188,7 +188,12 @@ func _run() -> void:
 	if str(invite_action.get("session_id", "")) != "local_fishing":
 		failures.append("Room minigame invite did not target the local fishing session.")
 	if not assertions.has_image2_button(panel.get_node("Margin/Rows/ActionRow/HostFishingButton")):
-		failures.append("Host Fishing button is not using an Image 2 button frame.")
+		failures.append("Host game button is not using an Image 2 button frame.")
+	var game_picker := panel.get_node("Margin/Rows/ActionRow/GamePicker") as OptionButton
+	if not assertions.has_image2_button(game_picker):
+		failures.append("Game picker is not using an Image 2 button frame.")
+	if game_picker.item_count < 1 or str(game_picker.get_item_metadata(0)) != "fishing":
+		failures.append("Game picker did not expose the enabled minigame catalog.")
 	var invite_home_button := panel.get_node("Margin/Rows/HousingActionRow/InviteHomeButton")
 	var visit_home_button := panel.get_node("Margin/Rows/HousingActionRow/VisitHomeButton")
 	if not assertions.has_image2_button(invite_home_button):

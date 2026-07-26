@@ -1,6 +1,8 @@
 class_name OnlineRoomPanelActions
 extends RefCounted
 
+const Formatter := preload("res://scripts/UI/Panels/OnlineRoomPanelFormatter.gd")
+
 signal emote_requested(emote_id: String)
 signal home_invite_requested
 signal home_visit_requested(owner_id: String)
@@ -10,6 +12,7 @@ var presence_service: Node
 var chat_service: Node
 var minigame_registry: Node
 var session_service: Node
+var selected_game_id := Callable()
 
 func bind_buttons(
 	laugh_button: Button,
@@ -18,12 +21,14 @@ func bind_buttons(
 	host_fishing_button: Button,
 	join_session_button: Button,
 	invite_home_button: Button,
-	visit_home_button: Button
+	visit_home_button: Button,
+	game_selector: Callable
 ) -> void:
+	selected_game_id = game_selector
 	laugh_button.pressed.connect(func() -> void: emote_requested.emit("emote.laugh"))
 	heart_button.pressed.connect(func() -> void: emote_requested.emit("emote.heart"))
 	exclamation_button.pressed.connect(func() -> void: emote_requested.emit("emote.exclamation"))
-	host_fishing_button.pressed.connect(host_fishing)
+	host_fishing_button.pressed.connect(host_selected_game)
 	join_session_button.pressed.connect(join_preferred_session)
 	invite_home_button.pressed.connect(func() -> void: home_invite_requested.emit())
 	visit_home_button.pressed.connect(visit_first_member_home)
@@ -39,22 +44,29 @@ func bind_services(
 	minigame_registry = new_minigame_registry
 	session_service = new_session_service
 
-func host_fishing() -> void:
+func host_selected_game() -> void:
+	var game_id := str(selected_game_id.call()) if selected_game_id.is_valid() else "fishing"
+	await host_game(game_id if not game_id.is_empty() else "fishing")
+
+func host_game(game_id: String) -> void:
 	if session_service == null:
 		return
-	var response: Dictionary = await session_service.create_session("fishing")
+	var response: Dictionary = await session_service.create_session(game_id)
 	if not bool(response.get("ok", false)):
 		return
 	var session: Dictionary = response.get("data", {}) as Dictionary
-	announce_game_invite("fishing", str(session.get("id", "")))
+	announce_game_invite(game_id, str(session.get("id", "")))
 	minigame_launch_requested.emit()
-	session_service.launch_game("fishing")
+	session_service.launch_game(game_id)
+
+func host_fishing() -> void:
+	await host_game("fishing")
 
 func announce_game_invite(game_id: String, session_id: String = "") -> void:
 	if chat_service == null or minigame_registry == null:
 		return
 	var game: Dictionary = minigame_registry.get_minigame(game_id)
-	var game_name := App.t_key(str(game.get("name_key", game_id)))
+	var game_name := Formatter.localized_game_name(game) if not game.is_empty() else game_id
 	var target_session_id := session_id if not session_id.is_empty() else _find_session_id_for_game(game_id)
 	var body := App.format_key("world.session_invite_chat_format", {
 		"name": SaveSystem.get_display_name(),
@@ -84,7 +96,7 @@ func join_preferred_session() -> void:
 				return
 	var sessions: Array = session_service.get_sessions()
 	if sessions.is_empty():
-		await host_fishing()
+		await host_selected_game()
 		return
 	var session: Dictionary = sessions.front()
 	await _join_session(str(session.get("id", "")), str(session.get("game_id", "fishing")))

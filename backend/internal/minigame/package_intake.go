@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"time"
+
+	"pixel-social-world/backend/pkg/creatorcontract"
 )
 
 const maxCreatorPackageFiles = 64
@@ -42,7 +44,8 @@ var blockedPackageExtensions = map[string]bool{
 
 type PackageSubmitRequest struct {
 	SubmitRequest
-	Files []PackageFile `json:"files"`
+	Files            []PackageFile                     `json:"files"`
+	ResolvedManifest *creatorcontract.ResolvedManifest `json:"resolved_manifest,omitempty"`
 }
 
 type PackageFile struct {
@@ -82,30 +85,62 @@ func (s *MemoryService) SubmitPackage(_ context.Context, request PackageSubmitRe
 	if record.GameID == "" {
 		return Record{}, err
 	}
-	s.storeRecord(record)
+	if storeErr := s.storeSubmittedRecord(record); storeErr != nil {
+		return Record{}, storeErr
+	}
 	return record, err
 }
 
-func (s *MemoryService) storeRecord(record Record) {
+func (s *MemoryService) storeSubmittedRecord(record Record) error {
 	s.mu.Lock()
-	s.records[record.GameID] = record
+	defer s.mu.Unlock()
+	if current, ok := s.records[record.GameID]; ok {
+		if err := validateSubmissionReplacement(current, record); err != nil {
+			return err
+		}
+	}
+	if versions := s.versionRecords[record.GameID]; versions != nil {
+		if existing, ok := versions[submissionVersionKey(record.Version)]; ok {
+			if err := validateSubmissionReplacement(existing.Record, record); err != nil {
+				return err
+			}
+		}
+	}
+	s.records[record.GameID] = cloneRecord(record)
 	s.storeSubmissionVersionLocked(record)
-	s.mu.Unlock()
+	return nil
+}
+
+func (s *MemoryService) storeCurrentRecord(record Record) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	current, ok := s.records[record.GameID]
+	if !ok {
+		return errors.New("minigame_not_found")
+	}
+	if !sameSubmissionTarget(current, record) {
+		return errors.New("stale_submission_update")
+	}
+	s.records[record.GameID] = cloneRecord(record)
+	s.storeSubmissionVersionLocked(record)
+	return nil
 }
 
 func (s *MemoryService) storeScanRecord(record Record) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	current, ok := s.records[record.GameID]
-	if ok && !packageScanMutableStatus(current.Status) {
+	if !ok ||
+		!packageScanMutableStatus(current.Status) ||
+		!samePackageReviewTarget(current, record) {
 		return
 	}
-	s.records[record.GameID] = record
+	s.records[record.GameID] = cloneRecord(record)
 	s.storeSubmissionVersionLocked(record)
 }
 
 func buildPackageRecord(request PackageSubmitRequest) (Record, error) {
-	if err := validateSubmitRequest(request.SubmitRequest); err != nil {
+	if err := validatePackageSubmitRequest(request); err != nil {
 		return Record{}, err
 	}
 	report, digest, totalBytes := scanPackage(request)
@@ -144,7 +179,7 @@ func queuedPackageRecord(
 	stages []string,
 	job *PackageReviewJobSnapshot,
 ) (Record, error) {
-	if err := validateSubmitRequest(request.SubmitRequest); err != nil {
+	if err := validatePackageSubmitRequest(request); err != nil {
 		return Record{}, err
 	}
 	now := time.Now().Unix()
@@ -163,7 +198,7 @@ func queuedPackageRecord(
 				Status:   status,
 				Stages:   stages,
 				Files:    packageFilePaths(request.Files),
-				Required: requiredPackagePaths(request.SubmitRequest),
+				Required: requiredPackagePathsForPackage(request),
 			},
 			ReviewJob: job,
 		},

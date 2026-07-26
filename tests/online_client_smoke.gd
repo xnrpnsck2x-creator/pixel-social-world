@@ -44,6 +44,20 @@ func _run() -> void:
 	var history: Dictionary = await client.call("fetch_creator_submission_history", "creator_missing")
 	if str(history.get("error", "")) != "online_disabled":
 		failures.append("Creator submission history did not route through OnlineClient endpoint.")
+	var registry: Dictionary = await client.call("fetch_creator_registry", {"kind": "keyword"})
+	if str(registry.get("error", "")) != "online_disabled":
+		failures.append("Creator registry did not route through OnlineClient endpoint.")
+	var discovery: Dictionary = await client.call(
+		"discover_creator_keywords",
+		"fishing",
+		"casual_activity",
+		"en"
+	)
+	if str(discovery.get("error", "")) != "online_disabled":
+		failures.append("Creator keyword discovery did not route through OnlineClient endpoint.")
+	var resolution: Dictionary = await client.call("resolve_creator_manifest", {})
+	if str(resolution.get("error", "")) != "online_disabled":
+		failures.append("Creator manifest resolution did not route through OnlineClient endpoint.")
 	var upgrade: Dictionary = await client.call("upgrade_guest_account", {
 		"provider": "google",
 		"platform": "h5",

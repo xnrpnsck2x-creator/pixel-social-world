@@ -21,6 +21,23 @@ func TestAdminRoleTokensAndActionSafety(t *testing.T) {
 	if !stringSliceContains(session["capabilities"].([]any), "read_creator_payouts") {
 		t.Fatalf("viewer session should expose creator payout read capability: %#v", session)
 	}
+	submission := map[string]any{
+		"game_id":            "reviewer_only_submission",
+		"version":            "1.0.0",
+		"author":             "creator",
+		"mode_id":            "casual_activity",
+		"name":               map[string]string{"en": "Review", "ja": "Review", "zh": "Review"},
+		"min_players":        1,
+		"max_players":        1,
+		"tags":               []string{"review"},
+		"requires_network":   false,
+		"runtime_contract":   map[string]any{"camera": "contained", "input_profile": "tap_timing", "network_profile": "offline_optional"},
+		"entry_scene":        "res://creator/reviewer_only_submission/main.tscn",
+		"main_script":        "res://creator/reviewer_only_submission/game.gd",
+		"asset_budget_bytes": 5242880,
+	}
+	testPostJSON(t, server, "/minigames/submit", "view-token", submission, http.StatusForbidden)
+	testPostJSON(t, server, "/minigames/submit", "review-token", submission, http.StatusAccepted)
 
 	testPostJSON(t, server, "/admin/chat-moderation/actions", "view-token", map[string]any{
 		"target_player_id": "player_a",
@@ -76,8 +93,15 @@ func TestCreatorUnpublishRequiresOwnerConfirmation(t *testing.T) {
 	session := testGuestLogin(t, server, "Role Owner")
 	playerID := session["player_id"].(string)
 	token := session["access_token"].(string)
-	payload := creatorPackagePayload(playerID, "creator_role_guard", safePackageScript())
+	payload := creatorPackagePayload(t, playerID, "creator_role_guard", safePackageScript())
 	testPostJSON(t, server, "/creator-submissions/package", token, payload, http.StatusAccepted)
+	waitCreatorStatus(
+		t,
+		server,
+		"/creator-submissions/creator_role_guard/status?player_id="+playerID,
+		token,
+		"needs_review",
+	)
 	postReviewRoleJSON(t, server, "review-token", `{"action":"approve"}`, http.StatusAccepted)
 	postReviewRoleJSON(t, server, "owner-token", `{"action":"publish"}`, http.StatusAccepted)
 	postReviewRoleJSON(t, server, "review-token", `{"action":"unpublish","confirm":true}`, http.StatusForbidden)

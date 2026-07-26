@@ -239,30 +239,6 @@ func claim_fishing_catch(session_id: String, request_id: String = "") -> Diction
 		"request_id": request_id
 	})
 
-func submit_creator_draft(request: Dictionary) -> Dictionary:
-	var payload := request.duplicate(true)
-	payload["author"] = _client.player_id
-	return await _client._request_json(HTTPClient.METHOD_POST, "/creator-submissions/draft", payload)
-
-func submit_creator_package(request: Dictionary) -> Dictionary:
-	var payload := request.duplicate(true)
-	payload["author"] = _client.player_id
-	return await _client._request_json(HTTPClient.METHOD_POST, "/creator-submissions/package", payload)
-
-func fetch_creator_submission_status(game_id: String) -> Dictionary:
-	var route := "/creator-submissions/%s/status?player_id=%s" % [
-		game_id.uri_encode(),
-		_client.player_id.uri_encode()
-	]
-	return await _client._request_json(HTTPClient.METHOD_GET, route)
-
-func fetch_creator_submission_history(game_id: String) -> Dictionary:
-	var route := "/creator-submissions/%s/history?player_id=%s" % [
-		game_id.uri_encode(),
-		_client.player_id.uri_encode()
-	]
-	return await _client._request_json(HTTPClient.METHOD_GET, route)
-
 func fetch_utility_panels() -> Dictionary:
 	var route := "/utility/panels?player_id=%s" % _client.player_id.uri_encode()
 	return await _client._request_json(HTTPClient.METHOD_GET, route)

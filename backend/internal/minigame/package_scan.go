@@ -6,7 +6,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"path"
+	"sort"
 	"strings"
+
+	"pixel-social-world/backend/pkg/creatorcontract"
 )
 
 func scanPackage(request PackageSubmitRequest) (PackageScanReport, string, int64) {
@@ -14,7 +17,7 @@ func scanPackage(request PackageSubmitRequest) (PackageScanReport, string, int64
 		Status:   "scanning",
 		Stages:   []string{"submitted", "scanning"},
 		Files:    []string{},
-		Required: requiredPackagePaths(request.SubmitRequest),
+		Required: requiredPackagePathsForPackage(request),
 	}
 	if len(request.Files) == 0 {
 		report.Issues = append(report.Issues, "package_files_required")
@@ -26,7 +29,6 @@ func scanPackage(request PackageSubmitRequest) (PackageScanReport, string, int64
 
 	seen := map[string]PackageFile{}
 	var totalBytes int64
-	hash := sha256.New()
 	for _, file := range request.Files {
 		normalized, ok := normalizePackagePath(file.Path)
 		if !ok {
@@ -42,24 +44,39 @@ func scanPackage(request PackageSubmitRequest) (PackageScanReport, string, int64
 		if contentErr != nil {
 			report.Issues = append(report.Issues, contentErr.Error())
 		}
-		if file.SizeBytes <= 0 {
-			file.SizeBytes = int64(len(contentBytes))
+		actualSize := int64(len(contentBytes))
+		if file.SizeBytes > 0 && file.SizeBytes != actualSize {
+			report.Issues = append(
+				report.Issues,
+				fmt.Sprintf("file_size_mismatch:%s:%d!=%d", normalized, file.SizeBytes, actualSize),
+			)
 		}
-		if file.SizeBytes <= 0 {
+		file.SizeBytes = actualSize
+		if actualSize <= 0 {
 			report.Issues = append(report.Issues, "file_size_required:"+normalized)
 		}
-		totalBytes += file.SizeBytes
+		totalBytes += actualSize
 		seen[normalized] = file
 		report.Files = append(report.Files, normalized)
-		fileHash := file.SHA256
-		if fileHash == "" && hasContent && contentErr == nil {
+		if hasContent && contentErr == nil {
 			digest := sha256.Sum256(contentBytes)
-			fileHash = hex.EncodeToString(digest[:])
+			fileHash := hex.EncodeToString(digest[:])
+			if file.SHA256 != "" && !strings.EqualFold(file.SHA256, fileHash) {
+				report.Issues = append(report.Issues, "file_sha256_mismatch:"+normalized)
+			}
 		}
-		hash.Write([]byte(fmt.Sprintf("%s:%d:%s\n", normalized, file.SizeBytes, fileHash)))
 		checkPackageFile(file, &report)
+		if request.ResolvedManifest != nil {
+			checkDeclarativePackageFile(file, &report)
+		}
 	}
 
+	if totalBytes > MaxCreatorPackageUncompressedBytes {
+		report.Issues = append(
+			report.Issues,
+			fmt.Sprintf("package_uncompressed_too_large:%d>%d", totalBytes, MaxCreatorPackageUncompressedBytes),
+		)
+	}
 	if totalBytes > int64(request.AssetBudget) {
 		report.Issues = append(report.Issues, fmt.Sprintf("asset_budget_exceeded:%d>%d", totalBytes, request.AssetBudget))
 	}
@@ -69,29 +86,46 @@ func scanPackage(request PackageSubmitRequest) (PackageScanReport, string, int64
 		}
 	}
 	checkMetaJSON(request.SubmitRequest, seen["meta.json"], &report)
-	return report, hex.EncodeToString(hash.Sum(nil)), totalBytes
+	checkCreatorManifestJSON(request, seen["creator_manifest.json"], &report)
+	if request.ResolvedManifest != nil {
+		entry := seen[request.ResolvedManifest.Entry.Path]
+		if issue := declarativeEntryIssue(request, entry); issue != "" {
+			report.Issues = append(report.Issues, issue)
+		}
+	}
+	digest, _ := packageDigestAndBytes(request.Files)
+	return report, digest, totalBytes
 }
 
 func packageDigestAndBytes(files []PackageFile) (string, int64) {
-	hash := sha256.New()
+	type digestEntry struct {
+		path string
+		size int64
+		hash string
+	}
+	entries := make([]digestEntry, 0, len(files))
 	var totalBytes int64
 	for _, file := range files {
 		normalized, ok := normalizePackagePath(file.Path)
 		if !ok {
 			continue
 		}
-		size := file.SizeBytes
 		contentBytes, hasContent, contentErr := packageFileContentBytes(file)
-		if size <= 0 {
-			size = int64(len(contentBytes))
-		}
+		size := int64(len(contentBytes))
 		totalBytes += size
-		fileHash := file.SHA256
-		if fileHash == "" && hasContent && contentErr == nil {
+		fileHash := ""
+		if hasContent && contentErr == nil {
 			digest := sha256.Sum256(contentBytes)
 			fileHash = hex.EncodeToString(digest[:])
 		}
-		hash.Write([]byte(fmt.Sprintf("%s:%d:%s\n", normalized, size, fileHash)))
+		entries = append(entries, digestEntry{path: normalized, size: size, hash: fileHash})
+	}
+	sort.Slice(entries, func(left int, right int) bool {
+		return entries[left].path < entries[right].path
+	})
+	hash := sha256.New()
+	for _, entry := range entries {
+		hash.Write([]byte(fmt.Sprintf("%s:%d:%s\n", entry.path, entry.size, entry.hash)))
 	}
 	return hex.EncodeToString(hash.Sum(nil)), totalBytes
 }
@@ -122,27 +156,59 @@ func checkPackageFile(file PackageFile, report *PackageScanReport) {
 	}
 }
 
+func checkDeclarativePackageFile(file PackageFile, report *PackageScanReport) {
+	switch strings.ToLower(path.Ext(file.Path)) {
+	case ".gd", ".tscn", ".tres", ".res", ".gdshader":
+		report.Issues = append(report.Issues, "declarative_package_executable_forbidden:"+file.Path)
+	}
+}
+
 func checkMetaJSON(request SubmitRequest, file PackageFile, report *PackageScanReport) {
 	if file.Path == "" || file.ContentText == "" {
 		report.Issues = append(report.Issues, "meta_json_content_required")
 		return
 	}
 	var meta SubmitRequest
-	if err := json.Unmarshal([]byte(file.ContentText), &meta); err != nil {
+	if err := decodeStrictJSON([]byte(file.ContentText), &meta); err != nil {
 		report.Issues = append(report.Issues, "meta_json_invalid")
 		return
 	}
-	if meta.GameID != request.GameID {
-		report.Issues = append(report.Issues, "meta_game_id_mismatch")
+	expected, expectedErr := json.Marshal(request)
+	actual, actualErr := json.Marshal(meta)
+	if expectedErr != nil || actualErr != nil || string(expected) != string(actual) {
+		report.Issues = append(report.Issues, "meta_request_mismatch")
 	}
-	if meta.Version != request.Version {
-		report.Issues = append(report.Issues, "meta_version_mismatch")
+}
+
+func checkCreatorManifestJSON(request PackageSubmitRequest, file PackageFile, report *PackageScanReport) {
+	if request.ResolvedManifest == nil {
+		if file.Path != "" {
+			report.Issues = append(report.Issues, "creator_manifest_unexpected")
+		}
+		return
 	}
-	if meta.ModeID != request.ModeID {
-		report.Issues = append(report.Issues, "meta_mode_mismatch")
+	if file.Path == "" || file.ContentText == "" {
+		report.Issues = append(report.Issues, "creator_manifest_content_required")
+		return
 	}
-	if err := validateModeRuntimeContract(meta.ModeID, meta.RuntimeContract); err != nil {
-		report.Issues = append(report.Issues, "meta_"+err.Error())
+	var parsed creatorcontract.ResolvedManifest
+	if err := decodeStrictJSON([]byte(file.ContentText), &parsed); err != nil {
+		report.Issues = append(report.Issues, "creator_manifest_invalid")
+		return
+	}
+	expected, _ := json.Marshal(request.ResolvedManifest)
+	actual, _ := json.Marshal(parsed)
+	if string(expected) != string(actual) {
+		report.Issues = append(report.Issues, "creator_manifest_request_mismatch")
+	}
+	if parsed.GameID != request.GameID {
+		report.Issues = append(report.Issues, "creator_manifest_game_id_mismatch")
+	}
+	if parsed.ModeID != request.ModeID {
+		report.Issues = append(report.Issues, "creator_manifest_mode_id_mismatch")
+	}
+	if parsed.LockDigest == "" {
+		report.Issues = append(report.Issues, "creator_manifest_lock_digest_required")
 	}
 }
 
@@ -151,6 +217,18 @@ func requiredPackagePaths(request SubmitRequest) []string {
 		"meta.json",
 		packagePathForResource(request.EntryScene, request.GameID),
 		packagePathForResource(request.MainScript, request.GameID),
+		"README.md",
+	}
+}
+
+func requiredPackagePathsForPackage(request PackageSubmitRequest) []string {
+	if request.ResolvedManifest == nil {
+		return requiredPackagePaths(request.SubmitRequest)
+	}
+	return []string{
+		"meta.json",
+		"creator_manifest.json",
+		request.ResolvedManifest.Entry.Path,
 		"README.md",
 	}
 }

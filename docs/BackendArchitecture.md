@@ -80,11 +80,11 @@ flowchart LR
 | --- | --- | --- |
 | Entry and wiring | `cmd/server`, `internal/config`, `internal/gateway` | Load config, choose memory/Postgres/Redis services, register routes, run HTTP server, handle graceful shutdown. |
 | Auth and account upgrade | `internal/auth`, `internal/player` | Guest auth, refresh tokens, Apple/Google upgrade contracts, optional strict OIDC verification, player profile state. |
-| Realtime city | `internal/room`, `internal/presence` | WebSocket joins, room capacity, room authorization, movement envelope validation, chat fanout, presence TTLs, Redis fanout and rate limits. |
+| Realtime city | `internal/room`, `internal/presence` | WebSocket joins, origin/admission budgets, room capacity, room authorization, movement envelope validation, bounded writes, local generation fencing, Redis cross-instance session leases, fanout, presence TTLs, and rate limits. |
 | Chat and messaging | `internal/chat`, `internal/messaging` | Room chat, chat reports, moderation actions, private messages, mailbox, durable report and read-marker records. |
 | Economy and items | `internal/economy`, `internal/inventory`, `internal/trade` | Wallets, ledger, reward caps, creator-share payouts, inventory reservation, listings, buy/cancel settlement, trade audits. |
 | Housing and social | `internal/house`, `internal/social`, `internal/facility` | House layout, placement rules, invites, visits, follow/block state, social facilities. |
-| Creator platform | `internal/minigame`, `pkg/ai` | Package intake, zip extraction, package scanner, review jobs, AI/local policy adapter, approval, publish, rollback, runtime catalog, minigame sessions. |
+| Creator platform | `internal/creatorregistry`, `internal/minigame`, `pkg/creatorcontract`, `pkg/ai` | Multilingual keyword/capability registry, deterministic Manifest V2 resolution, bounded package intake/review jobs, AI/local policy adapter, immutable publish/rollback, runtime catalog, minigame sessions. |
 | Utility and maps | `internal/utility`, `internal/mapactivity` | Main-city shop/mail/notice registry, map discovery, map activities, rewards, cooldowns, daily fatigue. |
 | Operations | `internal/ops`, `backend/deploy`, `cmd/preflight`, `cmd/retention-cleanup` | Health/readiness, debug ops, LiveOps alerts, production preflight, retention cleanup, systemd handoff. |
 | Shared clients | `pkg/db`, `pkg/redis` | PostgreSQL and Redis client setup for production modes. |
@@ -108,7 +108,7 @@ ownership.
 | Economy and inventory | `POST /economy/reward`, `POST /economy/first-session/claim`, `GET /economy/policy`, `POST /economy/creator-share`, `POST /economy/spend`, `GET /economy/ledger/:player_id`, `GET /inventory` |
 | Trade | `GET /trade/listings`, `GET /trade/history`, `GET /trade/inventory`, `POST /trade/listings`, `POST /trade/listings/:id/buy`, `POST /trade/listings/:id/cancel` |
 | Housing | `GET /housing/layout/:owner_id`, `POST /housing/invite`, `POST /housing/visit`, `POST /housing/place`, `POST /housing/style`, `POST /housing/move`, `POST /housing/remove` |
-| Creator platform | `POST /creator-submissions/draft`, `POST /creator-submissions/package`, `POST /creator-submissions/package.zip`, `GET /creator-submissions/:id/status`, `GET /creator-submissions/:id/history`, `POST /minigames/submit`, `GET /minigames/catalog`, `GET /minigames/:id`, `POST /minigames/:id/review` |
+| Creator platform | `GET /creator-registry`, `GET /creator-registry/:id`, `POST /creator-discovery/keywords`, `POST /creator-manifests/resolve`, `POST /creator-submissions/draft`, `POST /creator-submissions/package`, `POST /creator-submissions/package.zip`, `GET /creator-submissions/:id/status`, `GET /creator-submissions/:id/history`, `POST /minigames/submit`, `GET /minigames/catalog`, `GET /minigames/:id`, `GET /minigames/:id/runtime`, `POST /minigames/:id/review` |
 | Minigame sessions | `POST /minigame-sessions`, `GET /minigame-sessions/:room_id`, `POST /minigame-sessions/:session_id/join`, `POST /minigame-sessions/:session_id/leave`, `POST /minigame-sessions/:session_id/end`, `POST /minigames/fishing/catch` |
 | LiveOps admin | `GET /admin/session`, `GET /admin/reviewer-dashboard`, `GET /admin/reviewer-audit/:id`, `GET /admin/chat-reports`, `POST /admin/chat-reports/:id/review`, `GET /admin/chat-moderation/actions`, `POST /admin/chat-moderation/actions`, `GET /admin/action-audit`, `GET /admin/inventory/audit`, `GET /admin/economy/creator-payouts`, `GET /admin/trade/history`, `PUT /admin/utility/panels`, `POST /admin/players/maps/discovered` |
 | Utility panels | `GET /utility/panels`, `GET /utility/shop`, `GET /utility/mail`, `GET /utility/notices` |
@@ -211,10 +211,13 @@ sequenceDiagram
     Minigame->>Catalog: expose runtime-safe current package pointer
 ```
 
-Creator packages are not trusted because they come from players. The backend
-rejects path traversal, duplicate files, unsupported script or native file
-types, formal SVG assets, missing script text, forbidden Godot APIs, and
-packages over the configured asset budget before a package can reach review.
+Creator packages are not trusted because they come from players. Public
+intake requires a server-resolved Manifest V2 and rejects all executable Godot
+content, path traversal, duplicate files, unknown JSON fields, native files,
+formal SVG assets, metadata mismatches, and packages over the configured
+asset budget before review. Review rows and final submission snapshots commit
+transactionally. Runtime installs are immutable; publish and rollback change
+an independent release pointer with idempotency and failure compensation.
 
 ## Request Flow: LiveOps Action
 

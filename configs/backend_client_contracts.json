@@ -265,10 +265,155 @@
       }
     },
     {
+      "id": "creator_registry",
+      "method": "GET",
+      "route": "/creator-registry?kind={kind}&mode_id={mode_id}&q={query}",
+      "client_entrypoints": ["scripts/Network/Client/OnlineClientCreator.gd#fetch_registry"],
+      "consumer_scripts": ["tests/online_client_smoke.gd"],
+      "response_fields": [
+        "revision",
+        "items[].id",
+        "items[].kind",
+        "items[].version",
+        "items[].status",
+        "count",
+        "next_cursor"
+      ],
+      "verification": {
+        "kind": "go_test",
+        "path": "backend/internal/gateway/creator_registry_handlers_test.go",
+        "symbol": "TestCreatorRegistryDiscoveryAndManifestResolution"
+      }
+    },
+    {
+      "id": "creator_registry_entry",
+      "method": "GET",
+      "route": "/creator-registry/{entry_id}",
+      "client_entrypoints": ["scripts/Network/Client/OnlineClientCreator.gd#fetch_registry_entry"],
+      "consumer_scripts": ["tests/online_client_smoke.gd"],
+      "response_fields": [
+        "revision",
+        "entry.id",
+        "entry.kind",
+        "entry.version",
+        "entry.status"
+      ],
+      "verification": {
+        "kind": "go_test",
+        "path": "backend/internal/gateway/creator_registry_handlers_test.go",
+        "symbol": "TestCreatorRegistryDiscoveryAndManifestResolution"
+      }
+    },
+    {
+      "id": "creator_keyword_discovery",
+      "method": "POST",
+      "route": "/creator-discovery/keywords",
+      "client_entrypoints": ["scripts/Network/Client/OnlineClientCreator.gd#discover_keywords"],
+      "consumer_scripts": ["tests/online_client_smoke.gd"],
+      "response_fields": [
+        "revision",
+        "matches[].id",
+        "matches[].kind",
+        "matches[].version",
+        "matches[].name",
+        "matches[].score"
+      ],
+      "verification": {
+        "kind": "go_test",
+        "path": "backend/internal/gateway/creator_registry_handlers_test.go",
+        "symbol": "TestCreatorRegistryDiscoveryAndManifestResolution"
+      }
+    },
+    {
+      "id": "creator_manifest_resolution",
+      "method": "POST",
+      "route": "/creator-manifests/resolve",
+      "client_entrypoints": ["scripts/Network/Client/OnlineClientCreator.gd#resolve_manifest"],
+      "consumer_scripts": ["tests/online_client_smoke.gd"],
+      "response_fields": [
+        "ok",
+        "resolved_manifest.registry_revision",
+        "resolved_manifest.game_id",
+        "resolved_manifest.mode_id",
+        "resolved_manifest.capabilities[].id",
+        "resolved_manifest.granted_permissions",
+        "resolved_manifest.lock_digest",
+        "issues"
+      ],
+      "verification": {
+        "kind": "go_test",
+        "path": "backend/internal/gateway/creator_registry_handlers_test.go",
+        "symbol": "TestCreatorRegistryDiscoveryAndManifestResolution"
+      }
+    },
+    {
+      "id": "published_minigame_catalog",
+      "method": "GET",
+      "route": "/minigames/catalog",
+      "client_entrypoints": ["scripts/Network/Client/OnlineClientCreator.gd#fetch_published_catalog"],
+      "consumer_scripts": [
+        "scripts/Systems/Minigames/MinigameRegistry.gd",
+        "tests/online_client_smoke.gd"
+      ],
+      "response_fields": [
+        "items[].status",
+        "items[].game_id",
+        "items[].version",
+        "items[].author",
+        "items[].mode_id",
+        "items[].name",
+        "items[].min_players",
+        "items[].max_players",
+        "items[].tags",
+        "items[].requires_network",
+        "items[].runtime_contract",
+        "items[].source_sha256",
+        "items[].published_at"
+      ],
+      "verification": {
+        "kind": "go_test",
+        "path": "backend/internal/gateway/response_contract_test.go",
+        "symbol": "TestHighRiskResponseContractsCreatorReviewPipeline"
+      }
+    },
+    {
+      "id": "published_minigame_runtime",
+      "method": "GET",
+      "route": "/minigames/{game_id}/runtime",
+      "client_entrypoints": ["scripts/Network/Client/OnlineClientCreator.gd#fetch_published_runtime"],
+      "consumer_scripts": [
+        "scripts/minigame/MinigameLauncher.gd",
+        "tests/online_client_smoke.gd"
+      ],
+      "response_fields": [
+        "schema_version",
+        "game_id",
+        "version",
+        "author",
+        "mode_id",
+        "name",
+        "min_players",
+        "max_players",
+        "requires_network",
+        "runtime_contract",
+        "manifest.lock_digest",
+        "definition.schema_version",
+        "definition.type",
+        "definition.settings",
+        "source_sha256",
+        "published_at"
+      ],
+      "verification": {
+        "kind": "go_test",
+        "path": "backend/internal/gateway/response_contract_test.go",
+        "symbol": "TestHighRiskResponseContractsCreatorReviewPipeline"
+      }
+    },
+    {
       "id": "creator_submission_status",
       "method": "GET",
       "route": "/creator-submissions/{game_id}/status?player_id={player_id}",
-      "client_entrypoints": ["scripts/Network/Client/OnlineClientEndpoints.gd#fetch_creator_submission_status"],
+      "client_entrypoints": ["scripts/Network/Client/OnlineClientCreator.gd#fetch_submission_status"],
       "consumer_scripts": [
         "scripts/UI/Panels/CreatorStatusRows.gd",
         "scripts/UI/Panels/CreatorPackageRows.gd",
@@ -294,7 +439,7 @@
       "id": "creator_submission_history",
       "method": "GET",
       "route": "/creator-submissions/{game_id}/history?player_id={player_id}",
-      "client_entrypoints": ["scripts/Network/Client/OnlineClientEndpoints.gd#fetch_creator_submission_history"],
+      "client_entrypoints": ["scripts/Network/Client/OnlineClientCreator.gd#fetch_submission_history"],
       "consumer_scripts": [
         "scripts/UI/Panels/CreatorStatusRows.gd",
         "tests/online_client_smoke.gd",

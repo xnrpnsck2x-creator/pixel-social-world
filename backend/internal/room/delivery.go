@@ -57,17 +57,17 @@ func (h *Hub) broadcastLocal(roomID string, envelope Envelope) {
 	} else {
 		targetsByRoom := map[string]int{}
 		for _, client := range clients {
-			targetsByRoom[normalizedMetricRoomID(client.roomID)]++
+			targetsByRoom[normalizedMetricRoomID(client.snapshot().roomID)]++
 		}
 		for targetRoomID, targets := range targetsByRoom {
 			h.recordRoomBroadcast(targetRoomID, targets)
 		}
 	}
 	for _, client := range clients {
-		result := h.writeClient(client, envelope)
-		h.recordRoomWrite(client.roomID, result)
-		if result.delivered {
-			h.metrics.localDelivered.Add(1)
-		}
+		state := client.snapshot()
+		h.enqueueClient(client, outboundMessage{
+			envelope: envelope,
+			roomID:   state.roomID,
+		})
 	}
 }

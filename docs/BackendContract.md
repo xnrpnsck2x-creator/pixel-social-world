@@ -234,6 +234,11 @@ broadcasts room-scoped movement, chat, presence, emote, and housing events.
 
 The endpoint is intentionally a transport entry point. Message envelopes and
 message types are defined below in `WebSocket Envelope` and `Message Types`.
+Browser origins must exactly match the configured CORS allowlist; native
+clients may omit `Origin`. Before upgrade, the gateway applies a 2,048-socket
+global budget, 32 concurrent sockets per remote IP, and 60 upgrade admissions
+per remote IP per minute. The room hub then requires `world.join` within 10
+seconds and caps each inbound message at 32 KB.
 
 ### `POST /presence/heartbeat`
 
@@ -519,7 +524,10 @@ boundary so raw package cleanup can later use storage-specific lifecycle rules.
 
 ### `POST /minigames/submit`
 
-Accepts creator metadata and queues asynchronous AI review. Requires admin token; upload storage is out of scope for the first skeleton.
+Legacy reviewer metadata registration. It requires a `reviewer` or stronger
+admin role and does not upload package files or start AI review. New creator
+clients should use `/creator-submissions/draft` and
+`/creator-submissions/package`.
 
 Request includes `mode_id` and `runtime_contract` so the backend can enforce the selected creator mode before review:
 
@@ -547,6 +555,32 @@ Request includes `mode_id` and `runtime_contract` so the backend can enforce the
 
 Mode caps currently cover `casual_activity`, `side_scroller_2d`, `2d_fighting`, `strategy_war`, `rpg_adventure`, `tower_defense`, and `battle_royale`; `2d_fighting` is capped at 4 players and `battle_royale` is capped at 16 players for the alpha contract.
 
+### `GET /creator-registry`
+
+Returns the current versioned creator registry. Optional query parameters are
+`kind`, `mode_id`, `locale`, `q`, `cursor`, and `limit`. Responses include an
+ETag and support `If-None-Match`; page limits are capped at 100.
+
+### `GET /creator-registry/:id`
+
+Returns one keyword, capability, interface, or official asset-pack entry plus
+the current registry revision. Unknown IDs return `404`.
+
+### `POST /creator-discovery/keywords`
+
+Player-authenticated multilingual keyword discovery. The body includes
+`player_id`, natural-language `text`, optional `locale`, optional `mode_id`,
+and optional `limit`. Results are mode-filtered, scored, and stable-sorted.
+
+### `POST /creator-manifests/resolve`
+
+Player-authenticated Manifest V2 resolver. The body contains `player_id` and
+`manifest`. The backend verifies the registry revision, interface version,
+mode compatibility, capability dependencies, permission grants, official
+asset hashes, and a relative declarative JSON entry path. Success returns a
+canonical `resolved_manifest` with a deterministic `lock_digest`; invalid
+references return `422` with structured issues.
+
 ### `POST /creator-submissions/draft`
 
 Player-authenticated draft metadata submit. The bearer token must belong to `author`; the server stores the record as `pending_review`.
@@ -555,49 +589,87 @@ This endpoint uses the same mode, runtime, entry scene, main script, and asset b
 
 ### `POST /creator-submissions/package`
 
-Player-authenticated package intake submit. V1 accepts a JSON package inventory for Godot/H5 clients and tooling. The bearer token must belong to `author`; the server saves a package artifact, stores the request as `submitted`, starts an async scan job, then moves the owner-visible status to `scanning`, `needs_review`, or `rejected`.
+Player-authenticated Manifest V2 package intake for Godot/H5 clients and
+tooling. The bearer token must belong to `author`, and
+`resolved_manifest` is mandatory. Public creator endpoints do not accept
+GDScript, scenes, resources, shaders, or other executable Godot content.
+Trusted code packages remain an internal/manual release path until a separate
+publisher-signature verifier exists.
+
+MVP public automation is deliberately narrower than the mode registry:
+`casual_activity` is the only mode with `public_runtime_enabled`, and
+`content/game.json` must use the bounded `tap_timing` type. The other mode
+contracts remain available for discovery and future trusted runtimes, but
+manifest resolution and package intake reject them for public publication.
 
 Request shape:
 
 ```json
 {
-  "game_id": "creator_duel",
+  "game_id": "creator_river_timing",
   "version": "0.1.0",
   "author": "player_123",
-  "mode_id": "2d_fighting",
-  "name": {"en": "Creator Duel", "ja": "Creator Duel", "zh": "Creator Duel"},
+  "mode_id": "casual_activity",
+  "name": {"en": "River Timing", "ja": "リバータイミング", "zh": "河畔时机"},
   "min_players": 1,
   "max_players": 4,
-  "tags": ["fighting"],
-  "requires_network": true,
+  "tags": ["casual", "timing"],
+  "requires_network": false,
   "runtime_contract": {
-    "camera": "side_view",
-    "input_profile": "fighting_action",
-    "network_profile": "authoritative_realtime"
+    "camera": "contained",
+    "input_profile": "tap_timing",
+    "network_profile": "offline_optional"
   },
-  "entry_scene": "res://creator/creator_duel/main.tscn",
-  "main_script": "res://creator/creator_duel/game.gd",
+  "entry_scene": "",
+  "main_script": "",
   "asset_budget_bytes": 5242880,
+  "resolved_manifest": {
+    "schema_version": 2,
+    "registry_revision": "2026-07-25.2",
+    "game_id": "creator_river_timing",
+    "mode_id": "casual_activity",
+    "interface": {
+      "id": "interface.declarative_runtime",
+      "version": "1.0.0",
+      "required": true
+    },
+    "entry": {"type": "declarative_v1", "path": "content/game.json"},
+    "lock_digest": "server-issued-sha256"
+  },
   "files": [
     {"path": "meta.json", "size_bytes": 1024, "content_text": "{...}"},
-    {"path": "main.tscn", "size_bytes": 512, "content_text": "..."},
-    {"path": "game.gd", "size_bytes": 2048, "content_text": "..."},
+    {"path": "creator_manifest.json", "size_bytes": 2048, "content_text": "{...}"},
+    {"path": "content/game.json", "size_bytes": 512, "content_text": "{...}"},
     {"path": "README.md", "size_bytes": 128, "content_text": "..."},
     {"path": "assets/icon.webp", "size_bytes": 4096, "content_base64": "..."}
   ]
 }
 ```
 
-Scanner rules in V1:
+Acceptance rules:
 
-- Required files: `meta.json`, entry scene, main script, and `README.md`.
-- Rejects path traversal, duplicate paths, unsupported script/native file types, SVG formal assets, missing script text, forbidden Godot APIs, and packages over `asset_budget_bytes`.
+- Required files: `meta.json`, `creator_manifest.json`, the resolved declarative entry JSON, and `README.md`.
+- MVP public definitions require `mode_id: casual_activity` and
+  `type: tap_timing`; reserved modes fail with
+  `declarative_mode_not_supported` or `declarative_entry_runtime_unsupported`.
+- JSON is strict: unknown fields, trailing documents, and any mismatch between `meta.json`, the authenticated request, or the server-resolved manifest are rejected.
+- Rejects path traversal, duplicate paths, executable Godot resources, native files, SVG formal assets, and packages over `asset_budget_bytes`.
+- Request bodies are capped at 12 MB; creator asset budgets are capped at 5 MB; individual files are capped at 6 MB; total decoded content is capped at 8 MB.
+- File size and SHA-256 declarations are checked against decoded content instead of being trusted.
 - Clean package submits return `202` with initial status `submitted`; poll `GET /creator-submissions/:id/status` until `needs_review`.
 - Rejected package submits also return `202` when queued successfully; poll status until `rejected` and read the scan report.
 - Invalid metadata or malformed request bodies still return `400`.
+- Submissions are limited to 4 per player and 12 per source IP per minute.
+- Review execution uses 4 fixed workers and a 128-job queue. Saturated memory-mode intake returns `422 package_review_queue_full`; persisted PostgreSQL jobs remain recoverable by the queue scanner.
+- The first accepted creator owns `game_id`. Another author receives `creator_game_owned_by_another_author`. The same owner may submit a new version, but changing content or metadata for any existing historical version returns `creator_version_immutable`.
 - Status responses include `package.storage_key`, optional `package.artifact_uri`, `package.review_job`, optional `package.ai_review`, and optional `package.install` after publish for operations visibility. Clients should not execute creator package files directly from artifact fields.
 - V1 AI review defaults to the local policy adapter. `PSW_AI_REVIEWER_MODE=openai_compatible` enables an OpenAI-compatible endpoint such as LM Studio at `PSW_AI_REVIEWER_BASE_URL`, using `PSW_AI_REVIEWER_MODEL`. LLM failures fall back to local policy so the review queue does not stall.
 - Codex can be used as a Studio Mode manual reviewer, but the backend should not depend on interactive Codex OAuth login. Automated review providers must be reproducible through environment-configured endpoints or secrets.
+
+The backend re-resolves every manifest, canonicalizes its entry path, checks
+its lock digest, and validates entry JSON schema, identity, size, depth, and
+structural complexity before review. Package digests are calculated in
+canonical path order, so ZIP entry ordering cannot change the lock.
 
 ### `POST /creator-submissions/package.zip`
 
@@ -606,7 +678,7 @@ Player-authenticated multipart zip intake. This endpoint extracts the archive in
 Multipart fields:
 
 - `author`: creator player ID. Must match the bearer token.
-- `package` or `file`: zip archive containing `meta.json`, `main.tscn`, `game.gd`, `README.md`, and optional `assets/`.
+- `package` or `file`: zip archive containing `meta.json`, `creator_manifest.json`, the declarative entry JSON, `README.md`, and optional `assets/`.
 
 Limits:
 
@@ -614,7 +686,7 @@ Limits:
 - Uncompressed package: 8 MB hard stop, then the manifest `asset_budget_bytes` still applies.
 - A single common root folder, such as `my_game/meta.json`, is accepted and stripped before scanning.
 
-Production storage note: package artifacts are written under `storage.package_artifacts_dir` / `PSW_PACKAGE_ARTIFACT_DIR`. Published runtime installs are written under `storage.package_install_dir` / `PSW_PACKAGE_INSTALL_DIR` and expose only the current approved package through the runtime catalog. When `storage.mode` is `postgres`, creator submission records, package scan snapshots, and review job rows are persisted through PostgreSQL. Realtime minigame sessions still use the configured realtime backend, memory or Redis.
+Production storage note: package artifacts are written under `storage.package_artifacts_dir` / `PSW_PACKAGE_ARTIFACT_DIR`. Published runtime installs are immutable and digest-addressed under `storage.package_install_dir` / `PSW_PACKAGE_INSTALL_DIR`; a separate current release pointer controls catalog visibility. Repeat publish is idempotent, rollback moves only that pointer, and a newer pending submission is never relabeled by rollback. When `storage.mode` is `postgres`, submission and review-job creation/finalization are transactional. Realtime minigame sessions still use the configured realtime backend, memory or Redis.
 
 ### `GET /creator-submissions/:id/status?player_id=:player_id`
 
@@ -628,15 +700,15 @@ Response:
 
 ```json
 {
-  "game_id": "creator_duel",
+  "game_id": "creator_river_timing",
   "items": [
     {
-      "game_id": "creator_duel",
+      "game_id": "creator_river_timing",
       "version": "0.1.0",
       "status": "published",
       "created_unix": 1777500000,
       "updated_unix": 1777500300,
-      "record": {"game_id": "creator_duel", "version": "0.1.0", "package": {"scan_report": {"status": "published"}}}
+      "record": {"game_id": "creator_river_timing", "version": "0.1.0", "package": {"scan_report": {"status": "published"}}}
     }
   ]
 }
@@ -657,6 +729,11 @@ Returns registered minigame metadata and review status.
 ### `GET /minigames/catalog`
 
 Returns the current runtime-safe creator catalog. Only packages that passed scan, AI review, admin approval, and publish/install staging appear here.
+The public catalog omits server install paths, artifact storage keys, entry
+scenes, and source script paths. Clients use `source_sha256` as a stable content
+revision and fetch the validated declarative payload from the runtime endpoint.
+Before listing an install, the backend revalidates its current runtime
+artifact; unsafe, corrupt, or stale pointer entries are omitted.
 
 Response:
 
@@ -665,14 +742,73 @@ Response:
   "items": [
     {
       "status": "installed",
-      "game_id": "creator_duel",
+      "game_id": "creator_river_timing",
       "version": "0.1.0",
-      "mode_id": "2d_fighting",
-      "install_key": "creator/creator_duel/0.1.0",
-      "install_uri": "file:///var/lib/pixel-social-world/creator_runtime/creator/creator_duel/0.1.0",
-      "manifest_uri": "file:///var/lib/pixel-social-world/creator_runtime/creator/creator_duel/0.1.0/install.json"
+      "author": "player_123",
+      "mode_id": "casual_activity",
+      "name": {"en": "River Timing", "ja": "リバータイミング", "zh-Hans": "河畔时机"},
+      "min_players": 1,
+      "max_players": 4,
+      "tags": ["creator", "timing"],
+      "requires_network": false,
+      "runtime_contract": {
+        "camera": "contained",
+        "input_profile": "tap_timing",
+        "network_profile": "offline_optional"
+      },
+      "source_sha256": "<sha256>",
+      "published_at": 1777500300
     }
   ]
+}
+```
+
+### `GET /minigames/:id/runtime`
+
+Returns the current published package's revalidated declarative runtime. The
+backend reloads the immutable artifact, verifies its install identity and
+SHA-256, checks the resolved Manifest V2 lock, and validates
+`content/game.json` before returning it. Unpublished games return `404`;
+corrupt or mismatched artifacts fail closed with `500 runtime_unavailable`.
+
+The response includes `ETag: "<source_sha256>"` and a short revalidation cache
+policy. It never includes install URIs, artifact storage keys, or executable
+creator files.
+
+Clients must fail closed for every explicit HTTP response, including `404` and
+`500`. A `404` clears the matching verified runtime cache. Only a true
+transport/offline failure with status `0` may temporarily use an already
+verified cache entry.
+
+```json
+{
+  "schema_version": 1,
+  "game_id": "creator_river_timing",
+  "version": "0.1.0",
+  "author": "player_123",
+  "mode_id": "casual_activity",
+  "name": {"en": "River Timing", "ja": "リバータイミング", "zh-Hans": "河畔时机"},
+  "min_players": 1,
+  "max_players": 4,
+  "requires_network": false,
+  "runtime_contract": {
+    "camera": "contained",
+    "input_profile": "tap_timing",
+    "network_profile": "offline_optional"
+  },
+  "manifest": {
+    "schema_version": 2,
+    "lock_digest": "<manifest-lock-sha256>"
+  },
+  "definition": {
+    "schema_version": 1,
+    "game_id": "creator_river_timing",
+    "mode_id": "casual_activity",
+    "type": "tap_timing",
+    "settings": {"duration_seconds": 60, "target_score": 12}
+  },
+  "source_sha256": "<sha256>",
+  "published_at": 1777500300
 }
 ```
 
@@ -688,7 +824,13 @@ Request may be empty, or:
 
 Supported actions/statuses currently map to `review_queued`, `needs_review`, `approved`, `rejected`, and `published`. Runtime-only states such as `submitted` and `scanning` are reported by package scan stages, not manually set by admins.
 
-`published` is no longer a plain status flip: the package must already be `approved`, the original artifact must be reloadable, every file must have `content_text` or `content_base64`, and the publish step writes an installed package plus `current.json` pointer before returning `published`.
+`approved` requires a completed scan job and an approving AI-policy report.
+`published` is not a plain status flip: the package must already be
+`approved`, the original artifact must be reloadable, its recomputed SHA-256
+and byte counts must match the reviewed snapshot, every file must have
+`content_text` or `content_base64`, and the publish step writes an immutable
+digest-addressed install plus `current.json` pointer before returning
+`published`.
 
 Admin-only runtime operations:
 
@@ -786,9 +928,9 @@ Response:
   "generated_at": 1777500000,
   "items": [
     {
-      "game_id": "creator_duel",
+      "game_id": "creator_river_timing",
       "status": "needs_review",
-      "mode_id": "2d_fighting",
+      "mode_id": "casual_activity",
       "scan": {"status": "needs_review", "issue_count": 0, "file_count": 4},
       "ai": {"status": "approved", "reviewer": "local_policy_v1", "risk_level": "low"},
       "job": {"status": "completed", "attempts": 1},
@@ -879,6 +1021,10 @@ Response:
 
 Creates a concurrency-managed minigame session inside a room. Requires a bearer token matching `host_player_id`.
 Responses include `created_at`, `updated_at`, and `expires_at`; clients should treat sessions past `expires_at` as stale.
+`game_id` must be official enabled content (`fishing`) or a currently
+published creator install whose runtime revalidation succeeds. Unknown,
+unpublished, or invalid games return `400 game_unavailable`. Requested
+`max_players` is capped to the current catalog contract.
 
 Request:
 
@@ -895,10 +1041,15 @@ Request:
 
 Lists active or waiting minigame sessions for a room; restricted room lists require room access.
 Expired memory sessions are dropped during reads, while Redis-backed sessions expire by TTL and are pruned from room sets.
+Sessions whose creator game is no longer in the current runtime-safe catalog
+are hidden immediately.
 
 ### `POST /minigame-sessions/:session_id/join`
 
 Joins a player to a session if it is not full or ended. Requires a bearer token matching `player_id`.
+The backend rechecks the current game catalog before joining. If an owner
+unpublished the creator game after session creation, joining returns
+`410 game_unavailable`.
 
 Request:
 
@@ -1792,7 +1943,10 @@ Dense rooms keep social events room-wide, but `player.move` fanout is filtered
 by server-side interest range once the room reaches 50 joined players.
 In `realtime.mode=redis`, gateway-level smoke coverage verifies that separate
 HTTP/WebSocket server instances can share Redis auth, rate limiting, and room
-pub/sub so `player.move` and `chat.message` cross instance boundaries.
+pub/sub so `player.move` and `chat.message` cross instance boundaries. A
+Redis-backed random session lease fences duplicate player connections across
+instances; only the newest token can emit stateful events, and heartbeat pings
+refresh the lease for idle valid clients.
 
 ## Redis MVP Keys
 
@@ -1804,6 +1958,7 @@ pub/sub so `player.move` and `chat.message` cross instance boundaries.
 - `minigame_session:{id}`
 - `chat:{scope}:{id}` stream
 - `room:{room_id}:fanout` Redis pub/sub for realtime room messages
+- `room:session:{player_id}` current cross-instance WebSocket fencing token
 - `rate:{player_id}:{action}`
 - `minigame:fishing:count:{session_id}:{player_id}`
 - `minigame:fishing:request:{session_id}:{player_id}:{request_id}`

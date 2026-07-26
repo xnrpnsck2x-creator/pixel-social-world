@@ -47,6 +47,7 @@ var _layout := Layout.new()
 @onready var games_title_label: Label = %GamesTitleLabel
 @onready var game_catalog_label: Label = %GameCatalogLabel
 @onready var sessions_label: Label = %SessionsLabel
+@onready var game_picker: OptionButton = %GamePicker
 @onready var host_fishing_button: Button = %HostFishingButton
 @onready var join_session_button: Button = %JoinSessionButton
 @onready var home_title_label: Label = %HomeTitleLabel
@@ -72,7 +73,8 @@ func _ready() -> void:
 		host_fishing_button,
 		join_session_button,
 		invite_home_button,
-		visit_home_button
+		visit_home_button,
+		Callable(self, "_selected_game_id")
 	)
 	_actions.emote_requested.connect(func(emote_id: String) -> void: emote_requested.emit(emote_id))
 	_actions.home_invite_requested.connect(func() -> void: home_invite_requested.emit())
@@ -98,6 +100,8 @@ func bind_services(
 		presence_service.presence_updated.connect(_on_presence_updated)
 	if session_service != null:
 		session_service.sessions_updated.connect(_on_sessions_updated)
+	if minigame_registry != null and minigame_registry.has_signal("catalog_updated"):
+		minigame_registry.catalog_updated.connect(_refresh_game_catalog)
 	if chat_service != null:
 		chat_service.message_added.connect(_on_chat_message_added)
 	_refresh_all()
@@ -130,7 +134,7 @@ func _refresh_text() -> void:
 	heart_emote_button.tooltip_text = App.t_key("emote.name.heart")
 	exclamation_emote_button.tooltip_text = App.t_key("emote.name.exclamation")
 	games_title_label.text = App.t_key("world.room_panel.section_games")
-	host_fishing_button.text = App.t_key("world.session_host_fishing")
+	host_fishing_button.text = App.t_key("world.session_host_game")
 	join_session_button.text = App.t_key("world.session_join")
 	home_title_label.text = App.t_key("world.room_panel.section_home")
 	invite_home_button.text = App.t_key("housing.invite_button")
@@ -163,6 +167,7 @@ func _bind_layout() -> void:
 			report_button,
 			close_button,
 			room_send_button,
+			game_picker,
 			host_fishing_button,
 			join_session_button,
 			invite_home_button,
@@ -183,6 +188,7 @@ func _apply_image2_style() -> void:
 	WorldHUDAssetsScript.configure_action_button(laugh_emote_button, "emote.laugh", Vector2(40, 40))
 	WorldHUDAssetsScript.configure_action_button(heart_emote_button, "emote.heart", Vector2(40, 40))
 	WorldHUDAssetsScript.configure_action_button(exclamation_emote_button, "emote.exclamation", Vector2(40, 40))
+	WorldHUDAssetsScript.configure_button_frame(game_picker)
 	WorldHUDAssetsScript.configure_button_frame(host_fishing_button)
 	WorldHUDAssetsScript.configure_button_frame(join_session_button)
 	WorldHUDAssetsScript.configure_button_frame(invite_home_button)
@@ -239,6 +245,12 @@ func _refresh_invite_chip() -> void:
 
 func _refresh_game_catalog() -> void:
 	game_catalog_label.text = Formatter.game_catalog(minigame_registry)
+	Formatter.populate_game_picker(game_picker, minigame_registry)
+
+func _selected_game_id() -> String:
+	if game_picker.item_count <= 0:
+		return "fishing"
+	return str(game_picker.get_item_metadata(game_picker.selected))
 
 func _send_room_chat() -> void:
 	if chat_service == null:

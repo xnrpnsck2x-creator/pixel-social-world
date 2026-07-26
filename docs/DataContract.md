@@ -277,6 +277,8 @@ This registry defines the mode contracts that player-made games can target. Ever
 Mode fields:
 
 - `id`: stable mode ID such as `side_scroller_2d`, `2d_fighting`, `strategy_war`, `rpg_adventure`, `tower_defense`, or `battle_royale`.
+- `public_runtime_enabled`: whether normal players may resolve, upload, publish,
+  launch, and host this mode through the automatic declarative runtime.
 - `name_key` / `summary_key`: localized creator-facing copy.
 - `icon_id`: Image 2 UI icon from `configs/ui_assets.json`.
 - `camera_key`, `input_key`, `network_key`: localized contract labels shown in the Creator Lab panel.
@@ -290,6 +292,31 @@ object. Player caps in `meta.json` must not exceed the selected mode cap, and
 `runtime_contract.camera`, `runtime_contract.input_profile`, and
 `runtime_contract.network_profile` must match the selected mode's expected
 runtime profile.
+
+For the MVP, exactly one mode is public: `casual_activity`, with
+`contained` / `tap_timing` / `offline_optional`. The other six mode contracts
+remain discoverable design and validation records for future signed or
+server-authoritative runtimes, but public automatic submissions fail closed.
+The UI must only offer modes whose `public_runtime_enabled` value is true.
+
+## `configs/creator_registry.json`
+
+This is the backend-authoritative, versioned registry for automatic creator
+integration. It unifies multilingual keywords, mode-compatible capabilities,
+official asset packs, and interface versions. Clients may cache it by ETag,
+but every Manifest V2 submission is resolved again by the backend before
+queueing.
+
+Stable entry IDs are versioned and carry a lifecycle status. Resolved
+manifests contain only server-approved dependencies and permissions, include
+official asset SHA-256 values, and receive a deterministic `lock_digest`.
+Deprecated or revoked entries cannot be used for new automatic submissions.
+Mode records mirror `public_runtime_enabled`; backend resolution and package
+intake enforce that field even if a client submits a hidden mode directly.
+
+`configs/creator_game_modes.json` remains the Creator Lab presentation
+projection. Security and package acceptance decisions come from
+`configs/creator_registry.json` plus backend validation.
 
 ## Localization
 

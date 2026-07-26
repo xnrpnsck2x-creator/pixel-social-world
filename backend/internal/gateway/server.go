@@ -12,6 +12,7 @@ import (
 
 	"pixel-social-world/backend/internal/auth"
 	"pixel-social-world/backend/internal/chat"
+	"pixel-social-world/backend/internal/creatorregistry"
 	"pixel-social-world/backend/internal/economy"
 	"pixel-social-world/backend/internal/facility"
 	"pixel-social-world/backend/internal/house"
@@ -56,6 +57,9 @@ type Server struct {
 	tradeRiskMu            sync.Mutex
 	tradeRiskCounters      tradeRiskCounters
 	fishingRewards         minigame.FishingRewardService
+	creatorRegistry        *creatorregistry.Service
+	creatorSubmissionLimit *creatorSubmissionLimiter
+	websocketAdmission     *websocketAdmissionLimiter
 }
 
 const startingCoinBalance = 25
@@ -185,6 +189,10 @@ func (s *Server) routes() {
 	s.router.POST("/mailbox/send", s.sendMailboxMessage)
 	s.router.GET("/mailbox/inbox", s.mailboxInbox)
 	s.router.POST("/mailbox/:mail_id/read", s.markMailboxRead)
+	s.router.GET("/creator-registry", s.creatorRegistryIndex)
+	s.router.GET("/creator-registry/:id", s.creatorRegistryEntry)
+	s.router.POST("/creator-discovery/keywords", s.discoverCreatorKeywords)
+	s.router.POST("/creator-manifests/resolve", s.resolveCreatorManifest)
 	s.router.POST("/creator-submissions/draft", s.submitCreatorDraft)
 	s.router.POST("/creator-submissions/package", s.submitCreatorPackage)
 	s.router.POST("/creator-submissions/package.zip", s.submitCreatorPackageZip)
@@ -192,6 +200,7 @@ func (s *Server) routes() {
 	s.router.GET("/creator-submissions/:id/status", s.creatorSubmissionStatus)
 	s.router.POST("/minigames/submit", s.submitMinigame)
 	s.router.GET("/minigames/catalog", s.minigameCatalog)
+	s.router.GET("/minigames/:id/runtime", s.publishedMinigameRuntime)
 	s.router.GET("/minigames/:id", s.getMinigame)
 	s.router.POST("/minigames/:id/review", s.reviewMinigame)
 	s.router.GET("/utility/panels", s.utilityPanels)
@@ -233,21 +242,22 @@ func (s *Server) ready(ctx *gin.Context) {
 		"request_id":  requestID(ctx),
 		"server_time": time.Now().Unix(),
 		"services": gin.H{
-			"auth":            true,
-			"chat":            true,
-			"economy":         true,
-			"fishing_rewards": true,
-			"map_activities":  true,
-			"inventory":       true,
-			"trade":           true,
-			"facilities":      true,
-			"messaging":       true,
-			"minigame":        true,
-			"presence":        true,
-			"player":          true,
-			"realtime":        true,
-			"social":          true,
-			"utility":         true,
+			"auth":             true,
+			"chat":             true,
+			"creator_registry": s.creatorRegistry != nil,
+			"economy":          true,
+			"fishing_rewards":  true,
+			"map_activities":   true,
+			"inventory":        true,
+			"trade":            true,
+			"facilities":       true,
+			"messaging":        true,
+			"minigame":         true,
+			"presence":         true,
+			"player":           true,
+			"realtime":         true,
+			"social":           true,
+			"utility":          true,
 		},
 	})
 }
@@ -286,6 +296,20 @@ func (s *Server) cityState(ctx *gin.Context) {
 }
 
 func (s *Server) citySocket(ctx *gin.Context) {
+	release, rejection := s.websocketAdmission.acquire(
+		websocketRemoteIP(ctx.Request),
+		time.Now(),
+	)
+	if rejection != "" {
+		ctx.Header("Retry-After", "60")
+		status := http.StatusTooManyRequests
+		if rejection == "websocket_capacity_full" {
+			status = http.StatusServiceUnavailable
+		}
+		ctx.JSON(status, gin.H{"error": rejection})
+		return
+	}
+	defer release()
 	conn, err := s.upgrader.Upgrade(ctx.Writer, ctx.Request, nil)
 	if err != nil {
 		return
@@ -294,7 +318,7 @@ func (s *Server) citySocket(ctx *gin.Context) {
 }
 
 func (s *Server) submitMinigame(ctx *gin.Context) {
-	if !s.requireAdmin(ctx) {
+	if !s.requireAdminRole(ctx, AdminRoleReviewer) {
 		return
 	}
 	var request minigame.SubmitRequest
@@ -320,10 +344,17 @@ func (s *Server) getMinigame(ctx *gin.Context) {
 }
 
 func (s *Server) minigameCatalog(ctx *gin.Context) {
-	items, err := s.minigameService.ListPublishedPackages(ctx.Request.Context())
+	installs, err := s.minigameService.ListPublishedPackages(ctx.Request.Context())
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "catalog_unavailable"})
 		return
+	}
+	items := make([]minigame.PublishedCatalogItem, 0, len(installs))
+	for _, install := range installs {
+		if _, err := s.minigameService.PublishedRuntime(ctx.Request.Context(), install.GameID); err != nil {
+			continue
+		}
+		items = append(items, minigame.PublicCatalogItem(install))
 	}
 	ctx.JSON(http.StatusOK, gin.H{"items": items})
 }

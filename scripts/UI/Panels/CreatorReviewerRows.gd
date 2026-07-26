@@ -25,12 +25,18 @@ func render(items_rows: VBoxContainer, compact: bool) -> void:
 
 	var title_label := Label.new()
 	title_label.text = App.t_key("creator.reviewer.title")
-	title_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	title_label.add_theme_font_size_override("font_size", 10 if compact_layout else 14)
+	title_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	title_label.autowrap_mode = TextServer.AUTOWRAP_OFF if compact_layout else TextServer.AUTOWRAP_WORD_SMART
+	title_label.clip_text = compact_layout
 	labels.add_child(title_label)
 
 	var detail_label := Label.new()
 	detail_label.text = _review_text(_load_status())
-	detail_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	detail_label.add_theme_font_size_override("font_size", 8 if compact_layout else 11)
+	detail_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	detail_label.autowrap_mode = TextServer.AUTOWRAP_OFF if compact_layout else TextServer.AUTOWRAP_WORD_SMART
+	detail_label.clip_text = compact_layout
 	PanelTextThemeScript.apply_pair([title_label], [detail_label])
 	labels.add_child(detail_label)
 

@@ -6,6 +6,8 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+
+	"pixel-social-world/backend/internal/minigame"
 )
 
 func TestCreatorSubmissionDraftAndStatusAreOwnerScoped(t *testing.T) {
@@ -52,7 +54,7 @@ func TestCreatorPackageSubmitScansAndStatusIsOwnerScoped(t *testing.T) {
 	ownerID := ownerSession["player_id"].(string)
 	ownerToken := ownerSession["access_token"].(string)
 
-	payload := creatorPackagePayload(ownerID, "creator_owner_package", safePackageScript())
+	payload := creatorPackagePayload(t, ownerID, "creator_owner_package", safePackageScript())
 	submitted := testPostJSON(t, server, "/creator-submissions/package", ownerToken, payload, http.StatusAccepted)
 	if submitted["status"] != "submitted" {
 		t.Fatalf("unexpected package status: %#v", submitted)
@@ -73,6 +75,20 @@ func TestCreatorPackageSubmitScansAndStatusIsOwnerScoped(t *testing.T) {
 	}
 }
 
+func TestCreatorPackageJSONRejectsOversizedBodyBeforeAuthentication(t *testing.T) {
+	server := NewServerWithDependencies(DefaultMemoryDependencies())
+	request := httptest.NewRequest(http.MethodPost, "/creator-submissions/package", strings.NewReader(`{}`))
+	request.Header.Set("Content-Type", "application/json")
+	request.ContentLength = int64(minigame.MaxCreatorPackageJSONBytes + 1)
+	recorder := httptest.NewRecorder()
+
+	server.router.ServeHTTP(recorder, request)
+
+	if recorder.Code != http.StatusRequestEntityTooLarge {
+		t.Fatalf("expected oversized package body to be rejected, got %d: %s", recorder.Code, recorder.Body.String())
+	}
+}
+
 func TestReviewerDashboardSummarizesPackageReviewPipeline(t *testing.T) {
 	deps := DefaultMemoryDependencies()
 	deps.AdminToken = "test-admin"
@@ -81,7 +97,7 @@ func TestReviewerDashboardSummarizesPackageReviewPipeline(t *testing.T) {
 	ownerID := ownerSession["player_id"].(string)
 	ownerToken := ownerSession["access_token"].(string)
 
-	payload := creatorPackagePayload(ownerID, "creator_dashboard_package", safePackageScript())
+	payload := creatorPackagePayload(t, ownerID, "creator_dashboard_package", safePackageScript())
 	testPostJSON(t, server, "/creator-submissions/package", ownerToken, payload, http.StatusAccepted)
 	waitCreatorStatus(
 		t,
@@ -119,7 +135,7 @@ func TestCreatorPackageZipSubmitScansAndStatusIsOwnerScoped(t *testing.T) {
 	ownerSession := testGuestLogin(t, server, "Zip Package Owner")
 	ownerID := ownerSession["player_id"].(string)
 	ownerToken := ownerSession["access_token"].(string)
-	payload := creatorPackagePayload(ownerID, "creator_owner_zip_package", safePackageScript())
+	payload := creatorPackagePayload(t, ownerID, "creator_owner_zip_package", safePackageScript())
 	archive := creatorZipPayload(t, "creator_owner_zip_package/", payload["files"].([]map[string]any))
 
 	submitted := testPostMultipartPackage(
@@ -153,6 +169,7 @@ func TestCreatorPackageSubmitStoresRejectedScan(t *testing.T) {
 	token := session["access_token"].(string)
 
 	payload := creatorPackagePayload(
+		t,
 		playerID,
 		"creator_rejected_package",
 		safePackageScript()+"\nfunc bad():\n\tDirAccess.open(\"res://\")\n",
@@ -181,8 +198,15 @@ func TestAdminReviewStatusActions(t *testing.T) {
 	session := testGuestLogin(t, server, "Review Owner")
 	playerID := session["player_id"].(string)
 	token := session["access_token"].(string)
-	payload := creatorPackagePayload(playerID, "creator_review_package", safePackageScript())
+	payload := creatorPackagePayload(t, playerID, "creator_review_package", safePackageScript())
 	testPostJSON(t, server, "/creator-submissions/package", token, payload, http.StatusAccepted)
+	waitCreatorStatus(
+		t,
+		server,
+		"/creator-submissions/creator_review_package/status?player_id="+playerID,
+		token,
+		"needs_review",
+	)
 
 	request := httptest.NewRequest(http.MethodPost, "/minigames/creator_review_package/review", strings.NewReader(`{"action":"approve"}`))
 	request.Header.Set("Content-Type", "application/json")

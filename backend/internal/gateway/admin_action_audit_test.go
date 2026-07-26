@@ -83,7 +83,7 @@ func TestAdminActionAuditRecordsReviewAndCreatorSettlement(t *testing.T) {
 	creatorID := creator["player_id"].(string)
 	playerID := player["player_id"].(string)
 
-	payload := creatorPackagePayload(creatorID, "creator_role_guard", safePackageScript())
+	payload := creatorPackagePayload(t, creatorID, "creator_role_guard", safePackageScript())
 	testPostJSON(t, server, "/creator-submissions/package", creator["access_token"].(string), payload, http.StatusAccepted)
 	postReviewRoleJSON(t, server, "review-token", `{"action":"approve"}`, http.StatusAccepted)
 	postReviewRoleJSON(t, server, "owner-token", `{"action":"publish"}`, http.StatusAccepted)

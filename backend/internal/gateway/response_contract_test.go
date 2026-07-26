@@ -144,7 +144,7 @@ func TestHighRiskResponseContractsCreatorReviewPipeline(t *testing.T) {
 	ownerID := owner["player_id"].(string)
 	ownerToken := owner["access_token"].(string)
 
-	payload := creatorPackagePayload(ownerID, "contract_creator_package", safePackageScript())
+	payload := creatorPackagePayload(t, ownerID, "contract_creator_package", safePackageScript())
 	submitted := testPostJSON(t, server, "/creator-submissions/package", ownerToken, payload, http.StatusAccepted)
 	contractFields(t, "creator package submit", submitted,
 		"game_id", "version", "author", "mode_id", "name", "min_players",
@@ -222,12 +222,26 @@ func TestHighRiskResponseContractsCreatorReviewPipeline(t *testing.T) {
 
 	catalog := testGetJSON(t, server, "/minigames/catalog", "", http.StatusOK)
 	contractFields(t, "minigame catalog", catalog, "items")
-	contractFields(t, "minigame catalog row", contractFirstItem(t, "minigame catalog items", catalog["items"]),
+	catalogRow := contractFirstItem(t, "minigame catalog items", catalog["items"])
+	contractFields(t, "minigame catalog row", catalogRow,
 		"status", "game_id", "version", "author", "mode_id", "name",
 		"min_players", "max_players", "tags", "requires_network",
-		"runtime_contract", "entry_scene", "main_script", "install_key",
-		"install_uri", "manifest_uri", "source_storage_key", "source_sha256",
-		"file_count", "total_bytes", "published_at",
+		"runtime_contract", "source_sha256", "published_at",
+	)
+	for _, privateField := range []string{
+		"entry_scene", "main_script", "install_key", "install_uri",
+		"manifest_uri", "source_storage_key",
+	} {
+		if _, exposed := catalogRow[privateField]; exposed {
+			t.Fatalf("public minigame catalog exposed private field %q: %#v", privateField, catalogRow)
+		}
+	}
+
+	runtime := testGetJSON(t, server, "/minigames/contract_creator_package/runtime", "", http.StatusOK)
+	contractFields(t, "published runtime", runtime,
+		"schema_version", "game_id", "version", "author", "mode_id", "name",
+		"min_players", "max_players", "requires_network", "runtime_contract",
+		"manifest", "definition", "source_sha256", "published_at",
 	)
 
 	audit := getAdminJSON(t, server, "/admin/reviewer-audit/contract_creator_package", "view-token", http.StatusOK)

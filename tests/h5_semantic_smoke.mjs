@@ -27,6 +27,7 @@ const DEFAULT_CASES = [
   "h5-mobile-landscape-inventory-panel",
   "h5-mobile-landscape-inventory-activity-rewards",
   "h5-mobile-landscape-creator-panel",
+  "h5-mobile-landscape-creator-keyboard-guard",
   "h5-desktop-profile-card",
   "h5-mobile-landscape-profile-card",
   "h5-mobile-landscape-profile-report",
@@ -187,6 +188,13 @@ const EXPECTATIONS = {
     debug: { overlay: "creator" },
     regions: [
       region("mobile creator panel", 0.42, 0.06, 0.54, 0.74, 24, 20),
+    ],
+  },
+  "h5-mobile-landscape-creator-keyboard-guard": {
+    debug: { overlay: "creator", focusedInput: "creator_idea_input" },
+    regions: [
+      region("mobile creator input", 0.42, 0.06, 0.54, 0.52, 24, 20),
+      region("creator keyboard-safe lower band", 0.10, 0.74, 0.80, 0.22, 15, 12),
     ],
   },
   "h5-mobile-landscape-room-panel": {

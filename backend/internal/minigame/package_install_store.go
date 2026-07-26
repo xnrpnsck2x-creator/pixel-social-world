@@ -12,6 +12,13 @@ type PackageInstallStore interface {
 	InstallPackage(ctx context.Context, record Record, request PackageSubmitRequest) (PackageInstallSnapshot, error)
 	RollbackPackage(ctx context.Context, gameID string) (PackageInstallSnapshot, error)
 	UnpublishPackage(ctx context.Context, gameID string) (PackageInstallSnapshot, error)
+	CurrentPackage(ctx context.Context, gameID string) (PackageInstallSnapshot, bool, error)
+	RestorePackage(
+		ctx context.Context,
+		gameID string,
+		expectedInstallKey string,
+		previous *PackageInstallSnapshot,
+	) error
 	ListInstalledPackages(ctx context.Context) ([]PackageInstallSnapshot, error)
 }
 
@@ -84,11 +91,23 @@ func validatePackagePublishSource(record Record, request PackageSubmitRequest) e
 	if len(record.Package.Report.Issues) > 0 {
 		return errors.New("package_scan_issues_block_publish")
 	}
-	if record.Package.AIReview != nil && !record.Package.AIReview.Approved {
+	if record.Package.AIReview == nil {
+		return errors.New("package_ai_review_required")
+	}
+	if !record.Package.AIReview.Approved {
 		return errors.New("package_ai_review_blocks_publish")
+	}
+	if record.Package.ReviewJob == nil || record.Package.ReviewJob.Status != "completed" {
+		return errors.New("package_review_not_completed")
 	}
 	if request.GameID != record.GameID || request.Version != record.Version || request.Author != record.Author {
 		return errors.New("package_artifact_record_mismatch")
+	}
+	digest, totalBytes := packageDigestAndBytes(request.Files)
+	if digest != record.Package.SHA256 ||
+		len(request.Files) != record.Package.FileCount ||
+		totalBytes != record.Package.TotalBytes {
+		return errors.New("package_artifact_digest_mismatch")
 	}
 	return nil
 }
@@ -102,7 +121,14 @@ func packageInstallKey(record Record) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return "creator/" + gameID + "/" + version, nil
+	if record.Package == nil {
+		return "", errors.New("package_snapshot_required")
+	}
+	digest, err := safeInstallComponent(record.Package.SHA256)
+	if err != nil {
+		return "", err
+	}
+	return "creator/" + gameID + "/" + version + "/" + digest, nil
 }
 
 func safeInstallComponent(value string) (string, error) {

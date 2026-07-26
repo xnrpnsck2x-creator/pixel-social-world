@@ -32,7 +32,15 @@ func (s *MemoryPackageInstallStore) InstallPackage(
 		return PackageInstallSnapshot{}, err
 	}
 	s.mu.Lock()
-	if previous := s.current[snapshot.GameID]; previous.InstallKey != "" {
+	if current := s.current[snapshot.GameID]; current.InstallKey == snapshot.InstallKey {
+		if !installMatchesRecord(current, record) {
+			s.mu.Unlock()
+			return PackageInstallSnapshot{}, errors.New("immutable_install_conflict")
+		}
+		s.mu.Unlock()
+		return cloneInstallSnapshot(current), nil
+	} else if current.InstallKey != "" {
+		previous := current
 		snapshot.PreviousInstallKey = previous.InstallKey
 	}
 	snapshot.InstallURI = "memory://" + snapshot.InstallKey
@@ -66,7 +74,6 @@ func (s *MemoryPackageInstallStore) RollbackPackage(
 	previous = cloneInstallSnapshot(previous)
 	previous.Status = "installed"
 	previous.PreviousInstallKey = current.InstallKey
-	s.versions[previous.InstallKey] = cloneInstallSnapshot(previous)
 	s.current[gameID] = cloneInstallSnapshot(previous)
 	return previous, nil
 }
@@ -88,6 +95,49 @@ func (s *MemoryPackageInstallStore) UnpublishPackage(
 	current = cloneInstallSnapshot(current)
 	current.Status = "unpublished"
 	return current, nil
+}
+
+func (s *MemoryPackageInstallStore) CurrentPackage(
+	_ context.Context,
+	gameID string,
+) (PackageInstallSnapshot, bool, error) {
+	if _, err := safeInstallComponent(gameID); err != nil {
+		return PackageInstallSnapshot{}, false, err
+	}
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	current, ok := s.current[gameID]
+	return cloneInstallSnapshot(current), ok && current.InstallKey != "", nil
+}
+
+func (s *MemoryPackageInstallStore) RestorePackage(
+	_ context.Context,
+	gameID string,
+	expectedInstallKey string,
+	previous *PackageInstallSnapshot,
+) error {
+	if _, err := safeInstallComponent(gameID); err != nil {
+		return err
+	}
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	current, currentOK := s.current[gameID]
+	if expectedInstallKey == "" {
+		if currentOK && current.InstallKey != "" {
+			return errors.New("release_pointer_changed")
+		}
+	} else if !currentOK || current.InstallKey != expectedInstallKey {
+		return errors.New("release_pointer_changed")
+	}
+	if previous == nil || previous.InstallKey == "" {
+		delete(s.current, gameID)
+		return nil
+	}
+	if previous.GameID != gameID {
+		return errors.New("release_pointer_game_mismatch")
+	}
+	s.current[gameID] = cloneInstallSnapshot(*previous)
+	return nil
 }
 
 func (s *MemoryPackageInstallStore) ListInstalledPackages(_ context.Context) ([]PackageInstallSnapshot, error) {

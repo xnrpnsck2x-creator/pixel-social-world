@@ -12,6 +12,7 @@ import (
 type PackageReviewJobRecord struct {
 	ID           string `gorm:"primaryKey;size:180"`
 	GameID       string `gorm:"index;size:120"`
+	Version      string `gorm:"index;size:40"`
 	StorageKey   string `gorm:"index;size:240"`
 	ArtifactURI  string
 	Status       string `gorm:"index;size:40"`
@@ -22,10 +23,15 @@ type PackageReviewJobRecord struct {
 	UpdatedUnix  int64
 }
 
+const packageReviewLeaseSeconds int64 = 90
+
 func (s *GormSubmissionService) SubmitPackageAsync(ctx context.Context, request PackageSubmitRequest) (Record, error) {
 	job := newPackageReviewJob(request)
 	record, err := queuedPackageRecord(request, "submitted", []string{"submitted"}, &job)
 	if err != nil {
+		return Record{}, err
+	}
+	if err := s.validateSubmittedRecord(ctx, record); err != nil {
 		return Record{}, err
 	}
 	artifactURI, err := s.artifactStore.SavePackage(ctx, record.Package.StorageKey, request)
@@ -36,13 +42,21 @@ func (s *GormSubmissionService) SubmitPackageAsync(ctx context.Context, request 
 	job.StorageKey = record.Package.StorageKey
 	job.ArtifactURI = artifactURI
 	record.Package.ReviewJob = &job
-	if err := s.saveRecord(ctx, record); err != nil {
+	if err := s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		if err := saveSubmittedRecordTx(tx, record); err != nil {
+			return err
+		}
+		return saveReviewJobTx(tx, job)
+	}); err != nil {
 		return Record{}, err
 	}
-	if err := s.saveReviewJob(ctx, job); err != nil {
-		return Record{}, err
+	queueContext, cancel := context.WithTimeout(ctx, 250*time.Millisecond)
+	defer cancel()
+	if !creatorPackageReviewExecutor.Submit(queueContext, job.ID, func() {
+		s.scanPackageReviewJob(job.ID)
+	}) {
+		return record, nil
 	}
-	go s.scanPackageReviewJob(job.ID)
 	return record, nil
 }
 
@@ -63,7 +77,10 @@ func (s *GormSubmissionService) scanPackageReviewJob(jobID string) {
 	scanning, err := queuedPackageRecord(request, "scanning", []string{"submitted", "scanning"}, &job)
 	if err == nil {
 		scanning.Package.ArtifactURI = job.ArtifactURI
-		_ = s.saveScanRecord(ctx, scanning)
+		if err := s.saveScanRecord(ctx, scanning); err != nil {
+			s.failReviewJob(ctx, job, err)
+			return
+		}
 	}
 	final, _ := buildPackageRecord(request)
 	if final.GameID == "" {
@@ -78,8 +95,9 @@ func (s *GormSubmissionService) scanPackageReviewJob(jobID string) {
 	completed := completePackageReviewJob(job, "")
 	final.Package.ArtifactURI = job.ArtifactURI
 	final.Package.ReviewJob = &completed
-	_ = s.saveReviewJob(ctx, completed)
-	_ = s.saveScanRecord(ctx, final)
+	if err := s.saveReviewJobOutcome(ctx, completed, &final); err != nil {
+		s.failReviewJob(ctx, job, err)
+	}
 }
 
 func (s *GormSubmissionService) recoverPackageReviewJobs() {
@@ -93,20 +111,36 @@ func (s *GormSubmissionService) recoverPackageReviewJobs() {
 
 func (s *GormSubmissionService) scanDuePackageReviewJobs(ctx context.Context) {
 	var rows []PackageReviewJobRecord
+	now := time.Now().Unix()
 	err := s.db.WithContext(ctx).
-		Where("status IN ? AND run_after_unix <= ?", []string{"queued", "retrying", "running"}, time.Now().Unix()).
+		Where(
+			"(status IN ? AND run_after_unix <= ?) OR (status = ? AND updated_unix <= ?)",
+			[]string{"queued", "retrying"},
+			now,
+			"running",
+			now-packageReviewLeaseSeconds,
+		).
+		Order("run_after_unix ASC").
+		Limit(defaultPackageReviewQueueSize).
 		Find(&rows).Error
 	if err != nil {
 		return
 	}
 	for _, row := range rows {
-		go s.scanPackageReviewJob(row.ID)
+		jobID := row.ID
+		creatorPackageReviewExecutor.TrySubmit(jobID, func() {
+			s.scanPackageReviewJob(jobID)
+		})
 	}
 }
 
 func (s *GormSubmissionService) saveReviewJob(ctx context.Context, job PackageReviewJobSnapshot) error {
+	return saveReviewJobTx(s.db.WithContext(ctx), job)
+}
+
+func saveReviewJobTx(tx *gorm.DB, job PackageReviewJobSnapshot) error {
 	row := reviewJobRowFromSnapshot(job)
-	return s.db.WithContext(ctx).Clauses(clause.OnConflict{
+	return tx.Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "id"}},
 		UpdateAll: true,
 	}).Create(&row).Error
@@ -124,7 +158,7 @@ func (s *GormSubmissionService) startReviewJob(
 			return err
 		}
 		now := time.Now().Unix()
-		if row.Status == "running" && now-row.UpdatedUnix < 30 {
+		if row.Status == "running" && now-row.UpdatedUnix < packageReviewLeaseSeconds {
 			return errors.New("job_already_running")
 		}
 		if !packageReviewJobRunnable(row.Status) {
@@ -148,19 +182,98 @@ func (s *GormSubmissionService) failReviewJob(
 	err error,
 ) {
 	failed := failPackageReviewJob(job, err)
-	_ = s.saveReviewJob(ctx, failed)
-	record, ok := s.Get(ctx, failed.GameID)
-	if !ok || record.Package == nil {
-		return
-	}
-	record.Package.ReviewJob = &failed
-	_ = s.saveRecord(ctx, record)
+	_ = s.saveReviewJobOutcome(ctx, failed, nil)
+}
+
+func (s *GormSubmissionService) saveReviewJobOutcome(
+	ctx context.Context,
+	job PackageReviewJobSnapshot,
+	final *Record,
+) error {
+	return s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		var currentRow SubmissionRecord
+		currentErr := tx.Clauses(clause.Locking{Strength: "UPDATE"}).
+			First(&currentRow, "game_id = ?", job.GameID).Error
+		if currentErr != nil && !errors.Is(currentErr, gorm.ErrRecordNotFound) {
+			return currentErr
+		}
+
+		var jobRow PackageReviewJobRecord
+		if err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).
+			First(&jobRow, "id = ?", job.ID).Error; err != nil {
+			return err
+		}
+		if jobRow.GameID != job.GameID ||
+			jobRow.Version != job.Version ||
+			jobRow.StorageKey != job.StorageKey {
+			return errors.New("package_review_job_target_mismatch")
+		}
+		if err := saveReviewJobTx(tx, job); err != nil {
+			return err
+		}
+
+		var target Record
+		targetIsCurrent := false
+		if currentErr == nil {
+			current, err := currentRow.toRecord()
+			if err != nil {
+				return err
+			}
+			if current.Version == job.Version &&
+				current.Package != nil &&
+				current.Package.StorageKey == job.StorageKey &&
+				packageReviewJobID(current.Package) == job.ID {
+				target = current
+				targetIsCurrent = true
+			}
+		}
+		if target.GameID == "" {
+			var versionRow SubmissionVersionRecord
+			err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).First(
+				&versionRow,
+				"game_id = ? AND version = ?",
+				job.GameID,
+				submissionVersionKey(job.Version),
+			).Error
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return nil
+			}
+			if err != nil {
+				return err
+			}
+			snapshot, err := versionRow.toSnapshot()
+			if err != nil {
+				return err
+			}
+			target = snapshot.Record
+			if target.Package == nil ||
+				target.Package.StorageKey != job.StorageKey ||
+				packageReviewJobID(target.Package) != job.ID {
+				return nil
+			}
+		}
+
+		if final != nil {
+			if !packageScanMutableStatus(target.Status) ||
+				!samePackageReviewTarget(target, *final) {
+				return nil
+			}
+			target = cloneRecord(*final)
+		} else if target.Package != nil {
+			target.Package.ReviewJob = &job
+		}
+		if targetIsCurrent {
+			return saveCurrentSubmissionTx(tx, currentRow, target)
+		}
+		return saveSubmissionVersionTx(tx, target)
+	})
 }
 
 func reviewJobRowFromSnapshot(job PackageReviewJobSnapshot) PackageReviewJobRecord {
 	return PackageReviewJobRecord{
 		ID:           job.ID,
 		GameID:       job.GameID,
+		Version:      job.Version,
 		StorageKey:   job.StorageKey,
 		ArtifactURI:  job.ArtifactURI,
 		Status:       job.Status,
@@ -176,6 +289,7 @@ func (r PackageReviewJobRecord) toSnapshot() PackageReviewJobSnapshot {
 	return PackageReviewJobSnapshot{
 		ID:           r.ID,
 		GameID:       r.GameID,
+		Version:      r.Version,
 		StorageKey:   r.StorageKey,
 		ArtifactURI:  r.ArtifactURI,
 		Status:       r.Status,

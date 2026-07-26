@@ -301,6 +301,16 @@ const CASES = [
     expectedOverlay: "creator",
   },
   {
+    name: "h5-mobile-landscape-creator-keyboard-guard",
+    viewport: { width: 844, height: 390 },
+    panel: "creator",
+    loginClick: { x: 422, y: 238 },
+    creatorIdeaInputClick: { x: 574, y: 174 },
+    creatorIdeaText: "cozy river timing game",
+    expectedOverlay: "creator",
+    expectedFocusedInput: "creator_idea_input",
+  },
+  {
     name: "h5-desktop-room-panel",
     viewport: { width: 1280, height: 720 },
     loginClick: { x: 640, y: 421 },
@@ -773,6 +783,7 @@ for (const testCase of activeCases) {
     coinBalance: globalThis.__psw_debug_coin_balance ?? null,
     overlay: globalThis.__psw_debug_overlay || "",
     focusedInput: globalThis.__psw_debug_focused_input || "",
+    creatorIdeaInputRect: globalThis.__psw_debug_creator_idea_input_rect || null,
   }));
   const samplePoints = [
     ...(testCase.expectSandboxTopBar ? [{ x: 20, y: 20, label: "sandbox-top-bar" }] : []),

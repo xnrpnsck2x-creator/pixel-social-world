@@ -58,6 +58,31 @@ func saveSubmissionVersionTx(tx *gorm.DB, record Record) error {
 	}).Create(&row).Error
 }
 
+func validateStoredSubmissionVersion(db *gorm.DB, record Record, lock bool) error {
+	var existing SubmissionVersionRecord
+	query := db
+	if lock {
+		query = query.Clauses(clause.Locking{Strength: "UPDATE"})
+	}
+	err := query.First(
+		&existing,
+		"game_id = ? AND version = ?",
+		record.GameID,
+		submissionVersionKey(record.Version),
+	).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	snapshot, err := existing.toSnapshot()
+	if err != nil {
+		return err
+	}
+	return validateSubmissionReplacement(snapshot.Record, record)
+}
+
 func submissionVersionRowFromRecord(record Record) (SubmissionVersionRecord, error) {
 	encoded, err := json.Marshal(cloneRecord(record))
 	if err != nil {

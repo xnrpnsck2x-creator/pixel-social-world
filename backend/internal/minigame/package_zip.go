@@ -6,11 +6,12 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/hex"
-	"encoding/json"
 	"errors"
 	"io"
 	"path"
 	"strings"
+
+	"pixel-social-world/backend/pkg/creatorcontract"
 )
 
 func PackageSubmitRequestFromZip(author string, archive []byte) (PackageSubmitRequest, error) {
@@ -51,11 +52,23 @@ func PackageSubmitRequestFromZip(author string, archive []byte) (PackageSubmitRe
 		return PackageSubmitRequest{}, errors.New("meta_json_required")
 	}
 	var request SubmitRequest
-	if err := json.Unmarshal([]byte(metaFile.ContentText), &request); err != nil {
+	if err := decodeStrictJSON([]byte(metaFile.ContentText), &request); err != nil {
 		return PackageSubmitRequest{}, errors.New("meta_json_invalid")
 	}
 	request.Author = author
-	return PackageSubmitRequest{SubmitRequest: request, Files: files}, nil
+	result := PackageSubmitRequest{SubmitRequest: request, Files: files}
+	manifestFile := packageFileByPath(files, "creator_manifest.json")
+	if manifestFile.Path != "" {
+		if manifestFile.ContentText == "" {
+			return PackageSubmitRequest{}, errors.New("creator_manifest_content_required")
+		}
+		var manifest creatorcontract.ResolvedManifest
+		if err := decodeStrictJSON([]byte(manifestFile.ContentText), &manifest); err != nil {
+			return PackageSubmitRequest{}, errors.New("creator_manifest_invalid")
+		}
+		result.ResolvedManifest = &manifest
+	}
+	return result, nil
 }
 
 func packageFileFromZipEntry(entry *zip.File) (PackageFile, error) {

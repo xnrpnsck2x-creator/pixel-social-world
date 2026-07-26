@@ -19,6 +19,9 @@ type hubMetrics struct {
 	moveRateLimited     atomic.Int64
 	emoteRateLimited    atomic.Int64
 	leaveEvents         atomic.Int64
+	protocolRejected    atomic.Int64
+	sendQueueOverflow   atomic.Int64
+	movementCoalesced   atomic.Int64
 }
 
 func (m *hubMetrics) Snapshot() map[string]int64 {
@@ -39,5 +42,8 @@ func (m *hubMetrics) Snapshot() map[string]int64 {
 		"move_rate_limited":     m.moveRateLimited.Load(),
 		"emote_rate_limited":    m.emoteRateLimited.Load(),
 		"leave_events":          m.leaveEvents.Load(),
+		"protocol_rejected":     m.protocolRejected.Load(),
+		"send_queue_overflow":   m.sendQueueOverflow.Load(),
+		"movement_coalesced":    m.movementCoalesced.Load(),
 	}
 }

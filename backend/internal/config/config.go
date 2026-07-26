@@ -79,7 +79,8 @@ type HousingConfig struct {
 }
 
 type MinigamesConfig struct {
-	FishingConfigPath string `yaml:"fishing_config_path"`
+	FishingConfigPath   string `yaml:"fishing_config_path"`
+	CreatorRegistryPath string `yaml:"creator_registry_path"`
 }
 
 type WorldConfig struct {
@@ -179,8 +180,11 @@ func defaultConfig() Config {
 			CreatorAuditDays:           730,
 			CreatorArtifactStagingDays: 30,
 		},
-		Housing:   HousingConfig{ItemsConfigPath: "../configs/housing_items.json", SellRefundRate: 0.5},
-		Minigames: MinigamesConfig{FishingConfigPath: "../configs/fishing.json"},
+		Housing: HousingConfig{ItemsConfigPath: "../configs/housing_items.json", SellRefundRate: 0.5},
+		Minigames: MinigamesConfig{
+			FishingConfigPath:   "../configs/fishing.json",
+			CreatorRegistryPath: "../configs/creator_registry.json",
+		},
 		World: WorldConfig{
 			MapActivitiesConfigPath: "../configs/map_activities.json",
 			MapPointsConfigPath:     "../configs/map_points.json",

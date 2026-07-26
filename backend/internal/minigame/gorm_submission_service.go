@@ -87,7 +87,7 @@ func (s *GormSubmissionService) Submit(ctx context.Context, request SubmitReques
 		return Record{}, err
 	}
 	record := Record{SubmitRequest: request, Status: "pending_review"}
-	return record, s.saveRecord(ctx, record)
+	return record, s.saveSubmittedRecord(ctx, record)
 }
 
 func (s *GormSubmissionService) SubmitPackage(ctx context.Context, request PackageSubmitRequest) (Record, error) {
@@ -95,7 +95,7 @@ func (s *GormSubmissionService) SubmitPackage(ctx context.Context, request Packa
 	if record.GameID == "" {
 		return Record{}, err
 	}
-	if saveErr := s.saveRecord(ctx, record); saveErr != nil {
+	if saveErr := s.saveSubmittedRecord(ctx, record); saveErr != nil {
 		return Record{}, saveErr
 	}
 	return record, err
@@ -133,31 +133,112 @@ func (s *GormSubmissionService) SetReviewStatus(ctx context.Context, id string, 
 		if err != nil {
 			return err
 		}
-		row.Status = status
-		row.UpdatedUnix = time.Now().Unix()
-		if err := tx.Save(&row).Error; err != nil {
-			return err
-		}
-		record, err := row.toRecord()
+		current, err := row.toRecord()
 		if err != nil {
 			return err
 		}
-		result = record
-		return saveSubmissionVersionTx(tx, record)
+		if err := validateReviewTransition(current, status); err != nil {
+			return err
+		}
+		result = applyManualReviewStatus(current, status)
+		next, err := submissionRowFromRecord(result)
+		if err != nil {
+			return err
+		}
+		next.CreatedUnix = row.CreatedUnix
+		next.UpdatedUnix = time.Now().Unix()
+		if err := tx.Save(&next).Error; err != nil {
+			return err
+		}
+		return saveSubmissionVersionTx(tx, result)
 	})
 	return result, err
 }
 
-func (s *GormSubmissionService) saveRecord(ctx context.Context, record Record) error {
+func (s *GormSubmissionService) saveSubmittedRecord(ctx context.Context, record Record) error {
 	return s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-		row, err := submissionRowFromRecord(record)
+		return saveSubmittedRecordTx(tx, record)
+	})
+}
+
+func saveSubmittedRecordTx(tx *gorm.DB, record Record) error {
+	var currentRow SubmissionRecord
+	err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).
+		First(&currentRow, "game_id = ?", record.GameID).Error
+	if err == nil {
+		current, decodeErr := currentRow.toRecord()
+		if decodeErr != nil {
+			return decodeErr
+		}
+		if err := validateSubmissionReplacement(current, record); err != nil {
+			return err
+		}
+	} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+		return err
+	}
+	if err := validateStoredSubmissionVersion(tx, record, true); err != nil {
+		return err
+	}
+
+	next, err := submissionRowFromRecord(record)
+	if err != nil {
+		return err
+	}
+	if currentRow.GameID == "" {
+		if err := tx.Create(&next).Error; err != nil {
+			return err
+		}
+	} else {
+		next.CreatedUnix = currentRow.CreatedUnix
+		if err := tx.Save(&next).Error; err != nil {
+			return err
+		}
+	}
+	return saveSubmissionVersionTx(tx, record)
+}
+
+func (s *GormSubmissionService) validateSubmittedRecord(ctx context.Context, record Record) error {
+	var currentRow SubmissionRecord
+	err := s.db.WithContext(ctx).First(&currentRow, "game_id = ?", record.GameID).Error
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return err
+	}
+	if err == nil {
+		current, decodeErr := currentRow.toRecord()
+		if decodeErr != nil {
+			return decodeErr
+		}
+		if err := validateSubmissionReplacement(current, record); err != nil {
+			return err
+		}
+	}
+	return validateStoredSubmissionVersion(s.db.WithContext(ctx), record, false)
+}
+
+func (s *GormSubmissionService) saveCurrentRecord(ctx context.Context, record Record) error {
+	return s.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		var currentRow SubmissionRecord
+		err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).
+			First(&currentRow, "game_id = ?", record.GameID).Error
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return errors.New("minigame_not_found")
+		}
 		if err != nil {
 			return err
 		}
-		if err := tx.Clauses(clause.OnConflict{
-			Columns:   []clause.Column{{Name: "game_id"}},
-			UpdateAll: true,
-		}).Create(&row).Error; err != nil {
+		current, err := currentRow.toRecord()
+		if err != nil {
+			return err
+		}
+		if !sameSubmissionTarget(current, record) {
+			return errors.New("stale_submission_update")
+		}
+		next, err := submissionRowFromRecord(record)
+		if err != nil {
+			return err
+		}
+		next.CreatedUnix = currentRow.CreatedUnix
+		if err := tx.Save(&next).Error; err != nil {
 			return err
 		}
 		return saveSubmissionVersionTx(tx, record)
@@ -182,7 +263,12 @@ func (s *GormSubmissionService) saveScanRecord(ctx context.Context, record Recor
 		if err != nil {
 			return err
 		}
-		if !packageScanMutableStatus(row.Status) {
+		current, err := row.toRecord()
+		if err != nil {
+			return err
+		}
+		if !packageScanMutableStatus(row.Status) ||
+			!samePackageReviewTarget(current, record) {
 			return nil
 		}
 		next, err := submissionRowFromRecord(record)

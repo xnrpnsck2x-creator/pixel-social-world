@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
@@ -247,31 +248,35 @@ func TestHubUsesDenseRoomMoveInterval(t *testing.T) {
 	defer hub.Close()
 
 	var localConn websocket.Conn
-	localClient := &clientState{
-		conn:     &localConn,
-		roomID:   "dense_room",
-		playerID: "player_00",
-	}
+	localClient := newClientState(&localConn, now.Unix())
+	localClient.setSession("dense_room", "player_00", "player_00", 1)
+	localClient.closeFn = func() error { return nil }
 	hub.mu.Lock()
 	hub.clients[&localConn] = localClient
+	hub.activePlayers["player_00"] = activePlayerSession{client: localClient, generation: 1}
 	for i := 1; i < denseRoomMoveThreshold; i++ {
 		conn := &websocket.Conn{}
-		hub.clients[conn] = &clientState{conn: conn, roomID: "dense_room", playerID: "player"}
+		playerID := fmt.Sprintf("player_%02d", i)
+		client := newClientState(conn, now.Unix())
+		client.setSession("dense_room", playerID, playerID, uint64(i+1))
+		client.closeFn = func() error { return nil }
+		hub.clients[conn] = client
+		hub.activePlayers[playerID] = activePlayerSession{client: client, generation: uint64(i + 1)}
 	}
 	hub.mu.Unlock()
 
 	if interval := hub.moveIntervalFor(localClient); interval != denseRoomMoveInterval {
 		t.Fatalf("expected dense interval %s, got %s", denseRoomMoveInterval, interval)
 	}
-	if !hub.allowAction(localClient, "player.move", hub.moveIntervalFor(localClient), &localClient.lastMoveAt) {
+	if !hub.allowAction(localClient, "player.move", hub.moveIntervalFor(localClient)) {
 		t.Fatal("first dense move should pass")
 	}
 	now = now.Add(defaultMoveInterval + time.Millisecond)
-	if hub.allowAction(localClient, "player.move", hub.moveIntervalFor(localClient), &localClient.lastMoveAt) {
+	if hub.allowAction(localClient, "player.move", hub.moveIntervalFor(localClient)) {
 		t.Fatal("dense move should remain limited until dense interval elapses")
 	}
 	now = now.Add(denseRoomMoveInterval)
-	if !hub.allowAction(localClient, "player.move", hub.moveIntervalFor(localClient), &localClient.lastMoveAt) {
+	if !hub.allowAction(localClient, "player.move", hub.moveIntervalFor(localClient)) {
 		t.Fatal("dense move should pass after dense interval")
 	}
 }
@@ -282,21 +287,24 @@ func TestHubCullsDenseMovementTargetsByInterestRange(t *testing.T) {
 
 	roomID := "dense_room"
 	deliveries := map[string]int{}
+	var deliveriesMu sync.Mutex
 	hub.mu.Lock()
 	hub.lastMoves[roomID] = map[string]map[string]interface{}{}
 	for i := 0; i < denseRoomMoveThreshold; i++ {
 		playerID := fmt.Sprintf("player_%02d", i)
 		conn := &websocket.Conn{}
 		id := playerID
-		hub.clients[conn] = &clientState{
-			conn:     conn,
-			roomID:   roomID,
-			playerID: playerID,
-			writeFn: func(Envelope) error {
-				deliveries[id]++
-				return nil
-			},
+		client := newClientState(conn, time.Now().Unix())
+		client.setSession(roomID, playerID, playerID, uint64(i+1))
+		client.writeFn = func(Envelope) error {
+			deliveriesMu.Lock()
+			defer deliveriesMu.Unlock()
+			deliveries[id]++
+			return nil
 		}
+		client.closeFn = func() error { return nil }
+		hub.clients[conn] = client
+		hub.activePlayers[playerID] = activePlayerSession{client: client, generation: uint64(i + 1)}
 		x := denseRoomInterestRadius + 80 + float64(i)
 		if i < 2 {
 			x = float64(i * 120)
@@ -317,6 +325,13 @@ func TestHubCullsDenseMovementTargetsByInterestRange(t *testing.T) {
 		},
 	})
 
+	waitForCondition(t, func() bool {
+		deliveriesMu.Lock()
+		defer deliveriesMu.Unlock()
+		return deliveries["player_00"] == 1 && deliveries["player_01"] == 1
+	})
+	deliveriesMu.Lock()
+	defer deliveriesMu.Unlock()
 	if deliveries["player_00"] != 1 || deliveries["player_01"] != 1 {
 		t.Fatalf("expected source and nearby player to receive move, deliveries=%#v", deliveries)
 	}
@@ -422,6 +437,18 @@ func waitForRoomCounts(t *testing.T, hub *Hub, expected map[string]int) {
 		time.Sleep(10 * time.Millisecond)
 	}
 	t.Fatalf("room counts did not reach %#v; snapshot=%#v", expected, hub.Snapshot())
+}
+
+func waitForCondition(t *testing.T, condition func() bool) {
+	t.Helper()
+	deadline := time.Now().Add(time.Second)
+	for time.Now().Before(deadline) {
+		if condition() {
+			return
+		}
+		time.Sleep(time.Millisecond)
+	}
+	t.Fatal("condition did not become true before timeout")
 }
 
 type testValidator map[string]string
